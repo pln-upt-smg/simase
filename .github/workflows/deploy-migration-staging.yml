@@ -24,6 +24,5 @@ jobs:
             git fetch && git reset --hard HEAD && git pull
             composer i -o --no-dev
             php artisan migrate:fresh --seed --force
-            chmod -R 777 storage bootstrap/cache
             php artisan env
             php artisan up

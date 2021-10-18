@@ -31,7 +31,6 @@ jobs:
             composer i -o -n --no-dev
             service redis-server restart
             php artisan optimize
-            chmod -R 777 storage bootstrap/cache
             npm run prod
             rm -rf /var/cache/ngx_pagespeed/*
             supervisorctl restart all

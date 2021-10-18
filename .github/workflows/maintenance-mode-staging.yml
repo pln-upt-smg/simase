@@ -20,4 +20,4 @@ jobs:
           port: 22
           script: |
             cd /var/www/stocktake/web
-            sudo php artisan down
+            php artisan down
