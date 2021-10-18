@@ -19,7 +19,6 @@
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
-        "composer/composer": "^2.1.9",
         "barryvdh/laravel-ide-helper": "^2.10",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
