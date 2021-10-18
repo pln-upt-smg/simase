@@ -1,0 +1,29 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+parameters:
+    level: 8
+    paths:
+        - app
+        - config
+        - database
+        - routes
+    excludePaths:
+        - database/factories/*
+        - database/seeders/*
+    scanFiles:
+        - ./.phpstorm.meta.php
+        - ./_ide_helper.php
+    ignoreErrors:
+        - '#mixed#'
+        - '#Undefined variable: \$this#'
+        - '#Call to an undefined method object::#'
+        - '#ReflectionClass constructor expects class-string<T of object>\|T of object, string given#'
+        - '#on App\\Http\\Requests#'
+        - '#Call to an undefined method App\\Http\\Requests#'
+        - '#Call to an undefined method Illuminate\\Http\\Request#'
+        - '#array\|string\|null#'
+        - '#Carbon\\Carbon\|false#'
+        - '#Illuminate\\Support\\Collection#'
+        - '#forPage#'
+        - '#count#'
+    checkMissingIterableValueType: false

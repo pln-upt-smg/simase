@@ -1,0 +1,39 @@
+name: 🚀 Deploy to Staging
+
+on:
+  workflow_run:
+    workflows: [ Laravel ]
+    branches: [ main ]
+    types:
+      - completed
+
+jobs:
+  deployment:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Install Github Action Checkout
+        uses: actions/checkout@v2
+
+      - name: 🖥️ Deploy using SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USERNAME }}
+          key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /var/www/stocktake/web
+            php artisan down
+            git fetch && git reset --hard HEAD && git pull
+            npm i --silent
+            php artisan optimize:clear
+            composer i -o -n --no-dev
+            service redis-server restart
+            php artisan optimize
+            chmod -R 777 storage bootstrap/cache
+            npm run prod
+            rm -rf /var/cache/ngx_pagespeed/*
+            supervisorctl restart all
+            php artisan env
+            php artisan up

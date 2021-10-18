@@ -1,0 +1,23 @@
+name: ⛑️ Maintenance Mode on Staging
+
+on:
+  workflow_dispatch:
+    branches: [ main ]
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Install Github Action Checkout
+        uses: actions/checkout@v2
+
+      - name: 🖥️ Deploy Migration using SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USERNAME }}
+          key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /var/www/stocktake/web
+            sudo php artisan down

@@ -1,0 +1,91 @@
+name: Docker
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Install Github Action Checkout
+        uses: actions/checkout@v2
+
+      - name: 📥 Install Docker Layer Caching
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
+      - name: 📥 Install PHP v8.0 and Composer v2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.0"
+
+      - name: ⚙️ Set up Application Environment Variables for CI/CD (Production)
+        run: |
+          php -r "file_exists('.env') || copy('.env.example', '.env');"
+          sed -i 's/APP_ENV=local/APP_ENV=production/' .env
+          sed -i 's/APP_DEBUG=true/APP_DEBUG=false/' .env
+          sed -i 's/CI_CD_ENV=false/CI_CD_ENV=true/' .env
+          sed -i 's/DB_USERNAME=klru/DB_USERNAME=root/' .env
+          sed -i 's/DB_PASSWORD=klru/DB_PASSWORD=root/' .env
+          sed -i 's/localhost/127.0.0.1/' .env
+
+      - name: 📦 Install Composer Dependencies
+        uses: ramsey/composer-install@v1
+
+      - name: 🔨 Build Application Image
+        run: docker-compose build
+
+      - name: 🔼 Run Application Container (Detached Mode)
+        run: docker-compose up -d
+
+      - name: 💤 Wait Application Containers to be ready
+        uses: juliangruber/sleep-action@v1
+        with:
+          time: 10s
+
+      - name: 🔍 Check Docker Containers Status
+        run: docker ps -a
+
+      - name: 📦 Install NPM Dependencies
+        run: docker-compose exec stocktake_app_1 npm i
+
+      - name: 🔑 Generate Application Key
+        run: docker-compose exec stocktake_app_1 php artisan key:generate
+
+      - name: 💾 Link Application Storage
+        run: docker-compose exec stocktake_app_1 php artisan storage:link
+
+      - name: 🗄️ Run Database Migration
+        run: docker-compose exec stocktake_app_1 php artisan migrate --force
+
+      - name: 🔄 Verify Database Rollback
+        run: docker-compose exec stocktake_app_1 php artisan migrate:refresh --force
+
+      - name: 🗃️ Run Database Seeder
+        run: docker-compose exec stocktake_app_1 php artisan db:seed --force
+
+      - name: 🗑️ Clear Laravel Cache
+        run: docker-compose exec stocktake_app_1 php artisan optimize:clear
+
+      - name: 🔧 Optimize Laravel Configuration
+        run: docker-compose exec stocktake_app_1 php artisan optimize
+
+      - name: 🎨 Run Laravel Mix for Production
+        run: docker-compose exec stocktake_app_1 npm run production
+
+      - name: 🧪 Run Application Tests (Unit and Feature tests) via PHPUnit
+        run: docker-compose exec stocktake_app_1 php artisan test
+
+      - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
+        run: docker-compose exec stocktake_app_1 composer lint
+
+      - name: 🛑 Stop Application Containers
+        run: docker-compose down
+
+      - name: 🗑️ Prune unused Docker volumes and images
+        run: |
+          docker volume prune -f
+          docker image prune -f
