@@ -85,8 +85,5 @@ jobs:
       - name: 🎨 Run Laravel Mix for Production
         run: npm run production
 
-      - name: 🧪 Run Application Tests (Unit and Feature tests) via PHPUnit
-        run: php artisan test
-
       - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
         run: composer lint
