@@ -28,8 +28,8 @@ jobs:
           sed -i 's/APP_ENV=local/APP_ENV=production/' .env
           sed -i 's/APP_DEBUG=true/APP_DEBUG=false/' .env
           sed -i 's/CI_CD_ENV=false/CI_CD_ENV=true/' .env
-          sed -i 's/DB_USERNAME=klru/DB_USERNAME=root/' .env
-          sed -i 's/DB_PASSWORD=klru/DB_PASSWORD=root/' .env
+          sed -i 's/DB_USERNAME=stocktake/DB_USERNAME=root/' .env
+          sed -i 's/DB_PASSWORD=stocktake/DB_PASSWORD=root/' .env
           sed -i 's/localhost/127.0.0.1/' .env
 
       - name: 📦 Install Composer Dependencies
