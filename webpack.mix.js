@@ -1,3 +1,4 @@
+const minify = require('minify-html-webpack-plugin');
 const mix = require('laravel-mix');
 
 /*
@@ -10,6 +11,28 @@ const mix = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
+
+mix.webpackConfig({
+    stats: {
+        warnings: false
+    },
+    plugins: [
+        new minify({
+            afterBuild: true,
+            src: './storage/framework/views',
+            dest: './storage/framework/views',
+            ignoreFileNameRegex: /\.(gitignore)$/,
+            rules: {
+                useShortDoctype: true,
+                collapseBooleanAttributes: true,
+                collapseWhitespace: true,
+                removeAttributeQuotes: true,
+                removeComments: true,
+                minifyJS: true
+            }
+        })
+    ]
+});
 
 mix.js('resources/js/app.js', 'public/js').vue()
     .postCss('resources/css/app.css', 'public/css', [

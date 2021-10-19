@@ -30,10 +30,12 @@ jobs:
             git pull origin/main
             sudo chmod -R ug+rwx storage bootstrap/cache
             php artisan optimize:clear
+            php artisan view:clear
             npm i --silent
             composer i -o -n --no-dev
-            npm run prod
             php artisan optimize
+            php artisan view:cache
+            npm run prod
             rm -rf /var/cache/ngx_pagespeed/*
             sudo service redis-server restart
             supervisorctl restart all
