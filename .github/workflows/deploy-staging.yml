@@ -36,8 +36,8 @@ jobs:
             php artisan optimize
             php artisan view:cache
             npm run prod
-            rm -rf /var/cache/ngx_pagespeed/*
             sudo service redis-server restart
-            supervisorctl restart all
+            sudo supervisorctl restart all
+            sudo rm -rf /var/cache/ngx_pagespeed/*
             php artisan env
             php artisan up
