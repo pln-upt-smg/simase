@@ -32,6 +32,9 @@ jobs:
           sed -i 's/DB_PASSWORD=stocktake/DB_PASSWORD=root/' .env
           sed -i 's/localhost/127.0.0.1/' .env
 
+      - name: 🔻 Shutdown Default Ubuntu MySQL Service
+        run: sudo service mysql stop
+
       - name: 📦 Install Composer Dependencies
         uses: ramsey/composer-install@v1
 
@@ -50,34 +53,34 @@ jobs:
         run: docker ps -a
 
       - name: 📦 Install NPM Dependencies
-        run: docker compose exec -T stocktake-web_app_1 npm i
+        run: docker compose exec -T stocktake-web-app-1 npm i
 
       - name: 🔑 Generate Application Key
-        run: docker compose exec -T stocktake-web_app_1 php artisan key:generate
+        run: docker compose exec -T stocktake-web-app-1 php artisan key:generate
 
       - name: 💾 Link Application Storage
-        run: docker compose exec -T stocktake-web_app_1 php artisan storage:link
+        run: docker compose exec -T stocktake-web-app-1 php artisan storage:link
 
       - name: 🗄️ Run Database Migration
-        run: docker compose exec -T stocktake-web_app_1 php artisan migrate --force
+        run: docker compose exec -T stocktake-web-app-1 php artisan migrate --force
 
       - name: 🔄 Verify Database Rollback
-        run: docker compose exec -T stocktake-web_app_1 php artisan migrate:refresh --force
+        run: docker compose exec -T stocktake-web-app-1 php artisan migrate:refresh --force
 
       - name: 🗃️ Run Database Seeder
-        run: docker compose exec -T stocktake-web_app_1 php artisan db:seed --force
+        run: docker compose exec -T stocktake-web-app-1 php artisan db:seed --force
 
       - name: 🗑️ Clear Laravel Cache
-        run: docker compose exec -T stocktake-web_app_1 php artisan optimize:clear
+        run: docker compose exec -T stocktake-web-app-1 php artisan optimize:clear
 
       - name: 🔧 Optimize Laravel Configuration
-        run: docker compose exec -T stocktake-web_app_1 php artisan optimize
+        run: docker compose exec -T stocktake-web-app-1 php artisan optimize
 
       - name: 🎨 Run Laravel Mix for Production
-        run: docker compose exec -T stocktake-web_app_1 npm run production
+        run: docker compose exec -T stocktake-web-app-1 npm run production
 
       - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
-        run: docker compose exec -T stocktake-web_app_1 composer lint
+        run: docker compose exec -T stocktake-web-app-1 composer lint
 
       - name: 🛑 Stop Application Containers
         run: docker-compose down
