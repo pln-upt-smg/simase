@@ -25,14 +25,16 @@ jobs:
           script: |
             cd /var/www/stocktake/web
             php artisan down
-            git fetch && git reset --hard HEAD && git pull
-            npm i --silent
+            git fetch --all
+            git reset --hard origin/main
+            git pull origin/main
             php artisan optimize:clear
+            npm i --silent
             composer i -o -n --no-dev
-            service redis-server restart
-            php artisan optimize
             npm run prod
+            php artisan optimize
             rm -rf /var/cache/ngx_pagespeed/*
+            sudo service redis-server restart
             supervisorctl restart all
             php artisan env
             php artisan up

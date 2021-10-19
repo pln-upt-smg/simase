@@ -21,8 +21,10 @@ jobs:
           script: |
             cd /var/www/stocktake/web
             php artisan down
-            git fetch && git reset --hard HEAD && git pull
-            composer i -o --no-dev
+            git fetch --all
+            git reset --hard origin/main
+            git pull origin/main
+            composer i -o -n --no-dev
             php artisan migrate:fresh --seed --force
             php artisan env
             php artisan up

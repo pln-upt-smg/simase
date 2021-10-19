@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if ($this->app->isLocal()) {
+        if ($this->app->isLocal() || config('app.env_ci_cd')) {
             $this->app->register(IdeHelperServiceProvider::class);
         }
     }
