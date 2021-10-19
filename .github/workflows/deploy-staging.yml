@@ -28,6 +28,7 @@ jobs:
             git fetch --all
             git reset --hard origin/main
             git pull origin/main
+            sudo chmod -R ug+rwx storage bootstrap/cache
             php artisan optimize:clear
             npm i --silent
             composer i -o -n --no-dev

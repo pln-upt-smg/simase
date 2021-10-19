@@ -20,4 +20,5 @@ jobs:
           port: 22
           script: |
             cd /var/www/stocktake/web
+            sudo chmod -R ug+rwx storage bootstrap/cache
             php artisan down

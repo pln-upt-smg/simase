@@ -24,6 +24,7 @@ jobs:
             git fetch --all
             git reset --hard origin/main
             git pull origin/main
+            sudo chmod -R ug+rwx storage bootstrap/cache
             composer i -o -n --no-dev
             php artisan migrate:fresh --seed --force
             php artisan env

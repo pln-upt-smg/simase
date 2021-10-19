@@ -15,5 +15,8 @@ parameters:
         - ./_ide_helper.php
     ignoreErrors:
         - '#Undefined variable: \$this#'
-        - '#Call to an undefined method Illuminate\\Http\\Request#'
+        - '#Illuminate\\Http\\Request#'
+        - '#Illuminate\\Support\\Collection#'
+        - '#forPage#'
+        - '#count#'
     checkMissingIterableValueType: false
