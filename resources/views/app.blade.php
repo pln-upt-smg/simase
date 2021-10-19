@@ -10,12 +10,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     @routes
-    @if(app()->isProduction())
-        <script>
-            Ziggy.baseUrl = '{{ config('app.url') }}';
-            Ziggy.baseProtocol = 'https';
-        </script>
-    @endif
     <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
 <body class="font-sans antialiased">
