@@ -17,16 +17,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register(): void
-    {
         // register & set the configuration only on production environment
         if (app()->isProduction()) {
 
@@ -36,7 +26,15 @@ class AppServiceProvider extends ServiceProvider
             // make sure to use secure server request in production environment
             $this->app['request']->server->set('https', true);
         }
+    }
 
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
         // register & set the configuration only on local environment
         if ($this->app->isLocal() || config('app.env_ci_cd')) {
 
