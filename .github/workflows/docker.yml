@@ -36,10 +36,10 @@ jobs:
         uses: ramsey/composer-install@v1
 
       - name: 🔨 Build Application Image
-        run: docker-compose build
+        run: docker compose build
 
       - name: 🔼 Run Application Container (Detached Mode)
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: 💤 Wait Application Containers to be ready
         uses: juliangruber/sleep-action@v1
