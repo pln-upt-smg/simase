@@ -1,5 +1,5 @@
-const minify = require('minify-html-webpack-plugin');
 const mix = require('laravel-mix');
+const minify = require('minify-html-webpack-plugin');
 
 /*
  |--------------------------------------------------------------------------
