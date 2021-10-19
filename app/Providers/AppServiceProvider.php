@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
 
             // make sure to use secure scheme in production environment
             URL::forceScheme('https');
+
+            // make sure to use secure server request in production environment
             $this->app['request']->server->set('https', true);
         }
 
@@ -49,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function registerMacros(): void
+    protected function registerMacros(): void
     {
         if (!Collection::hasMacro('paginate')) {
             Collection::macro('paginate', function ($perPage = 15, $total = null, $page = null, $pageName = 'page') {
