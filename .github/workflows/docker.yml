@@ -59,37 +59,37 @@ jobs:
         run: docker logs stocktake-web-mysql-1
 
       - name: 📦 Install NPM Dependencies
-        run: docker compose exec stocktake-web-app-1 npm i
+        run: docker exec -t stocktake-web-app-1 npm i
 
       - name: 🔑 Generate Application Key
-        run: docker compose exec stocktake-web-app-1 php artisan key:generate
+        run: docker exec -t stocktake-web-app-1 php artisan key:generate
 
       - name: 💾 Link Application Storage
-        run: docker compose exec stocktake-web-app-1 php artisan storage:link
+        run: docker exec -t stocktake-web-app-1 php artisan storage:link
 
       - name: 🗄️ Run Database Migration
-        run: docker compose exec stocktake-web-app-1 php artisan migrate --force
+        run: docker exec -t stocktake-web-app-1 php artisan migrate --force
 
       - name: 🔄 Verify Database Rollback
-        run: docker compose exec stocktake-web-app-1 php artisan migrate:refresh --force
+        run: docker exec -t stocktake-web-app-1 php artisan migrate:refresh --force
 
       - name: 🗃️ Run Database Seeder
-        run: docker compose exec stocktake-web-app-1 php artisan db:seed --force
-
-      - name: 🗑️ Clear Laravel Cache
-        run: docker compose exec stocktake-web-app-1 php artisan optimize:clear
-
-      - name: 🔧 Optimize Laravel Configuration
-        run: docker compose exec stocktake-web-app-1 php artisan optimize
+        run: docker exec -t stocktake-web-app-1 php artisan db:seed --force
 
       - name: 🎨 Run Laravel Mix for Production
-        run: docker compose exec stocktake-web-app-1 npm run production
+        run: docker exec -t stocktake-web-app-1 npm run production
+
+      - name: 🗑️ Clear Laravel Cache
+        run: docker exec -t stocktake-web-app-1 php artisan optimize:clear
+
+      - name: 🔧 Optimize Laravel Configuration
+        run: docker exec -t stocktake-web-app-1 php artisan optimize
 
       - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
-        run: docker compose exec stocktake-web-app-1 composer lint
+        run: docker exec -t stocktake-web-app-1 composer lint
 
       - name: 🛑 Stop Application Containers
-        run: docker-compose down
+        run: docker compose down
 
       - name: 🗑️ Prune unused Docker volumes and images
         run: |
