@@ -29,13 +29,14 @@ REST API Endpoint for Klinik Rumah Ungu Platforms.
 11. [PHP PSR2 Coding Style Standard](https://www.php-fig.org/psr/psr-2)
 12. [PHPStan](https://phpstan.org/) (with [Larastan](https://github.com/nunomaduro/larastan) extension)
 13. [Inertia.js](https://inertiajs.com)
-14. [Webpack](https://webpack.js.org)
-15. [Supercronic](https://github.com/aptible/supercronic)
-16. [Supervisor](http://supervisord.org/index.html)
-17. [MySQL 5.x](https://dev.mysql.com)
-18. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
-19. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
-20. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
+14. [Vue.js](https://vuejs.org)
+15. [Webpack](https://webpack.js.org)
+16. [Supercronic](https://github.com/aptible/supercronic)
+17. [Supervisor](http://supervisord.org/index.html)
+18. [MySQL 5.x](https://dev.mysql.com)
+19. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
+20. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
+21. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
 
 <br/>
 
