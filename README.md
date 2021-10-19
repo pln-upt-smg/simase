@@ -12,7 +12,7 @@
 
 # 📦 stocktake
 
-REST API Endpoint for Klinik Rumah Ungu Platforms.
+Item Stock Management System for Unilever Indonesia.
 
 <br/>
 
@@ -136,7 +136,8 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 3. MySQL Server `v5.7`
 4. NodeJS `v15`
 5. npm `v7`
-6. [Nginx](https://nginx.org/en/download.html) / [Apache2](https://httpd.apache.org/download.cgi)]] / [LiteSpeed](https://openlitespeed.org/Downloads/)
+6. [Nginx](https://nginx.org/en/download.html) / [Apache2](https://httpd.apache.org/download.cgi)
+   / [LiteSpeed](https://openlitespeed.org/Downloads/)
 7. [Supercronic](https://github.com/aptible/supercronic)
 8. [Supervisor](http://supervisord.org/index.html)
 
