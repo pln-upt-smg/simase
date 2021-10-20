@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpUndefinedClassInspection */
+
 namespace Tests\Feature;
 
 use App\Providers\RouteServiceProvider;

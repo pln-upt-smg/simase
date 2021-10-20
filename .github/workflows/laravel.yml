@@ -79,10 +79,10 @@ jobs:
         run: npm run production
 
       - name: 🧪 Run Application Tests (Unit and Feature tests) via PHPUnit
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
-          php artisan test
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: vendor/bin/phpunit
 
       - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
         run: composer lint

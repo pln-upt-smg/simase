@@ -93,10 +93,10 @@ jobs:
         run: docker exec -t stocktake-web-app-1 npm run production
 
       - name: 🧪 Run Application Tests (Unit and Feature tests) via PHPUnit
-        run: |
-          docker exec -t stocktake-web-app-1 mkdir -p database
-          docker exec -t stocktake-web-app-1 touch database/database.sqlite
-          docker exec -t stocktake-web-app-1 php artisan test
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: docker exec -t stocktake-web-app-1 vendor/bin/phpunit
 
       - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
         run: docker exec -t stocktake-web-app-1 composer lint
