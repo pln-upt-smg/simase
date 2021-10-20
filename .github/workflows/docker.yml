@@ -59,6 +59,9 @@ jobs:
       - name: 🪵 Check Docker MySQL Containers Log
         run: docker logs stocktake-web-mysql-1
 
+      - name: 🚨 Set Application Directory Permissions
+        run: docker exec -t stocktake-web-app-1 sudo chmod -R ug+rwx storage bootstrap/cache
+
       - name: 📦 Install NPM Dependencies
         run: docker exec -t stocktake-web-app-1 npm i
 
@@ -95,5 +98,4 @@ jobs:
         run: docker compose down
 
       - name: 🗑️ Prune unused Docker volumes
-        run: |
-          docker volume prune -f
+        run: docker volume prune -f
