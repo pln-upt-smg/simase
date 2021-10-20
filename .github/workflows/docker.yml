@@ -86,8 +86,8 @@ jobs:
 
       - name: 🔧 Optimize Laravel Configuration
         run: |
-        docker exec -t stocktake-web-app-1 php artisan optimize
-        docker exec -t stocktake-web-app-1 php artisan view:cache
+          docker exec -t stocktake-web-app-1 php artisan optimize
+          docker exec -t stocktake-web-app-1 php artisan view:cache
 
       - name: 🎨 Run Laravel Mix for Production
         run: docker exec -t stocktake-web-app-1 npm run production
@@ -104,7 +104,6 @@ jobs:
       - name: 🛑 Stop Application Containers
         run: docker compose down
 
-      - name: 🗑️ Prune unused Docker volumes and images
+      - name: 🗑️ Prune unused Docker volumes
         run: |
           docker volume prune -f
-          docker image prune -f
