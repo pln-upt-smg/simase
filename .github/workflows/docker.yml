@@ -36,10 +36,6 @@ jobs:
           sed -i 's/DB_USERNAME=stocktake/DB_USERNAME=root/' .env
           sed -i 's/DB_PASSWORD=stocktake/DB_PASSWORD=root/' .env
 
-      - name: 🚨 Set Application Directory Permissions
-        run: |
-          sudo chmod -R ug+rwx storage bootstrap/cache
-
       - name: 📦 Install Composer Dependencies
         uses: ramsey/composer-install@v1
 
