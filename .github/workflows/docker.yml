@@ -88,12 +88,6 @@ jobs:
       - name: 🎨 Run Laravel Mix for Production
         run: docker exec -t stocktake-web-app-1 npm run production
 
-      - name: 🧪 Run Application Tests (Unit and Feature tests) via PHPUnit
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: docker exec -t stocktake-web-app-1 vendor/bin/phpunit
-
       - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
         run: docker exec -t stocktake-web-app-1 composer lint
 
