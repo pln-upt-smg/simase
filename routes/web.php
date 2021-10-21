@@ -24,4 +24,4 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 /**
  * Role-specific web routes
  */
-include "Roleable\web.php";
+include "Roleable/web.php";
