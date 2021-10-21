@@ -2,12 +2,20 @@
 
 namespace App\Models;
 
+use Based\Fluent\Fluent;
+use Based\Fluent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Role extends Model
 {
-    use HasFactory;
+    use Fluent, HasFactory;
+
+    public string $name;
+
+    #[HasMany(User::class)]
+    public Collection $users;
 
     /**
      * The attributes that are mass assignable.
@@ -16,15 +24,6 @@ class Role extends Model
      */
     protected $fillable = [
         'name',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'name' => 'string',
     ];
 
     public static function administrator(): ?self
