@@ -32,10 +32,25 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->reportable(static function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Handle the report action of the application.
+     *
+     * @param Throwable $e
+     * @return void
+     * @throws Throwable
+     */
+    public function report(Throwable $e): void
+    {
+        parent::report($e);
+        if (!config('app.env_ci_cd') && app()->isProduction() && app()->bound('sentry') && $this->shouldReport($e)) {
+            app('sentry')->captureException($e);
+        }
     }
 }

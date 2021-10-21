@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         if (config('app.truncate_on_db_seed')) {
             $this->reset();
         }
-        $this->seedConstants();
+        $this->seeds();
     }
 
     protected function reset(): void
@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
         Schema::enableForeignKeyConstraints();
     }
 
-    protected function seedConstants(): void
+    protected function seeds(): void
     {
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);

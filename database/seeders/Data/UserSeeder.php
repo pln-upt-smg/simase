@@ -40,21 +40,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        if (app()->isProduction()) {
-            $this->production();
-        } else {
+        if (app()->isLocal() || config('app.env_staging')) {
             $this->staging();
+        } else {
+            $this->production();
         }
-    }
-
-    protected function production(): void
-    {
-        User::create([
-            'role' => Role::administrator(),
-            'name' => 'Administrator',
-            'nip' => '251781',
-            'password' => Hash::make('251781')
-        ]);
     }
 
     protected function staging(): void
@@ -72,5 +62,15 @@ class UserSeeder extends Seeder
             'password' => Hash::make('752114')
         ]);
         User::factory(2)->create();
+    }
+
+    protected function production(): void
+    {
+        User::create([
+            'role' => Role::administrator(),
+            'name' => 'Administrator',
+            'nip' => '251781',
+            'password' => Hash::make('251781')
+        ]);
     }
 }
