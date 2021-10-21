@@ -15,7 +15,7 @@ parameters:
         - ./_ide_helper.php
     ignoreErrors:
         - '#Undefined variable: \$this#'
-        - '#of function trim expects string#'
+        - '#of function trim#'
         - '#Call to an undefined method#'
         - '#Illuminate\\Support\\Collection#'
     checkMissingIterableValueType: false
