@@ -17,8 +17,5 @@ parameters:
         - '#Undefined variable: \$this#'
         - '#of function trim expects string#'
         - '#Call to an undefined method#'
-        - '#Illuminate\\Http\\Request#'
         - '#Illuminate\\Support\\Collection#'
-        - '#forPage#'
-        - '#count#'
     checkMissingIterableValueType: false
