@@ -27,12 +27,12 @@ class Role extends Model
         'name' => 'string',
     ];
 
-    public static function administrator(): self
+    public static function administrator(): ?self
     {
         return self::find(1);
     }
 
-    public static function operator(): self
+    public static function operator(): ?self
     {
         return self::find(2);
     }

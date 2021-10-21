@@ -8,7 +8,11 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthenticateLoginAttempt
 {
-    public function __invoke(Request $request)
+    /**
+     * @param Request $request
+     * @return User|false|null
+     */
+    public function __invoke(Request $request): User|bool|null
     {
         $user = User::whereNip($request->nip)->first();
         if ($user && Hash::check($request->password, $user->password)) {

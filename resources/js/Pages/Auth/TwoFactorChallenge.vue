@@ -8,12 +8,12 @@
 
         <div class="mb-4 text-sm text-gray-600">
             <template v-if="! recovery">
-                Please confirm access to your account by entering the authentication code provided by your authenticator
-                application.
+                Harap konfirmasikan akses ke akun Anda dengan memasukkan kode otentikasi yang diberikan oleh
+                aplikasi autentikator Anda.
             </template>
 
             <template v-else>
-                Please confirm access to your account by entering one of your emergency recovery codes.
+                Harap konfirmasikan akses ke akun Anda dengan memasukkan salah satu kode pemulihan darurat Anda.
             </template>
         </div>
 
@@ -21,13 +21,13 @@
 
         <form @submit.prevent="submit">
             <div v-if="! recovery">
-                <jet-label for="code" value="Code"/>
+                <jet-label for="code" value="Kode Otentikasi"/>
                 <jet-input ref="code" id="code" type="text" inputmode="numeric" class="mt-1 block w-full"
                            v-model="form.code" autofocus autocomplete="one-time-code"/>
             </div>
 
             <div v-else>
-                <jet-label for="recovery_code" value="Recovery Code"/>
+                <jet-label for="recovery_code" value="Kode Pemulihan"/>
                 <jet-input ref="recovery_code" id="recovery_code" type="text" class="mt-1 block w-full"
                            v-model="form.recovery_code" autocomplete="one-time-code"/>
             </div>
@@ -36,16 +36,16 @@
                 <button type="button" class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer"
                         @click.prevent="toggleRecovery">
                     <template v-if="! recovery">
-                        Use a recovery code
+                        Gunakan kode pemulihan
                     </template>
 
                     <template v-else>
-                        Use an authentication code
+                        Gunakan kode otentikasi
                     </template>
                 </button>
 
                 <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
+                    Masuk
                 </jet-button>
             </div>
         </form>
