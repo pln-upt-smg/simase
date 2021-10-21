@@ -60,9 +60,7 @@ jobs:
         run: docker logs stocktake-web-mysql-1
 
       - name: 🚨 Set Application Directory Permissions
-        run: |
-          docker exec -t stocktake-web-app-1 chmod -R ug+rwx storage bootstrap/cache
-          docker exec -t stocktake-web-app-1 chown -R www-data:www-data storage bootstrap/cache
+        run: docker exec -t stocktake-web-app-1 chmod -R ug+rwx storage bootstrap/cache
 
       - name: 📦 Install NPM Dependencies
         run: docker exec -t stocktake-web-app-1 npm i
