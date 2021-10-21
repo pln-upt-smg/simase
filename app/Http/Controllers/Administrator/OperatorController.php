@@ -21,7 +21,7 @@ class OperatorController extends Controller
             });
         });
         $users = QueryBuilder::for(User::class)
-            ->where('role_id', '<>', Role::administrator()->id)
+            ->where('role_id', '<>', Role::administrator()?->id)
             ->defaultSort('name')
             ->allowedSorts(['name', 'nip'])
             ->allowedFilters(['name', 'nip', 'role_id', $globalSearch])

@@ -15,9 +15,10 @@ parameters:
         - ./_ide_helper.php
     ignoreErrors:
         - '#Undefined variable: \$this#'
+        - '#of function trim expects string#'
+        - '#Call to an undefined method#'
         - '#Illuminate\\Http\\Request#'
         - '#Illuminate\\Support\\Collection#'
         - '#forPage#'
         - '#count#'
-        - '#of function trim expects string#'
     checkMissingIterableValueType: false
