@@ -10,13 +10,11 @@ class AuthenticateLoginAttempt
 {
     /**
      * @param Request $request
-     * @return User|false|null
+     * @return User|null
      */
-    public function __invoke(Request $request): User|bool|null
+    public function __invoke(Request $request): ?User
     {
         $user = User::whereNip($request->nip)->first();
-        if ($user && Hash::check($request->password, $user->password)) {
-            return $user;
-        }
+        return $user && Hash::check($request->password, $user->password) ? $user : null;
     }
 }
