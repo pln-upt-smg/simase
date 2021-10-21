@@ -20,3 +20,8 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return inertia('Dashboard');
 })->name('dashboard');
+
+/**
+ * Role-specific web routes
+ */
+include "Roleable\web.php";

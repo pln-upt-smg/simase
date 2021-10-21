@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c8d6a949b053587c51e538420870f99",
+    "content-hash": "022b0065d201bc3e396e4dada9d9ed6e",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3580,6 +3580,65 @@
             "time": "2020-04-05T10:47:18+00:00"
         },
         {
+            "name": "protonemedia/inertiajs-tables-laravel-query-builder",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/protonemedia/inertiajs-tables-laravel-query-builder.git",
+                "reference": "0c62ed728f0b2104f6a2b1d7cba1bc2d89f1bb6e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/protonemedia/inertiajs-tables-laravel-query-builder/zipball/0c62ed728f0b2104f6a2b1d7cba1bc2d89f1bb6e",
+                "reference": "0c62ed728f0b2104f6a2b1d7cba1bc2d89f1bb6e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^8.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "inertiajs/inertia-laravel": "^0.4.0",
+                "orchestra/testbench": " ^6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ProtoneMedia\\LaravelQueryBuilderInertiaJs\\InertiaTableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ProtoneMedia\\LaravelQueryBuilderInertiaJs\\": "php"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pascal Baljet",
+                    "email": "pascal@protone.media"
+                }
+            ],
+            "description": "Inertia.js Front-end Components for Spatie's Laravel Query Builder",
+            "homepage": "https://github.com/protonemedia/inertiajs-tables-laravel-query-builder",
+            "support": {
+                "issues": "https://github.com/protonemedia/inertiajs-tables-laravel-query-builder/issues",
+                "source": "https://github.com/protonemedia/inertiajs-tables-laravel-query-builder/tree/1.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/pascalbaljet",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-08-09T07:34:40+00:00"
+        },
+        {
             "name": "psr/container",
             "version": "1.1.1",
             "source": {
@@ -4484,6 +4543,77 @@
                 }
             ],
             "time": "2021-10-06T13:08:08+00:00"
+        },
+        {
+            "name": "spatie/laravel-query-builder",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-query-builder.git",
+                "reference": "ba3c35b32cf1cb0cda69d179f472f2fbe514f4d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-query-builder/zipball/ba3c35b32cf1cb0cda69d179f472f2fbe514f4d1",
+                "reference": "ba3c35b32cf1cb0cda69d179f472f2fbe514f4d1",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^6.20.13|^7.30.4|^8.22.2",
+                "illuminate/http": "^6.20.13|7.30.4|^8.22.2",
+                "illuminate/support": "^6.20.13|7.30.4|^8.22.2",
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "ext-json": "*",
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "laravel/legacy-factories": "^1.0.4",
+                "mockery/mockery": "^1.4",
+                "orchestra/testbench": "^4.9|^5.8|^6.3",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\QueryBuilder\\QueryBuilderServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\QueryBuilder\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Vanderbist",
+                    "email": "alex@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easily build Eloquent queries from API requests",
+            "homepage": "https://github.com/spatie/laravel-query-builder",
+            "keywords": [
+                "laravel-query-builder",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-query-builder/issues",
+                "source": "https://github.com/spatie/laravel-query-builder"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2021-10-20T12:45:43+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

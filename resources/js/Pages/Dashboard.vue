@@ -1,21 +1,17 @@
 <template>
-    <app-layout title="Dashboard">
-        <template #header>Dashboard</template>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-            <div class="py-4">
-                <div class="border-4 border-dashed border-gray-200 rounded-lg h-96"/>
-            </div>
-        </div>
-    </app-layout>
+    <administrator-dashboard v-if="$page.props.user.role_id === 1"/>
+    <operator-dashboard v-else/>
 </template>
 
 <script>
 import {defineComponent} from 'vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
+import AdministratorDashboard from '@/Pages/Administrator/Dashboard'
+import OperatorDashboard from '@/Pages/Operator/Dashboard'
 
 export default defineComponent({
     components: {
-        AppLayout,
+        AdministratorDashboard,
+        OperatorDashboard
     },
 })
 </script>
