@@ -1,16 +1,9 @@
 <template>
     <app-layout title="Dashboard">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard
-            </h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <welcome/>
-                </div>
+        <template #header>Dashboard</template>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+            <div class="py-4">
+                <div class="border-4 border-dashed border-gray-200 rounded-lg h-96"/>
             </div>
         </div>
     </app-layout>
@@ -19,12 +12,10 @@
 <script>
 import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
-import Welcome from '@/Jetstream/Welcome.vue'
 
 export default defineComponent({
     components: {
         AppLayout,
-        Welcome,
     },
 })
 </script>

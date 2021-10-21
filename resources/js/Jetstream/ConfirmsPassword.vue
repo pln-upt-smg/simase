@@ -13,7 +13,7 @@
                 {{ content }}
 
                 <div class="mt-4">
-                    <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
+                    <jet-input type="password" class="mt-1 block w-3/4" placeholder="Kata Sandi"
                                ref="password"
                                v-model="form.password"
                                @keyup.enter="confirmPassword"/>
@@ -49,13 +49,13 @@ export default defineComponent({
 
     props: {
         title: {
-            default: 'Confirm Password',
+            default: 'Konfirmasi Kata Sandi',
         },
         content: {
-            default: 'For your security, please confirm your password to continue.',
+            default: 'Demi keamanan Anda, harap konfirmasikan kata sandi Anda untuk melanjutkan.',
         },
         button: {
-            default: 'Confirm',
+            default: 'Konfirmasi',
         }
     },
 

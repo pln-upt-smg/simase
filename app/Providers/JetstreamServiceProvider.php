@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Actions\Fortify\AuthenticateLoginAttempt;
 use App\Actions\Jetstream\DeleteUser;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Fortify;
 use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
@@ -13,7 +15,7 @@ class JetstreamServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
@@ -23,11 +25,13 @@ class JetstreamServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->configurePermissions();
 
         Jetstream::deleteUsersUsing(DeleteUser::class);
+
+        Fortify::authenticateUsing([new AuthenticateLoginAttempt, '__invoke']);
     }
 
     /**
@@ -35,7 +39,7 @@ class JetstreamServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function configurePermissions()
+    protected function configurePermissions(): void
     {
         Jetstream::defaultApiTokenPermissions(['read']);
 

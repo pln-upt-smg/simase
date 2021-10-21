@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Based\Fluent\Fluent;
+use Based\Fluent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,11 +13,17 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
-    use HasFactory;
-    use HasProfilePhoto;
-    use Notifiable;
-    use TwoFactorAuthenticatable;
+    use Fluent,
+        HasApiTokens,
+        HasFactory,
+        HasProfilePhoto,
+        Notifiable,
+        TwoFactorAuthenticatable;
+
+    #[BelongsTo]
+    public Role $role;
+
+    public string $name, $nip, $password;
 
     /**
      * The attributes that are mass assignable.
@@ -24,8 +31,9 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
+        'role_id',
         'name',
-        'email',
+        'nip',
         'password',
     ];
 
@@ -42,15 +50,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    /**
      * The accessors to append to the model's array form.
      *
      * @var array
@@ -58,4 +57,9 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function setRoleAttribute(Role|int $role): void
+    {
+        $this->role_id = $role instanceof Role ? $role->id : $role;
+    }
 }

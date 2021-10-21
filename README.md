@@ -27,18 +27,19 @@ Item Stock Management System for Unilever Indonesia.
 7. [Laravel Broadcasting](https://laravel.com/docs/8.x/broadcasting)
 8. [Laravel Jetstream](https://jetstream.laravel.com)
 9. [Laravel Excel](https://laravel-excel.com)
-10. [Laravel Sail](https://laravel.com/docs/8.x/sail) <sup><i>optional</i></sup>
-11. [PHP PSR2 Coding Style Standard](https://www.php-fig.org/psr/psr-2)
-12. [PHPStan](https://phpstan.org/) (with [Larastan](https://github.com/nunomaduro/larastan) extension)
-13. [Inertia.js](https://inertiajs.com)
-14. [Vue.js](https://vuejs.org)
-15. [Webpack](https://webpack.js.org)
-16. [Supercronic](https://github.com/aptible/supercronic)
-17. [Supervisor](http://supervisord.org/index.html)
-18. [MySQL 5.x](https://dev.mysql.com)
-19. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
-20. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
-21. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
+10. [Laravel Fluent](https://github.com/lepikhinb/laravel-fluent)
+11. [Laravel Sail](https://laravel.com/docs/8.x/sail) <sup><i>optional</i></sup>
+12. [PHP PSR2 Coding Style Standard](https://www.php-fig.org/psr/psr-2)
+13. [PHPStan](https://phpstan.org/) (with [Larastan](https://github.com/nunomaduro/larastan) extension)
+14. [Inertia.js](https://inertiajs.com)
+15. [Vue.js](https://vuejs.org)
+16. [Webpack](https://webpack.js.org)
+17. [Supercronic](https://github.com/aptible/supercronic)
+18. [Supervisor](http://supervisord.org/index.html)
+19. [MySQL 5.x](https://dev.mysql.com)
+20. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
+21. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
+22. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
 
 <br/>
 

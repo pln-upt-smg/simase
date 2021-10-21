@@ -138,6 +138,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Allow Truncate on Database Seeding
+    |--------------------------------------------------------------------------
+    |
+    | Allow the database truncate (reset) when database seeding is requested via
+    | the artisan command.
+    |
+    */
+
+    'truncate_on_db_seed' => (bool)env('TRUNCATE_ON_DB_SEED', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |

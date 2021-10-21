@@ -1,10 +1,6 @@
 <template>
-    <app-layout title="Profile">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Profile
-            </h2>
-        </template>
+    <app-layout title="Profil Saya">
+        <template #header>Profil Saya</template>
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
@@ -28,7 +24,7 @@
 
                 <logout-other-browser-sessions-form :sessions="sessions" class="mt-10 sm:mt-0"/>
 
-                <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
+                <template v-if="$page.props.jetstream.hasAccountDeletionFeatures && $page.props.user.role_id === 2">
                     <jet-section-border/>
 
                     <delete-user-form class="mt-10 sm:mt-0"/>

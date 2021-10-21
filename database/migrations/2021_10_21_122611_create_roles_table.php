@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTwoFactorColumnsToUsersTable extends Migration
+class CreateRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class AddTwoFactorColumnsToUsersTable extends Migration
      */
     public function up(): void
     {
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
         Schema::table('users', function (Blueprint $table) {
-            $table->text('two_factor_secret')
-                ->after('password')
-                ->nullable();
-            $table->text('two_factor_recovery_codes')
-                ->after('two_factor_secret')
-                ->nullable();
+            $table->foreignId('role_id')->after('id')->constrained();
         });
     }
 
@@ -31,7 +31,8 @@ class AddTwoFactorColumnsToUsersTable extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('two_factor_secret', 'two_factor_recovery_codes');
+            $table->dropForeign('users_role_id_foreign');
         });
+        Schema::dropIfExists('roles');
     }
 }

@@ -1,11 +1,11 @@
 <template>
     <jet-form-section @submitted="updateProfileInformation">
         <template #title>
-            Profile Information
+            Informasi Profil
         </template>
 
         <template #description>
-            Update your account's profile information and email address.
+            Perbarui informasi profil dan nama akun Anda.
         </template>
 
         <template #form>
@@ -16,7 +16,7 @@
                        ref="photo"
                        @change="updatePhotoPreview">
 
-                <jet-label for="photo" value="Photo"/>
+                <jet-label for="photo" value="Foto Profil"/>
 
                 <!-- Current Profile Photo -->
                 <div class="mt-2" v-show="! photoPreview">
@@ -30,13 +30,13 @@
                     </span>
                 </div>
 
-                <jet-secondary-button class="mt-2 mr-2" type="button" @click.prevent="selectNewPhoto">
-                    Select A New Photo
+                <jet-secondary-button class="mt-4 mr-2" type="button" @click.prevent="selectNewPhoto">
+                    Pilih Foto Baru
                 </jet-secondary-button>
 
                 <jet-secondary-button type="button" class="mt-2" @click.prevent="deletePhoto"
                                       v-if="user.profile_photo_path">
-                    Remove Photo
+                    Hapus Foto
                 </jet-secondary-button>
 
                 <jet-input-error :message="form.errors.photo" class="mt-2"/>
@@ -44,26 +44,27 @@
 
             <!-- Name -->
             <div class="col-span-6 sm:col-span-4">
-                <jet-label for="name" value="Name"/>
+                <jet-label for="name" value="Nama"/>
                 <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name"/>
                 <jet-input-error :message="form.errors.name" class="mt-2"/>
             </div>
 
-            <!-- Email -->
+            <!-- NIP -->
             <div class="col-span-6 sm:col-span-4">
-                <jet-label for="email" value="Email"/>
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email"/>
-                <jet-input-error :message="form.errors.email" class="mt-2"/>
+                <jet-label for="nip" value="Nomor Induk Pegawai"/>
+                <jet-input id="nip" type="text" class="mt-1 block w-full bg-gray-100 cursor-not-allowed"
+                           v-model="form.nip" disabled/>
+                <jet-input-error :message="form.errors.nip" class="mt-2"/>
             </div>
         </template>
 
         <template #actions>
             <jet-action-message :on="form.recentlySuccessful" class="mr-3">
-                Saved.
+                Profil berhasil diperbarui.
             </jet-action-message>
 
             <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+                Simpan
             </jet-button>
         </template>
     </jet-form-section>
@@ -97,7 +98,7 @@ export default defineComponent({
             form: this.$inertia.form({
                 _method: 'PUT',
                 name: this.user.name,
-                email: this.user.email,
+                nip: this.user.nip,
                 photo: null,
             }),
 

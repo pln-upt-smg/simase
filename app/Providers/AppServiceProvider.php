@@ -36,10 +36,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // register & set the configuration only on local environment
-        if ($this->app->isLocal() || config('app.env_ci_cd')) {
+        if (app()->isLocal() || config('app.env_ci_cd')) {
 
             // register the IDE Helper for local environment
-            $this->app->register(IdeHelperServiceProvider::class);
+            app()->register(IdeHelperServiceProvider::class);
         }
 
         // register the application macros
