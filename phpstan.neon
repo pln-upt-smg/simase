@@ -19,4 +19,5 @@ parameters:
         - '#Illuminate\\Support\\Collection#'
         - '#forPage#'
         - '#count#'
+        - '#of function trim expects string#'
     checkMissingIterableValueType: false

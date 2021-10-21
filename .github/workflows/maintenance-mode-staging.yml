@@ -21,4 +21,5 @@ jobs:
           script: |
             cd /var/www/stocktake/web
             sudo chmod -R ug+rwx storage bootstrap/cache
+            sudo chmod -R g+w storage/logs
             php artisan down
