@@ -31,14 +31,26 @@
                         <div class="flex-shrink-0 flex items-center px-4">
                             <span class="text-2xl font-bold text-white">📦 Stocktake</span>
                         </div>
-                        <div class="mt-8 flex-1 h-0 overflow-y-auto">
-                            <nav class="px-4 space-y-2">
-                                <Link v-for="item in navigation" :key="item.name" :href="route(item.href)"
-                                      :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
-                                    <component :is="item.icon" class="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300"
-                                               aria-hidden="true"/>
-                                    {{ item.name }}
-                                </Link>
+                        <div class="flex-1 h-0 overflow-y-auto">
+                            <nav>
+                                <div class="px-4 space-y-2 pt-8">
+                                    <span class="text-base text-white font-semibold">Menu</span>
+                                    <Link v-for="item in navigationMenu" :key="item.name" :href="route(item.href)"
+                                          :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
+                                        <component :is="item.icon" class="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300"
+                                                   aria-hidden="true"/>
+                                        {{ item.name }}
+                                    </Link>
+                                </div>
+                                <div class="px-4 space-y-2 pt-6">
+                                    <span class="text-base text-white font-semibold">Kelola</span>
+                                    <Link v-for="item in navigationManage" :key="item.name" :href="route(item.href)"
+                                          :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
+                                        <component :is="item.icon" class="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300"
+                                                   aria-hidden="true"/>
+                                        {{ item.name }}
+                                    </Link>
+                                </div>
                             </nav>
                         </div>
                     </div>
@@ -55,14 +67,26 @@
                     <div class="flex items-center flex-shrink-0 px-4">
                         <span class="text-2xl font-bold text-white">📦 Stocktake</span>
                     </div>
-                    <div class="mt-8 flex-1 flex flex-col">
-                        <nav class="flex-1 px-4 space-y-2">
-                            <Link v-for="item in navigation" :key="item.name" :href="route(item.href)"
-                                  :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
-                                <component :is="item.icon" class="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
-                                           aria-hidden="true"/>
-                                {{ item.name }}
-                            </Link>
+                    <div class="flex-1 flex flex-col">
+                        <nav>
+                            <div class="flex-1 px-4 space-y-2 pt-8">
+                                <span class="text-base text-white font-semibold">Menu</span>
+                                <Link v-for="item in navigationMenu" :key="item.name" :href="route(item.href)"
+                                      :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
+                                    <component :is="item.icon" class="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                                               aria-hidden="true"/>
+                                    {{ item.name }}
+                                </Link>
+                            </div>
+                            <div class="flex-1 px-4 space-y-2 pt-6">
+                                <span class="text-base text-white font-semibold">Kelola</span>
+                                <Link v-for="item in navigationManage" :key="item.name" :href="route(item.href)"
+                                      :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
+                                    <component :is="item.icon" class="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                                               aria-hidden="true"/>
+                                    {{ item.name }}
+                                </Link>
+                            </div>
                         </nav>
                     </div>
                 </div>
@@ -157,6 +181,7 @@ import {Dialog, DialogOverlay, Menu, MenuButton, MenuItems, TransitionChild, Tra
 import {
     BellIcon,
     CalendarIcon,
+    CogIcon,
     CollectionIcon,
     DocumentReportIcon,
     DocumentTextIcon,
@@ -168,9 +193,8 @@ import {
     XIcon,
 } from '@heroicons/vue/outline'
 
-const navigation = [
+const navigationMenu = [
     {name: 'Dashboard', href: 'dashboard', icon: HomeIcon},
-    {name: 'Master Pegawai', href: 'login', icon: UsersIcon},
     {name: 'Master Periode', href: 'login', icon: CalendarIcon},
     {name: 'Master Stock', href: 'login', icon: CollectionIcon},
     {name: 'Act Stock', href: 'login', icon: CollectionIcon},
@@ -179,6 +203,11 @@ const navigation = [
     {name: 'PID Details', href: 'login', icon: DocumentTextIcon},
     {name: 'Final Summary', href: 'login', icon: DocumentReportIcon},
     {name: 'Batch Not Exist', href: 'login', icon: ExclamationIcon},
+]
+
+const navigationManage = [
+    {name: 'Pegawai', href: 'login', icon: UsersIcon},
+    {name: 'Pengaturan', href: 'profile.show', icon: CogIcon},
 ]
 
 export default defineComponent({
@@ -203,7 +232,8 @@ export default defineComponent({
     setup() {
         const sidebarOpen = ref(false)
         return {
-            navigation,
+            navigationMenu,
+            navigationManage,
             sidebarOpen,
         }
     },

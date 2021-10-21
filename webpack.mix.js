@@ -34,7 +34,9 @@ mix.webpackConfig({
     ]
 });
 
-mix.js('resources/js/app.js', 'public/js').vue()
+mix.js('resources/js/app.js', 'public/js')
+    .sourceMaps()
+    .vue()
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
         require('tailwindcss'),
@@ -43,10 +45,4 @@ mix.js('resources/js/app.js', 'public/js').vue()
 
 if (mix.inProduction()) {
     mix.version();
-} else {
-    mix.browserSync({
-        proxy: 'stocktake-web.test',
-        host: 'stocktake-web.test',
-        open: 'external'
-    });
 }
