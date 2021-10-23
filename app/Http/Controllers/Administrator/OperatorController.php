@@ -37,7 +37,7 @@ class OperatorController extends Controller
             ->where('role_id', '=', Role::operator()?->id ?? 2)
             ->defaultSort('name')
             ->allowedSorts(['name', 'phone', 'nip'])
-            ->allowedFilters(['name', 'phone', 'nip', $globalSearch])
+            ->allowedFilters(['role_id', $globalSearch])
             ->paginate()
             ->withQueryString();
         return inertia('Administrator/Operators/Index', [
