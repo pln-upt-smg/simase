@@ -23,7 +23,7 @@ class User extends Authenticatable
     #[BelongsTo]
     public Role $role;
 
-    public string $name, $nip, $password;
+    public string $name, $phone, $nip, $password;
 
     /**
      * The attributes that are mass assignable.
@@ -33,8 +33,9 @@ class User extends Authenticatable
     protected $fillable = [
         'role_id',
         'name',
+        'phone',
         'nip',
-        'password',
+        'password'
     ];
 
     /**
@@ -46,7 +47,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'two_factor_recovery_codes',
-        'two_factor_secret',
+        'two_factor_secret'
     ];
 
     /**
@@ -55,7 +56,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'profile_photo_url',
+        'profile_photo_url'
     ];
 
     public function setRoleAttribute(Role|int $role): void

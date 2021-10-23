@@ -3,19 +3,15 @@
         <template #title>
             Sesi Peramban
         </template>
-
         <template #description>
             Kelola dan keluar dari sesi aktif Anda di browser dan perangkat lain.
         </template>
-
         <template #content>
             <div class="max-w-xl text-sm text-gray-600">
                 Jika perlu, Anda dapat keluar dari semua sesi browser lainnya di semua perangkat Anda. Beberapa
-                sesi terakhir Anda tercantum di bawah ini; namun, daftar ini mungkin tidak lengkap. Jika Anda merasa
-                Anda akun telah disusupi, Anda juga harus memperbarui kata sandi Anda.
+                sesi terakhir Anda tercantum di bawah ini. Jika Anda merasa Anda akun telah disusupi,
+                Anda juga harus memperbarui kata sandi Anda.
             </div>
-
-            <!-- Other Browser Sessions -->
             <div class="mt-5 space-y-6" v-if="sessions.length > 0">
                 <div class="flex items-center" v-for="(session, i) in sessions" :key="i">
                     <div>
@@ -25,7 +21,6 @@
                             <path
                                 d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
-
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
                              stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"
                              class="w-8 h-8 text-gray-500" v-else>
@@ -34,16 +29,13 @@
                             <path d="M11 5h2M12 17v.01"></path>
                         </svg>
                     </div>
-
                     <div class="ml-3">
                         <div class="text-sm text-gray-600">
                             {{ session.agent.platform }} - {{ session.agent.browser }}
                         </div>
-
                         <div>
                             <div class="text-xs text-gray-500">
                                 {{ session.ip_address }},
-
                                 <span class="text-green-500 font-semibold"
                                       v-if="session.is_current_device">Gawai ini</span>
                                 <span v-else>Last active {{ session.last_active }}</span>
@@ -52,48 +44,39 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex items-center mt-5">
                 <jet-button @click="confirmLogout">
                     Keluar dari Sesi Peramban Lain
                 </jet-button>
-
                 <jet-action-message :on="form.recentlySuccessful" class="ml-3">
                     Selesai.
                 </jet-action-message>
             </div>
-
-            <!-- Log Out Other Devices Confirmation Modal -->
-            <jet-dialog-modal :show="confirmingLogout" @close="closeModal">
-                <template #title>
-                    Keluar dari Sesi Peramban Lain
-                </template>
-
+            <jet-modal :show="confirmingLogout" @close="closeModal" title="Keluar dari Sesi Peramban Lain">
                 <template #content>
                     Silakan masukkan kata sandi Anda untuk mengonfirmasi bahwa Anda ingin keluar dari sesi browser Anda
                     yang lain di semua perangkat Anda.
-
                     <div class="mt-4">
-                        <jet-input type="password" class="mt-1 block w-3/4" placeholder="Kata Sandi"
+                        <jet-input type="password" class="mt-1 block w-full" placeholder="Kata Sandi"
                                    ref="password"
                                    v-model="form.password"
                                    @keyup.enter="logoutOtherBrowserSessions"/>
-
                         <jet-input-error :message="form.errors.password" class="mt-2"/>
                     </div>
                 </template>
-
-                <template #footer>
-                    <jet-secondary-button @click="closeModal">
+                <template #buttons>
+                    <jet-button @click="logoutOtherBrowserSessions"
+                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="form.processing"
+                                class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                        Konfirmasi
+                    </jet-button>
+                    <jet-secondary-button @click="closeModal"
+                                          class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                         Batalkan
                     </jet-secondary-button>
-
-                    <jet-button class="ml-2" @click="logoutOtherBrowserSessions"
-                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        Keluar dari Sesi Peramban Lain
-                    </jet-button>
                 </template>
-            </jet-dialog-modal>
+            </jet-modal>
         </template>
     </jet-action-section>
 </template>
@@ -103,7 +86,7 @@ import {defineComponent} from 'vue'
 import JetActionMessage from '@/Jetstream/ActionMessage.vue'
 import JetActionSection from '@/Jetstream/ActionSection.vue'
 import JetButton from '@/Jetstream/Button.vue'
-import JetDialogModal from '@/Jetstream/DialogModal.vue'
+import JetModal from '@/Jetstream/Modal.vue'
 import JetInput from '@/Jetstream/Input.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
@@ -115,7 +98,7 @@ export default defineComponent({
         JetActionMessage,
         JetActionSection,
         JetButton,
-        JetDialogModal,
+        JetModal,
         JetInput,
         JetInputError,
         JetSecondaryButton,

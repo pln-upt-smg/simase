@@ -29,6 +29,7 @@ class UserFactory extends Factory
         return [
             'role' => Role::operator(),
             'name' => $this->faker->name(),
+            'phone' => $this->faker->phoneNumber(),
             'nip' => $nip,
             'password' => Hash::make($nip)
         ];

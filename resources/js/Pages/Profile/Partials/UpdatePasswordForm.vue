@@ -3,11 +3,9 @@
         <template #title>
             Perbarui Kata Sandi
         </template>
-
         <template #description>
             Pastikan akun Anda menggunakan kata sandi acak yang panjang agar tetap aman.
         </template>
-
         <template #form>
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="current_password" value="Kata Sandi Saat Ini"/>
@@ -15,14 +13,12 @@
                            v-model="form.current_password" ref="current_password" autocomplete="current-password"/>
                 <jet-input-error :message="form.errors.current_password" class="mt-2"/>
             </div>
-
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="password" value="Kata Sandi Baru"/>
                 <jet-input id="password" type="password" class="mt-1 block w-full" v-model="form.password"
                            ref="password" autocomplete="new-password"/>
                 <jet-input-error :message="form.errors.password" class="mt-2"/>
             </div>
-
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="password_confirmation" value="Konfirmasi Kata Sandi Baru"/>
                 <jet-input id="password_confirmation" type="password" class="mt-1 block w-full"
@@ -30,12 +26,10 @@
                 <jet-input-error :message="form.errors.password_confirmation" class="mt-2"/>
             </div>
         </template>
-
         <template #actions>
             <jet-action-message :on="form.recentlySuccessful" class="mr-3">
                 Kata Sandi berhasil diperbarui.
             </jet-action-message>
-
             <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                 Simpan
             </jet-button>
@@ -59,19 +53,17 @@ export default defineComponent({
         JetFormSection,
         JetInput,
         JetInputError,
-        JetLabel,
+        JetLabel
     },
-
     data() {
         return {
             form: this.$inertia.form({
                 current_password: '',
                 password: '',
                 password_confirmation: '',
-            }),
+            })
         }
     },
-
     methods: {
         updatePassword() {
             this.form.put(route('user-password.update'), {
@@ -90,7 +82,7 @@ export default defineComponent({
                     }
                 }
             })
-        },
-    },
+        }
+    }
 })
 </script>

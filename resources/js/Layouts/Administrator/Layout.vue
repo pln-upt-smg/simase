@@ -113,16 +113,16 @@
                             </div>
                         </form>
                     </div>
-                    <div class="ml-4 flex items-center md:ml-6">
+                    <div class="ml-4 flex items-center md:ml-6 mr-0 lg:mr-8">
                         <button
-                            class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-0 lg:mr-4">
+                            class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-4 sm:mr-0">
                             <span class="sr-only">Lihat notifikasi</span>
                             <BellIcon class="h-6 w-6" aria-hidden="true"/>
                         </button>
                         <Menu as="div" class="ml-3 relative">
                             <div>
                                 <MenuButton
-                                    class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-0 lg:mr-4">
+                                    class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     <span class="sr-only">Buka menu</span>
                                     <img v-if="$page.props.jetstream.managesProfilePhotos"
                                          class="h-8 w-8 rounded-full"
@@ -160,10 +160,7 @@
                 </div>
             </div>
             <main class="flex-1 relative overflow-y-auto focus:outline-none">
-                <div class="py-6">
-                    <header class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                        <h1 class="text-2xl font-semibold text-gray-900">{{ header }}</h1>
-                    </header>
+                <div class="max-w-7xl mx-auto py-8 px-6 lg:px-8">
                     <slot></slot>
                 </div>
             </main>

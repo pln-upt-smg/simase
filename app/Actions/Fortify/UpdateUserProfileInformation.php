@@ -17,21 +17,19 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      * @return void
      * @throws ValidationException
      */
-    public function update($user, array $input)
+    public function update($user, array $input): void
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'nip' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
         ])->validateWithBag('updateProfileInformation');
-
         if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
         }
-
         $user->forceFill([
             'name' => $input['name'],
-            'nip' => $input['nip'],
+            'phone' => $input['phone']
         ])->save();
     }
 }
