@@ -118,11 +118,12 @@ class OperatorController extends Controller
      * Remove the specified resource from storage.
      *
      * @param User $user
-     * @return Response|bool
+     * @return Response
      * @throws Throwable
      */
-    public function destroy(User $user): Response|bool
+    public function destroy(User $user): Response
     {
-        return $user->deleteOrFail();
+        $user->deleteOrFail();
+        return response()->noContent();
     }
 }
