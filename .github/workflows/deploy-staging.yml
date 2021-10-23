@@ -34,6 +34,7 @@ jobs:
             php artisan view:clear
             npm i --silent
             composer i -o -n --no-dev
+            php artisan cloudflare:reload
             php artisan optimize
             php artisan view:cache
             npm run prod
