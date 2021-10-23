@@ -2,3 +2,10 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+/**
+ * https://stackoverflow.com/questions/25704650/disable-blue-highlight-when-touch-press-object-with-cursorpointer
+ */
+button, textarea, input, select, a {
+    -webkit-tap-highlight-color: transparent;
+}

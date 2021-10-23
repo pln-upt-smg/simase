@@ -115,7 +115,7 @@
                     </div>
                     <div class="ml-4 flex items-center md:ml-6 mr-0 lg:mr-8">
                         <button
-                            class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-4 sm:mr-0">
+                            class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-4">
                             <span class="sr-only">Lihat notifikasi</span>
                             <BellIcon class="h-6 w-6" aria-hidden="true"/>
                         </button>
