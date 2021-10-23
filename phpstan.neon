@@ -18,4 +18,5 @@ parameters:
         - '#of function trim expects string#'
         - '#Call to an undefined method#'
         - '#Illuminate\\Support\\Collection#'
+        - '#Cannot access offset#'
     checkMissingIterableValueType: false

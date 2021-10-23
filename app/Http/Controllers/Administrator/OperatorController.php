@@ -64,10 +64,10 @@ class OperatorController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response|User
+     * @return Response|string
      * @throws Throwable
      */
-    public function store(Request $request): Response|User
+    public function store(Request $request): Response|string
     {
         Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
@@ -81,7 +81,7 @@ class OperatorController extends Controller
             'phone' => $request->phone,
             'nip' => $request->nip,
             'password' => Hash::make($request->password)
-        ]);
+        ])->toJson();
     }
 
     /**
@@ -89,10 +89,10 @@ class OperatorController extends Controller
      *
      * @param Request $request
      * @param User $user
-     * @return Response|User
+     * @return Response|string
      * @throws Throwable
      */
-    public function update(Request $request, User $user): Response|User
+    public function update(Request $request, User $user): Response|string
     {
         Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
@@ -111,7 +111,7 @@ class OperatorController extends Controller
             $user->updateProfilePhoto($request['photo']);
         }
         $user->save();
-        return $user->fresh();
+        return $user->refresh()->toJson();
     }
 
     /**
