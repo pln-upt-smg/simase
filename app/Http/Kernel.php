@@ -8,6 +8,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
+use App\Http\Middleware\TrustHosts;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\VerifySecureRequest;
@@ -38,7 +39,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        // TrustHosts::class,
+        TrustHosts::class,
         TrustProxies::class,
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
@@ -66,8 +67,8 @@ class Kernel extends HttpKernel
         ],
         'api' => [
             'throttle:api',
-            // EnsureFrontendRequestsAreStateful::class,
-            SubstituteBindings::class
+            SubstituteBindings::class,
+            // EnsureFrontendRequestsAreStateful::class
         ]
     ];
 

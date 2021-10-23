@@ -98,7 +98,7 @@ export default defineComponent({
             this.form.post(route('user-profile-information.update'), {
                 errorBag: 'updateProfileInformation',
                 preserveScroll: true,
-                onSuccess: () => (this.clearPhotoFileInput()),
+                onSuccess: () => (this.clearPhotoFileInput())
             })
         },
         selectNewPhoto() {
@@ -109,22 +109,22 @@ export default defineComponent({
             if (!photo) return
             const reader = new FileReader()
             reader.onload = (e) => {
-                this.photoPreview = e.target.result;
+                this.photoPreview = e.target.result
             }
-            reader.readAsDataURL(photo);
+            reader.readAsDataURL(photo)
         },
         deletePhoto() {
             this.$inertia.delete(route('current-user-photo.destroy'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.photoPreview = null;
-                    this.clearPhotoFileInput();
+                    this.photoPreview = null
+                    this.clearPhotoFileInput()
                 }
             })
         },
         clearPhotoFileInput() {
             if (this.$refs.photo?.value) {
-                this.$refs.photo.value = null;
+                this.$refs.photo.value = null
             }
         }
     }

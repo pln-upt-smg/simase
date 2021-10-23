@@ -60,6 +60,5 @@ return [
     |
     */
 
-    'profile_photo_disk' => 'public',
-
+    'profile_photo_disk' => 'public'
 ];

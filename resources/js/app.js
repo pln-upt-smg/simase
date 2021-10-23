@@ -14,8 +14,8 @@ createInertiaApp({
             .use(plugin)
             .component('InertiaLink', Link)
             .mixin({methods: {route}})
-            .mount(el);
-    },
+            .mount(el)
+    }
 });
 
-InertiaProgress.init({color: '#4B5563'});
+InertiaProgress.init({color: '#4B5563'})
