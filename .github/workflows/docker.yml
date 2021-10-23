@@ -96,5 +96,7 @@ jobs:
       - name: 🛑 Stop Application Containers
         run: docker compose down
 
-      - name: 🗑️ Prune unused Docker volumes
-        run: docker volume prune -f
+      - name: 🗑️ Prune unused Docker volumes and images
+        run: |
+          docker volume prune -f
+          docker image prune -f

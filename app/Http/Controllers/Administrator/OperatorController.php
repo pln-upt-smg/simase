@@ -69,7 +69,7 @@ class OperatorController extends Controller
      */
     public function store(Request $request): Response|User
     {
-        Validator::make($request, [
+        Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20', 'unique:users'],
             'nip' => ['required', 'string', 'max:255', 'unique:users'],
@@ -94,7 +94,7 @@ class OperatorController extends Controller
      */
     public function update(Request $request, User $user): Response|User
     {
-        Validator::make($request, [
+        Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
             'nip' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
