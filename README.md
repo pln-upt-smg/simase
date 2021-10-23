@@ -33,14 +33,15 @@ Item Stock Management System for Unilever Indonesia.
 13. [PHP PSR2 Coding Style Standard](https://www.php-fig.org/psr/psr-2)
 14. [PHPStan](https://phpstan.org/) (with [Larastan](https://github.com/nunomaduro/larastan) extension)
 15. [Inertia.js](https://inertiajs.com)
-16. [Vue.js](https://vuejs.org)
-17. [Webpack](https://webpack.js.org)
-18. [Supercronic](https://github.com/aptible/supercronic)
-19. [Supervisor](http://supervisord.org/index.html)
-20. [MySQL 5.x](https://dev.mysql.com)
-21. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
-22. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
-23. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
+16. [Inertia.js Tables](https://github.com/protonemedia/inertiajs-tables-laravel-query-builder)
+17. [Vue.js](https://vuejs.org)
+18. [Webpack](https://webpack.js.org)
+19. [Supercronic](https://github.com/aptible/supercronic)
+20. [Supervisor](http://supervisord.org/index.html)
+21. [MySQL 5.x](https://dev.mysql.com)
+22. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
+23. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
+24. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
 
 <br/>
 
