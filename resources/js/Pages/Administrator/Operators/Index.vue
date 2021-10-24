@@ -4,13 +4,13 @@
             <jet-breadcrumbs :pages="[{name: 'Pegawai', href: 'operators.index', current: true}]"/>
             <div class="text-left lg:text-right">
                 <div class="pt-9 lg:pt-0 mt-2">
-                    <jet-button @click="confirmStoreOperator" class="ml-0 mr-2">
+                    <jet-button @click="confirmStore" class="ml-0 mr-2">
                         <plus-icon class="h-5 w-5 text-white" aria-hidden="true"/>
                     </jet-button>
-                    <jet-button class="mr-2">
+                    <jet-button @click="confirmImport" class="mr-2">
                         <upload-icon class="h-5 w-5 text-white" aria-hidden="true"/>
                     </jet-button>
-                    <jet-button>
+                    <jet-button @click="confirmExport">
                         <download-icon class="h-5 w-5 text-white" aria-hidden="true"/>
                     </jet-button>
                 </div>
@@ -41,14 +41,14 @@
                     <td v-show="showColumn('action')">
                         <jet-dropdown name="Opsi">
                             <menu-item>
-                                <button @click="confirmUpdateOperator(user)"
+                                <button @click="confirmUpdate(user)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <pencil-alt-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Edit
                                 </button>
                             </menu-item>
                             <menu-item>
-                                <button @click="confirmDestroyOperator(user)"
+                                <button @click="confirmDestroy(user)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <trash-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Hapus
@@ -59,93 +59,156 @@
                 </tr>
             </template>
         </Table>
-        <jet-modal :show="confirmingStoreOperator" @close="closeStoreOperatorModal" title="Tambah pegawai">
+        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah pegawai">
             <template #content>
                 Silakan masukkan data profil dan kredensial pegawai yang ingin ditambahkan.
                 <div class="mt-4">
                     <jet-input type="text" class="block w-full" placeholder="Nama Pegawai"
-                               ref="storeOperatorName" v-model="storeOperatorForm.name"/>
-                    <jet-input-error :message="storeOperatorForm.errors.name" class="mt-2"/>
+                               ref="storeName" v-model="storeForm.name"/>
+                    <jet-input-error :message="storeForm.errors.name" class="mt-2"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Telepon Pegawai"
-                               ref="storeOperatorPhone" v-model="storeOperatorForm.phone"/>
-                    <jet-input-error :message="storeOperatorForm.errors.phone" class="mt-2"/>
+                               ref="storePhone" v-model="storeForm.phone"/>
+                    <jet-input-error :message="storeForm.errors.phone" class="mt-2"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Induk Pegawai"
-                               ref="storeOperatorNip" v-model="storeOperatorForm.nip"/>
-                    <jet-input-error :message="storeOperatorForm.errors.nip" class="mt-2"/>
+                               ref="storeNip" v-model="storeForm.nip"/>
+                    <jet-input-error :message="storeForm.errors.nip" class="mt-2"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
-                               ref="storeOperatorPassword" v-model="storeOperatorForm.password"/>
-                    <jet-input-error :message="storeOperatorForm.errors.password" class="mt-2"/>
+                               ref="storePassword" v-model="storeForm.password"/>
+                    <jet-input-error :message="storeForm.errors.password" class="mt-2"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
-                               ref="storeOperatorPasswordConfirmation" v-model="storeOperatorForm.password_confirmation"
-                               @keyup.enter="storeOperator"/>
-                    <jet-input-error :message="storeOperatorForm.errors.password_confirmation" class="mt-2"/>
+                               ref="storePasswordConfirmation" v-model="storeForm.password_confirmation"
+                               @keyup.enter="store"/>
+                    <jet-input-error :message="storeForm.errors.password_confirmation" class="mt-2"/>
                 </div>
             </template>
             <template #buttons>
-                <jet-button @click="storeOperator"
-                            :class="{ 'opacity-25': storeOperatorForm.processing }"
-                            :disabled="storeOperatorForm.processing"
+                <jet-button @click="store"
+                            :class="{ 'opacity-25': storeForm.processing }"
+                            :disabled="storeForm.processing"
                             class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Simpan
                 </jet-button>
-                <jet-secondary-button @click="closeStoreOperatorModal"
+                <jet-secondary-button @click="closeStoreModal"
                                       class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Batalkan
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal :show="confirmingUpdateOperator" @close="closeUpdateOperatorModal" title="Edit pegawai">
+        <jet-modal :show="confirmingUpdateOperator" @close="closeUpdateModal" title="Edit pegawai">
             <template #content>
                 Silakan masukkan data profil dan kredensial pegawai yang ingin diubah.
                 <div class="mt-4">
                     <jet-input type="text" class="block w-full" placeholder="Nama Pegawai"
-                               ref="updateOperatorName" v-model="operator.name"/>
-                    <jet-input-error :message="updateOperatorForm.errors.name" class="mt-2"/>
+                               ref="updateName" v-model="updateForm.name"/>
+                    <jet-input-error :message="updateForm.errors.name" class="mt-2"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Telepon Pegawai"
-                               ref="updateOperatorPhone" v-model="operator.phone"/>
-                    <jet-input-error :message="updateOperatorForm.errors.phone" class="mt-2"/>
+                               ref="updatePhone" v-model="updateForm.phone"/>
+                    <jet-input-error :message="updateForm.errors.phone" class="mt-2"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Induk Pegawai"
-                               ref="updateOperatorNip" v-model="operator.nip"/>
-                    <jet-input-error :message="updateOperatorForm.errors.nip" class="mt-2"/>
+                               ref="updateNip" v-model="updateForm.nip"/>
+                    <jet-input-error :message="updateForm.errors.nip" class="mt-2"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
-                               ref="updateOperatorPasssword"/>
-                    <jet-input-error :message="updateOperatorForm.errors.password" class="mt-2"/>
+                               ref="updatePassword"/>
+                    <jet-input-error :message="updateForm.errors.password" class="mt-2"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
-                               ref="updateOperatorPassswordConfirmation" @keyup.enter="updateOperator"/>
-                    <jet-input-error :message="updateOperatorForm.errors.password_confirmation" class="mt-2"/>
+                               ref="updatePasswordConfirmation" @keyup.enter="update"/>
+                    <jet-input-error :message="updateForm.errors.password_confirmation" class="mt-2"/>
                 </div>
             </template>
             <template #buttons>
-                <jet-button @click="updateOperator"
-                            :class="{ 'opacity-25': updateOperatorForm.processing }"
-                            :disabled="updateOperatorForm.processing"
+                <jet-button @click="update"
+                            :class="{ 'opacity-25': updateForm.processing }"
+                            :disabled="updateForm.processing"
                             class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Simpan
                 </jet-button>
-                <jet-secondary-button @click="closeUpdateOperatorModal"
+                <jet-secondary-button @click="closeUpdateModal"
                                       class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Batalkan
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-alert-modal :show="confirmingDestroyOperator" @close="closeDestroyOperatorModal" title="Hapus pegawai">
+        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus pegawai">
             <template #content>
                 Apakah Anda yakin ingin menghapus akun akun pegawai ini? Setelah akun pegawai dihapus, semua sumber daya
                 dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
-                <jet-danger-button @click="destroyOperator"
-                                   :class="{ 'opacity-25': destroyOperatorForm.processing }"
-                                   :disabled="destroyOperatorForm.processing"
+                <jet-danger-button @click="destroy"
+                                   :class="{ 'opacity-25': destroyForm.processing }"
+                                   :disabled="destroyForm.processing"
                                    class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Hapus
                 </jet-danger-button>
-                <jet-secondary-button @click="closeDestroyOperatorModal"
+                <jet-secondary-button @click="closeDestroyModal"
                                       class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Batalkan
                 </jet-secondary-button>
             </template>
         </jet-alert-modal>
+        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data pegawai">
+            <template #content>
+                Silakan unggah file data pegawai yang ingin di-impor. Pastikan Anda sudah menggunakan template
+                spreadsheet yang ditentukan.
+                <div class="mt-4">
+                    <div
+                        @click="this.$refs.importInput.click()"
+                        class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer">
+                        <div class="space-y-1 text-center">
+                            <document-add-icon class="mx-auto h-12 w-12 text-gray-400" aria-hidden="true"/>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="import-file"
+                                       class="relative bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
+                                    <span class="pl-3.5">Unggah file dokumen</span>
+                                    <input for="import-file" ref="importInput" type="file" class="sr-only"
+                                           accept=".xls, .xlsx, .csv"
+                                           @input="importForm.file = $event.target.files[0]"/>
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-500">
+                                XLS, XLSX, CSV hingga 50MB
+                            </p>
+                        </div>
+                    </div>
+                    <jet-input-error :message="importForm.errors.file" class="mt-6"/>
+                </div>
+            </template>
+            <template #buttons>
+                <jet-button
+                    @click="importFile"
+                    :class="{ 'opacity-25': importForm.processing }"
+                    :disabled="importForm.processing"
+                    class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                    Impor
+                </jet-button>
+                <jet-secondary-button
+                    @click="openImportTemplate"
+                    class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                    Unduh Template
+                </jet-secondary-button>
+                <jet-secondary-button
+                    @click="closeImportModal"
+                    class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                    Batalkan
+                </jet-secondary-button>
+            </template>
+        </jet-import-modal>
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data pegawai">
+            <template #content>
+                Apakah Anda yakin ingin mengekspor semua data pegawai? Proses ekspor dapat memakan waktu lama,
+                tergantung dari banyaknya data yang tersedia.
+            </template>
+            <template #buttons>
+                <jet-button @click="exportFile"
+                            class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                    Ekspor
+                </jet-button>
+                <jet-secondary-button @click="closeExportModal"
+                                      class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                    Batalkan
+                </jet-secondary-button>
+            </template>
+        </jet-export-modal>
         <jet-success-notification
             :show="showingSuccessNotification"
             :title="successNotification.title"
@@ -171,13 +234,15 @@ import JetBreadcrumbs from '@/Jetstream/Breadcrumbs'
 import JetDropdown from '@/Jetstream/Dropdown.vue'
 import JetModal from '@/Jetstream/Modal.vue'
 import JetAlertModal from '@/Jetstream/AlertModal.vue'
+import JetImportModal from '@/Jetstream/ImportModal'
+import JetExportModal from '@/Jetstream/ExportModal';
 import JetInput from '@/Jetstream/Input.vue'
 import JetInputError from '@/Jetstream/InputError'
 import JetSuccessNotification from '@/Jetstream/SuccessNotification'
 import JetDangerNotification from '@/Jetstream/DangerNotification'
 import {MenuItem} from '@headlessui/vue'
 import {Components, InteractsWithQueryBuilder, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder'
-import {DownloadIcon, PencilAltIcon, PlusIcon, TrashIcon, UploadIcon} from '@heroicons/vue/outline'
+import {DocumentAddIcon, DownloadIcon, PencilAltIcon, PlusIcon, TrashIcon, UploadIcon} from '@heroicons/vue/outline'
 
 Components.Pagination.setTranslations({
     no_results_found: "Tidak ada data tersedia",
@@ -191,7 +256,6 @@ Components.Pagination.setTranslations({
 export default defineComponent({
     data() {
         return {
-            operator: null,
             successNotification: {
                 title: null,
                 description: null
@@ -200,19 +264,21 @@ export default defineComponent({
                 title: null,
                 description: null
             },
-            confirmingStoreOperator: false,
+            confirmingStore: false,
             confirmingUpdateOperator: false,
-            confirmingDestroyOperator: false,
+            confirmingDestroy: false,
+            confirmingImport: false,
+            confirmingExport: false,
             showingSuccessNotification: false,
             showingDangerNotification: false,
-            storeOperatorForm: this.$inertia.form({
+            storeForm: this.$inertia.form({
                 name: null,
                 phone: null,
                 nip: null,
                 password: null,
                 password_confirmation: null
             }),
-            updateOperatorForm: this.$inertia.form({
+            updateForm: this.$inertia.form({
                 name: null,
                 phone: null,
                 nip: null,
@@ -220,7 +286,10 @@ export default defineComponent({
                 password_confirmation: null,
                 photo: null
             }),
-            destroyOperatorForm: this.$inertia.form()
+            destroyForm: this.$inertia.form(),
+            importForm: this.$inertia.form({
+                file: null
+            })
         }
     },
     mixins: [InteractsWithQueryBuilder],
@@ -238,6 +307,8 @@ export default defineComponent({
         JetSecondaryButton,
         JetModal,
         JetAlertModal,
+        JetImportModal,
+        JetExportModal,
         JetInput,
         JetInputError,
         JetSuccessNotification,
@@ -248,85 +319,119 @@ export default defineComponent({
         UploadIcon,
         DownloadIcon,
         PencilAltIcon,
-        TrashIcon
+        TrashIcon,
+        DocumentAddIcon
     },
     methods: {
-        confirmStoreOperator() {
-            setTimeout(() => this.confirmingStoreOperator = true, 150)
-            setTimeout(() => this.$refs.storeOperatorName.focus(), 300)
-        },
-        confirmUpdateOperator(operator) {
-            this.operator = operator
-            setTimeout(() => this.confirmingUpdateOperator = true, 150)
-            setTimeout(() => this.$refs.updateOperatorName.focus(), 300)
-        },
-        confirmDestroyOperator(operator) {
-            this.operator = operator
-            setTimeout(() => this.confirmingDestroyOperator = true, 300)
-        },
-        storeOperator() {
-            this.storeOperatorForm.post(route('operators.store'), {
+        store() {
+            this.storeForm.post(route('operators.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
-                    this.closeStoreOperatorModal()
+                    this.closeStoreModal()
                     this.showSuccessNotification('Pegawai berhasil ditambahkan', 'Sistem telah berhasil menyimpan data pegawai baru')
                 },
                 onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data pegawai, mohon periksa ulang form')
             })
         },
-        updateOperator() {
-            this.updateOperatorForm.put(route('operators.update', this.operator.id), {
+        update() {
+            this.updateForm.put(route('operators.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
-                    this.closeUpdateOperatorModal()
+                    this.closeUpdateModal()
                     this.showSuccessNotification('Pegawai berhasil diedit', 'Sistem telah berhasil mengedit data pegawai')
                 },
                 onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data pegawai, mohon periksa ulang form')
             })
         },
-        destroyOperator() {
-            this.destroyOperatorForm.delete(route('operators.destroy', this.operator.id), {
+        destroy() {
+            this.destroyForm.delete(route('operators.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
-                    this.closeDestroyOperatorModal()
+                    this.closeDestroyModal()
                     this.showSuccessNotification('Pegawai berhasil dihapus', 'Sistem telah berhasil menghapus data pegawai')
                 },
                 onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data pegawai')
             })
         },
-        closeStoreOperatorModal() {
-            this.confirmingStoreOperator = false
+        importFile() {
+            this.importForm.post(route('operators.import'), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.$inertia.reload()
+                    this.closeImportModal()
+                    this.showSuccessNotification('Data pegawai berhasil di-impor', 'Sistem telah berhasil mengimpor data pegawai')
+                },
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data pegawai, mohon periksa ulang form')
+            })
+        },
+        exportFile() {
+            window.open(route('operators.export'))
+        },
+        confirmStore() {
+            setTimeout(() => this.confirmingStore = true, 150)
+            setTimeout(() => this.$refs.storeName.focus(), 300)
+        },
+        confirmUpdate(operator) {
+            this.updateForm.id = operator.id
+            this.updateForm.name = operator.name
+            this.updateForm.phone = operator.phone
+            this.updateForm.nip = operator.nip
+            setTimeout(() => this.confirmingUpdateOperator = true, 150)
+            setTimeout(() => this.$refs.updateName.focus(), 300)
+        },
+        confirmDestroy(operator) {
+            this.destroyForm.id = operator.id
+            setTimeout(() => this.confirmingDestroy = true, 150)
+        },
+        confirmImport() {
+            setTimeout(() => this.confirmingImport = true, 150)
+        },
+        confirmExport() {
+            setTimeout(() => this.confirmingExport = true, 150)
+        },
+        closeStoreModal() {
+            this.confirmingStore = false
             setTimeout(() => {
-                this.storeOperatorForm.clearErrors()
-                this.storeOperatorForm.reset()
+                this.storeForm.clearErrors()
+                this.storeForm.reset()
             }, 500)
         },
-        closeUpdateOperatorModal() {
+        closeUpdateModal() {
             this.confirmingUpdateOperator = false
             setTimeout(() => {
-                this.updateOperatorForm.clearErrors()
-                this.updateOperatorForm.reset()
+                this.updateForm.clearErrors()
+                this.updateForm.reset()
             }, 500)
         },
-        closeDestroyOperatorModal() {
-            this.confirmingDestroyOperator = false
+        closeDestroyModal() {
+            this.confirmingDestroy = false
             setTimeout(() => {
-                this.destroyOperatorForm.clearErrors()
-                this.destroyOperatorForm.reset()
+                this.destroyForm.clearErrors()
+                this.destroyForm.reset()
             }, 500)
         },
-        showSuccessNotification(title, message) {
+        closeImportModal() {
+            this.confirmingImport = false
+            setTimeout(() => {
+                this.importForm.clearErrors()
+                this.importForm.reset()
+            }, 500)
+        },
+        closeExportModal() {
+            this.confirmingExport = false
+        },
+        showSuccessNotification(title, description) {
             this.successNotification.title = title
-            this.successNotification.description = message
+            this.successNotification.description = description
             this.showingSuccessNotification = true
             setTimeout(() => this.showingSuccessNotification ? this.closeSuccessNotification() : null, 5000)
         },
-        showDangerNotification(title, message) {
+        showDangerNotification(title, description) {
             this.dangerNotification.title = title
-            this.dangerNotification.description = message
+            this.dangerNotification.description = description
             this.showingDangerNotification = true
             setTimeout(() => this.showingDangerNotification ? this.closeDangerNotification() : null, 5000)
         },
@@ -335,6 +440,9 @@ export default defineComponent({
         },
         closeDangerNotification() {
             this.showingDangerNotification = false
+        },
+        openImportTemplate() {
+            window.open('https://docs.google.com/spreadsheets/d/1uOA5ear--StRXSFf_iIYVW-50daP4KmA1vOcDxIRZoo/edit?usp=sharing').focus()
         }
     }
 })
