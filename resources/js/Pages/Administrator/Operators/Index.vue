@@ -102,9 +102,10 @@
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Induk Pegawai"
                                ref="updateNip" v-model="updateForm.nip"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
-                               ref="updatePassword"/>
+                               ref="updatePassword" v-model="updateForm.password"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
-                               ref="updatePasswordConfirmation" @keyup.enter="update"/>
+                               ref="updatePasswordConfirmation" @keyup.enter="update"
+                               v-model="updateForm.password_confirmation"/>
                 </div>
             </template>
             <template #buttons>
@@ -153,10 +154,12 @@
                     class="mt-4 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer">
                     <div class="space-y-1 text-center">
                         <document-add-icon class="mx-auto h-12 w-12 text-gray-400" aria-hidden="true"/>
-                        <div class="flex text-sm text-gray-600">
+                        <div class="flex justify-center text-sm text-gray-600">
                             <label for="import-file"
                                    class="relative bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
-                                <span class="pl-3.5">Unggah file dokumen</span>
+                                <span>
+                                    {{ importForm.file === null ? 'Unggah file dokumen' : importForm.file.name }}
+                                </span>
                                 <input for="import-file" ref="importInput" type="file" class="sr-only"
                                        accept=".xls, .xlsx, .csv"
                                        @input="importForm.file = $event.target.files[0]"/>
