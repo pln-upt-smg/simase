@@ -62,23 +62,19 @@
         <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah pegawai">
             <template #content>
                 Silakan masukkan data profil dan kredensial pegawai yang ingin ditambahkan.
+                <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
                     <jet-input type="text" class="block w-full" placeholder="Nama Pegawai"
                                ref="storeName" v-model="storeForm.name"/>
-                    <jet-input-error :message="storeForm.errors.name" class="mt-2"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Telepon Pegawai"
                                ref="storePhone" v-model="storeForm.phone"/>
-                    <jet-input-error :message="storeForm.errors.phone" class="mt-2"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Induk Pegawai"
                                ref="storeNip" v-model="storeForm.nip"/>
-                    <jet-input-error :message="storeForm.errors.nip" class="mt-2"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
                                ref="storePassword" v-model="storeForm.password"/>
-                    <jet-input-error :message="storeForm.errors.password" class="mt-2"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
                                ref="storePasswordConfirmation" v-model="storeForm.password_confirmation"
                                @keyup.enter="store"/>
-                    <jet-input-error :message="storeForm.errors.password_confirmation" class="mt-2"/>
                 </div>
             </template>
             <template #buttons>
@@ -97,22 +93,18 @@
         <jet-modal :show="confirmingUpdateOperator" @close="closeUpdateModal" title="Edit pegawai">
             <template #content>
                 Silakan masukkan data profil dan kredensial pegawai yang ingin diubah.
+                <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
                     <jet-input type="text" class="block w-full" placeholder="Nama Pegawai"
                                ref="updateName" v-model="updateForm.name"/>
-                    <jet-input-error :message="updateForm.errors.name" class="mt-2"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Telepon Pegawai"
                                ref="updatePhone" v-model="updateForm.phone"/>
-                    <jet-input-error :message="updateForm.errors.phone" class="mt-2"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Induk Pegawai"
                                ref="updateNip" v-model="updateForm.nip"/>
-                    <jet-input-error :message="updateForm.errors.nip" class="mt-2"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
                                ref="updatePassword"/>
-                    <jet-input-error :message="updateForm.errors.password" class="mt-2"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
                                ref="updatePasswordConfirmation" @keyup.enter="update"/>
-                    <jet-input-error :message="updateForm.errors.password_confirmation" class="mt-2"/>
                 </div>
             </template>
             <template #buttons>
@@ -148,29 +140,32 @@
         </jet-alert-modal>
         <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data pegawai">
             <template #content>
-                Silakan unggah file data pegawai yang ingin di-impor. Pastikan Anda sudah menggunakan template
-                spreadsheet yang ditentukan.
-                <div class="mt-4">
-                    <div
-                        @click="this.$refs.importInput.click()"
-                        class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer">
-                        <div class="space-y-1 text-center">
-                            <document-add-icon class="mx-auto h-12 w-12 text-gray-400" aria-hidden="true"/>
-                            <div class="flex text-sm text-gray-600">
-                                <label for="import-file"
-                                       class="relative bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
-                                    <span class="pl-3.5">Unggah file dokumen</span>
-                                    <input for="import-file" ref="importInput" type="file" class="sr-only"
-                                           accept=".xls, .xlsx, .csv"
-                                           @input="importForm.file = $event.target.files[0]"/>
-                                </label>
-                            </div>
-                            <p class="text-xs text-gray-500">
-                                XLS, XLSX, CSV hingga 50MB
-                            </p>
+                <p>
+                    Silakan unggah file data pegawai yang ingin di-impor. Pastikan Anda sudah menggunakan template
+                    spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
+                </p>
+                <p class="mt-2">
+                    Mengimpor data baru akan menimpa data lama yang sudah ada. Aksi ini tidak dapat dibatalkan.
+                </p>
+                <jet-validation-errors class="mt-4"/>
+                <div
+                    @click="this.$refs.importInput.click()"
+                    class="mt-4 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer">
+                    <div class="space-y-1 text-center">
+                        <document-add-icon class="mx-auto h-12 w-12 text-gray-400" aria-hidden="true"/>
+                        <div class="flex text-sm text-gray-600">
+                            <label for="import-file"
+                                   class="relative bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
+                                <span class="pl-3.5">Unggah file dokumen</span>
+                                <input for="import-file" ref="importInput" type="file" class="sr-only"
+                                       accept=".xls, .xlsx, .csv"
+                                       @input="importForm.file = $event.target.files[0]"/>
+                            </label>
                         </div>
+                        <p class="text-xs text-gray-500">
+                            XLS, XLSX, CSV hingga 50MB
+                        </p>
                     </div>
-                    <jet-input-error :message="importForm.errors.file" class="mt-6"/>
                 </div>
             </template>
             <template #buttons>
@@ -237,9 +232,9 @@ import JetAlertModal from '@/Jetstream/AlertModal.vue'
 import JetImportModal from '@/Jetstream/ImportModal'
 import JetExportModal from '@/Jetstream/ExportModal';
 import JetInput from '@/Jetstream/Input.vue'
-import JetInputError from '@/Jetstream/InputError'
 import JetSuccessNotification from '@/Jetstream/SuccessNotification'
 import JetDangerNotification from '@/Jetstream/DangerNotification'
+import JetValidationErrors from '@/Jetstream/ValidationErrors';
 import {MenuItem} from '@headlessui/vue'
 import {Components, InteractsWithQueryBuilder, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder'
 import {DocumentAddIcon, DownloadIcon, PencilAltIcon, PlusIcon, TrashIcon, UploadIcon} from '@heroicons/vue/outline'
@@ -310,9 +305,9 @@ export default defineComponent({
         JetImportModal,
         JetExportModal,
         JetInput,
-        JetInputError,
         JetSuccessNotification,
         JetDangerNotification,
+        JetValidationErrors,
         JetLink,
         MenuItem,
         PlusIcon,
@@ -364,11 +359,12 @@ export default defineComponent({
                     this.closeImportModal()
                     this.showSuccessNotification('Data pegawai berhasil di-impor', 'Sistem telah berhasil mengimpor data pegawai')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data pegawai, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data pegawai, mohon gunakan template yang sudah ditentukan')
             })
         },
         exportFile() {
             window.open(route('operators.export'))
+            this.closeExportModal()
         },
         confirmStore() {
             setTimeout(() => this.confirmingStore = true, 150)
@@ -395,28 +391,28 @@ export default defineComponent({
         closeStoreModal() {
             this.confirmingStore = false
             setTimeout(() => {
-                this.storeForm.clearErrors()
+                this.clearErrors()
                 this.storeForm.reset()
             }, 500)
         },
         closeUpdateModal() {
             this.confirmingUpdateOperator = false
             setTimeout(() => {
-                this.updateForm.clearErrors()
+                this.clearErrors()
                 this.updateForm.reset()
             }, 500)
         },
         closeDestroyModal() {
             this.confirmingDestroy = false
             setTimeout(() => {
-                this.destroyForm.clearErrors()
+                this.clearErrors()
                 this.destroyForm.reset()
             }, 500)
         },
         closeImportModal() {
             this.confirmingImport = false
             setTimeout(() => {
-                this.importForm.clearErrors()
+                this.clearErrors()
                 this.importForm.reset()
             }, 500)
         },
@@ -443,6 +439,9 @@ export default defineComponent({
         },
         openImportTemplate() {
             window.open('https://docs.google.com/spreadsheets/d/1uOA5ear--StRXSFf_iIYVW-50daP4KmA1vOcDxIRZoo/edit?usp=sharing').focus()
+        },
+        clearErrors() {
+            this.$page.props.errors = []
         }
     }
 })

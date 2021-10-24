@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Exports\OperatorsExport;
 use App\Http\Controllers\Controller;
+use App\Imports\OperatorsImport;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -12,7 +13,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Inertia\ResponseFactory;
 use Laravel\Fortify\Rules\Password;
 use Maatwebsite\Excel\Facades\Excel;
@@ -77,7 +77,7 @@ class OperatorController extends Controller
         Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20', 'unique:users'],
-            'nip' => ['required', 'string', 'min:6', 'max:255', 'unique:users'],
+            'nip' => ['required', 'alpha_num', 'min:6', 'max:255', 'unique:users'],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ])->validate();
         User::create([
@@ -103,7 +103,7 @@ class OperatorController extends Controller
         Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($operator->id)],
-            'nip' => ['required', 'string', 'min:6', 'max:255', Rule::unique('users')->ignore($operator->id)],
+            'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users')->ignore($operator->id)],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed'],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024']
         ])->validate();
@@ -138,14 +138,16 @@ class OperatorController extends Controller
      * Import the resource from file.
      *
      * @param Request $request
-     * @return void
-     * @throws ValidationException
+     * @return Response|RedirectResponse
+     * @throws Throwable
      */
-    public function import(Request $request): void
+    public function import(Request $request): Response|RedirectResponse
     {
         Validator::make($request->all(), [
             'file' => ['required', 'mimes:xls,xlsx,csv', 'max:51200']
         ])->validate();
+        Excel::import(new OperatorsImport, $request->file('file'));
+        return back();
     }
 
     /**

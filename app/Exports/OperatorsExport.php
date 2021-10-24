@@ -11,11 +11,6 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class OperatorsExport implements FromCollection, WithHeadings, WithMapping
 {
-    public function collection(): Collection
-    {
-        return User::whereRoleId(Role::operator()?->id ?? 2)->get()->load('role');
-    }
-
     public function headings(): array
     {
         return [
@@ -34,5 +29,10 @@ class OperatorsExport implements FromCollection, WithHeadings, WithMapping
             $row->nip,
             $row->role->name
         ];
+    }
+
+    public function collection(): Collection
+    {
+        return User::whereRoleId(Role::operator()?->id ?? 2)->orderBy('name')->get()->load('role');
     }
 }

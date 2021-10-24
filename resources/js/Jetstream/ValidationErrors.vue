@@ -6,7 +6,7 @@
             </div>
             <div class="ml-3">
                 <h3 class="text-sm font-medium text-red-800">
-                    Kami mendeteksi {{ Object.keys(errors).length }} kesalahan.
+                    Sistem mendeteksi {{ Object.keys(errors).length }} kesalahan.
                 </h3>
                 <div class="mt-2 text-sm text-red-700">
                     <ul class="list-disc pl-5 space-y-1">
