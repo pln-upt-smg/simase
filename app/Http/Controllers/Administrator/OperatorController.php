@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Administrator;
 
+use App\Exports\OperatorsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
@@ -11,11 +12,14 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\ResponseFactory;
 use Laravel\Fortify\Rules\Password;
+use Maatwebsite\Excel\Facades\Excel;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
 class OperatorController extends Controller
@@ -97,7 +101,6 @@ class OperatorController extends Controller
     public function update(Request $request, User $operator): Response|RedirectResponse
     {
         Validator::make($request->all(), [
-            'role_id' => Role::operator()?->id ?? 2,
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($operator->id)],
             'nip' => ['required', 'string', 'min:6', 'max:255', Rule::unique('users')->ignore($operator->id)],
@@ -105,6 +108,7 @@ class OperatorController extends Controller
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024']
         ])->validate();
         $operator->updateOrFail([
+            'role_id' => Role::operator()?->id ?? 2,
             'name' => $request->name,
             'phone' => $request->phone,
             'nip' => $request->nip,
@@ -133,22 +137,25 @@ class OperatorController extends Controller
     /**
      * Import the resource from file.
      *
+     * @param Request $request
      * @return void
-     * @throws Throwable
+     * @throws ValidationException
      */
-    public function import(): void
+    public function import(Request $request): void
     {
-
+        Validator::make($request->all(), [
+            'file' => ['required', 'mimes:xls,xlsx,csv', 'max:51200']
+        ])->validate();
     }
 
     /**
      * Export the resource to specified file.
      *
-     * @return void
+     * @return BinaryFileResponse
      * @throws Throwable
      */
-    public function export(): void
+    public function export(): BinaryFileResponse
     {
-
+        return Excel::download(new OperatorsExport, 'operators.xlsx');
     }
 }

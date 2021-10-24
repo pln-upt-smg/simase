@@ -18,8 +18,8 @@
                         class="inline-block align-bottom bg-white rounded-lg p-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                         <div class="sm:flex sm:items-start">
                             <div
-                                class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <exclamation-icon class="h-6 w-6 text-red-600" aria-hidden="true"/>
+                                class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
+                                <download-icon class="h-6 w-6 text-indigo-600" aria-hidden="true"/>
                             </div>
                             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                 <DialogTitle as="h3" class="text-lg leading-6 font-bold text-gray-900">
@@ -45,7 +45,7 @@
 <script>
 import {defineComponent} from 'vue'
 import {Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot} from '@headlessui/vue'
-import {ExclamationIcon} from '@heroicons/vue/outline'
+import {DownloadIcon} from '@heroicons/vue/outline'
 
 export default defineComponent({
     emits: ['close'],
@@ -64,7 +64,7 @@ export default defineComponent({
         DialogTitle,
         TransitionChild,
         TransitionRoot,
-        ExclamationIcon
+        DownloadIcon
     },
     methods: {
         close() {

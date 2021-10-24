@@ -41,10 +41,6 @@
 <script>
 import {defineComponent} from 'vue'
 import {Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot} from '@headlessui/vue'
-import JetInput from "@/Jetstream/Input"
-import JetInputError from "@/Jetstream/InputError"
-import JetButton from "@/Jetstream/Button"
-import JetSecondaryButton from "@/Jetstream/SecondaryButton"
 
 export default defineComponent({
     emits: ['close'],
@@ -62,11 +58,7 @@ export default defineComponent({
         DialogOverlay,
         DialogTitle,
         TransitionChild,
-        TransitionRoot,
-        JetButton,
-        JetInput,
-        JetInputError,
-        JetSecondaryButton
+        TransitionRoot
     },
     methods: {
         close() {
