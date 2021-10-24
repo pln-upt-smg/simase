@@ -27,7 +27,7 @@ jobs:
             php artisan down
             git fetch --all
             git reset --hard origin/main
-            git pull origin/main
+            git pull
             sudo chmod -R ug+rwx storage bootstrap/cache
             sudo chmod -R g+w storage/logs
             php artisan optimize:clear
