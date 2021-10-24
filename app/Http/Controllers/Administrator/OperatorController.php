@@ -77,7 +77,7 @@ class OperatorController extends Controller
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ])->validate();
         User::create([
-            'role_id' => Role::operator()->id,
+            'role_id' => Role::operator()?->id ?? 2,
             'name' => $request->name,
             'phone' => $request->phone,
             'nip' => $request->nip,
@@ -97,7 +97,7 @@ class OperatorController extends Controller
     public function update(Request $request, User $operator): Response|RedirectResponse
     {
         Validator::make($request->all(), [
-            'role' => Role::operator(),
+            'role_id' => Role::operator()?->id ?? 2,
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($operator->id)],
             'nip' => ['required', 'string', 'min:6', 'max:255', Rule::unique('users')->ignore($operator->id)],
