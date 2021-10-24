@@ -281,8 +281,7 @@ export default defineComponent({
                 phone: null,
                 nip: null,
                 password: null,
-                password_confirmation: null,
-                photo: null
+                password_confirmation: null
             }),
             destroyForm: this.$inertia.form(),
             importForm: this.$inertia.form({

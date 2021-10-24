@@ -104,8 +104,7 @@ class OperatorController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($operator->id)],
             'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users')->ignore($operator->id)],
-            'password' => ['required', 'string', (new Password)->length(6), 'confirmed'],
-            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024']
+            'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ])->validate();
         $operator->updateOrFail([
             'role_id' => Role::operator()?->id ?? 2,
@@ -114,9 +113,6 @@ class OperatorController extends Controller
             'nip' => $request->nip,
             'password' => Hash::make($request->password)
         ]);
-        if (isset($request['photo'])) {
-            $operator->updateProfilePhoto($request['photo']);
-        }
         $operator->save();
         return back();
     }
