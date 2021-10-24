@@ -35,4 +35,14 @@ class Role extends Model
     {
         return self::find(2);
     }
+
+    public function isAdministrator(): bool
+    {
+        return $this->id === 1;
+    }
+
+    public function isOperator(): bool
+    {
+        return $this->id === 2;
+    }
 }

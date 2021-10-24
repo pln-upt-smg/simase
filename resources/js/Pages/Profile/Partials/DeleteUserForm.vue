@@ -56,6 +56,14 @@ import JetInputError from '@/Jetstream/InputError.vue'
 import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 
 export default defineComponent({
+    data() {
+        return {
+            confirmingUserDeletion: false,
+            form: this.$inertia.form({
+                password: null
+            })
+        }
+    },
     components: {
         JetActionSection,
         JetAlertModal,
@@ -63,14 +71,6 @@ export default defineComponent({
         JetInputError,
         JetDangerButton,
         JetSecondaryButton
-    },
-    data() {
-        return {
-            confirmingUserDeletion: false,
-            form: this.$inertia.form({
-                password: ''
-            })
-        }
     },
     methods: {
         confirmUserDeletion() {

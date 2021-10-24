@@ -1,5 +1,12 @@
 <?php
 
-use App\Http\Controllers\Administrator\OperatorController;
+Route::group([
+    'middleware' => ['authorizable.administrator']
+], static function () {
 
-Route::resource('operators', OperatorController::class);
+    /**
+     * Operators endpoints
+     */
+    include 'Endpoints/operators.php';
+
+});

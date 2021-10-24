@@ -1,10 +1,10 @@
-require('./bootstrap');
+require('./bootstrap')
 
-import {createApp, h} from 'vue';
-import {createInertiaApp, Link} from '@inertiajs/inertia-vue3';
-import {InertiaProgress} from '@inertiajs/progress';
+import {createApp, h} from 'vue'
+import {createInertiaApp, Link} from '@inertiajs/inertia-vue3'
+import {InertiaProgress} from '@inertiajs/progress'
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Stocktake';
+const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Stocktake'
 
 createInertiaApp({
     title: (title) => `${title} | ${appName}`,
@@ -16,6 +16,6 @@ createInertiaApp({
             .mixin({methods: {route}})
             .mount(el)
     }
-});
+})
 
-InertiaProgress.init({color: '#4B5563'})
+InertiaProgress.init({color: '#29227D'})

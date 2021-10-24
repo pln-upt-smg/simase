@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administrator;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -64,66 +65,90 @@ class OperatorController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response|string
+     * @return Response|RedirectResponse
      * @throws Throwable
      */
-    public function store(Request $request): Response|string
+    public function store(Request $request): Response|RedirectResponse
     {
         Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20', 'unique:users'],
-            'nip' => ['required', 'string', 'max:255', 'unique:users'],
+            'nip' => ['required', 'string', 'min:6', 'max:255', 'unique:users'],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ])->validate();
-        return User::create([
-            'role_id' => Role::operator(),
+        User::create([
+            'role_id' => Role::operator()->id,
             'name' => $request->name,
             'phone' => $request->phone,
             'nip' => $request->nip,
             'password' => Hash::make($request->password)
-        ])->toJson();
+        ]);
+        return back();
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param User $user
-     * @return Response|string
+     * @param User $operator
+     * @return Response|RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, User $user): Response|string
+    public function update(Request $request, User $operator): Response|RedirectResponse
     {
         Validator::make($request->all(), [
+            'role' => Role::operator(),
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
-            'nip' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($operator->id)],
+            'nip' => ['required', 'string', 'min:6', 'max:255', Rule::unique('users')->ignore($operator->id)],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed'],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024']
         ])->validate();
-        $user->updateOrFail([
+        $operator->updateOrFail([
             'name' => $request->name,
             'phone' => $request->phone,
             'nip' => $request->nip,
             'password' => Hash::make($request->password)
         ]);
         if (isset($request['photo'])) {
-            $user->updateProfilePhoto($request['photo']);
+            $operator->updateProfilePhoto($request['photo']);
         }
-        $user->save();
-        return $user->refresh()->toJson();
+        $operator->save();
+        return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param User $user
-     * @return Response
+     * @param User $operator
+     * @return Response|RedirectResponse
      * @throws Throwable
      */
-    public function destroy(User $user): Response
+    public function destroy(User $operator): Response|RedirectResponse
     {
-        $user->deleteOrFail();
-        return response()->noContent();
+        $operator->deleteOrFail();
+        return back();
+    }
+
+    /**
+     * Import the resource from file.
+     *
+     * @return void
+     * @throws Throwable
+     */
+    public function import(): void
+    {
+
+    }
+
+    /**
+     * Export the resource to specified file.
+     *
+     * @return void
+     * @throws Throwable
+     */
+    public function export(): void
+    {
+
     }
 }

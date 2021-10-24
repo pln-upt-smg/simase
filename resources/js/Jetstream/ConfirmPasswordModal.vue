@@ -68,6 +68,21 @@ import JetButton from "@/Jetstream/Button"
 import JetSecondaryButton from "@/Jetstream/SecondaryButton"
 
 export default defineComponent({
+    data() {
+        return {
+            confirmingPassword: false,
+            form: {
+                password: null,
+                error: null
+            }
+        }
+    },
+    setup() {
+        const open = ref(true)
+        return {
+            open
+        }
+    },
     emits: ['confirmed'],
     props: {
         title: {
@@ -118,23 +133,8 @@ export default defineComponent({
         },
         closeModal() {
             this.confirmingPassword = false
-            this.form.password = ''
-            this.form.error = ''
-        }
-    },
-    data() {
-        return {
-            confirmingPassword: false,
-            form: {
-                password: '',
-                error: ''
-            }
-        }
-    },
-    setup() {
-        const open = ref(true)
-        return {
-            open
+            this.form.password = null
+            this.form.error = null
         }
     }
 })

@@ -117,10 +117,8 @@ export default defineComponent({
     methods: {
         confirmLogout() {
             this.confirmingLogout = true
-
             setTimeout(() => this.$refs.password.focus(), 250)
         },
-
         logoutOtherBrowserSessions() {
             this.form.delete(route('other-browser-sessions.destroy'), {
                 preserveScroll: true,
@@ -129,10 +127,8 @@ export default defineComponent({
                 onFinish: () => this.form.reset(),
             })
         },
-
         closeModal() {
             this.confirmingLogout = false
-
             this.form.reset()
         },
     },
