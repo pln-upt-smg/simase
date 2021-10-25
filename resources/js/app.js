@@ -22,6 +22,21 @@ createInertiaApp({
 InertiaProgress.init({color: '#29227D'})
 
 if ('serviceWorker' in navigator) {
+
+    self.addEventListener('activate', event => {
+        event.waitUntil(
+            (async () => {
+                const keys = await caches.keys();
+                return keys.map(async (cache) => {
+                    if (cache !== cacheName) {
+                        return await caches.delete(cache)
+                    }
+                })
+            })()
+        )
+    })
+
     const wb = new Workbox('/service-worker.js')
     wb.register()
+    wb.update()
 }
