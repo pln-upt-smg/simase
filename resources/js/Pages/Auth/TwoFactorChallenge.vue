@@ -53,8 +53,8 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue';
-import {Head} from '@inertiajs/inertia-vue3';
+import {defineComponent} from 'vue'
+import {Head} from '@inertiajs/inertia-vue3'
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
 import JetButton from '@/Jetstream/Button.vue'
@@ -70,34 +70,30 @@ export default defineComponent({
         JetButton,
         JetInput,
         JetLabel,
-        JetValidationErrors,
+        JetValidationErrors
     },
-
     data() {
         return {
             recovery: false,
             form: this.$inertia.form({
-                code: '',
-                recovery_code: '',
+                code: null,
+                recovery_code: null
             })
         }
     },
-
     methods: {
         toggleRecovery() {
             this.recovery ^= true
-
             this.$nextTick(() => {
                 if (this.recovery) {
                     this.$refs.recovery_code.focus()
-                    this.form.code = '';
+                    this.form.code = null
                 } else {
                     this.$refs.code.focus()
-                    this.form.recovery_code = ''
+                    this.form.recovery_code = null
                 }
             })
         },
-
         submit() {
             this.form.post(this.route('two-factor.login'))
         }

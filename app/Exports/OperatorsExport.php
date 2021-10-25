@@ -5,6 +5,7 @@ namespace App\Exports;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -14,25 +15,28 @@ class OperatorsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            'Nama',
-            'Nomor Telepon',
+            'Name',
+            'Phone',
             'NIP',
-            'Peran'
+            'Role'
         ];
     }
 
     public function map($row): array
     {
         return [
-            $row->name,
-            $row->phone,
-            $row->nip,
-            $row->role->name
+            Str::title(trim($row->name)),
+            trim($row->phone),
+            trim($row->nip),
+            trim($row->role->name)
         ];
     }
 
     public function collection(): Collection
     {
-        return User::whereRoleId(Role::operator()?->id ?? 2)->orderBy('name')->get()->load('role');
+        return User::whereRoleId(Role::operator()?->id ?? 2)
+            ->orderBy('name')
+            ->get()
+            ->load('role');
     }
 }

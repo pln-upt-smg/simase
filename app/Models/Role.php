@@ -17,11 +17,6 @@ class Role extends Model
     #[HasMany(User::class)]
     public Collection $users;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
     protected $fillable = [
         'name',
     ];

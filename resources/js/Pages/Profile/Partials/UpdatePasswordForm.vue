@@ -58,9 +58,9 @@ export default defineComponent({
     data() {
         return {
             form: this.$inertia.form({
-                current_password: '',
-                password: '',
-                password_confirmation: '',
+                current_password: null,
+                password: null,
+                password_confirmation: null
             })
         }
     },
@@ -75,7 +75,6 @@ export default defineComponent({
                         this.form.reset('password', 'password_confirmation')
                         this.$refs.password.focus()
                     }
-
                     if (this.form.errors.current_password) {
                         this.form.reset('current_password')
                         this.$refs.current_password.focus()

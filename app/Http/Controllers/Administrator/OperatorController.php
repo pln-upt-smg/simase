@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Exports\OperatorsExport;
 use App\Http\Controllers\Controller;
+use App\Http\Helper\InertiaHelper;
+use App\Http\Helper\MediaHelper;
 use App\Imports\OperatorsImport;
 use App\Models\Role;
 use App\Models\User;
@@ -15,9 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\ResponseFactory;
 use Laravel\Fortify\Rules\Password;
-use Maatwebsite\Excel\Facades\Excel;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -31,34 +31,40 @@ class OperatorController extends Controller
      */
     public function index(): \Inertia\Response|ResponseFactory
     {
-        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
-            $query->where(function ($query) use ($value) {
-                $query->where('name', 'LIKE', "%$value%")
-                    ->orWhere('phone', 'LIKE', "%$value%")
-                    ->orWhere('nip', 'LIKE', "%$value%");
-            });
-        });
-        $users = QueryBuilder::for(User::class)
-            ->where('role_id', '=', Role::operator()?->id ?? 2)
+        $data = QueryBuilder::for(User::class)
+            ->select([
+                'users.id as id',
+                'users.name as name',
+                'users.phone as phone',
+                'users.nip as nip',
+                'users.role_id as role_id',
+                'roles.name as role'
+            ])
+            ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
+            ->where('users.role_id', '=', Role::operator()?->id ?? 2)
             ->defaultSort('name')
-            ->allowedSorts(['name', 'phone', 'nip'])
-            ->allowedFilters(['role_id', $globalSearch])
+            ->allowedSorts(['name', 'phone', 'nip', 'role'])
+            ->allowedFilters([
+                'role_id',
+                InertiaHelper::buildGlobalSearchQueryCallback('users.name', 'users.phone', 'users.nip', 'roles.name')
+            ])
             ->paginate()
             ->withQueryString();
         return inertia('Administrator/Operators/Index', [
-            'users' => $users,
+            'operators' => $data,
+            'template' => $this->template()
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
-                'name' => 'Nama',
+                'name' => 'Nama Pegawai',
                 'phone' => 'Nomor Telepon',
-                'nip' => 'NIP',
+                'nip' => 'Nomor Induk Pegawai',
                 'role' => 'Peran'
             ])->addFilter('role_id', 'Peran', [
                 2 => 'Operator'
             ])->addColumns([
-                'name' => 'Nama',
+                'name' => 'Nama Pegawai',
                 'phone' => 'Nomor Telepon',
-                'nip' => 'NIP',
+                'nip' => 'Nomor Induk Pegawai',
                 'role' => 'Peran',
                 'action' => 'Aksi'
             ]);
@@ -139,10 +145,7 @@ class OperatorController extends Controller
      */
     public function import(Request $request): Response|RedirectResponse
     {
-        Validator::make($request->all(), [
-            'file' => ['required', 'mimes:xls,xlsx,csv', 'max:51200']
-        ])->validate();
-        Excel::import(new OperatorsImport, $request->file('file'));
+        MediaHelper::importSpreadsheet($request, new OperatorsImport);
         return back();
     }
 
@@ -154,6 +157,16 @@ class OperatorController extends Controller
      */
     public function export(): BinaryFileResponse
     {
-        return Excel::download(new OperatorsExport, 'operators.xlsx');
+        return MediaHelper::exportSpreadsheet(new OperatorsExport, 'operators');
+    }
+
+    /**
+     * File URL for the resource import template
+     *
+     * @return string
+     */
+    public function template(): string
+    {
+        return 'https://docs.google.com/spreadsheets/d/1uOA5ear--StRXSFf_iIYVW-50daP4KmA1vOcDxIRZoo/edit?usp=sharing';
     }
 }

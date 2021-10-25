@@ -325,4 +325,6 @@ return [
         */
         'force_resync_remote' => null,
     ],
+
+    'default_sheet' => env('LARAVEL_EXCEL_DEFAULT_SHEET', 'Sheet 1')
 ];

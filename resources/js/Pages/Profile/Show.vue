@@ -24,17 +24,17 @@
 </template>
 
 <script>
-import {defineComponent} from "vue"
-import AppLayout from "@/Layouts/AppLayout.vue"
-import GridHeader from "@/Layouts/GridHeader.vue"
-import DeleteUserForm from "@/Pages/Profile/Partials/DeleteUserForm.vue"
-import LogoutOtherBrowserSessionsForm from "@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue"
-import TwoFactorAuthenticationForm from "@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue"
-import UpdatePasswordForm from "@/Pages/Profile/Partials/UpdatePasswordForm.vue"
-import UpdateProfileInformationForm from "@/Pages/Profile/Partials/UpdateProfileInformationForm.vue"
-import JetBredcrumbs from "@/Jetstream/Breadcrumbs.vue"
-import JetButton from "@/Jetstream/Button.vue"
-import JetSectionBorder from "@/Jetstream/SectionBorder.vue"
+import {defineComponent} from 'vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
+import GridHeader from '@/Layouts/GridHeader.vue'
+import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue'
+import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue'
+import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue'
+import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'
+import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue'
+import JetBredcrumbs from '@/Jetstream/Breadcrumbs.vue'
+import JetButton from '@/Jetstream/Button.vue'
+import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 
 export default defineComponent({
     props: {

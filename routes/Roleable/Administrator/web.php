@@ -5,6 +5,16 @@ Route::group([
 ], static function () {
 
     /**
+     * Qaurters endpoints
+     */
+    include 'Endpoints/quarters.php';
+
+    /**
+     * Areas endpoints
+     */
+    include 'Endpoints/areas.php';
+
+    /**
      * Operators endpoints
      */
     include 'Endpoints/operators.php';

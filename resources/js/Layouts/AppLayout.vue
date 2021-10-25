@@ -10,7 +10,7 @@
 
 <script>
 import {defineComponent} from 'vue'
-import {Head} from "@inertiajs/inertia-vue3"
+import {Head} from '@inertiajs/inertia-vue3'
 import AdministratorLayout from '@/Layouts/Administrator/Layout'
 import OperatorLayout from '@/Layouts/Operator/Layout'
 

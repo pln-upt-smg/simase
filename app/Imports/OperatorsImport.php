@@ -2,11 +2,12 @@
 
 namespace App\Imports;
 
+use App\Imports\Helper\HasDefaultSheet;
+use App\Imports\Helper\HasValidationException;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -14,26 +15,25 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Validators\Failure;
 
 class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use RegistersEventListeners;
+    use HasValidationException, HasDefaultSheet, RegistersEventListeners;
 
     public function rules(): array
     {
         return [
-            'nama' => ['required', 'string', 'max:255'],
-            'nomor_telepon' => ['required', 'string', 'max:20'],
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20'],
             'nip' => ['required', 'alpha_num', 'min:6', 'max:255'],
-            'peran' => ['required', 'string', 'max:255', 'exists:roles,name']
+            'role' => ['required', 'string', 'max:255', 'exists:roles,name']
         ];
     }
 
     public function uniqueBy(): string|array
     {
         return [
-            'nomor_telepon',
+            'phone',
             'nip'
         ];
     }
@@ -41,11 +41,11 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     public function model(array $row): User|null
     {
         return new User([
-            'role_id' => $this->resolveRoleId($row['peran']),
-            'name' => $row['nama'],
-            'phone' => $row['nomor_telepon'],
-            'nip' => $row['nip'],
-            'password' => Hash::make($row['nip'])
+            'role_id' => $this->resolveRoleId($row['role']),
+            'name' => Str::title(trim($row['name'])),
+            'phone' => trim($row['phone']),
+            'nip' => trim($row['nip']),
+            'password' => Hash::make(trim($row['nip']))
         ]);
     }
 
@@ -55,23 +55,8 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
         return is_null($role) ? 2 : $role->id;
     }
 
-    /**
-     * @throws ValidationException
-     */
-    public function onFailure(Failure ...$failures): void
-    {
-        throw ValidationException::withMessages(collect($failures)->map->toArray()->all());
-    }
-
     public static function beforeSheet(): void
     {
         User::whereRoleId(Role::operator()?->id ?? 2)->delete();
-    }
-
-    public function sheets(): array
-    {
-        return [
-            'Worksheet' => $this
-        ];
     }
 }

@@ -29,8 +29,8 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue';
-import {Head} from '@inertiajs/inertia-vue3';
+import {defineComponent} from 'vue'
+import {Head} from '@inertiajs/inertia-vue3'
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard.vue'
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo.vue'
 import JetButton from '@/Jetstream/Button.vue'
@@ -48,19 +48,17 @@ export default defineComponent({
         JetLabel,
         JetValidationErrors
     },
-
     data() {
         return {
             form: this.$inertia.form({
-                password: '',
+                password: null
             })
         }
     },
-
     methods: {
         submit() {
             this.form.post(this.route('password.confirm'), {
-                onFinish: () => this.form.reset(),
+                onFinish: () => this.form.reset()
             })
         }
     }

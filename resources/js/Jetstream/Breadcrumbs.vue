@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
-import {Link as JetLink} from "@inertiajs/inertia-vue3";
+import {defineComponent} from 'vue'
+import {Link as JetLink} from '@inertiajs/inertia-vue3'
 import {HomeIcon} from '@heroicons/vue/solid'
 
 export default defineComponent({

@@ -62,10 +62,10 @@
 <script>
 import {defineComponent, ref} from 'vue'
 import {Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot} from '@headlessui/vue'
-import JetInput from "@/Jetstream/Input"
-import JetInputError from "@/Jetstream/InputError"
-import JetButton from "@/Jetstream/Button"
-import JetSecondaryButton from "@/Jetstream/SecondaryButton"
+import JetInput from '@/Jetstream/Input'
+import JetInputError from '@/Jetstream/InputError'
+import JetButton from '@/Jetstream/Button'
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
 export default defineComponent({
     data() {
@@ -118,7 +118,7 @@ export default defineComponent({
             })
         },
         confirmPassword() {
-            this.form.processing = true;
+            this.form.processing = true
             axios.post(route('password.confirm'), {
                 password: this.form.password
             }).then(() => {

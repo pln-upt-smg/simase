@@ -24,16 +24,15 @@ import {XCircleIcon} from '@heroicons/vue/solid'
 
 export default defineComponent({
     components: {
-        XCircleIcon,
+        XCircleIcon
     },
     computed: {
         errors() {
             return this.$page.props.errors
         },
-
         hasErrors() {
-            return Object.keys(this.errors).length > 0;
-        },
+            return Object.keys(this.errors).length > 0
+        }
     }
 })
 </script>

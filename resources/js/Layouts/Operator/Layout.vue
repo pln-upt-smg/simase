@@ -30,9 +30,10 @@
                         <div class="flex-shrink-0 flex items-center px-4">
                             <span class="text-2xl font-bold text-white">📦 Stocktake</span>
                         </div>
-                        <div class="flex-1 h-0 overflow-y-auto">
+                        <div
+                            class="flex-1 h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
                             <nav>
-                                <div class="px-4 space-y-2 pt-8">
+                                <div class="px-4 space-y-2 pt-6">
                                     <span class="text-base text-white font-semibold">Menu</span>
                                     <Link v-for="item in navigationMenu" :key="item.name" :href="route(item.href)"
                                           :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
@@ -62,13 +63,14 @@
         <!-- Desktop Sidebar -->
         <div class="hidden bg-indigo-700 md:flex md:flex-shrink-0">
             <div class="flex flex-col w-64">
-                <div class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto">
+                <div
+                    class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
                     <div class="flex items-center flex-shrink-0 px-4">
                         <span class="text-2xl font-bold text-white">📦 Stocktake</span>
                     </div>
                     <div class="flex-1 flex flex-col">
                         <nav>
-                            <div class="flex-1 px-4 space-y-2 pt-8">
+                            <div class="flex-1 px-4 space-y-2 pt-6">
                                 <span class="text-base text-white font-semibold">Menu</span>
                                 <Link v-for="item in navigationMenu" :key="item.name" :href="route(item.href)"
                                       :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
@@ -159,7 +161,8 @@
                     </div>
                 </div>
             </div>
-            <main class="flex-1 relative overflow-y-auto focus:outline-none">
+            <main
+                class="flex-1 relative overflow-y-auto focus:outline-none scrollbar-thin scrollbar-thumb-indigo-600 scrollbar-track-indigo-200">
                 <div class="max-w-7xl mx-auto pt-7 pb-8 px-6 lg:px-8">
                     <slot></slot>
                 </div>
@@ -170,9 +173,9 @@
 
 <script>
 import {defineComponent, ref} from 'vue'
-import {Link} from "@inertiajs/inertia-vue3"
-import {Dialog, DialogOverlay, Menu, MenuButton, MenuItems, TransitionChild, TransitionRoot,} from '@headlessui/vue'
-import {BellIcon, CogIcon, DocumentTextIcon, MenuAlt2Icon, PencilIcon, SearchIcon, XIcon,} from '@heroicons/vue/outline'
+import {Link} from '@inertiajs/inertia-vue3'
+import {Dialog, DialogOverlay, Menu, MenuButton, MenuItems, TransitionChild, TransitionRoot} from '@headlessui/vue'
+import {BellIcon, CogIcon, DocumentTextIcon, MenuAlt2Icon, PencilIcon, SearchIcon, XIcon} from '@heroicons/vue/outline'
 
 const navigationMenu = [
     {name: 'Input MC Code', href: 'login', icon: PencilIcon},
@@ -220,7 +223,7 @@ export default defineComponent({
     },
     methods: {
         logout() {
-            this.$inertia.post(route('logout'));
+            this.$inertia.post(route('logout'))
         }
     }
 })

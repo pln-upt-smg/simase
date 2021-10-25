@@ -8,27 +8,24 @@ import {defineComponent} from 'vue'
 
 export default defineComponent({
     emits: ['update:checked'],
-
     props: {
         checked: {
             type: [Array, Boolean],
-            default: false,
+            default: false
         },
         value: {
-            default: null,
-        },
+            default: null
+        }
     },
-
     computed: {
         proxyChecked: {
             get() {
-                return this.checked;
+                return this.checked
             },
-
             set(val) {
-                this.$emit("update:checked", val);
-            },
-        },
-    },
+                this.$emit("update:checked", val)
+            }
+        }
+    }
 })
 </script>

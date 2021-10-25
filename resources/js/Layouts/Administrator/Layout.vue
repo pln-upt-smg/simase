@@ -1,5 +1,5 @@
 <template>
-    <div class="h-screen flex overflow-hidden bg-gray-100">
+    <div class="h-screen flex overflow-hidden bg-gray-100 ">
         <!-- Mobile Sidebar -->
         <TransitionRoot as="template" :show="sidebarOpen">
             <Dialog as="div" static class="fixed inset-0 flex z-40 md:hidden" @close="sidebarOpen = false"
@@ -30,9 +30,9 @@
                         <div class="flex-shrink-0 flex items-center px-4">
                             <span class="text-2xl font-bold text-white">📦 Stocktake</span>
                         </div>
-                        <div class="flex-1 h-0 overflow-y-auto">
+                        <div class="flex-1 h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
                             <nav>
-                                <div class="px-4 space-y-2 pt-8">
+                                <div class="px-4 space-y-2 pt-6">
                                     <span class="text-base text-white font-semibold">Menu</span>
                                     <Link v-for="item in navigationMenu" :key="item.name" :href="route(item.href)"
                                           :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
@@ -62,13 +62,14 @@
         <!-- Desktop Sidebar -->
         <div class="hidden bg-indigo-700 md:flex md:flex-shrink-0">
             <div class="flex flex-col w-64">
-                <div class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto">
+                <div
+                    class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
                     <div class="flex items-center flex-shrink-0 px-4">
                         <span class="text-2xl font-bold text-white">📦 Stocktake</span>
                     </div>
                     <div class="flex-1 flex flex-col">
                         <nav>
-                            <div class="flex-1 px-4 space-y-2 pt-8">
+                            <div class="flex-1 px-4 space-y-2 pt-6">
                                 <span class="text-base text-white font-semibold">Menu</span>
                                 <Link v-for="item in navigationMenu" :key="item.name" :href="route(item.href)"
                                       :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
@@ -159,7 +160,8 @@
                     </div>
                 </div>
             </div>
-            <main class="flex-1 relative overflow-y-auto focus:outline-none">
+            <main
+                class="flex-1 relative overflow-y-auto focus:outline-none scrollbar-thin scrollbar-thumb-indigo-600 scrollbar-track-indigo-200">
                 <div class="max-w-7xl mx-auto py-8 px-6 lg:px-8">
                     <slot></slot>
                 </div>
@@ -170,38 +172,42 @@
 
 <script>
 import {defineComponent, ref} from 'vue'
-import {Link} from "@inertiajs/inertia-vue3"
-import {Dialog, DialogOverlay, Menu, MenuButton, MenuItems, TransitionChild, TransitionRoot,} from '@headlessui/vue'
+import {Link} from '@inertiajs/inertia-vue3'
+import {Dialog, DialogOverlay, Menu, MenuButton, MenuItems, TransitionChild, TransitionRoot} from '@headlessui/vue'
 import {
+    ArchiveIcon,
     BellIcon,
     CalendarIcon,
     CogIcon,
     CollectionIcon,
     DocumentReportIcon,
+    DocumentSearchIcon,
     DocumentTextIcon,
     ExclamationIcon,
     HomeIcon,
+    LocationMarkerIcon,
     MenuAlt2Icon,
     SearchIcon,
     UsersIcon,
-    XIcon,
+    XIcon
 } from '@heroicons/vue/outline'
 
 const navigationMenu = [
     {name: 'Dashboard', href: 'dashboard', icon: HomeIcon},
-    {name: 'Master Periode', href: 'login', icon: CalendarIcon},
-    {name: 'Master Stock', href: 'login', icon: CollectionIcon},
-    {name: 'Act Stock', href: 'login', icon: CollectionIcon},
+    {name: 'Quarter', href: 'quarters.index', icon: CalendarIcon},
+    {name: 'Area', href: 'areas.index', icon: LocationMarkerIcon},
+    {name: 'Material', href: 'login', icon: ArchiveIcon},
+    {name: 'Actual Stock', href: 'login', icon: CollectionIcon},
     {name: 'Book Stock', href: 'login', icon: CollectionIcon},
     {name: 'PID', href: 'login', icon: DocumentTextIcon},
-    {name: 'PID Details', href: 'login', icon: DocumentTextIcon},
+    {name: 'PID Detail', href: 'login', icon: DocumentSearchIcon},
     {name: 'Final Summary', href: 'login', icon: DocumentReportIcon},
-    {name: 'Batch Not Exist', href: 'login', icon: ExclamationIcon},
+    {name: 'Batch Not Exist', href: 'login', icon: ExclamationIcon}
 ]
 
 const navigationManage = [
     {name: 'Pegawai', href: 'operators.index', icon: UsersIcon},
-    {name: 'Pengaturan', href: 'profile.show', icon: CogIcon},
+    {name: 'Pengaturan', href: 'profile.show', icon: CogIcon}
 ]
 
 export default defineComponent({
@@ -228,7 +234,10 @@ export default defineComponent({
         DocumentReportIcon,
         ExclamationIcon,
         UsersIcon,
-        CogIcon
+        CogIcon,
+        LocationMarkerIcon,
+        ArchiveIcon,
+        DocumentSearchIcon
     },
     setup() {
         const sidebarOpen = ref(false)
@@ -245,7 +254,7 @@ export default defineComponent({
     },
     methods: {
         logout() {
-            this.$inertia.post(route('logout'));
+            this.$inertia.post(route('logout'))
         }
     }
 })

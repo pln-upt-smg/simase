@@ -1,7 +1,7 @@
 <template>
-    <app-layout title="Pegawai">
+    <app-layout title="Area">
         <grid-header>
-            <jet-breadcrumbs :pages="[{name: 'Pegawai', href: 'operators.index', current: true}]"/>
+            <jet-breadcrumbs :pages="[{name: 'Area', href: 'areas.index', current: true}]"/>
             <div class="text-left lg:text-right">
                 <div class="pt-9 lg:pt-0 mt-2">
                     <jet-button @click="confirmStore" class="ml-0 mr-2">
@@ -20,35 +20,29 @@
             :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="operators"
+            :meta="areas"
             class="pt-14 lg:pt-0"
         >
             <template #head>
                 <tr>
-                    <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Pegawai</th>
-                    <th v-show="showColumn('phone')" @click.prevent="sortBy('phone')">Nomor Telepon</th>
-                    <th v-show="showColumn('nip')" @click.prevent="sortBy('nip')">Nomor Induk Pegawai</th>
-                    <th v-show="showColumn('role')">Peran</th>
+                    <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Area</th>
                     <th v-show="showColumn('action')"></th>
                 </tr>
             </template>
             <template #body>
-                <tr v-for="operator in operators.data" :key="operator.id">
-                    <td v-show="showColumn('name')">{{ operator.name }}</td>
-                    <td v-show="showColumn('phone')">{{ operator.phone }}</td>
-                    <td v-show="showColumn('nip')">{{ operator.nip }}</td>
-                    <td v-show="showColumn('role')">Operator</td>
+                <tr v-for="area in areas.data" :key="area.id">
+                    <td v-show="showColumn('name')">{{ area.name }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
-                                <button @click="confirmUpdate(operator)"
+                                <button @click="confirmUpdate(area)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <pencil-alt-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Edit
                                 </button>
                             </menu-item>
                             <menu-item>
-                                <button @click="confirmDestroy(operator)"
+                                <button @click="confirmDestroy(area)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <trash-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Hapus
@@ -59,21 +53,13 @@
                 </tr>
             </template>
         </Table>
-        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah pegawai">
+        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah area">
             <template #content>
-                Silakan masukkan data profil dan kredensial pegawai yang ingin ditambahkan.
+                Silakan masukkan data area yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full" placeholder="Nama Pegawai"
-                               ref="storeName" v-model="storeForm.name"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Telepon Pegawai"
-                               ref="storePhone" v-model="storeForm.phone"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Induk Pegawai"
-                               ref="storeNip" v-model="storeForm.nip"/>
-                    <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
-                               ref="storePassword" v-model="storeForm.password"/>
-                    <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
-                               ref="storePasswordConfirmation" v-model="storeForm.password_confirmation"
+                    <jet-input type="text" class="block w-full" placeholder="Nama Area"
+                               ref="storeName" v-model="storeForm.name"
                                @keyup.enter="store"/>
                 </div>
             </template>
@@ -90,22 +76,14 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit pegawai">
+        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit area">
             <template #content>
-                Silakan masukkan data profil dan kredensial pegawai yang ingin diubah.
+                Silakan masukkan data area yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full" placeholder="Nama Pegawai"
-                               ref="updateName" v-model="updateForm.name"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Telepon Pegawai"
-                               ref="updatePhone" v-model="updateForm.phone"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Induk Pegawai"
-                               ref="updateNip" v-model="updateForm.nip"/>
-                    <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
-                               ref="updatePassword" v-model="updateForm.password"/>
-                    <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
-                               ref="updatePasswordConfirmation" @keyup.enter="update"
-                               v-model="updateForm.password_confirmation"/>
+                    <jet-input type="text" class="block w-full" placeholder="Nama Area"
+                               ref="updateName" v-model="updateForm.name"
+                               @keyup.enter="update"/>
                 </div>
             </template>
             <template #buttons>
@@ -121,10 +99,10 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus pegawai">
+        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus area">
             <template #content>
-                Apakah Anda yakin ingin menghapus akun akun pegawai ini? Setelah akun pegawai dihapus, semua sumber daya
-                dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
+                Apakah Anda yakin ingin menghapus area ini? Setelah area dihapus, semua sumber daya
+                dan datanya akan dihapus secara sementara. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
                 <jet-danger-button @click="destroy"
@@ -139,12 +117,11 @@
                 </jet-secondary-button>
             </template>
         </jet-alert-modal>
-        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data pegawai">
+        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data area">
             <template #content>
                 <p>
-                    Silakan unggah file data pegawai yang ingin di-impor. Pastikan Anda sudah menggunakan template
+                    Silakan unggah file data area yang ingin di-impor. Pastikan Anda sudah menggunakan template
                     spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
-                    Kata sandi akun yang dibuat akan diambil dari data NIP pegawai yang diberikan.
                 </p>
                 <p class="mt-2">
                     Mengimpor data baru akan menimpa data lama yang sudah ada. Aksi ini tidak dapat dibatalkan.
@@ -192,10 +169,10 @@
                 </jet-secondary-button>
             </template>
         </jet-import-modal>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data pegawai">
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data area">
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data pegawai? Proses ekspor dapat memakan waktu lama,
+                    Apakah Anda yakin ingin mengekspor semua data area? Proses ekspor dapat memakan waktu lama,
                     tergantung dari banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
@@ -276,19 +253,11 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: this.$inertia.form({
-                name: null,
-                phone: null,
-                nip: null,
-                password: null,
-                password_confirmation: null
+                name: null
             }),
             updateForm: this.$inertia.form({
                 id: null,
-                name: null,
-                phone: null,
-                nip: null,
-                password: null,
-                password_confirmation: null
+                name: null
             }),
             destroyForm: this.$inertia.form({
                 id: null
@@ -300,7 +269,7 @@ export default defineComponent({
     },
     mixins: [InteractsWithQueryBuilder],
     props: {
-        operators: Object
+        areas: Object
     },
     components: {
         Table: Tailwind2.Table,
@@ -330,67 +299,65 @@ export default defineComponent({
     },
     methods: {
         store() {
-            this.storeForm.post(route('operators.store'), {
+            this.storeForm.post(route('areas.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
                     this.closeStoreModal()
-                    this.showSuccessNotification('Pegawai berhasil ditambahkan', 'Sistem telah berhasil menyimpan data pegawai baru')
+                    this.showSuccessNotification('Area berhasil ditambahkan', 'Sistem telah berhasil menyimpan data area baru')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data pegawai, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data area, mohon periksa ulang form')
             })
         },
         update() {
-            this.updateForm.put(route('operators.update', this.updateForm.id), {
+            this.updateForm.put(route('areas.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
                     this.closeUpdateModal()
-                    this.showSuccessNotification('Pegawai berhasil diedit', 'Sistem telah berhasil mengedit data pegawai')
+                    this.showSuccessNotification('Area berhasil diedit', 'Sistem telah berhasil mengedit data area')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data pegawai, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data area, mohon periksa ulang form')
             })
         },
         destroy() {
-            this.destroyForm.delete(route('operators.destroy', this.destroyForm.id), {
+            this.destroyForm.delete(route('areas.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
                     this.closeDestroyModal()
-                    this.showSuccessNotification('Pegawai berhasil dihapus', 'Sistem telah berhasil menghapus data pegawai')
+                    this.showSuccessNotification('Area berhasil dihapus', 'Sistem telah berhasil menghapus data area')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data pegawai')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data area')
             })
         },
         importFile() {
-            this.importForm.post(route('operators.import'), {
+            this.importForm.post(route('areas.import'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
                     this.closeImportModal()
-                    this.showSuccessNotification('Data pegawai berhasil di-impor', 'Sistem telah berhasil mengimpor data pegawai')
+                    this.showSuccessNotification('Data area berhasil di-impor', 'Sistem telah berhasil mengimpor data area')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data pegawai, mohon gunakan template yang sudah ditentukan')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data area, mohon gunakan template yang sudah ditentukan')
             })
         },
         exportFile() {
-            window.open(route('operators.export'))
+            window.open(route('areas.export'))
             this.closeExportModal()
         },
         confirmStore() {
             setTimeout(() => this.confirmingStore = true, 150)
             setTimeout(() => this.$refs.storeName.focus(), 300)
         },
-        confirmUpdate(operator) {
-            this.updateForm.id = operator.id
-            this.updateForm.name = operator.name
-            this.updateForm.phone = operator.phone
-            this.updateForm.nip = operator.nip
+        confirmUpdate(area) {
+            this.updateForm.id = area.id
+            this.updateForm.name = area.name
             setTimeout(() => this.confirmingUpdate = true, 150)
             setTimeout(() => this.$refs.updateName.focus(), 300)
         },
-        confirmDestroy(operator) {
-            this.destroyForm.id = operator.id
+        confirmDestroy(area) {
+            this.destroyForm.id = area.id
             setTimeout(() => this.confirmingDestroy = true, 150)
         },
         confirmImport() {

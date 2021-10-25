@@ -13,23 +13,13 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Fluent,
-        HasApiTokens,
-        HasFactory,
-        HasProfilePhoto,
-        Notifiable,
-        TwoFactorAuthenticatable;
+    use Fluent, HasApiTokens, HasFactory, HasProfilePhoto, Notifiable, TwoFactorAuthenticatable;
 
     #[BelongsTo]
     public Role $role;
 
     public string $name, $phone, $nip, $password;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
     protected $fillable = [
         'role_id',
         'name',
@@ -38,11 +28,6 @@ class User extends Authenticatable
         'password'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -50,11 +35,6 @@ class User extends Authenticatable
         'two_factor_secret'
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
     protected $appends = [
         'profile_photo_url'
     ];

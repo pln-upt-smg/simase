@@ -17,7 +17,7 @@
                 </div>
                 <div class="mt-2" v-show="photoPreview">
                     <span class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
-                          :style="'background-image: url(\'' + photoPreview + '\');'">
+                          :style="'background-image: url(\'' + photoPreview + '\')'">
                     </span>
                 </div>
                 <jet-secondary-button class="mt-4 mr-2" type="button" @click.prevent="selectNewPhoto">

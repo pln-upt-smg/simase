@@ -93,7 +93,6 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
 
 export default defineComponent({
     props: ['sessions'],
-
     components: {
         JetActionMessage,
         JetActionSection,
@@ -101,19 +100,16 @@ export default defineComponent({
         JetModal,
         JetInput,
         JetInputError,
-        JetSecondaryButton,
+        JetSecondaryButton
     },
-
     data() {
         return {
             confirmingLogout: false,
-
             form: this.$inertia.form({
-                password: '',
+                password: null
             })
         }
     },
-
     methods: {
         confirmLogout() {
             this.confirmingLogout = true
@@ -124,13 +120,13 @@ export default defineComponent({
                 preserveScroll: true,
                 onSuccess: () => this.closeModal(),
                 onError: () => this.$refs.password.focus(),
-                onFinish: () => this.form.reset(),
+                onFinish: () => this.form.reset()
             })
         },
         closeModal() {
             this.confirmingLogout = false
             this.form.reset()
-        },
-    },
+        }
+    }
 })
 </script>

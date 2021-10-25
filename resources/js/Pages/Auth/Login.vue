@@ -46,7 +46,7 @@ import JetInput from '@/Jetstream/Input.vue'
 import JetCheckbox from '@/Jetstream/Checkbox.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 import JetValidationErrors from '@/Jetstream/ValidationErrors.vue'
-import {Head, Link} from '@inertiajs/inertia-vue3';
+import {Head, Link} from '@inertiajs/inertia-vue3'
 
 export default defineComponent({
     components: {
@@ -58,7 +58,7 @@ export default defineComponent({
         JetCheckbox,
         JetLabel,
         JetValidationErrors,
-        Link,
+        Link
     },
     props: {
         canResetPassword: Boolean,
@@ -67,8 +67,8 @@ export default defineComponent({
     data() {
         return {
             form: this.$inertia.form({
-                nip: '',
-                password: '',
+                nip: null,
+                password: null,
                 remember: false
             })
         }
@@ -81,7 +81,7 @@ export default defineComponent({
                     remember: this.form.remember ? 'on' : ''
                 }))
                 .post(this.route('login'), {
-                    onFinish: () => this.form.reset('password'),
+                    onFinish: () => this.form.reset('password')
                 })
         }
     }
