@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="keywords" content="Stocktake">
     <meta name="description" content="📦 Item Stock Management System for Unilever Indonesia.">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title inertia>{{ config('app.name', 'Stocktake') }}</title>
     <link rel="preconnect" href="{{ config('app.url') }}">
     <link rel="manifest" href="/manifest.json">
