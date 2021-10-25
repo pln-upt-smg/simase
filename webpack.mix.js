@@ -1,5 +1,6 @@
-const mix = require('laravel-mix');
-const minify = require('minify-html-webpack-plugin');
+const mix = require('laravel-mix')
+const minify = require('minify-html-webpack-plugin')
+require('laravel-mix-workbox')
 
 /*
  |--------------------------------------------------------------------------
@@ -32,17 +33,25 @@ mix.webpackConfig({
             }
         })
     ]
-});
+})
 
-mix.js('resources/js/app.js', 'public/js')
-    .sourceMaps()
-    .vue()
+mix.vue()
+    .webpackConfig(require('./webpack.config'))
+    .js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
-        require('tailwindcss'),
+        require('tailwindcss')
     ])
-    .webpackConfig(require('./webpack.config'));
+    .minify('public/js/app.js', 'public/js')
+    .minify('public/css/app.css', 'public/css')
+    .sourceMaps()
+    .generateSW({
+        maximumFileSizeToCacheInBytes: 10000000,
+        skipWaiting: true
+    })
 
 if (mix.inProduction()) {
-    mix.version();
+    mix.version()
 }
+
+mix.disableNotifications()

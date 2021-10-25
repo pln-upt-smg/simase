@@ -162,7 +162,7 @@
                 </div>
             </div>
             <main
-                class="flex-1 relative overflow-y-auto focus:outline-none scrollbar-thin scrollbar-thumb-indigo-600 scrollbar-track-indigo-200">
+                class="flex-1 relative overflow-y-auto focus:outline-none scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
                 <div class="max-w-7xl mx-auto pt-7 pb-8 px-6 lg:px-8">
                     <slot></slot>
                 </div>

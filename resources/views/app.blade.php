@@ -8,11 +8,15 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title inertia>{{ config('app.name', 'Stocktake') }}</title>
     <link rel="preconnect" href="{{ config('app.url') }}">
-    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="stylesheet" href="{{ mix('css/app.min.css') }}">
 </head>
 <body class="font-sans antialiased">
 @inertia
 </body>
 @routes
-<script src="{{ mix('js/app.js') }}" defer></script>
+<script src="{{ mix('js/app.min.js') }}" defer></script>
 </html>

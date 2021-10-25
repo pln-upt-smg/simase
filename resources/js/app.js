@@ -3,6 +3,7 @@ require('./bootstrap')
 import {createApp, h} from 'vue'
 import {createInertiaApp, Link} from '@inertiajs/inertia-vue3'
 import {InertiaProgress} from '@inertiajs/progress'
+import {Workbox} from 'workbox-window'
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Stocktake'
 
@@ -19,3 +20,8 @@ createInertiaApp({
 })
 
 InertiaProgress.init({color: '#29227D'})
+
+if ('serviceWorker' in navigator) {
+    const wb = new Workbox('/service-worker.js')
+    wb.register()
+}
