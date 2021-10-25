@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Exports\AreasExport;
 use App\Http\Controllers\Controller;
+use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\MediaHelper;
 use App\Imports\AreasImport;
 use App\Models\Area;
@@ -35,6 +36,10 @@ class AreaController extends Controller
             ])
             ->defaultSort('name')
             ->allowedSorts(['name'])
+            ->allowedFilters([
+                'areas.name',
+                InertiaHelper::searchQueryCallback('areas.name')
+            ])
             ->paginate()
             ->withQueryString();
         return inertia('Administrator/Areas/Index', [
@@ -42,7 +47,7 @@ class AreaController extends Controller
             'template' => $this->template()
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
-                'name' => 'Nama Area'
+                'areas.name' => 'Nama Area'
             ])->addColumns([
                 'name' => 'Nama Area',
                 'action' => 'Aksi'

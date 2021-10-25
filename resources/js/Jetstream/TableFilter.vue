@@ -13,7 +13,7 @@
                     <select
                         :value="filter.value"
                         @change="onChange(filter.key, $event.target.value)"
-                        class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        class="block cursor-pointer w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                         <option v-for="(option, key) in filter.options" :value="key" :key="key">{{ option }}</option>
                     </select>
                 </div>

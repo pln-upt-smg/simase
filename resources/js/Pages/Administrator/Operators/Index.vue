@@ -34,7 +34,7 @@
                     <td v-show="showColumn('name')">{{ operator.name }}</td>
                     <td v-show="showColumn('phone')">{{ operator.phone }}</td>
                     <td v-show="showColumn('nip')">{{ operator.nip }}</td>
-                    <td v-show="showColumn('role')">Operator</td>
+                    <td v-show="showColumn('role')">{{ operator.role }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>

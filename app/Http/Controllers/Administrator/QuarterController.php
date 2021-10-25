@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helper\InertiaHelper;
 use App\Models\Quarter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,13 +32,17 @@ class QuarterController extends Controller
             ])
             ->defaultSort('name')
             ->allowedSorts(['name'])
+            ->allowedFilters([
+                'quarters.name',
+                InertiaHelper::searchQueryCallback('quarters.name')
+            ])
             ->paginate()
             ->withQueryString();
         return inertia('Administrator/Quarters/Index', [
             'quarters' => $data
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
-                'name' => 'Nama Quarter'
+                'quarters.name' => 'Nama Quarter'
             ])->addColumns([
                 'name' => 'Nama Quarter',
                 'action' => 'Aksi'

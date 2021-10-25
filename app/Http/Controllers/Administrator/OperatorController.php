@@ -45,12 +45,12 @@ class OperatorController extends Controller
             ->defaultSort('name')
             ->allowedSorts(['name', 'phone', 'nip', 'role'])
             ->allowedFilters([
-                'name',
-                'phone',
-                'nip',
-                'role',
-                'role_id',
-                InertiaHelper::buildGlobalSearchQueryCallback('users.name', 'users.phone', 'users.nip', 'roles.name')
+                'users.name',
+                'users.phone',
+                'users.nip',
+                'users.role_id',
+                'roles.name',
+                InertiaHelper::searchQueryCallback('users.name', 'users.phone', 'users.nip', 'roles.name')
             ])
             ->paginate()
             ->withQueryString();
@@ -59,11 +59,11 @@ class OperatorController extends Controller
             'template' => $this->template()
         ])->table(function (InertiaTable $table) {
             $table->addSearchRows([
-                'name' => 'Nama Pegawai',
-                'phone' => 'Nomor Telepon',
-                'nip' => 'Nomor Induk Pegawai',
-                'role' => 'Peran'
-            ])->addFilter('role_id', 'Peran', [
+                'users.name' => 'Nama Pegawai',
+                'users.phone' => 'Nomor Telepon',
+                'users.nip' => 'Nomor Induk Pegawai',
+                'roles.name' => 'Peran'
+            ])->addFilter('users.role_id', 'Peran', [
                 2 => 'Operator'
             ])->addColumns([
                 'name' => 'Nama Pegawai',

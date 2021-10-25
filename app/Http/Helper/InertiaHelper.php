@@ -6,7 +6,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 abstract class InertiaHelper
 {
-    public static function buildGlobalSearchQueryCallback(string...$columns): AllowedFilter
+    public static function searchQueryCallback(string...$columns): AllowedFilter
     {
         return AllowedFilter::callback('global', function ($query, $value) use ($columns) {
             if (count($columns) > 0) {

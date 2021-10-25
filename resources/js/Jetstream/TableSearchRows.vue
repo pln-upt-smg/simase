@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full bg-indigo-100 p-4 rounded mb-2 mt-4 lg:mt-6"
+        class="w-full bg-indigo-100 p-4 rounded mt-4 lg:mt-6"
         v-show="hasFiltersEnabled">
         <div class="flex flex-row space-x-4">
             <div class="space-y-4">
@@ -12,7 +12,7 @@
                 <div v-for="(search, key) in enabledFilters" :key="key" class="h-8 flex items-center">
                     <div class="flex-grow relative">
                         <input
-                            class="block w-full sm:text-sm rounded-md shadow-sm hover:bg-gray-100 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 border-gray-300 focus:border-indigo-300"
+                            class="block w-full sm:text-sm rounded-md shadow-sm hover:bg-gray-50 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 border-gray-300 focus:border-indigo-300"
                             type="text"
                             :ref="search.key"
                             :value="search.value"

@@ -37,7 +37,7 @@
                     <component
                         :is="previousPageUrl ? 'inertia-link' : 'div'"
                         :href="previousPageUrl"
-                        :class="{'hover:bg-gray-100': previousPageUrl, 'cursor-not-allowed bg-gray-200': !previousPageUrl}"
+                        :class="{'hover:bg-gray-100': previousPageUrl, 'cursor-not-allowed bg-gray-100': !previousPageUrl}"
                         class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500">
                         <span class="sr-only">{{ translations.previous }}</span>
                         <chevron-left-icon class="h-5 w-5" aria-hidden="true"/>
@@ -57,7 +57,7 @@
                     <component
                         :is="nextPageUrl ? 'inertia-link' : 'div'"
                         :href="nextPageUrl"
-                        :class="{'hover:bg-gray-100': nextPageUrl, 'cursor-not-allowed bg-gray-200': !nextPageUrl}"
+                        :class="{'hover:bg-gray-100': nextPageUrl, 'cursor-not-allowed bg-gray-100': !nextPageUrl}"
                         class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500">
                         <span class="sr-only">{{ translations.next }}</span>
                         <chevron-right-icon class="h-5 w-5" aria-hidden="true"/>
