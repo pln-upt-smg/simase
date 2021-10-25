@@ -48,12 +48,12 @@
 
 <script>
 import {defineComponent} from 'vue'
-import JetActionSection from '@/Jetstream/ActionSection.vue'
+import JetActionSection from '@/Jetstream/ActionSection'
 import JetAlertModal from '@/Jetstream/AlertModal'
-import JetDangerButton from '@/Jetstream/DangerButton.vue'
-import JetInput from '@/Jetstream/Input.vue'
-import JetInputError from '@/Jetstream/InputError.vue'
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue'
+import JetDangerButton from '@/Jetstream/DangerButton'
+import JetInput from '@/Jetstream/Input'
+import JetInputError from '@/Jetstream/InputError'
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
 export default defineComponent({
     data() {

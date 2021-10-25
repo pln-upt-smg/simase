@@ -141,12 +141,12 @@
                                 <MenuItems
                                     class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                     <Link :href="route('profile.show')"
-                                          :class="[route().current('profile.show') ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100']">
+                                          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         Profil Saya
                                     </Link>
                                     <Link v-if="$page.props.jetstream.hasApiFeatures"
-                                          :href="route('api-tokens.index')"
-                                          :class="[route().current('api-tokens.index') ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100']">
+                                          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                          :href="route('api-tokens.index')">
                                         API Tokens
                                     </Link>
                                     <form method="POST" @submit.prevent="logout">

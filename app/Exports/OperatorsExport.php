@@ -35,6 +35,7 @@ class OperatorsExport implements FromCollection, WithHeadings, WithMapping
     public function collection(): Collection
     {
         return User::whereRoleId(Role::operator()?->id ?? 2)
+            ->whereNull('deleted_at')
             ->orderBy('name')
             ->get()
             ->load('role');

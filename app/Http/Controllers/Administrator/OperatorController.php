@@ -45,6 +45,10 @@ class OperatorController extends Controller
             ->defaultSort('name')
             ->allowedSorts(['name', 'phone', 'nip', 'role'])
             ->allowedFilters([
+                'name',
+                'phone',
+                'nip',
+                'role',
                 'role_id',
                 InertiaHelper::buildGlobalSearchQueryCallback('users.name', 'users.phone', 'users.nip', 'roles.name')
             ])

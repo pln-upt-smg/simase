@@ -9,3 +9,10 @@
 button, textarea, input, select, a {
     -webkit-tap-highlight-color: transparent;
 }
+
+/**
+ * Clicakble Inertia.js table header
+ */
+.clickable-table-header th:hover {
+    cursor: pointer;
+}

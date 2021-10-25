@@ -2,7 +2,7 @@
     <Menu as="div" class="relative inline-block text-left">
         <div>
             <MenuButton
-                class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                class="inline-flex justify-center w-full rounded-md border border-gray-300 focus:border-indigo-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-100 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 {{ name }}
                 <ChevronDownIcon class="-mr-1 ml-2 h-5 w-5" aria-hidden="true"/>
             </MenuButton>

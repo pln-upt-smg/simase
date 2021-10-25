@@ -51,12 +51,12 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
 
     protected function resolveRoleId(string $roleName): int
     {
-        $role = Role::whereName(Str::title(trim($roleName)))->first();
+        $role = Role::whereName(Str::title(trim($roleName)))->whereNull('deleted_at')->first();
         return is_null($role) ? 2 : $role->id;
     }
 
     public static function beforeSheet(): void
     {
-        User::whereRoleId(Role::operator()?->id ?? 2)->delete();
+        User::whereRoleId(Role::operator()?->id ?? 2)->whereNull('deleted_at')->delete();
     }
 }

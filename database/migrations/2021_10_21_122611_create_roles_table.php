@@ -17,6 +17,7 @@ class CreateRolesTable extends Migration
             $table->id();
             $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('role_id')->after('id')->constrained();

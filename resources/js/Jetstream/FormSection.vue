@@ -28,7 +28,7 @@
 
 <script>
 import {defineComponent} from 'vue'
-import JetSectionTitle from './SectionTitle.vue'
+import JetSectionTitle from './SectionTitle'
 
 export default defineComponent({
     emits: ['submitted'],

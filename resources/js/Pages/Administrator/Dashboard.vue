@@ -9,8 +9,8 @@
 
 <script>
 import {defineComponent} from 'vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
-import GridHeader from '@/Layouts/GridHeader.vue'
+import AppLayout from '@/Layouts/AppLayout'
+import GridHeader from '@/Layouts/GridHeader'
 
 export default defineComponent({
     components: {

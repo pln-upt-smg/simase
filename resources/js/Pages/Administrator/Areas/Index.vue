@@ -3,7 +3,7 @@
         <grid-header>
             <jet-breadcrumbs :pages="[{name: 'Area', href: 'areas.index', current: true}]"/>
             <div class="text-left lg:text-right">
-                <div class="pt-9 lg:pt-0 mt-2">
+                <div class="pt-4 lg:pt-0 mt-2">
                     <jet-button @click="confirmStore" class="ml-0 mr-2">
                         <plus-icon class="h-5 w-5 text-white" aria-hidden="true"/>
                     </jet-button>
@@ -16,18 +16,15 @@
                 </div>
             </div>
         </grid-header>
-        <Table
+        <jet-table
             :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="areas"
-            class="pt-14 lg:pt-0"
-        >
+            class="pt-10 lg:pt-0">
             <template #head>
-                <tr>
-                    <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Area</th>
-                    <th v-show="showColumn('action')"></th>
-                </tr>
+                <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Area</th>
+                <th v-show="showColumn('action')"></th>
             </template>
             <template #body>
                 <tr v-for="area in areas.data" :key="area.id">
@@ -52,7 +49,7 @@
                     </td>
                 </tr>
             </template>
-        </Table>
+        </jet-table>
         <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah area">
             <template #content>
                 Silakan masukkan data area yang ingin ditambahkan.
@@ -205,34 +202,25 @@
 
 <script>
 import {defineComponent} from 'vue'
-import {Link as JetLink} from '@inertiajs/inertia-vue3'
-import AppLayout from '@/Layouts/AppLayout.vue'
-import GridHeader from '@/Layouts/GridHeader.vue'
+import {Link as JetLink, useForm} from '@inertiajs/inertia-vue3'
+import {MenuItem} from '@headlessui/vue'
+import {DocumentAddIcon, DownloadIcon, PencilAltIcon, PlusIcon, TrashIcon, UploadIcon} from '@heroicons/vue/outline'
+import AppLayout from '@/Layouts/AppLayout'
+import GridHeader from '@/Layouts/GridHeader'
 import JetButton from '@/Jetstream/Button'
 import JetDangerButton from '@/Jetstream/DangerButton'
 import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 import JetBreadcrumbs from '@/Jetstream/Breadcrumbs'
-import JetDropdown from '@/Jetstream/Dropdown.vue'
-import JetModal from '@/Jetstream/Modal.vue'
-import JetAlertModal from '@/Jetstream/AlertModal.vue'
+import JetDropdown from '@/Jetstream/Dropdown'
+import JetModal from '@/Jetstream/Modal'
+import JetAlertModal from '@/Jetstream/AlertModal'
 import JetImportModal from '@/Jetstream/ImportModal'
 import JetExportModal from '@/Jetstream/ExportModal'
-import JetInput from '@/Jetstream/Input.vue'
+import JetInput from '@/Jetstream/Input'
 import JetSuccessNotification from '@/Jetstream/SuccessNotification'
 import JetDangerNotification from '@/Jetstream/DangerNotification'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
-import {MenuItem} from '@headlessui/vue'
-import {Components, InteractsWithQueryBuilder, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder'
-import {DocumentAddIcon, DownloadIcon, PencilAltIcon, PlusIcon, TrashIcon, UploadIcon} from '@heroicons/vue/outline'
-
-Components.Pagination.setTranslations({
-    no_results_found: "Tidak ada data tersedia",
-    previous: "Sebelumnya",
-    next: "Selanjutnya",
-    to: "hingga",
-    of: "dari",
-    results: "data"
-})
+import JetTable from '@/Jetstream/Table'
 
 export default defineComponent({
     data() {
@@ -252,29 +240,29 @@ export default defineComponent({
             confirmingExport: false,
             showingSuccessNotification: false,
             showingDangerNotification: false,
-            storeForm: this.$inertia.form({
+            storeForm: useForm({
                 name: null
             }),
-            updateForm: this.$inertia.form({
+            updateForm: useForm({
                 id: null,
                 name: null
             }),
-            destroyForm: this.$inertia.form({
+            destroyForm: useForm({
                 id: null
             }),
-            importForm: this.$inertia.form({
+            importForm: useForm({
                 file: null
             })
         }
     },
-    mixins: [InteractsWithQueryBuilder],
+    mixins: [JetTable.props.engine],
     props: {
         areas: Object
     },
     components: {
-        Table: Tailwind2.Table,
         AppLayout,
         GridHeader,
+        JetTable,
         JetBreadcrumbs,
         JetDropdown,
         JetButton,
@@ -370,28 +358,37 @@ export default defineComponent({
             this.confirmingStore = false
             setTimeout(() => {
                 this.clearErrors()
+                this.storeForm.clearErrors()
                 this.storeForm.reset()
+                this.storeForm.name = null
             }, 500)
         },
         closeUpdateModal() {
             this.confirmingUpdate = false
             setTimeout(() => {
                 this.clearErrors()
+                this.updateForm.clearErrors()
                 this.updateForm.reset()
+                this.updateForm.id = null
+                this.updateForm.name = null
             }, 500)
         },
         closeDestroyModal() {
             this.confirmingDestroy = false
             setTimeout(() => {
                 this.clearErrors()
+                this.destroyForm.clearErrors()
                 this.destroyForm.reset()
+                this.destroyForm.id = null
             }, 500)
         },
         closeImportModal() {
             this.confirmingImport = false
             setTimeout(() => {
                 this.clearErrors()
+                this.importForm.clearErrors()
                 this.importForm.reset()
+                this.importForm.file = null
             }, 500)
         },
         closeExportModal() {

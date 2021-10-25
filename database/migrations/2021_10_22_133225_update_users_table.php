@@ -15,6 +15,7 @@ class UpdateUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('phone', 50)->after('name');
+            $table->softDeletes();
         });
     }
 
@@ -27,6 +28,7 @@ class UpdateUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('phone');
+            $table->dropSoftDeletes();
         });
     }
 }
