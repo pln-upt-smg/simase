@@ -11,7 +11,7 @@
                     v-show="showRow(searchOption)"
                     :key="searchOption.key"
                     @click.prevent="enableSearch(searchOption.key)"
-                    class="text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    class="text-left w-full px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem">
                     {{ searchOption.label }}
                 </button>
