@@ -1,5 +1,6 @@
 <template>
-    <div aria-live="assertive" class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start z-20">
+    <div aria-live="assertive"
+         class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start z-20">
         <div class="w-full flex flex-col items-center space-y-4 sm:items-end">
             <transition enter-active-class="transform ease-out duration-300 transition"
                         enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -7,7 +8,7 @@
                         leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100"
                         leave-to-class="opacity-0">
                 <div v-if="show"
-                     class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden mt-0 lg:mt-14">
+                     class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden mt-0 lg:mt-14 shadow-xl">
                     <div class="p-4">
                         <div class="flex items-start">
                             <div class="flex-shrink-0">

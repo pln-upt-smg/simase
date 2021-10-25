@@ -7,7 +7,7 @@
                         leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100"
                         leave-to-class="opacity-0">
                 <div v-if="show"
-                     class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden mt-0 lg:mt-14">
+                     class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden mt-0 lg:mt-14 shadow-xl">
                     <div class="p-4">
                         <div class="flex items-start">
                             <div class="flex-shrink-0">
