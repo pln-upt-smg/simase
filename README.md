@@ -11,7 +11,7 @@
     <img alt="PHP Version" src="https://img.shields.io/badge/php-%3E%3D%208.0-blue">
 </a>
 <a href="https://nodejs.org/en/download">
-    <img alt="Node Version" src="https://img.shields.io/badge/node-%3E%3D%2016.0.0-brightgreen">
+    <img alt="Node Version" src="https://img.shields.io/badge/node-%3E%3D%2016-brightgreen">
 </a>
 <a href="https://nodejs.org/en/download">
     <img alt="NPM Version" src="https://img.shields.io/badge/npm-%3E%3D%207-red">
@@ -24,9 +24,16 @@
 
 Item Stock Management System for Unilever Indonesia.
 
-🔨 Built with [Laravel Jetstream](https://jetstream.laravel.com) and [Inertia.js](https://inertiajs.com) for Single Page Application builder with [PWA](https://web.dev/progressive-web-apps) enabled.
+🔨 Built with [Laravel Jetstream](https://jetstream.laravel.com) and [Inertia.js](https://inertiajs.com) for Single Page Application builder ([PWA](https://web.dev/progressive-web-apps) enabled).
 
 ⚡ Supercharged with [Laravel Octane](https://laravel.com/docs/8.x/octane) for massive server performance boost.
+
+<br/>
+
+> ⚠️ **Important Notes**
+>
+> - [Swoole](https://www.swoole.co.uk) need to be installed in the server in order to use Laravel Octane.
+> - Please respect the Laravel Octane [rules and limitations](https://laravel.com/docs/8.x/octane#dependency-injection-and-octane) for Laravel Container Injection in order to avoid memory leaks.
 
 <br/>
 
@@ -54,9 +61,10 @@ Item Stock Management System for Unilever Indonesia.
 20. [Supercronic](https://github.com/aptible/supercronic)
 21. [Supervisor](http://supervisord.org/index.html)
 22. [MySQL 5.x](https://dev.mysql.com)
-23. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
-24. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
-25. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
+23. [Swoole](https://www.swoole.co.uk) <sup><i>optional</i></sup>
+24. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
+25. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
+26. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
 
 <br/>
 
