@@ -85,8 +85,8 @@ class OperatorService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20', Rule::unique('users')->whereDeletedAt(null)],
-            'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users')->whereDeletedAt(null)],
+            'phone' => ['required', 'string', 'max:20', Rule::unique('users')->whereNull('deleted_at')],
+            'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users')->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ]);
         User::create([
@@ -108,8 +108,8 @@ class OperatorService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($operator->id)->whereDeletedAt(null)],
-            'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users')->ignore($operator->id)->whereDeletedAt(null)],
+            'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($operator->id)->whereNull('deleted_at')],
+            'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users')->ignore($operator->id)->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ]);
         $operator->updateOrFail([

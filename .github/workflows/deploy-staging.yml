@@ -37,17 +37,18 @@ jobs:
             php artisan cloudflare:reload
             php artisan optimize
             php artisan view:cache
-            npm run prod
+            npm run prod --silent
             sudo service redis-server restart
-            supervisorctl restart stocktake-web-cron:stocktake-web-cron_00
-            supervisorctl restart stocktake-web-worker:stocktake-web-worker_00
-            supervisorctl restart stocktake-web-worker:stocktake-web-worker_01
-            supervisorctl restart stocktake-web-worker:stocktake-web-worker_02
-            supervisorctl restart stocktake-web-worker:stocktake-web-worker_03
-            supervisorctl restart stocktake-web-worker:stocktake-web-worker_04
-            supervisorctl restart stocktake-web-worker:stocktake-web-worker_05
-            supervisorctl restart stocktake-web-worker:stocktake-web-worker_06
-            supervisorctl restart stocktake-web-worker:stocktake-web-worker_07
+            sudo supervisorctl restart stocktake-web-cron:stocktake-web-cron_00
+            sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_00
+            sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_01
+            sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_02
+            sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_03
+            sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_04
+            sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_05
+            sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_06
+            sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_07
+            sudo php artisan octane:reload
             sudo rm -rf /var/cache/ngx_pagespeed/*
             php artisan env
             php artisan up

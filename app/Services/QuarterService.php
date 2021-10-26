@@ -56,7 +56,7 @@ class QuarterService
     public function store(Request $request): void
     {
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', Rule::unique('quarters')->whereDeletedAt(null)]
+            'name' => ['required', 'string', 'max:255', Rule::unique('quarters')->whereNull('deleted_at')]
         ]);
         Quarter::create([
             'name' => Str::title($request->name)
@@ -72,7 +72,7 @@ class QuarterService
     public function update(Request $request, Quarter $quarter): void
     {
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', Rule::unique('quarters')->ignore($quarter->id)->whereDeletedAt(null)]
+            'name' => ['required', 'string', 'max:255', Rule::unique('quarters')->ignore($quarter->id)->whereNull('deleted_at')]
         ]);
         $quarter->updateOrFail([
             'name' => Str::title($request->name)
