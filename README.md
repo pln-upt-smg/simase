@@ -28,20 +28,21 @@ Item Stock Management System for Unilever Indonesia.
 8. [Laravel Jetstream](https://jetstream.laravel.com)
 9. [Laravel Excel](https://laravel-excel.com)
 10. [Laravel Fluent](https://github.com/lepikhinb/laravel-fluent)
-11. [Laravel Cloudflare](https://github.com/monicahq/laravel-cloudflare) <sup><i>optional</i></sup>
-12. [Laravel Sail](https://laravel.com/docs/8.x/sail) <sup><i>optional</i></sup>
-13. [PHP PSR2 Coding Style Standard](https://www.php-fig.org/psr/psr-2)
-14. [PHPStan](https://phpstan.org/) (with [Larastan](https://github.com/nunomaduro/larastan) extension)
-15. [Inertia.js](https://inertiajs.com)
-16. [Inertia.js Tables](https://github.com/protonemedia/inertiajs-tables-laravel-query-builder)
-17. [Vue.js](https://vuejs.org)
-18. [Webpack](https://webpack.js.org)
-19. [Supercronic](https://github.com/aptible/supercronic)
-20. [Supervisor](http://supervisord.org/index.html)
-21. [MySQL 5.x](https://dev.mysql.com)
-22. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
-23. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
-24. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
+11. [Laravel Octane](https://laravel.com/docs/8.x/octane) <sup><i>optional</i></sup>
+12. [Laravel Cloudflare](https://github.com/monicahq/laravel-cloudflare) <sup><i>optional</i></sup>
+13. [Laravel Sail](https://laravel.com/docs/8.x/sail) <sup><i>optional</i></sup>
+14. [PHP PSR2 Coding Style Standard](https://www.php-fig.org/psr/psr-2)
+15. [PHPStan](https://phpstan.org/) (with [Larastan](https://github.com/nunomaduro/larastan) extension)
+16. [Inertia.js](https://inertiajs.com)
+17. [Inertia.js Tables](https://github.com/protonemedia/inertiajs-tables-laravel-query-builder)
+18. [Vue.js](https://vuejs.org)
+19. [Webpack](https://webpack.js.org)
+20. [Supercronic](https://github.com/aptible/supercronic)
+21. [Supervisor](http://supervisord.org/index.html)
+22. [MySQL 5.x](https://dev.mysql.com)
+23. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
+24. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
+25. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
 
 <br/>
 

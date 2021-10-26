@@ -2,14 +2,19 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
     mode: 'jit',
-    purge: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './vendor/laravel/jetstream/**/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-        './resources/js/**/*.vue',
-        './node_modules/@protonemedia/inertiajs-tables-laravel-query-builder/**/*.{js,vue}'
-    ],
+    purge: {
+        content: [
+            './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+            './vendor/laravel/jetstream/**/*.blade.php',
+            './storage/framework/views/*.php',
+            './resources/views/**/*.blade.php',
+            './resources/js/**/*.vue',
+            './node_modules/@protonemedia/inertiajs-tables-laravel-query-builder/**/*.{js,vue}'
+        ],
+        safelist: [
+            'shadow-lg'
+        ]
+    },
     theme: {
         extend: {
             fontFamily: {
@@ -21,8 +26,5 @@ module.exports = {
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
         require('tailwind-scrollbar')
-    ],
-    safelist: [
-        'shadow-lg'
     ]
 };

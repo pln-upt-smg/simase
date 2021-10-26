@@ -12,6 +12,4 @@ Route::group([
 
     Route::get('export', [OperatorController::class, 'export'])->name('operators.export');
 
-    Route::get('template', [OperatorController::class, 'template'])->name('operators.template');
-
 });

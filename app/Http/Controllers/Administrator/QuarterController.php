@@ -3,21 +3,32 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
-use App\Http\Helper\InertiaHelper;
 use App\Models\Quarter;
+use App\Services\QuarterService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
 class QuarterController extends Controller
 {
+    /**
+     * @var QuarterService
+     */
+    private QuarterService $quarterService;
+
+    /**
+     * Create a new Controller instance.
+     *
+     * @param QuarterService $quarterService
+     */
+    public function __construct(QuarterService $quarterService)
+    {
+        $this->quarterService = $quarterService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,28 +36,10 @@ class QuarterController extends Controller
      */
     public function index(): \Inertia\Response|ResponseFactory
     {
-        $data = QueryBuilder::for(Quarter::class)
-            ->select([
-                'quarters.id as id',
-                'quarters.name as name'
-            ])
-            ->defaultSort('name')
-            ->allowedSorts(['name'])
-            ->allowedFilters([
-                'quarters.name',
-                InertiaHelper::searchQueryCallback('quarters.name')
-            ])
-            ->paginate()
-            ->withQueryString();
         return inertia('Administrator/Quarters/Index', [
-            'quarters' => $data
+            'quarters' => $this->quarterService->tableData()
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
-                'quarters.name' => 'Nama Quarter'
-            ])->addColumns([
-                'name' => 'Nama Quarter',
-                'action' => 'Aksi'
-            ]);
+            $this->quarterService->tableMeta($table);
         });
     }
 
@@ -59,12 +52,7 @@ class QuarterController extends Controller
      */
     public function store(Request $request): Response|RedirectResponse
     {
-        Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255', 'unique:quarters']
-        ])->validate();
-        Quarter::create([
-            'name' => Str::title($request->name)
-        ]);
+        $this->quarterService->store($request);
         return back();
     }
 
@@ -78,13 +66,7 @@ class QuarterController extends Controller
      */
     public function update(Request $request, Quarter $quarter): Response|RedirectResponse
     {
-        Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255', Rule::unique('quarters')->ignore($quarter->id)]
-        ])->validate();
-        $quarter->updateOrFail([
-            'name' => Str::title($request->name)
-        ]);
-        $quarter->save();
+        $this->quarterService->update($request, $quarter);
         return back();
     }
 
@@ -97,7 +79,7 @@ class QuarterController extends Controller
      */
     public function destroy(Quarter $quarter): Response|RedirectResponse
     {
-        $quarter->deleteOrFail();
+        $this->quarterService->destroy($quarter);
         return back();
     }
 }

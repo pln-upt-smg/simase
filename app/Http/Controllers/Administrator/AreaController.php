@@ -2,26 +2,34 @@
 
 namespace App\Http\Controllers\Administrator;
 
-use App\Exports\AreasExport;
 use App\Http\Controllers\Controller;
-use App\Http\Helper\InertiaHelper;
-use App\Http\Helper\MediaHelper;
-use App\Imports\AreasImport;
 use App\Models\Area;
+use App\Services\AreaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
 class AreaController extends Controller
 {
+    /**
+     * @var AreaService
+     */
+    private AreaService $areaService;
+
+    /**
+     * Create a new Controller instance.
+     *
+     * @param AreaService $areaService
+     */
+    public function __construct(AreaService $areaService)
+    {
+        $this->areaService = $areaService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -29,29 +37,11 @@ class AreaController extends Controller
      */
     public function index(): \Inertia\Response|ResponseFactory
     {
-        $data = QueryBuilder::for(Area::class)
-            ->select([
-                'areas.id as id',
-                'areas.name as name'
-            ])
-            ->defaultSort('name')
-            ->allowedSorts(['name'])
-            ->allowedFilters([
-                'areas.name',
-                InertiaHelper::searchQueryCallback('areas.name')
-            ])
-            ->paginate()
-            ->withQueryString();
         return inertia('Administrator/Areas/Index', [
-            'areas' => $data,
-            'template' => $this->template()
+            'areas' => $this->areaService->tableData(),
+            'template' => $this->areaService->template()
         ])->table(function (InertiaTable $table) {
-            $table->addSearchRows([
-                'areas.name' => 'Nama Area'
-            ])->addColumns([
-                'name' => 'Nama Area',
-                'action' => 'Aksi'
-            ]);
+            $this->areaService->tableMeta($table);
         });
     }
 
@@ -64,12 +54,7 @@ class AreaController extends Controller
      */
     public function store(Request $request): Response|RedirectResponse
     {
-        Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255', 'unique:areas']
-        ])->validate();
-        Area::create([
-            'name' => Str::title($request->name)
-        ]);
+        $this->areaService->store($request);
         return back();
     }
 
@@ -83,13 +68,7 @@ class AreaController extends Controller
      */
     public function update(Request $request, Area $area): Response|RedirectResponse
     {
-        Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255', Rule::unique('areas')->ignore($area->id)]
-        ])->validate();
-        $area->updateOrFail([
-            'name' => Str::title($request->name)
-        ]);
-        $area->save();
+        $this->areaService->update($request, $area);
         return back();
     }
 
@@ -102,7 +81,7 @@ class AreaController extends Controller
      */
     public function destroy(Area $area): Response|RedirectResponse
     {
-        $area->deleteOrFail();
+        $this->areaService->destroy($area);
         return back();
     }
 
@@ -115,7 +94,7 @@ class AreaController extends Controller
      */
     public function import(Request $request): Response|RedirectResponse
     {
-        MediaHelper::importSpreadsheet($request, new AreasImport);
+        $this->areaService->import($request);
         return back();
     }
 
@@ -127,16 +106,6 @@ class AreaController extends Controller
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new AreasExport, new Area);
-    }
-
-    /**
-     * File URL for the resource import template
-     *
-     * @return string
-     */
-    public function template(): string
-    {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+        return $this->areaService->export();
     }
 }

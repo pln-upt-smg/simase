@@ -12,6 +12,4 @@ Route::group([
 
     Route::get('export', [AreaController::class, 'export'])->name('areas.export');
 
-    Route::get('template', [AreaController::class, 'template'])->name('areas.template');
-
 });
