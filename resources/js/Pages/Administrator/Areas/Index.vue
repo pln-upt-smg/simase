@@ -21,7 +21,7 @@
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="areas"
-            class="pt-10 lg:pt-0">
+            class="pt-12 lg:pt-0">
             <template #head>
                 <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Area</th>
                 <th v-show="showColumn('action')"></th>

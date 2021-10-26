@@ -21,7 +21,7 @@
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="operators"
-            class="pt-10 lg:pt-0">
+            class="pt-12 lg:pt-0">
             <template #head>
                 <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Pegawai</th>
                 <th v-show="showColumn('phone')" @click.prevent="sortBy('phone')">Nomor Telepon</th>

@@ -7,14 +7,14 @@
 <a href="https://stocktake.evercode.software">
     <img alt="Staging" src="https://img.shields.io/website?label=staging&up_message=deployed&url=https%3A%2F%2Fstocktake.evercode.software">
 </a>
-<a href="https://www.php.net/releases">
-    <img alt="PHP Version" src="https://img.shields.io/badge/php-%3E%3D%208.0-blue">
-</a>
 <a href="https://nodejs.org/en/download">
     <img alt="Node Version" src="https://img.shields.io/badge/node-%3E%3D%2016-brightgreen">
 </a>
 <a href="https://nodejs.org/en/download">
     <img alt="NPM Version" src="https://img.shields.io/badge/npm-%3E%3D%207-red">
+</a>
+<a href="https://www.php.net/releases">
+    <img alt="PHP Version" src="https://img.shields.io/badge/php-%3E%3D%208.0-blue">
 </a>
 <a href="https://web.dev/progressive-web-apps">
     <img alt="PWA Support" src="https://img.shields.io/badge/%20pwa-enabled-blueviolet">
@@ -33,7 +33,7 @@ Item Stock Management System for Unilever Indonesia.
 > ⚠️ **Important Notes**
 >
 > - [Swoole](https://www.swoole.co.uk) need to be installed in the server in order to use Laravel Octane.
-> - Please respect the Laravel Octane [rules and limitations](https://laravel.com/docs/8.x/octane#dependency-injection-and-octane) for Laravel Container Injection in order to avoid memory leaks.
+> - Please respect the Laravel Octane [rules and limitations](https://laravel.com/docs/8.x/octane#dependency-injection-and-octane) in order to avoid memory leaks.
 
 <br/>
 
