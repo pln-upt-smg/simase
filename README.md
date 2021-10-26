@@ -7,12 +7,26 @@
 <a href="https://stocktake.evercode.software">
     <img alt="Staging" src="https://img.shields.io/website?label=staging&up_message=deployed&url=https%3A%2F%2Fstocktake.evercode.software">
 </a>
-
-<br/>
+<a href="https://www.php.net/releases">
+    <img alt="PHP Version" src="https://img.shields.io/badge/php-%3E%3D%208.0-blue">
+</a>
+<a href="https://nodejs.org/en/download">
+    <img alt="Node Version" src="https://img.shields.io/badge/node-%3E%3D%2016.0.0-brightgreen">
+</a>
+<a href="https://nodejs.org/en/download">
+    <img alt="NPM Version" src="https://img.shields.io/badge/npm-%3E%3D%207-red">
+</a>
+<a href="https://web.dev/progressive-web-apps">
+    <img alt="PWA Support" src="https://img.shields.io/badge/%20pwa-enabled-blueviolet">
+</a>
 
 # 📦 stocktake
 
 Item Stock Management System for Unilever Indonesia.
+
+🔨 Built with [Laravel Jetstream](https://jetstream.laravel.com) and [Inertia.js](https://inertiajs.com) for Single Page Application builder with [PWA](https://web.dev/progressive-web-apps) enabled.
+
+⚡ Supercharged with [Laravel Octane](https://laravel.com/docs/8.x/octane) for massive server performance boost.
 
 <br/>
 
@@ -89,7 +103,7 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 1. PHP `v8.0`
 2. Composer `v2`
 3. MySQL Server `v5.7`
-4. NodeJS `v15`
+4. NodeJS `v16`
 5. npm `v7`
 6. [Laragon](https://laragon.org/) / [Laravel Valet](https://laravel.com/docs/8.x/valet) <sup><i>optional</i></sup>
 
@@ -138,7 +152,7 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 1. PHP `v8.0`
 2. Composer `v2`
 3. MySQL Server `v5.7`
-4. NodeJS `v15`
+4. NodeJS `v16`
 5. npm `v7`
 6. [Nginx](https://nginx.org/en/download.html) / [Apache2](https://httpd.apache.org/download.cgi)
    / [LiteSpeed](https://openlitespeed.org/Downloads/)

@@ -14,13 +14,13 @@
                                  enter-from="-translate-x-full" enter-to="translate-x-0"
                                  leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0"
                                  leave-to="-translate-x-full">
-                    <div class="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-indigo-700">
+                    <div class="relative flex-1 flex flex-col max-w-xs w-full pt-5 bg-indigo-700">
                         <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0"
                                          enter-to="opacity-100" leave="ease-in-out duration-300"
                                          leave-from="opacity-100" leave-to="opacity-0">
                             <div class="absolute top-0 right-0 -mr-12 pt-2">
                                 <button type="button"
-                                        class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                                        class="ml-1 flex items-center justify-center h-10 w-10 rounded-full"
                                         @click="sidebarOpen = false">
                                     <span class="sr-only">Close sidebar</span>
                                     <XIcon class="h-6 w-6 text-white" aria-hidden="true"/>
@@ -31,9 +31,9 @@
                             <span class="text-2xl font-bold text-white">📦 Stocktake</span>
                         </div>
                         <div
-                            class="flex-1 h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
+                            class="flex-1 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200 mt-4 pb-4">
                             <nav>
-                                <div class="px-4 space-y-2 pt-6">
+                                <div class="px-4 space-y-2 pt-2">
                                     <span class="text-base text-white font-semibold">Menu</span>
                                     <Link v-for="item in navigationMenu" :key="item.name" :href="route(item.href)"
                                           :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
@@ -139,7 +139,7 @@
                                         leave-from-class="transform opacity-100 scale-100"
                                         leave-to-class="transform opacity-0 scale-95">
                                 <MenuItems
-                                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white">
                                     <Link :href="route('profile.show')"
                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         Profil Saya

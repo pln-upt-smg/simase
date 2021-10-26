@@ -84,7 +84,8 @@ table >>> tr:hover td {
         </slot>
         <slot name="tableWrapper" :meta="meta">
             <div class="flex flex-col">
-                <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div
+                    class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                         <div class="shadow border-b border-gray-200">
                             <slot name="table">

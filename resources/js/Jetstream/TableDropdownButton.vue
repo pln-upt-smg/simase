@@ -19,7 +19,7 @@
                 leave-to-class="transform opacity-0 scale-95">
                 <div ref="tooltip" class="absolute z-20" v-show="opened">
                     <div
-                        class="mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        class="mt-2 w-64 rounded-md shadow-lg bg-white">
                         <slot/>
                     </div>
                 </div>
