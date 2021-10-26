@@ -71,7 +71,7 @@ class QuarterService
      */
     public function update(Request $request, Quarter $quarter): void
     {
-        $this->validate([
+        $this->validate($request, [
             'name' => ['required', 'string', 'max:255', Rule::unique('quarters')->ignore($quarter->id)->whereDeletedAt(null)]
         ]);
         $quarter->updateOrFail([

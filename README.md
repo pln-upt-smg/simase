@@ -185,9 +185,11 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
       sudo mkdir ~/supercronic && \
       sudo touch ~/supercronic/stocktake-web.cron && \
       sudo echo "path=/var/www/stocktake/web" >> ~/supercronic/stocktake-web.cron && \
+      sudo echo "* * * * * php $path/artisan schedule:run >> /dev/null 2>&1" >> ~/supercronic/stocktake-web.cron && \
       sudo echo "0 1 * * * rm -rf $path/storage/logs/laravel.log && touch $path/storage/logs/laravel.log" >> ~/supercronic/stocktake-web.cron && \
       sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-cron.log && touch $path/storage/logs/stocktake-web-cron.log" >> ~/supercronic/stocktake-web.cron && \
       sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-worker.log && touch $path/storage/logs/stocktake-web-worker.log" >> ~/supercronic/stocktake-web.cron && \
+      sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-octane.log && touch $path/storage/logs/stocktake-web-octane.log" >> ~/supercronic/stocktake-web.cron && \
       sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-access.log && touch $path/storage/logs/nginx-access.log" >> ~/supercronic/stocktake-web.cron && \
       sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-error.log && touch $path/storage/logs/nginx-error.log" >> ~/supercronic/stocktake-web.cron
       ```
@@ -227,6 +229,18 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
       numprocs=8
       redirect_stderr=true
       stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-worker.log
+      stdout_logfile_maxbytes=0
+      stopwaitsecs=3600
+       
+      [program:stocktake-web-octane]
+      process_name=%(program_name)s_%(process_num)02d
+      command=php /var/www/stocktake/web/artisan octane:start --max-requests=500
+      autostart=true
+      autorestart=true
+      user=root
+      numprocs=1
+      redirect_stderr=true
+      stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-octane.log
       stdout_logfile_maxbytes=0
       stopwaitsecs=3600
       ```

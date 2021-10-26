@@ -75,7 +75,7 @@ class AreaService
      */
     public function update(Request $request, Area $area): void
     {
-        $this->validate([
+        $this->validate($request, [
             'name' => ['required', 'string', 'max:255', Rule::unique('areas')->ignore($area->id)->whereDeletedAt(null)]
         ]);
         $area->updateOrFail([
