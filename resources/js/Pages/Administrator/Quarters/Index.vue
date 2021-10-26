@@ -93,7 +93,7 @@
         <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus quarter">
             <template #content>
                 Apakah Anda yakin ingin menghapus quarter ini? Setelah quarter dihapus, semua sumber daya
-                dan datanya akan dihapus secara sementara. Aksi ini tidak dapat dibatalkan.
+                dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
                 <jet-danger-button @click="destroy"

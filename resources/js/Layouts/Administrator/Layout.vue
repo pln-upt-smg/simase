@@ -20,10 +20,10 @@
                                          leave-from="opacity-100" leave-to="opacity-0">
                             <div class="absolute top-0 right-0 -mr-12 pt-2">
                                 <button type="button"
-                                        class="ml-1 flex items-center justify-center h-10 w-10 rounded-full"
+                                        class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                                         @click="sidebarOpen = false">
                                     <span class="sr-only">Close sidebar</span>
-                                    <XIcon class="h-6 w-6 text-white" aria-hidden="true"/>
+                                    <x-icon class="h-6 w-6 text-white" aria-hidden="true"/>
                                 </button>
                             </div>
                         </TransitionChild>
@@ -96,10 +96,10 @@
         <div class="flex flex-col w-0 flex-1 overflow-hidden">
             <div class="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
                 <button type="button"
-                        class="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
+                        class="px-4 border-r border-gray-200 text-gray-500 md:hidden"
                         @click="sidebarOpen = true">
                     <span class="sr-only">Buka sidebar</span>
-                    <MenuAlt2Icon class="h-6 w-6" aria-hidden="true"/>
+                    <menu-alt2-icon class="h-6 w-6" aria-hidden="true"/>
                 </button>
                 <div class="flex-1 px-4 flex justify-between">
                     <div class="flex-1 flex">
