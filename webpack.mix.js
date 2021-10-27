@@ -46,8 +46,13 @@ mix.vue()
     .minify('public/css/app.css', 'public/css')
     .sourceMaps()
     .generateSW({
+        runtimeCaching: [{
+            handler: 'NetworkFirst'
+        }],
         maximumFileSizeToCacheInBytes: 10000000,
-        skipWaiting: true
+        skipWaiting: true,
+        cleanupOutdatedCaches: true,
+        sourcemap: true
     })
 
 if (mix.inProduction()) {
