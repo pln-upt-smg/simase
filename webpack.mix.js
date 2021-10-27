@@ -22,7 +22,8 @@ mix.webpackConfig({
             afterBuild: true,
             src: './storage/framework/views',
             dest: './storage/framework/views',
-            ignoreFileNameRegex: /\.(gitignore)$/,
+            ignoreFileNameRegex: /\.(gitignore|php)$/,
+            ignoreFileContentsRegex: /(<\?xml version)|(mail::message)/,
             rules: {
                 useShortDoctype: true,
                 collapseBooleanAttributes: true,
@@ -46,8 +47,16 @@ mix.vue()
     .minify('public/css/app.css', 'public/css')
     .sourceMaps()
     .generateSW({
+        exclude: [/\.(?:png|jpg|jpeg|svg)$/],
         runtimeCaching: [{
-            handler: 'NetworkFirst'
+            urlPattern: /\.(?:png|jpg|jpeg|svg)$/,
+            handler: 'CacheFirst',
+            options: {
+                cacheName: 'images',
+                expiration: {
+                    maxEntries: 10,
+                },
+            },
         }],
         maximumFileSizeToCacheInBytes: 10000000,
         skipWaiting: true,
@@ -55,8 +64,6 @@ mix.vue()
         sourcemap: true
     })
 
-if (mix.inProduction()) {
-    mix.version()
-}
+if (mix.inProduction()) mix.version()
 
 mix.disableNotifications()
