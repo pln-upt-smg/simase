@@ -187,8 +187,8 @@ import {
 
 const navigationMenu = [
     {name: 'Dashboard', href: 'dashboard', icon: HomeIcon},
-    {name: 'Periode', href: 'periods.index', icon: CalendarIcon},
     {name: 'Area', href: 'areas.index', icon: LocationMarkerIcon},
+    {name: 'Periode', href: 'periods.index', icon: CalendarIcon},
     {name: 'Material', href: 'materials.index', icon: ArchiveIcon},
     {name: 'Actual Stock', href: 'login', icon: CollectionIcon},
     {name: 'Book Stock', href: 'login', icon: CollectionIcon},

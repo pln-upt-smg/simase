@@ -7,7 +7,7 @@ import map from "lodash-es/map";
 import pickBy from "lodash-es/pickBy";
 import 'url-search-params-polyfill';
 
-let respectedParams, partial;
+let respectedParams
 
 export default {
     props: {
@@ -131,28 +131,22 @@ export default {
             handler() {
                 if (this.$inertia) {
                     const url = new URLSearchParams(window.location.search)
-                    let query = this.queryBuilderString;
+                    let query = this.queryBuilderString
                     if (respectedParams) respectedParams.forEach((param) => {
                         const value = url.get(param)
-                        if (value !== null) query += `&${param}=${value}`
+                        if (value !== null) query += query.length > 0 ? `&${param}=${value}` : `${param}=${value}`
                     })
-                    if (partial)
-                        this.$inertia.get(location.pathname + `?${query}`, {}, {
-                            replace: true,
-                            preserveState: true,
-                            only: [partial]
-                        })
-                    else
-                        this.$inertia.get(location.pathname + `?${query}`, {}, {replace: true, preserveState: true})
+                    this.$inertia.get(`${location.pathname}?${query}`, {}, {
+                        replace: true,
+                        preserveState: true,
+                        preserveScroll: true
+                    })
                 }
-            },
-        },
+            }
+        }
     },
     respectParams(params) {
         respectedParams = params
-    },
-    enablePartial(resource) {
-        partial = resource
     }
 };
 </script>

@@ -18,7 +18,8 @@
             :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="areas">
+            :meta="areas"
+            ref="table">
             <template #head>
                 <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Area</th>
                 <th v-show="showColumn('action')"></th>
@@ -218,9 +219,35 @@ import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
 
-JetTableEngine.enablePartial('areas')
-
 export default defineComponent({
+    mixins: [JetTableEngine],
+    components: {
+        AppLayout,
+        JetTable,
+        JetDropdown,
+        JetButton,
+        JetDangerButton,
+        JetSecondaryButton,
+        JetModal,
+        JetAlertModal,
+        JetImportModal,
+        JetExportModal,
+        JetInput,
+        JetSuccessNotification,
+        JetDangerNotification,
+        JetValidationErrors,
+        JetLink,
+        MenuItem,
+        PlusIcon,
+        UploadIcon,
+        DownloadIcon,
+        PencilAltIcon,
+        TrashIcon,
+        DocumentAddIcon
+    },
+    props: {
+        areas: Object
+    },
     data() {
         return {
             successNotification: {
@@ -252,34 +279,6 @@ export default defineComponent({
                 file: null
             })
         }
-    },
-    mixins: [JetTableEngine],
-    props: {
-        areas: Object
-    },
-    components: {
-        AppLayout,
-        JetTable,
-        JetDropdown,
-        JetButton,
-        JetDangerButton,
-        JetSecondaryButton,
-        JetModal,
-        JetAlertModal,
-        JetImportModal,
-        JetExportModal,
-        JetInput,
-        JetSuccessNotification,
-        JetDangerNotification,
-        JetValidationErrors,
-        JetLink,
-        MenuItem,
-        PlusIcon,
-        UploadIcon,
-        DownloadIcon,
-        PencilAltIcon,
-        TrashIcon,
-        DocumentAddIcon
     },
     methods: {
         store() {
@@ -416,14 +415,7 @@ export default defineComponent({
             this.$page.props.errors = []
         },
         reloadData() {
-            this.$inertia.get(route(route().current(), route().params), {}, {
-                replace: true,
-                preserveState: true,
-                preserveScroll: true,
-                only: [
-                    'areas'
-                ]
-            })
+            this.$refs.table.reload('areas')
         }
     }
 })

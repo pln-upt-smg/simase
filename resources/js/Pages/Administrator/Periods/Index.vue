@@ -11,7 +11,7 @@
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="periods"
-            partial="periods">
+            ref="table">
             <template #head>
                 <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Periode</th>
                 <th v-show="showColumn('action')"></th>
@@ -135,8 +135,6 @@ import JetDangerNotification from '@/Jetstream/DangerNotification'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
-
-JetTableEngine.enablePartial('periods')
 
 export default defineComponent({
     data() {
@@ -290,14 +288,7 @@ export default defineComponent({
             this.$page.props.errors = []
         },
         reloadData() {
-            this.$inertia.get(route(route().current(), route().params), {}, {
-                replace: true,
-                preserveState: true,
-                preserveScroll: true,
-                only: [
-                    'periods'
-                ]
-            })
+            this.$refs.table.reload('periods')
         }
     }
 })

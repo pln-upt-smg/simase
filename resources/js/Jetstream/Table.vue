@@ -129,6 +129,13 @@ export default defineComponent({
         TableAddSearchRow,
         TableSearchRows,
         TablePagination
+    },
+    methods: {
+        reload(resource) {
+            let options = {replace: true, preserveState: true, preserveScroll: true}
+            if (resource) options.only = [resource]
+            this.$inertia.get(route(route().current(), route().params), {}, options)
+        }
     }
 })
 </script>

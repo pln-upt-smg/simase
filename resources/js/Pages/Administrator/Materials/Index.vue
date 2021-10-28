@@ -24,7 +24,8 @@
             :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="materials">
+            :meta="materials"
+            ref="table">
             <template #head>
                 <th v-show="showColumn('code')" @click.prevent="sortBy('code')">Kode Material</th>
                 <th v-show="showColumn('description')" @click.prevent="sortBy('description')">Deskripsi Material</th>
@@ -290,7 +291,6 @@ import JetPeriodDropdown from '@/Jetstream/PeriodDropdown'
 import JetSelect from '@/Jetstream/Select'
 
 JetTableEngine.respectParams(['area', 'period'])
-JetTableEngine.enablePartial('materials')
 
 export default defineComponent({
     data() {
@@ -549,14 +549,7 @@ export default defineComponent({
             this.$page.props.errors = []
         },
         reloadData() {
-            this.$inertia.get(route(route().current(), route().params), {}, {
-                replace: true,
-                preserveState: true,
-                preserveScroll: true,
-                only: [
-                    'materials'
-                ]
-            })
+            this.$refs.table.reload('materials')
         }
     }
 })

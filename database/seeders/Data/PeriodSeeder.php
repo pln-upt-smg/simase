@@ -18,7 +18,7 @@ class PeriodSeeder extends Seeder
             return;
         }
         for ($i = 1; $i <= 4; $i++) {
-            Period::create(['name' => date('Y') . " - Q$i"]);
+            Period::create(['name' => date('Y') . " - Quarter $i"]);
         }
     }
 }

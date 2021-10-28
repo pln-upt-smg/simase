@@ -18,7 +18,8 @@
             :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="operators">
+            :meta="operators"
+            ref="table">
             <template #head>
                 <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Pegawai</th>
                 <th v-show="showColumn('phone')" @click.prevent="sortBy('phone')">Nomor Telepon</th>
@@ -241,8 +242,6 @@ import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
 
-JetTableEngine.enablePartial('operators')
-
 export default defineComponent({
     data() {
         return {
@@ -456,14 +455,7 @@ export default defineComponent({
             this.$page.props.errors = []
         },
         reloadData() {
-            this.$inertia.get(route(route().current(), route().params), {}, {
-                replace: true,
-                preserveState: true,
-                preserveScroll: true,
-                only: [
-                    'operators'
-                ]
-            })
+            this.$refs.table.reload('operators')
         }
     }
 })
