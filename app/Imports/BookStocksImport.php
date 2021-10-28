@@ -3,12 +3,13 @@
 namespace App\Imports;
 
 use App\Imports\Helper\HasDefaultSheet;
+use App\Imports\Helper\HasMaterialResolver;
 use App\Imports\Helper\HasValidationException;
 use App\Models\Area;
 use App\Models\BookStock;
-use App\Models\Material;
 use App\Models\Period;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -19,7 +20,7 @@ use Maatwebsite\Excel\Events\BeforeSheet;
 
 class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet;
+    use HasValidationException, HasDefaultSheet, HasMaterialResolver;
 
     private ?Area $area;
 
@@ -34,7 +35,7 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
     public function rules(): array
     {
         return [
-            'material' => ['required', 'string', 'max:255', 'exists:materials,code'],
+            'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
             'plnt' => ['required', 'integer', 'min:0'],
             'sloc' => ['required', 'integer', 'min:0'],
             'batch' => ['required', 'string', 'max:255'],
@@ -63,11 +64,6 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
             'unrestricted' => (float)$row['unrestricted'],
             'qualinsp' => (int)$row['qualinsp']
         ]);
-    }
-
-    protected function resolveMaterialId(string $materialCode): int
-    {
-        return Material::whereRaw('lower(code) = lower(?)', trim($materialCode))->whereNull('deleted_at')->first()?->id ?? 0;
     }
 
     public function registerEvents(): array

@@ -183,6 +183,7 @@ import {
     MenuAlt2Icon,
     PencilIcon,
     SearchIcon,
+    TicketIcon,
     UsersIcon,
     XIcon
 } from '@heroicons/vue/outline'
@@ -193,6 +194,7 @@ const navigations = {
             {name: 'Dashboard', href: 'dashboard', icon: HomeIcon},
             {name: 'Area', href: 'areas.index', icon: LocationMarkerIcon},
             {name: 'Periode', href: 'periods.index', icon: CalendarIcon},
+            {name: 'Batch', href: 'batches.index', icon: TicketIcon},
             {name: 'Material', href: 'materials.index', icon: ArchiveIcon},
             {name: 'Actual Stock', href: 'stocks.actuals.index', icon: CollectionIcon},
             {name: 'Book Stock', href: 'stocks.books.index', icon: CollectionIcon},
@@ -246,7 +248,8 @@ export default defineComponent({
         CogIcon,
         LocationMarkerIcon,
         ArchiveIcon,
-        DocumentSearchIcon
+        DocumentSearchIcon,
+        TicketIcon
     },
     setup() {
         const sidebarOpen = ref(false)

@@ -148,9 +148,9 @@ class MaterialService
     public function store(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', 'exists:areas,id'],
-            'period' => ['required', 'integer', 'exists:periods,id'],
-            'code' => ['required', 'string', 'max:255', 'unique:materials'],
+            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->whereNull('deleted_at')],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
@@ -179,9 +179,9 @@ class MaterialService
     public function update(Request $request, Material $material): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', 'exists:areas,id'],
-            'period' => ['required', 'integer', 'exists:periods,id'],
-            'code' => ['required', 'string', 'max:255', Rule::unique('materials')->ignore($material->id)->whereNull('deleted_at')],
+            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->ignore($material->id)->whereNull('deleted_at')],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
@@ -218,8 +218,8 @@ class MaterialService
     public function import(Request $request): void
     {
         Validator::make($request->all(), [
-            'area' => ['required', 'integer', 'exists:areas,id'],
-            'period' => ['required', 'integer', 'exists:periods,id'],
+            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
         ])->validate();
         Excel::import(new MaterialsImport(

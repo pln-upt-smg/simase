@@ -57,7 +57,7 @@ class AreaService
     public function store(Request $request): void
     {
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', Rule::unique('areas')->whereNull('deleted_at')]
+            'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->whereNull('deleted_at')]
         ]);
         Area::create([
             'name' => Str::title($request->name)
@@ -73,7 +73,7 @@ class AreaService
     public function update(Request $request, Area $area): void
     {
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', Rule::unique('areas')->ignore($area->id)->whereNull('deleted_at')]
+            'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->ignore($area->id)->whereNull('deleted_at')]
         ]);
         $area->updateOrFail([
             'name' => Str::title($request->name)

@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -26,7 +27,7 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
             'nip' => ['required', 'alpha_num', 'min:6', 'max:255'],
-            'role' => ['required', 'string', 'max:255', 'exists:roles,name']
+            'role' => ['required', 'string', 'max:255', Rule::exists('roles', 'name')->whereNull('deleted_at')]
         ];
     }
 

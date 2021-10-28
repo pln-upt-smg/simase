@@ -22,7 +22,7 @@ mix.webpackConfig({
             afterBuild: true,
             src: './storage/framework/views',
             dest: './storage/framework/views',
-            ignoreFileNameRegex: /\.(gitignore|php)$/,
+            ignoreFileNameRegex: /\.(gitignore)$/,
             ignoreFileContentsRegex: /(<\?xml version)|(mail::message)/,
             rules: {
                 useShortDoctype: true,

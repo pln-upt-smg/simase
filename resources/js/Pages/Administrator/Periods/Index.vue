@@ -45,7 +45,7 @@
                 Silakan masukkan data periode yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full" placeholder="Nama Periode"
+                    <jet-input type="text" class="block w-full capitalize" placeholder="Nama Periode"
                                ref="storeName" v-model="storeForm.name"
                                @keyup.enter="store"/>
                 </div>
@@ -68,7 +68,7 @@
                 Silakan masukkan data periode yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full" placeholder="Nama Periode"
+                    <jet-input type="text" class="block w-full capitalize" placeholder="Nama Periode"
                                ref="updateName" v-model="updateForm.name"
                                @keyup.enter="update"/>
                 </div>

@@ -6,7 +6,7 @@ Route::resource('operators', OperatorController::class)->except(['create', 'show
 
 Route::group([
     'prefix' => 'operators',
-    'as' => 'operators'
+    'as' => 'operators.'
 ], static function () {
 
     Route::post('import', [OperatorController::class, 'import'])->name('import');

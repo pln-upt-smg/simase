@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -23,8 +24,8 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20', 'unique:users'],
-            'nip' => ['required', 'alpha_num', 'min:6', 'max:255', 'unique:users'],
+            'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->whereNull('deleted_at')],
+            'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
             'password' => $this->passwordRules()
         ])->validate();
         return User::create([

@@ -11,6 +11,33 @@ button, textarea, input, select, a {
 }
 
 /**
+ * https://stackoverflow.com/questions/25180140/make-input-value-uppercase-in-css-without-affecting-the-placeholder
+ */
+input {
+    text-transform: uppercase;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    text-transform: none;
+}
+
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    text-transform: none;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    text-transform: none;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    text-transform: none;
+}
+
+::placeholder { /* Recent browsers */
+    text-transform: none;
+}
+
+/**
  * Clicakble Inertia.js table header
  */
 .clickable-table-header th:hover {

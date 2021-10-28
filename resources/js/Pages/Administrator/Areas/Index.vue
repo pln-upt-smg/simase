@@ -53,7 +53,7 @@
                 Silakan masukkan data area yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full" placeholder="Nama Area"
+                    <jet-input type="text" class="block w-full capitalize" placeholder="Nama Area"
                                ref="storeName" v-model="storeForm.name"
                                @keyup.enter="store"/>
                 </div>
@@ -76,7 +76,7 @@
                 Silakan masukkan data area yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full" placeholder="Nama Area"
+                    <jet-input type="text" class="block w-full capitalize" placeholder="Nama Area"
                                ref="updateName" v-model="updateForm.name"
                                @keyup.enter="update"/>
                 </div>

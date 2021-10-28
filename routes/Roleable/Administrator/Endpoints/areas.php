@@ -6,7 +6,7 @@ Route::resource('areas', AreaController::class)->except(['create', 'show', 'edit
 
 Route::group([
     'prefix' => 'areas',
-    'as' => 'areas'
+    'as' => 'areas.'
 ], static function () {
 
     Route::post('import', [AreaController::class, 'import'])->name('import');

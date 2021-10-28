@@ -1,5 +1,5 @@
 <template>
-    <app-layout title="Pegawai">
+    <app-layout title="Batch">
         <div class="lg:text-right mb-6">
             <jet-button type="button" @click="confirmStore" class="mr-2 mb-2 lg:mb-0">
                 <plus-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
@@ -18,32 +18,28 @@
             :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="operators"
+            :meta="batches"
             ref="table">
             <template #head>
-                <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Pegawai</th>
-                <th v-show="showColumn('phone')" @click.prevent="sortBy('phone')">Nomor Telepon</th>
-                <th v-show="showColumn('nip')" @click.prevent="sortBy('nip')">Nomor Induk Pegawai</th>
-                <th v-show="showColumn('role')" @click.prevent="sortBy('role')">Peran</th>
+                <th v-show="showColumn('batch_code')" @click.prevent="sortBy('batch_code')">Kode Batch</th>
+                <th v-show="showColumn('material_code')" @click.prevent="sortBy('material_code')">Kode Material</th>
                 <th v-show="showColumn('action')"></th>
             </template>
             <template #body>
-                <tr v-for="operator in operators.data" :key="operator.id">
-                    <td v-show="showColumn('name')">{{ operator.name }}</td>
-                    <td v-show="showColumn('phone')">{{ operator.phone }}</td>
-                    <td v-show="showColumn('nip')">{{ operator.nip }}</td>
-                    <td v-show="showColumn('role')">{{ operator.role }}</td>
+                <tr v-for="batch in batches.data" :key="batch.id">
+                    <td v-show="showColumn('batch_code')">{{ batch.batch_code }}</td>
+                    <td v-show="showColumn('material_code')">{{ batch.material_code }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
-                                <button @click="confirmUpdate(operator)"
+                                <button @click="confirmUpdate(batch)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <pencil-alt-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Edit
                                 </button>
                             </menu-item>
                             <menu-item>
-                                <button @click="confirmDestroy(operator)"
+                                <button @click="confirmDestroy(batch)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <trash-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Hapus
@@ -54,21 +50,15 @@
                 </tr>
             </template>
         </jet-table>
-        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah pegawai">
+        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah batch">
             <template #content>
-                Silakan masukkan data profil dan kredensial pegawai yang ingin ditambahkan.
+                Silakan masukkan data batch yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full capitalize" placeholder="Nama Pegawai"
-                               ref="storeName" v-model="storeForm.name"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Telepon Pegawai"
-                               ref="storePhone" v-model="storeForm.phone"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Induk Pegawai"
-                               ref="storeNip" v-model="storeForm.nip"/>
-                    <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
-                               ref="storePassword" v-model="storeForm.password"/>
-                    <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
-                               ref="storePasswordConfirmation" v-model="storeForm.password_confirmation"
+                    <jet-input type="text" class="block w-full uppercase" placeholder="Kode Batch"
+                               ref="storeBatchCode" v-model="storeForm.batch_code"/>
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
+                               ref="storeMaterialCode" v-model="storeForm.material_code"
                                @keyup.enter="store"/>
                 </div>
             </template>
@@ -85,22 +75,16 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit pegawai">
+        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit batch">
             <template #content>
-                Silakan masukkan data profil dan kredensial pegawai yang ingin diubah.
+                Silakan masukkan data batch yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full capitalize" placeholder="Nama Pegawai"
-                               ref="updateName" v-model="updateForm.name"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Telepon Pegawai"
-                               ref="updatePhone" v-model="updateForm.phone"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Nomor Induk Pegawai"
-                               ref="updateNip" v-model="updateForm.nip"/>
-                    <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
-                               ref="updatePassword" v-model="updateForm.password"/>
-                    <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
-                               ref="updatePasswordConfirmation" @keyup.enter="update"
-                               v-model="updateForm.password_confirmation"/>
+                    <jet-input type="text" class="block w-full uppercase" placeholder="Kode Batch"
+                               ref="updateBatchCode" v-model="updateForm.batch_code"/>
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
+                               ref="updateMaterialCode" v-model="updateForm.material_code"
+                               @keyup.enter="update"/>
                 </div>
             </template>
             <template #buttons>
@@ -116,9 +100,9 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus pegawai">
+        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus batch">
             <template #content>
-                Apakah Anda yakin ingin menghapus akun pegawai ini? Setelah akun pegawai dihapus, semua sumber daya
+                Apakah Anda yakin ingin menghapus batch ini? Setelah batch dihapus, semua sumber daya
                 dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
@@ -134,12 +118,11 @@
                 </jet-secondary-button>
             </template>
         </jet-alert-modal>
-        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data pegawai">
+        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data batch">
             <template #content>
                 <p>
-                    Silakan unggah file data pegawai yang ingin di-impor. Pastikan Anda sudah menggunakan template
+                    Silakan unggah file data batch yang ingin di-impor. Pastikan Anda sudah menggunakan template
                     spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
-                    Kata sandi akun yang dibuat akan diambil dari data NIP pegawai yang diberikan.
                 </p>
                 <p class="mt-2">
                     Mengimpor data baru akan menimpa data lama yang sudah ada. Aksi ini tidak dapat dibatalkan.
@@ -187,10 +170,10 @@
                 </jet-secondary-button>
             </template>
         </jet-import-modal>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data pegawai">
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data batch">
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data pegawai? Proses ekspor dapat memakan waktu lama,
+                    Apakah Anda yakin ingin mengekspor semua data batch? Proses ekspor dapat memakan waktu lama,
                     tergantung dari banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
@@ -223,7 +206,7 @@
 
 <script>
 import {defineComponent} from 'vue'
-import {useForm} from '@inertiajs/inertia-vue3'
+import {Link as JetLink, useForm} from '@inertiajs/inertia-vue3'
 import {MenuItem} from '@headlessui/vue'
 import {DocumentAddIcon, DownloadIcon, PencilAltIcon, PlusIcon, TrashIcon, UploadIcon} from '@heroicons/vue/outline'
 import AppLayout from '@/Layouts/AppLayout'
@@ -243,6 +226,34 @@ import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
 
 export default defineComponent({
+    mixins: [JetTableEngine],
+    components: {
+        AppLayout,
+        JetTable,
+        JetDropdown,
+        JetButton,
+        JetDangerButton,
+        JetSecondaryButton,
+        JetModal,
+        JetAlertModal,
+        JetImportModal,
+        JetExportModal,
+        JetInput,
+        JetSuccessNotification,
+        JetDangerNotification,
+        JetValidationErrors,
+        JetLink,
+        MenuItem,
+        PlusIcon,
+        UploadIcon,
+        DownloadIcon,
+        PencilAltIcon,
+        TrashIcon,
+        DocumentAddIcon
+    },
+    props: {
+        batches: Object
+    },
     data() {
         return {
             successNotification: {
@@ -261,19 +272,13 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
-                name: null,
-                phone: null,
-                nip: null,
-                password: null,
-                password_confirmation: null
+                batch_code: null,
+                material_code: null
             }),
             updateForm: useForm({
                 id: null,
-                name: null,
-                phone: null,
-                nip: null,
-                password: null,
-                password_confirmation: null
+                batch_code: null,
+                material_code: null
             }),
             destroyForm: useForm({
                 id: null
@@ -283,96 +288,68 @@ export default defineComponent({
             })
         }
     },
-    mixins: [JetTableEngine],
-    props: {
-        operators: Object
-    },
-    components: {
-        AppLayout,
-        JetTable,
-        JetDropdown,
-        JetButton,
-        JetDangerButton,
-        JetSecondaryButton,
-        JetModal,
-        JetAlertModal,
-        JetImportModal,
-        JetExportModal,
-        JetInput,
-        JetSuccessNotification,
-        JetDangerNotification,
-        JetValidationErrors,
-        MenuItem,
-        PlusIcon,
-        UploadIcon,
-        DownloadIcon,
-        PencilAltIcon,
-        TrashIcon,
-        DocumentAddIcon
-    },
     methods: {
         store() {
-            this.storeForm.post(route('operators.store'), {
+            this.storeForm.post(route('batches.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeStoreModal()
-                    this.showSuccessNotification('Pegawai berhasil ditambahkan', 'Sistem telah berhasil menyimpan data pegawai baru')
+                    this.showSuccessNotification('Batch berhasil ditambahkan', 'Sistem telah berhasil menyimpan data batch baru')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data pegawai, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data batch, mohon periksa ulang form')
             })
         },
         update() {
-            this.updateForm.put(route('operators.update', this.updateForm.id), {
+            this.updateForm.put(route('batches.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeUpdateModal()
-                    this.showSuccessNotification('Pegawai berhasil diedit', 'Sistem telah berhasil mengedit data pegawai')
+                    this.showSuccessNotification('Batch berhasil diedit', 'Sistem telah berhasil mengedit data batch')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data pegawai, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data batch, mohon periksa ulang form')
             })
         },
         destroy() {
-            this.destroyForm.delete(route('operators.destroy', this.destroyForm.id), {
+            this.destroyForm.delete(route('batches.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeDestroyModal()
-                    this.showSuccessNotification('Pegawai berhasil dihapus', 'Sistem telah berhasil menghapus data pegawai')
+                    this.showSuccessNotification('Batch berhasil dihapus', 'Sistem telah berhasil menghapus data batch')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data pegawai')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data batch')
             })
         },
         importFile() {
-            this.importForm.post(route('operators.import'), {
+            this.importForm.post(route('batches.import'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeImportModal()
-                    this.showSuccessNotification('Data pegawai berhasil di-impor', 'Sistem telah berhasil mengimpor data pegawai')
+                    this.showSuccessNotification('Data batch berhasil di-impor', 'Sistem telah berhasil mengimpor data batch')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data pegawai, mohon gunakan template yang sudah ditentukan')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data batch, mohon gunakan template yang sudah ditentukan')
             })
         },
         exportFile() {
-            window.open(route('operators.export'))
+            window.open(route('batches.export'))
             this.closeExportModal()
         },
         confirmStore() {
             setTimeout(() => this.confirmingStore = true, 150)
             setTimeout(() => this.$refs.storeName.focus(), 300)
         },
-        confirmUpdate(operator) {
-            this.updateForm.id = operator.id
-            this.updateForm.name = operator.name
-            this.updateForm.phone = operator.phone
-            this.updateForm.nip = operator.nip
+        confirmUpdate(batch) {
+            this.updateForm.id = batch.id
+            this.updateForm.batch_code = batch.batch_code
+            this.updateForm.material_code = batch.material_code
             setTimeout(() => this.confirmingUpdate = true, 150)
             setTimeout(() => this.$refs.updateName.focus(), 300)
         },
-        confirmDestroy(operator) {
-            this.destroyForm.id = operator.id
+        confirmDestroy(batch) {
+            this.destroyForm.id = batch.id
             setTimeout(() => this.confirmingDestroy = true, 150)
         },
         confirmImport() {
@@ -388,10 +365,6 @@ export default defineComponent({
                 this.storeForm.clearErrors()
                 this.storeForm.reset()
                 this.storeForm.name = null
-                this.storeForm.phone = null
-                this.storeForm.nip = null
-                this.storeForm.password = null
-                this.storeForm.password_confirmation = null
             }, 500)
         },
         closeUpdateModal() {
@@ -402,10 +375,6 @@ export default defineComponent({
                 this.updateForm.reset()
                 this.updateForm.id = null
                 this.updateForm.name = null
-                this.updateForm.phone = null
-                this.updateForm.nip = null
-                this.updateForm.password = null
-                this.updateForm.password_confirmation = null
             }, 500)
         },
         closeDestroyModal() {
@@ -455,7 +424,7 @@ export default defineComponent({
             this.$page.props.errors = []
         },
         reloadData() {
-            this.$refs.table.reload('operators')
+            this.$refs.table.reload('batches')
         }
     }
 })

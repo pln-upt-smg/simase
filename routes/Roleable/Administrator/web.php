@@ -15,6 +15,11 @@ Route::group([
     include 'Endpoints/areas.php';
 
     /**
+     * Batches endpoints
+     */
+    include 'Endpoints/batches.php';
+
+    /**
      * Materials endpoints
      */
     include 'Endpoints/materials.php';

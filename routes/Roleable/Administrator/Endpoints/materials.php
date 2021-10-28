@@ -6,7 +6,7 @@ Route::resource('materials', MaterialController::class)->except(['create', 'show
 
 Route::group([
     'prefix' => 'materials',
-    'as' => 'materials'
+    'as' => 'materials.'
 ], static function () {
 
     Route::post('import', [MaterialController::class, 'import'])->name('import');

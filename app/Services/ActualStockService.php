@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
@@ -152,9 +153,9 @@ class ActualStockService
     public function store(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', 'exists:areas,id'],
-            'period' => ['required', 'integer', 'exists:periods,id'],
-            'code' => ['required', 'string', 'max:255', 'exists:materials,code'],
+            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
             'batch' => ['required', 'string', 'max:255'],
             'plnt' => ['required', 'integer', 'min:0'],
             'sloc' => ['required', 'integer', 'min:0'],
@@ -182,9 +183,9 @@ class ActualStockService
     public function update(Request $request, ActualStock $actual): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', 'exists:areas,id'],
-            'period' => ['required', 'integer', 'exists:periods,id'],
-            'code' => ['required', 'string', 'max:255', 'exists:materials,code'],
+            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
             'batch' => ['required', 'string', 'max:255'],
             'plnt' => ['required', 'integer', 'min:0'],
             'sloc' => ['required', 'integer', 'min:0'],
@@ -220,8 +221,8 @@ class ActualStockService
     public function import(Request $request): void
     {
         Validator::make($request->all(), [
-            'area' => ['required', 'integer', 'exists:areas,id'],
-            'period' => ['required', 'integer', 'exists:periods,id'],
+            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
         ])->validate();
         Excel::import(new ActualStocksImport(

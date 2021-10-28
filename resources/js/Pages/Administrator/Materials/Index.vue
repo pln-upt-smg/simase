@@ -77,15 +77,15 @@
                                 :data="areas" class="block w-full"/>
                     <jet-select ref="storePeriod" placeholder="Pilih Periode" v-model="storeForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Kode Material"
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
                                ref="storeCode" v-model="storeForm.code"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Deskripsi Material"
+                    <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Deskripsi Material"
                                ref="storeDescription" v-model="storeForm.description"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="UoM"
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="UoM"
                                ref="storeUom" v-model="storeForm.uom"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="MType"
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="MType"
                                ref="storeMtyp" v-model="storeForm.mtyp"/>
-                    <jet-input type="text" class="mt-4 block w-full bg-gray-100 cursor-not-allowed"
+                    <jet-input type="text" class="mt-4 block w-full bg-gray-100 cursor-not-allowed uppercase"
                                placeholder="Currency"
                                ref="storeCrcy" v-model="storeForm.crcy" disabled/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Harga"
@@ -116,15 +116,15 @@
                                 :data="areas" class="block w-full"/>
                     <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Kode Material"
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
                                ref="updateCode" v-model="updateForm.code"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Deskripsi Material"
+                    <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Deskripsi Material"
                                ref="updateDescription" v-model="updateForm.description"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="UoM"
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="UoM"
                                ref="updateUom" v-model="updateForm.uom"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="MType"
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="MType"
                                ref="updateMtyp" v-model="updateForm.mtyp"/>
-                    <jet-input type="text" class="mt-4 block w-full bg-gray-100 cursor-not-allowed"
+                    <jet-input type="text" class="mt-4 block w-full bg-gray-100 cursor-not-allowed uppercase"
                                placeholder="Currency"
                                ref="updateCrcy" v-model="updateForm.crcy" disabled/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Harga"

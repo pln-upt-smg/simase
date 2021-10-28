@@ -79,9 +79,9 @@
                                 :data="areas" class="block w-full"/>
                     <jet-select ref="storePeriod" placeholder="Pilih Periode" v-model="storeForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Kode Material"
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
                                ref="storeCode" v-model="storeForm.code"/>
-                    <jet-input type="text" class="mt-4 block w-full" placeholder="Batch"
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Batch"
                                ref="storeBatch" v-model="storeForm.batch"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Plnt"
                                ref="storePlnt" v-model="storeForm.plnt"/>
