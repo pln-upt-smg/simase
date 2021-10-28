@@ -55,8 +55,8 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        $query = BookStock::whereNull('deleted_at')
-            ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id');
+        $query = BookStock::whereNull('book_stocks.deleted_at')
+            ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id');
         if (!is_null($this->area)) {
             $query = $query->where('materials.area_id', $this->area->id);
         }
