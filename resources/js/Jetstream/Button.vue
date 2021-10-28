@@ -12,8 +12,8 @@ export default defineComponent({
     props: {
         type: {
             type: String,
-            default: 'submit',
-        },
+            default: 'submit'
+        }
     }
 })
 </script>

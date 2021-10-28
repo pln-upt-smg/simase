@@ -1,8 +1,5 @@
 <template>
-    <app-layout title="Profil Saya">
-        <grid-header>
-            <jet-bredcrumbs :pages="[{name: 'Pengaturan', href: 'profile.show', current: true}]"/>
-        </grid-header>
+    <app-layout title="Pengaturan">
         <div v-if="$page.props.jetstream.canUpdateProfileInformation">
             <update-profile-information-form :user="$page.props.user"/>
             <jet-section-border/>
@@ -26,13 +23,11 @@
 <script>
 import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout'
-import GridHeader from '@/Layouts/GridHeader'
 import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm'
 import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm'
 import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm'
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm'
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm'
-import JetBredcrumbs from '@/Jetstream/Breadcrumbs'
 import JetButton from '@/Jetstream/Button'
 import JetSectionBorder from '@/Jetstream/SectionBorder'
 
@@ -42,13 +37,11 @@ export default defineComponent({
     },
     components: {
         AppLayout,
-        GridHeader,
         DeleteUserForm,
         LogoutOtherBrowserSessionsForm,
         TwoFactorAuthenticationForm,
         UpdatePasswordForm,
         UpdateProfileInformationForm,
-        JetBredcrumbs,
         JetButton,
         JetSectionBorder
     }

@@ -135,6 +135,6 @@ class AreaService
      */
     public function collection(): array
     {
-        return Area::whereNull('deleted_at')->get()->sortBy('name')->toArray();
+        return Area::whereNull('deleted_at')->orderBy('name')->get()->toArray();
     }
 }

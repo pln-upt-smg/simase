@@ -1,6 +1,6 @@
 <template>
     <div class="flex text-sm lg:text-lg">
-        <label for="period" class="text-sm font-semibold text-gray-700 w-12 mr-4 py-3">Periode</label>
+        <label for="period" class="text-sm font-semibold text-gray-700 w-14 mr-4 py-3">Periode</label>
         <select id="period" @change="loadPeriod($event.target.selectedIndex)"
                 class="w-48 pl-3 pr-10 py-2 cursor-pointer border-gray-300 rounded-md hover:bg-gray-50 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
             <option :selected="selected === null">Semua Periode</option>

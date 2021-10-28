@@ -1,15 +1,15 @@
 <template>
     <app-layout title="Pegawai">
         <div class="lg:text-right mb-6">
-            <jet-button @click="confirmStore" class="mr-2 mb-2 lg:mb-0">
+            <jet-button type="button" @click="confirmStore" class="mr-2 mb-2 lg:mb-0">
                 <plus-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
                 Tambah
             </jet-button>
-            <jet-button @click="confirmImport" class="mr-2 mb-2 lg:mb-0">
+            <jet-button type="button" @click="confirmImport" class="mr-2 mb-2 lg:mb-0">
                 <upload-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
                 Impor
             </jet-button>
-            <jet-button @click="confirmExport">
+            <jet-button type="button" @click="confirmExport">
                 <download-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
                 Ekspor
             </jet-button>
@@ -73,7 +73,7 @@
                 </div>
             </template>
             <template #buttons>
-                <jet-button @click="store"
+                <jet-button type="button" @click="store"
                             :class="{ 'opacity-25': storeForm.processing }"
                             :disabled="storeForm.processing"
                             class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
@@ -104,7 +104,7 @@
                 </div>
             </template>
             <template #buttons>
-                <jet-button @click="update"
+                <jet-button type="button" @click="update"
                             :class="{ 'opacity-25': updateForm.processing }"
                             :disabled="updateForm.processing"
                             class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
@@ -168,11 +168,11 @@
                 </div>
             </template>
             <template #buttons>
-                <jet-button
-                    @click="importFile"
-                    :class="{ 'opacity-25': importForm.processing }"
-                    :disabled="importForm.processing"
-                    class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-button type="button"
+                            @click="importFile"
+                            :class="{ 'opacity-25': importForm.processing }"
+                            :disabled="importForm.processing"
+                            class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Impor
                 </jet-button>
                 <jet-secondary-button
@@ -198,7 +198,7 @@
                 </p>
             </template>
             <template #buttons>
-                <jet-button @click="exportFile"
+                <jet-button type="button" @click="exportFile"
                             class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Ekspor
                 </jet-button>

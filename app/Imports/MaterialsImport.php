@@ -33,8 +33,8 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     public function rules(): array
     {
         return [
-            'code' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
+            'material' => ['required', 'string', 'max:255'],
+            'materialdescription' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
             'crcy' => ['required', 'string', 'max:255'],
@@ -46,7 +46,7 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     public function uniqueBy(): string|array
     {
         return [
-            'code'
+            'material'
         ];
     }
 
@@ -55,8 +55,8 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
         return new Material([
             'area_id' => $this->area?->id ?? 0,
             'period_id' => $this->period?->id ?? 0,
-            'code' => Str::upper(trim($row['code'])),
-            'description' => Str::title(trim($row['description'])),
+            'code' => Str::upper(trim($row['material'])),
+            'description' => Str::title(trim($row['materialdescription'])),
             'uom' => Str::upper(trim($row['uom'])),
             'mtyp' => Str::upper(trim($row['mtyp'])),
             'crcy' => Str::upper(trim($row['crcy'])),
@@ -77,11 +77,13 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
 
     public function registerEvents(): array
     {
+        $area = $this->area;
+        $period = $this->period;
         return [
-            BeforeSheet::class => function () {
+            BeforeSheet::class => static function () use ($area, $period) {
                 Material::whereNull('deleted_at')
-                    ->where('area_id', $this->area?->id ?? 0)
-                    ->where('period_id', $this->period?->id ?? 0)
+                    ->where('area_id', $area?->id ?? 0)
+                    ->where('period_id', $period?->id ?? 0)
                     ->delete();
             }
         ];

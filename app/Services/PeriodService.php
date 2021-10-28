@@ -105,6 +105,6 @@ class PeriodService
      */
     public function collection(): array
     {
-        return Period::whereNull('deleted_at')->get()->sortBy('name')->toArray();
+        return Period::whereNull('deleted_at')->orderBy('name')->get()->toArray();
     }
 }

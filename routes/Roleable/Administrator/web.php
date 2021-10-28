@@ -20,6 +20,11 @@ Route::group([
     include 'Endpoints/materials.php';
 
     /**
+     * Stocks endpoints
+     */
+    include 'Endpoints/stocks.php';
+
+    /**
      * Operators endpoints
      */
     include 'Endpoints/operators.php';

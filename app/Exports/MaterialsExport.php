@@ -33,9 +33,7 @@ class MaterialsExport implements FromCollection, WithHeadings, WithMapping
             'Crcy',
             'Price',
             'Per',
-            'LastChange',
-            'Area',
-            'Period'
+            'LastChange'
         ];
     }
 
@@ -49,9 +47,7 @@ class MaterialsExport implements FromCollection, WithHeadings, WithMapping
             Str::upper(trim($row->crcy)),
             $row->price,
             $row->per,
-            $row->updated_at->format('d-M-y'),
-            $row->area->name,
-            $row->period->name
+            $row->updated_at->format('d-M-y')
         ];
     }
 

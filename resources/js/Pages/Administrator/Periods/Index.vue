@@ -1,7 +1,7 @@
 <template>
     <app-layout title="Periode">
         <div class="lg:text-right mb-6">
-            <jet-button @click="confirmStore" class="ml-0">
+            <jet-button type="button" @click="confirmStore" class="ml-0">
                 <plus-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
                 Tambah
             </jet-button>
@@ -51,7 +51,7 @@
                 </div>
             </template>
             <template #buttons>
-                <jet-button @click="store"
+                <jet-button type="button" @click="store"
                             :class="{ 'opacity-25': storeForm.processing }"
                             :disabled="storeForm.processing"
                             class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
@@ -74,7 +74,7 @@
                 </div>
             </template>
             <template #buttons>
-                <jet-button @click="update"
+                <jet-button type="button" @click="update"
                             :class="{ 'opacity-25': updateForm.processing }"
                             :disabled="updateForm.processing"
                             class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
