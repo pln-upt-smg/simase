@@ -57,11 +57,13 @@ class MaterialsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return Material::whereNull('deleted_at')
-            ->where('area_id', $this->area?->id ?? 0)
-            ->where('period_id', $this->period?->id ?? 0)
-            ->orderBy('code')
-            ->get()
-            ->load(['area', 'period']);
+        $query = Material::whereNull('deleted_at');
+        if (!is_null($this->area)) {
+            $query = $query->where('area_id', $this->area->id);
+        }
+        if (!is_null($this->period)) {
+            $query = $query->where('period_id', $this->period->id);
+        }
+        return $query->orderBy('code')->get()->load(['area', 'period']);
     }
 }

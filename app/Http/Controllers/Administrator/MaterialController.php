@@ -124,11 +124,12 @@ class MaterialController extends Controller
     /**
      * Export the resource to specified file.
      *
+     * @param Request $request
      * @return BinaryFileResponse
      * @throws Throwable
      */
-    public function export(): BinaryFileResponse
+    public function export(Request $request): BinaryFileResponse
     {
-        return $this->materialService->export();
+        return $this->materialService->export($request);
     }
 }
