@@ -36,8 +36,9 @@ class BatchService
             ])
             ->leftJoin('materials', 'materials.id', '=', 'batches.material_id')
             ->whereNull('batches.deleted_at')
+            ->whereNull('materials.deleted_at')
             ->defaultSort('batch_code')
-            ->allowedSorts(['batch_code', 'batch_code'])
+            ->allowedSorts(['batch_code', 'material_code'])
             ->allowedFilters(InertiaHelper::filterBy(['batches.code', 'materials.code']))
             ->paginate()
             ->withQueryString();

@@ -12,7 +12,7 @@
                 <div v-for="(search, key) in enabledFilters" :key="key" class="h-8 flex items-center">
                     <div class="flex-grow relative">
                         <input
-                            class="block w-full sm:text-sm rounded-md shadow-sm hover:bg-gray-50 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 border-gray-300 focus:border-indigo-300"
+                            class="block w-full sm:text-sm rounded-md shadow-sm hover:bg-gray-50 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 border-gray-300 focus:border-indigo-300 lowercase"
                             type="text"
                             :ref="search.key"
                             :value="search.value"

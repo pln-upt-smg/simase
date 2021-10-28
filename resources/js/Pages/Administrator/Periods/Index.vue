@@ -7,7 +7,6 @@
             </jet-button>
         </div>
         <jet-table
-            :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="periods"

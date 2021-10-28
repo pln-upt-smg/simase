@@ -70,6 +70,7 @@ class BookStockService
                 'materials.mtyp as mtyp'
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
+            ->whereNull('book_stocks.deleted_at')
             ->whereNull('materials.deleted_at');
 
         if (!is_null($area)) {

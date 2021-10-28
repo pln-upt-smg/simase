@@ -39,8 +39,9 @@ class OperatorService
                 'roles.name as role'
             ])
             ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->where('users.role_id', '=', Role::operator()?->id ?? 2)
             ->whereNull('users.deleted_at')
+            ->whereNull('roles.deleted_at')
+            ->where('users.role_id', '=', Role::operator()?->id ?? 2)
             ->defaultSort('name')
             ->allowedSorts(['name', 'phone', 'nip', 'role'])
             ->allowedFilters(InertiaHelper::filterBy([
