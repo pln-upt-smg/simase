@@ -222,7 +222,10 @@ class MaterialService
             'period' => ['required', 'integer', 'exists:periods,id'],
             'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
         ])->validate();
-        Excel::import(new MaterialsImport(Area::find($request->area), Period::find($request->period)), $request->file('file'));
+        Excel::import(new MaterialsImport(
+            Area::whereId((int)$request->area)->first(),
+            Period::whereId((int)$request->period)->first()
+        ), $request->file('file'));
     }
 
     /**
