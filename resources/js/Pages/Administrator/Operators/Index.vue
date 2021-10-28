@@ -316,7 +316,7 @@ export default defineComponent({
             this.storeForm.post(route('operators.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeStoreModal()
                     this.showSuccessNotification('Pegawai berhasil ditambahkan', 'Sistem telah berhasil menyimpan data pegawai baru')
                 },
@@ -327,7 +327,7 @@ export default defineComponent({
             this.updateForm.put(route('operators.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeUpdateModal()
                     this.showSuccessNotification('Pegawai berhasil diedit', 'Sistem telah berhasil mengedit data pegawai')
                 },
@@ -338,7 +338,7 @@ export default defineComponent({
             this.destroyForm.delete(route('operators.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeDestroyModal()
                     this.showSuccessNotification('Pegawai berhasil dihapus', 'Sistem telah berhasil menghapus data pegawai')
                 },
@@ -349,7 +349,7 @@ export default defineComponent({
             this.importForm.post(route('operators.import'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeImportModal()
                     this.showSuccessNotification('Data pegawai berhasil di-impor', 'Sistem telah berhasil mengimpor data pegawai')
                 },
@@ -454,6 +454,16 @@ export default defineComponent({
         },
         clearErrors() {
             this.$page.props.errors = []
+        },
+        reloadData() {
+            this.$inertia.get(route(route().current(), route().params), {}, {
+                replace: true,
+                preserveState: true,
+                preserveScroll: true,
+                only: [
+                    'operators'
+                ]
+            })
         }
     }
 })

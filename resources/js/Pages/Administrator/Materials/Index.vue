@@ -74,7 +74,7 @@
                 <div class="mt-4">
                     <jet-select ref="storeArea" placeholder="Pilih Area" v-model="storeForm.area"
                                 :data="areas" class="block w-full"/>
-                    <jet-select ref="storePeriod" placeholder="Pilih Period" v-model="storeForm.period"
+                    <jet-select ref="storePeriod" placeholder="Pilih Periode" v-model="storeForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Kode Material"
                                ref="storeCode" v-model="storeForm.code"/>
@@ -113,9 +113,9 @@
                 <div class="mt-4">
                     <jet-select ref="updateArea" placeholder="Pilih Area" v-model="updateForm.area"
                                 :data="areas" class="block w-full"/>
-                    <jet-select ref="updatePeriod" placeholder="Pilih Period" v-model="updateForm.period"
+                    <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
-                    <jet-input type="text" class="block w-full" placeholder="Kode Material"
+                    <jet-input type="text" class="mt-4 block w-full" placeholder="Kode Material"
                                ref="updateCode" v-model="updateForm.code"/>
                     <jet-input type="text" class="mt-4 block w-full" placeholder="Deskripsi Material"
                                ref="updateDescription" v-model="updateForm.description"/>
@@ -173,25 +173,31 @@
                     Mengimpor data baru akan menimpa data lama yang sudah ada. Aksi ini tidak dapat dibatalkan.
                 </p>
                 <jet-validation-errors class="mt-4"/>
-                <div
-                    @click="this.$refs.importInput.click()"
-                    class="mt-4 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer">
-                    <div class="space-y-1 text-center">
-                        <document-add-icon class="mx-auto h-12 w-12 text-gray-400" aria-hidden="true"/>
-                        <div class="flex justify-center text-sm text-gray-600">
-                            <label for="import-file"
-                                   class="relative bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
+                <div class="mt-4">
+                    <jet-select ref="importArea" placeholder="Pilih Area" v-model="importForm.area"
+                                :data="areas" class="block w-full"/>
+                    <jet-select ref="importPeriod" placeholder="Pilih Periode" v-model="importForm.period"
+                                :data="periods" class="mt-4 block w-full"/>
+                    <div
+                        @click="this.$refs.importInput.click()"
+                        class="mt-4 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer">
+                        <div class="space-y-1 text-center">
+                            <document-add-icon class="mx-auto h-12 w-12 text-gray-400" aria-hidden="true"/>
+                            <div class="flex justify-center text-sm text-gray-600">
+                                <label for="import-file"
+                                       class="relative bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
                                 <span>
                                     {{ importForm.file === null ? 'Unggah file dokumen' : importForm.file.name }}
                                 </span>
-                                <input for="import-file" ref="importInput" type="file" class="sr-only"
-                                       accept=".xls, .xlsx, .csv"
-                                       @input="importForm.file = $event.target.files[0]"/>
-                            </label>
+                                    <input for="import-file" ref="importInput" type="file" class="sr-only"
+                                           accept=".xls, .xlsx, .csv"
+                                           @input="importForm.file = $event.target.files[0]"/>
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-500">
+                                XLS, XLSX, CSV hingga 50MB
+                            </p>
                         </div>
-                        <p class="text-xs text-gray-500">
-                            XLS, XLSX, CSV hingga 50MB
-                        </p>
                     </div>
                 </div>
             </template>
@@ -224,6 +230,16 @@
                 <p class="mt-2">
                     Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
                 </p>
+                <p class="mt-2">
+                    Anda dapat menyaring data material berdasarkan area dan periodenya dengan menyesuaikan kolom
+                    pilihan dibawah ini.
+                </p>
+                <div class="mt-4">
+                    <jet-select ref="exportArea" placeholder="Semua Area" v-model="exportForm.area"
+                                :data="areas" class="block w-full"/>
+                    <jet-select ref="exportPeriod" placeholder="Semua Periode" v-model="exportForm.period"
+                                :data="periods" class="mt-4 block w-full"/>
+                </div>
             </template>
             <template #buttons>
                 <jet-button @click="exportFile"
@@ -321,7 +337,13 @@ export default defineComponent({
                 id: null
             }),
             importForm: useForm({
+                area: null,
+                period: null,
                 file: null
+            }),
+            exportForm: useForm({
+                area: null,
+                period: null
             })
         }
     },
@@ -405,7 +427,10 @@ export default defineComponent({
             })
         },
         exportFile() {
-            window.open(route('materials.export'))
+            window.open(route('materials.export', {
+                area: this.exportForm.area,
+                period: this.exportForm.period
+            }))
             this.closeExportModal()
         },
         confirmStore() {
@@ -431,9 +456,11 @@ export default defineComponent({
         },
         confirmImport() {
             setTimeout(() => this.confirmingImport = true, 150)
+            setTimeout(() => this.$refs.importArea.focus(), 300)
         },
         confirmExport() {
             setTimeout(() => this.confirmingExport = true, 150)
+            setTimeout(() => this.$refs.exportArea.focus(), 300)
         },
         closeStoreModal() {
             this.confirmingStore = false
@@ -483,11 +510,18 @@ export default defineComponent({
                 this.clearErrors()
                 this.importForm.clearErrors()
                 this.importForm.reset()
+                this.importForm.area = null
+                this.importForm.period = null
                 this.importForm.file = null
             }, 500)
         },
         closeExportModal() {
             this.confirmingExport = false
+            setTimeout(() => {
+                this.exportForm.reset()
+                this.exportForm.area = null
+                this.exportForm.period = null
+            }, 500)
         },
         showSuccessNotification(title, description) {
             this.successNotification.title = title

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
@@ -26,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
             // make sure to use secure server request in production environment
             $this->app['request']->server->set('https', true);
         }
+
+        // set carbon locale
+        Carbon::setLocale(app()->getLocale());
     }
 
     /**

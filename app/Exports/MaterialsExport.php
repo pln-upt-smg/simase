@@ -2,7 +2,9 @@
 
 namespace App\Exports;
 
+use App\Models\Area;
 use App\Models\Material;
+use App\Models\Period;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -11,6 +13,16 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class MaterialsExport implements FromCollection, WithHeadings, WithMapping
 {
+    private ?Area $area;
+
+    private ?Period $period;
+
+    public function __construct(?Area $area, ?Period $period)
+    {
+        $this->area = $area;
+        $this->period = $period;
+    }
+
     public function headings(): array
     {
         return [
@@ -46,6 +58,8 @@ class MaterialsExport implements FromCollection, WithHeadings, WithMapping
     public function collection(): Collection
     {
         return Material::whereNull('deleted_at')
+            ->where('area_id', $this->area?->id ?? 0)
+            ->where('period_id', $this->period?->id ?? 0)
             ->orderBy('code')
             ->get()
             ->load(['area', 'period']);

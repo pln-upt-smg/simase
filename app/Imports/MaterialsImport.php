@@ -5,19 +5,30 @@ namespace App\Imports;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasValidationException;
 use App\Models\Area;
-use App\Models\User;
+use App\Models\Material;
+use App\Models\Period;
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Events\BeforeSheet;
 
 class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet, RegistersEventListeners;
+    use HasValidationException, HasDefaultSheet;
+
+    private ?Area $area;
+
+    private ?Period $period;
+
+    public function __construct(?Area $area, ?Period $period)
+    {
+        $this->area = $area;
+        $this->period = $period;
+    }
 
     public function rules(): array
     {
@@ -26,10 +37,9 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
+            'crcy' => ['required', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:0'],
-            'per' => ['required', 'integer', 'min:0'],
-            'area' => ['required', 'int', 'exists:areas,name'],
-            'period' => ['required', 'int', 'exists:periods,name']
+            'per' => ['required', 'integer', 'min:0']
         ];
     }
 
@@ -40,11 +50,11 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
         ];
     }
 
-    public function model(array $row): User|null
+    public function model(array $row): Material|null
     {
-        return new User([
-            'area_id' => $this->resolveAreaId($row['area']),
-            'period_id' => $this->resolvePeriodId($row['period']),
+        return new Material([
+            'area_id' => $this->area?->id ?? 0,
+            'period_id' => $this->period?->id ?? 0,
             'code' => Str::upper(trim($row['code'])),
             'description' => Str::title(trim($row['description'])),
             'uom' => Str::upper(trim($row['uom'])),
@@ -65,8 +75,15 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
         return Area::whereRaw('lower(name) = lower(?)', trim($periodName))->whereNull('deleted_at')->first()?->id ?? 0;
     }
 
-    public static function beforeSheet(): void
+    public function registerEvents(): array
     {
-        User::whereNull('deleted_at')->delete();
+        return [
+            BeforeSheet::class => function () {
+                Material::whereNull('deleted_at')
+                    ->where('area_id', $this->area?->id ?? 0)
+                    ->where('period_id', $this->period?->id ?? 0)
+                    ->delete();
+            }
+        ];
     }
 }

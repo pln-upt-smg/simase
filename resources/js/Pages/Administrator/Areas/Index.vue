@@ -286,7 +286,7 @@ export default defineComponent({
             this.storeForm.post(route('areas.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeStoreModal()
                     this.showSuccessNotification('Area berhasil ditambahkan', 'Sistem telah berhasil menyimpan data area baru')
                 },
@@ -297,7 +297,7 @@ export default defineComponent({
             this.updateForm.put(route('areas.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeUpdateModal()
                     this.showSuccessNotification('Area berhasil diedit', 'Sistem telah berhasil mengedit data area')
                 },
@@ -308,7 +308,7 @@ export default defineComponent({
             this.destroyForm.delete(route('areas.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeDestroyModal()
                     this.showSuccessNotification('Area berhasil dihapus', 'Sistem telah berhasil menghapus data area')
                 },
@@ -319,7 +319,7 @@ export default defineComponent({
             this.importForm.post(route('areas.import'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeImportModal()
                     this.showSuccessNotification('Data area berhasil di-impor', 'Sistem telah berhasil mengimpor data area')
                 },
@@ -414,6 +414,16 @@ export default defineComponent({
         },
         clearErrors() {
             this.$page.props.errors = []
+        },
+        reloadData() {
+            this.$inertia.get(route(route().current(), route().params), {}, {
+                replace: true,
+                preserveState: true,
+                preserveScroll: true,
+                only: [
+                    'areas'
+                ]
+            })
         }
     }
 })

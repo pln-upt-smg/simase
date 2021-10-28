@@ -197,7 +197,7 @@ export default defineComponent({
             this.storeForm.post(route('periods.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeStoreModal()
                     this.showSuccessNotification('Periode berhasil ditambahkan', 'Sistem telah berhasil menyimpan data periode baru')
                 },
@@ -208,7 +208,7 @@ export default defineComponent({
             this.updateForm.put(route('periods.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeUpdateModal()
                     this.showSuccessNotification('Periode berhasil diedit', 'Sistem telah berhasil mengedit data periode')
                 },
@@ -219,7 +219,7 @@ export default defineComponent({
             this.destroyForm.delete(route('periods.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.$inertia.reload()
+                    this.reloadData()
                     this.closeDestroyModal()
                     this.showSuccessNotification('Periode berhasil dihapus', 'Sistem telah berhasil menghapus data periode')
                 },
@@ -288,6 +288,16 @@ export default defineComponent({
         },
         clearErrors() {
             this.$page.props.errors = []
+        },
+        reloadData() {
+            this.$inertia.get(route(route().current(), route().params), {}, {
+                replace: true,
+                preserveState: true,
+                preserveScroll: true,
+                only: [
+                    'periods'
+                ]
+            })
         }
     }
 })

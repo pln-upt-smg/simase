@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Exports\MaterialsExport;
 use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\MediaHelper;
-use App\Imports\OperatorsImport;
+use App\Imports\MaterialsImport;
 use App\Models\Area;
 use App\Models\Material;
 use App\Models\Period;
@@ -13,9 +13,11 @@ use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -55,6 +57,8 @@ class MaterialService
         $query = QueryBuilder::for(Material::class)
             ->select([
                 'materials.id as id',
+                'materials.area_id as area_id',
+                'materials.period_id as period_id',
                 'materials.code as code',
                 'materials.description as description',
                 'materials.uom as uom',
@@ -144,8 +148,8 @@ class MaterialService
     public function store(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'int', 'exists:areas,id'],
-            'period' => ['required', 'int', 'exists:periods,id'],
+            'area' => ['required', 'integer', 'exists:areas,id'],
+            'period' => ['required', 'integer', 'exists:periods,id'],
             'code' => ['required', 'string', 'max:255', 'unique:materials'],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
@@ -175,8 +179,8 @@ class MaterialService
     public function update(Request $request, Material $material): void
     {
         $this->validate($request, [
-            'area' => ['required', 'int', 'exists:areas,id'],
-            'period' => ['required', 'int', 'exists:periods,id'],
+            'area' => ['required', 'integer', 'exists:areas,id'],
+            'period' => ['required', 'integer', 'exists:periods,id'],
             'code' => ['required', 'string', 'max:255', Rule::unique('materials')->ignore($material->id)->whereNull('deleted_at')],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
@@ -213,16 +217,25 @@ class MaterialService
      */
     public function import(Request $request): void
     {
-        MediaHelper::importSpreadsheet($request, new OperatorsImport);
+        Validator::make($request->all(), [
+            'area' => ['required', 'integer', 'exists:areas,id'],
+            'period' => ['required', 'integer', 'exists:periods,id'],
+            'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
+        ])->validate();
+        Excel::import(new MaterialsImport(Area::find($request->area), Period::find($request->period)), $request->file('file'));
     }
 
     /**
+     * @param Request $request
      * @return BinaryFileResponse
      * @throws Throwable
      */
-    public function export(): BinaryFileResponse
+    public function export(Request $request): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new MaterialsExport(), new Material);
+        return MediaHelper::exportSpreadsheet(new MaterialsExport(
+            Area::find(empty($request->query('area')) ? null : (int)$request->query('area')),
+            Period::find(empty($request->query('period')) ? null : (int)$request->query('period'))
+        ), new Material);
     }
 
     /**
@@ -230,6 +243,6 @@ class MaterialService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1uOA5ear--StRXSFf_iIYVW-50daP4KmA1vOcDxIRZoo/edit?usp=sharing';
+        return 'https://docs.google.com/spreadsheets/d/195BdCWN1KWWKSoImWSHFg-9vq67s-O7IsaMV7pAI-Mg/edit?usp=sharing';
     }
 }
