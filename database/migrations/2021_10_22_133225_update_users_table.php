@@ -14,7 +14,7 @@ class UpdateUsersTable extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('phone', 50)->after('name');
+            $table->string('phone', 50)->after('name')->nullable();
             $table->softDeletes();
         });
     }

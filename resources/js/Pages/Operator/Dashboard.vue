@@ -1,21 +1,18 @@
 <template>
     <app-layout title="Dashboard">
-        <grid-header>
-            <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-        </grid-header>
         <div className="border-4 border-dashed border-gray-200 rounded-lg h-96"/>
+        <div class="border-4 border-dashed border-gray-200 rounded-lg h-96 mt-6"/>
+        <div class="border-4 border-dashed border-gray-200 rounded-lg h-96 mt-6"/>
     </app-layout>
 </template>
 
 <script>
 import {defineComponent} from 'vue'
 import AppLayout from '@/Layouts/AppLayout'
-import GridHeader from '@/Layouts/GridHeader'
 
 export default defineComponent({
     components: {
-        AppLayout,
-        GridHeader
+        AppLayout
     }
 })
 </script>

@@ -35,10 +35,7 @@ class AreaService
             ->whereNull('areas.deleted_at')
             ->defaultSort('name')
             ->allowedSorts(['name'])
-            ->allowedFilters([
-                'areas.name',
-                InertiaHelper::searchQueryCallback('areas.name')
-            ])
+            ->allowedFilters(InertiaHelper::filterBy(['areas.name']))
             ->paginate()
             ->withQueryString();
     }
@@ -117,5 +114,27 @@ class AreaService
     public function template(): string
     {
         return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+    }
+
+    /**
+     * @param Request $request
+     * @return Area|null
+     */
+    public function resolve(Request $request): ?Area
+    {
+        if ($request->query('area') === '0' || $request->query('area') === 0) {
+            return null;
+        }
+        return Area::whereId($request->query('area') ? (int)$request->query('area') : 0)
+            ->whereNull('deleted_at')
+            ->first();
+    }
+
+    /**
+     * @return array
+     */
+    public function collection(): array
+    {
+        return Area::whereNull('deleted_at')->get()->sortBy('name')->toArray();
     }
 }

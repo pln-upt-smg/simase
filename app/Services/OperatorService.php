@@ -43,14 +43,13 @@ class OperatorService
             ->whereNull('users.deleted_at')
             ->defaultSort('name')
             ->allowedSorts(['name', 'phone', 'nip', 'role'])
-            ->allowedFilters([
+            ->allowedFilters(InertiaHelper::filterBy([
                 'users.name',
                 'users.phone',
                 'users.nip',
                 'users.role_id',
-                'roles.name',
-                InertiaHelper::searchQueryCallback('users.name', 'users.phone', 'users.nip', 'roles.name')
-            ])
+                'roles.name'
+            ]))
             ->paginate()
             ->withQueryString();
     }
@@ -85,7 +84,7 @@ class OperatorService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20', Rule::unique('users')->whereNull('deleted_at')],
+            'phone' => ['nullable', 'string', 'max:20', Rule::unique('users')->whereNull('deleted_at')],
             'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users')->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ]);
@@ -108,7 +107,7 @@ class OperatorService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($operator->id)->whereNull('deleted_at')],
+            'phone' => ['nullable', 'string', 'max:20', Rule::unique('users')->ignore($operator->id)->whereNull('deleted_at')],
             'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users')->ignore($operator->id)->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ]);

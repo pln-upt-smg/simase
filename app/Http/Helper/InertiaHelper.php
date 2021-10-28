@@ -6,7 +6,15 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 abstract class InertiaHelper
 {
-    public static function searchQueryCallback(string...$columns): AllowedFilter
+    public static function filterBy(array $columns, bool $searchQuery = true): array
+    {
+        if ($searchQuery) {
+            $columns[] = self::searchQueryCallback($columns);
+        }
+        return $columns;
+    }
+
+    public static function searchQueryCallback(array $columns): AllowedFilter
     {
         return AllowedFilter::callback('global', function ($query, $value) use ($columns) {
             if (count($columns) > 0) {

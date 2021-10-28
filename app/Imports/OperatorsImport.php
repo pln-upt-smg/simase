@@ -24,7 +24,7 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'max:20'],
             'nip' => ['required', 'alpha_num', 'min:6', 'max:255'],
             'role' => ['required', 'string', 'max:255', 'exists:roles,name']
         ];
@@ -41,18 +41,12 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     public function model(array $row): User|null
     {
         return new User([
-            'role_id' => $this->resolveRoleId($row['role']),
+            'role_id' => Role::operator()?->id ?? 2,
             'name' => Str::title(trim($row['name'])),
             'phone' => trim($row['phone']),
             'nip' => trim($row['nip']),
             'password' => Hash::make(trim($row['nip']))
         ]);
-    }
-
-    protected function resolveRoleId(string $roleName): int
-    {
-        $role = Role::whereName(Str::title(trim($roleName)))->whereNull('deleted_at')->first();
-        return is_null($role) ? 2 : $role->id;
     }
 
     public static function beforeSheet(): void

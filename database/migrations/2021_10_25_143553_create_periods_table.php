@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateQuartersTable extends Migration
+class CreatePeriodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateQuartersTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('quarters', function (Blueprint $table) {
+        Schema::create('periods', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
@@ -28,6 +28,6 @@ class CreateQuartersTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quarters');
+        Schema::dropIfExists('periods');
     }
 }

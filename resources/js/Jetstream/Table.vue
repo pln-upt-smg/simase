@@ -113,7 +113,7 @@ table >>> tr:hover td {
 
 <script>
 import {defineComponent} from 'vue'
-import {Components, InteractsWithQueryBuilder, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder'
+import {Components, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder'
 import TableFilter from '@/Jetstream/TableFilter'
 import TableGlobalSearch from '@/Jetstream/TableSearch'
 import TableAddSearchRow from '@/Jetstream/TableAddSearchRow'
@@ -122,9 +122,6 @@ import TablePagination from '@/Jetstream/TablePagination'
 
 export default defineComponent({
     mixins: [Components.Table],
-    props: {
-        engine: InteractsWithQueryBuilder
-    },
     components: {
         TableColumns: Tailwind2.TableColumns,
         TableFilter,
@@ -132,6 +129,6 @@ export default defineComponent({
         TableAddSearchRow,
         TableSearchRows,
         TablePagination
-    },
+    }
 })
 </script>

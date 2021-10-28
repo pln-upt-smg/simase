@@ -28,7 +28,7 @@ class OperatorsExport implements FromCollection, WithHeadings, WithMapping
             Str::title(trim($row->name)),
             trim($row->phone),
             trim($row->nip),
-            trim($row->role->name)
+            $row->role->name
         ];
     }
 

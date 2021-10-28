@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
-use App\Models\Quarter;
-use App\Services\QuarterService;
+use App\Models\Period;
+use App\Services\PeriodService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,21 +12,21 @@ use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Throwable;
 
-class QuarterController extends Controller
+class PeriodController extends Controller
 {
     /**
-     * @var QuarterService
+     * @var PeriodService
      */
-    private QuarterService $quarterService;
+    private PeriodService $periodService;
 
     /**
      * Create a new Controller instance.
      *
-     * @param QuarterService $quarterService
+     * @param PeriodService $periodService
      */
-    public function __construct(QuarterService $quarterService)
+    public function __construct(PeriodService $periodService)
     {
-        $this->quarterService = $quarterService;
+        $this->periodService = $periodService;
     }
 
     /**
@@ -36,10 +36,10 @@ class QuarterController extends Controller
      */
     public function index(): \Inertia\Response|ResponseFactory
     {
-        return inertia('Administrator/Quarters/Index', [
-            'quarters' => $this->quarterService->tableData()
+        return inertia('Administrator/Periods/Index', [
+            'periods' => $this->periodService->tableData()
         ])->table(function (InertiaTable $table) {
-            $this->quarterService->tableMeta($table);
+            $this->periodService->tableMeta($table);
         });
     }
 
@@ -52,7 +52,7 @@ class QuarterController extends Controller
      */
     public function store(Request $request): Response|RedirectResponse
     {
-        $this->quarterService->store($request);
+        $this->periodService->store($request);
         return back();
     }
 
@@ -60,26 +60,26 @@ class QuarterController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Quarter $quarter
+     * @param Period $period
      * @return Response|RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Quarter $quarter): Response|RedirectResponse
+    public function update(Request $request, Period $period): Response|RedirectResponse
     {
-        $this->quarterService->update($request, $quarter);
+        $this->periodService->update($request, $period);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Quarter $quarter
+     * @param Period $period
      * @return Response|RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Quarter $quarter): Response|RedirectResponse
+    public function destroy(Period $period): Response|RedirectResponse
     {
-        $this->quarterService->destroy($quarter);
+        $this->periodService->destroy($period);
         return back();
     }
 }

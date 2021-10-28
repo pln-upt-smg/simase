@@ -102,18 +102,10 @@
                     <menu-alt2-icon class="h-6 w-6" aria-hidden="true"/>
                 </button>
                 <div class="flex-1 px-4 flex justify-between">
-                    <div class="flex-1 flex">
-                        <form class="w-full flex md:ml-0" action="#" method="GET">
-                            <label for="search-field" class="sr-only">Cari</label>
-                            <div class="relative w-full text-gray-400 focus-within:text-gray-600">
-                                <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-                                    <SearchIcon class="h-5 w-5" aria-hidden="true"/>
-                                </div>
-                                <input id="search-field"
-                                       class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm"
-                                       placeholder="Cari" type="search" name="search"/>
-                            </div>
-                        </form>
+                    <div class="flex-1 flex lg:pl-4">
+                        <h1 class="text-xl font-bold text-gray-900 lg:py-4 py-5">
+                            {{ header }}
+                        </h1>
                     </div>
                     <div class="ml-4 flex items-center md:ml-6 mr-0 lg:mr-8">
                         <button
@@ -195,9 +187,9 @@ import {
 
 const navigationMenu = [
     {name: 'Dashboard', href: 'dashboard', icon: HomeIcon},
-    {name: 'Quarter', href: 'quarters.index', icon: CalendarIcon},
+    {name: 'Periode', href: 'periods.index', icon: CalendarIcon},
     {name: 'Area', href: 'areas.index', icon: LocationMarkerIcon},
-    {name: 'Material', href: 'login', icon: ArchiveIcon},
+    {name: 'Material', href: 'materials.index', icon: ArchiveIcon},
     {name: 'Actual Stock', href: 'login', icon: CollectionIcon},
     {name: 'Book Stock', href: 'login', icon: CollectionIcon},
     {name: 'PID', href: 'login', icon: DocumentTextIcon},

@@ -1,32 +1,29 @@
 <template>
     <app-layout title="Pegawai">
-        <grid-header>
-            <jet-breadcrumbs :pages="[{name: 'Pegawai', href: 'operators.index', current: true}]"/>
-            <div class="text-left lg:text-right">
-                <div class="pt-4 lg:pt-0 mt-2">
-                    <jet-button @click="confirmStore" class="ml-0 mr-2">
-                        <plus-icon class="h-5 w-5 text-white" aria-hidden="true"/>
-                    </jet-button>
-                    <jet-button @click="confirmImport" class="mr-2">
-                        <upload-icon class="h-5 w-5 text-white" aria-hidden="true"/>
-                    </jet-button>
-                    <jet-button @click="confirmExport">
-                        <download-icon class="h-5 w-5 text-white" aria-hidden="true"/>
-                    </jet-button>
-                </div>
-            </div>
-        </grid-header>
+        <div class="lg:text-right mb-6">
+            <jet-button @click="confirmStore" class="mr-2 mb-2 lg:mb-0">
+                <plus-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
+                Tambah
+            </jet-button>
+            <jet-button @click="confirmImport" class="mr-2 mb-2 lg:mb-0">
+                <upload-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
+                Impor
+            </jet-button>
+            <jet-button @click="confirmExport">
+                <download-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
+                Ekspor
+            </jet-button>
+        </div>
         <jet-table
             :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="operators"
-            class="pt-12 lg:pt-0">
+            :meta="operators">
             <template #head>
                 <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Pegawai</th>
                 <th v-show="showColumn('phone')" @click.prevent="sortBy('phone')">Nomor Telepon</th>
                 <th v-show="showColumn('nip')" @click.prevent="sortBy('nip')">Nomor Induk Pegawai</th>
-                <th v-show="showColumn('role')">Peran</th>
+                <th v-show="showColumn('role')" @click.prevent="sortBy('role')">Peran</th>
                 <th v-show="showColumn('action')"></th>
             </template>
             <template #body>
@@ -120,7 +117,7 @@
         </jet-modal>
         <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus pegawai">
             <template #content>
-                Apakah Anda yakin ingin menghapus akun akun pegawai ini? Setelah akun pegawai dihapus, semua sumber daya
+                Apakah Anda yakin ingin menghapus akun pegawai ini? Setelah akun pegawai dihapus, semua sumber daya
                 dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
@@ -229,11 +226,9 @@ import {useForm} from '@inertiajs/inertia-vue3'
 import {MenuItem} from '@headlessui/vue'
 import {DocumentAddIcon, DownloadIcon, PencilAltIcon, PlusIcon, TrashIcon, UploadIcon} from '@heroicons/vue/outline'
 import AppLayout from '@/Layouts/AppLayout'
-import GridHeader from '@/Layouts/GridHeader'
 import JetButton from '@/Jetstream/Button'
 import JetDangerButton from '@/Jetstream/DangerButton'
 import JetSecondaryButton from '@/Jetstream/SecondaryButton'
-import JetBreadcrumbs from '@/Jetstream/Breadcrumbs'
 import JetDropdown from '@/Jetstream/Dropdown'
 import JetModal from '@/Jetstream/Modal'
 import JetAlertModal from '@/Jetstream/AlertModal'
@@ -244,6 +239,9 @@ import JetSuccessNotification from '@/Jetstream/SuccessNotification'
 import JetDangerNotification from '@/Jetstream/DangerNotification'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
+import JetTableEngine from '@/Jetstream/TableEngine'
+
+JetTableEngine.enablePartial('operators')
 
 export default defineComponent({
     data() {
@@ -286,15 +284,13 @@ export default defineComponent({
             })
         }
     },
-    mixins: [JetTable.props.engine],
+    mixins: [JetTableEngine],
     props: {
         operators: Object
     },
     components: {
         AppLayout,
-        GridHeader,
         JetTable,
-        JetBreadcrumbs,
         JetDropdown,
         JetButton,
         JetDangerButton,

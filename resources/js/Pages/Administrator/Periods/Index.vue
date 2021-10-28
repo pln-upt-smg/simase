@@ -1,39 +1,35 @@
 <template>
-    <app-layout title="Quarter">
-        <grid-header>
-            <jet-breadcrumbs :pages="[{name: 'Quarter', href: 'quarters.index', current: true}]"/>
-            <div class="text-left lg:text-right">
-                <div class="pt-4 lg:pt-0 mt-2">
-                    <jet-button @click="confirmStore" class="ml-0 mr-2">
-                        <plus-icon class="h-5 w-5 text-white" aria-hidden="true"/>
-                    </jet-button>
-                </div>
-            </div>
-        </grid-header>
+    <app-layout title="Periode">
+        <div class="lg:text-right mb-6">
+            <jet-button @click="confirmStore" class="ml-0">
+                <plus-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
+                Tambah
+            </jet-button>
+        </div>
         <jet-table
             :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="quarters"
-            class="pt-12 lg:pt-0">
+            :meta="periods"
+            partial="periods">
             <template #head>
-                <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Quarter</th>
+                <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Periode</th>
                 <th v-show="showColumn('action')"></th>
             </template>
             <template #body>
-                <tr v-for="quarter in quarters.data" :key="quarter.id">
-                    <td v-show="showColumn('name')">{{ quarter.name }}</td>
+                <tr v-for="period in periods.data" :key="period.id">
+                    <td v-show="showColumn('name')">{{ period.name }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
-                                <button @click="confirmUpdate(quarter)"
+                                <button @click="confirmUpdate(period)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <pencil-alt-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Edit
                                 </button>
                             </menu-item>
                             <menu-item>
-                                <button @click="confirmDestroy(quarter)"
+                                <button @click="confirmDestroy(period)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <trash-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Hapus
@@ -44,12 +40,12 @@
                 </tr>
             </template>
         </jet-table>
-        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah quarter">
+        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah periode">
             <template #content>
-                Silakan masukkan data quarter yang ingin ditambahkan.
+                Silakan masukkan data periode yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full" placeholder="Nama Quarter"
+                    <jet-input type="text" class="block w-full" placeholder="Nama Periode"
                                ref="storeName" v-model="storeForm.name"
                                @keyup.enter="store"/>
                 </div>
@@ -67,12 +63,12 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit quarter">
+        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit periode">
             <template #content>
-                Silakan masukkan data quarter yang ingin diubah.
+                Silakan masukkan data periode yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full" placeholder="Nama Quarter"
+                    <jet-input type="text" class="block w-full" placeholder="Nama Periode"
                                ref="updateName" v-model="updateForm.name"
                                @keyup.enter="update"/>
                 </div>
@@ -90,9 +86,9 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus quarter">
+        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus periode">
             <template #content>
-                Apakah Anda yakin ingin menghapus quarter ini? Setelah quarter dihapus, semua sumber daya
+                Apakah Anda yakin ingin menghapus periode ini? Setelah periode dihapus, semua sumber daya
                 dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
@@ -127,11 +123,9 @@ import {Link as JetLink, useForm} from '@inertiajs/inertia-vue3'
 import {MenuItem} from '@headlessui/vue'
 import {DocumentAddIcon, DownloadIcon, PencilAltIcon, PlusIcon, TrashIcon, UploadIcon} from '@heroicons/vue/outline'
 import AppLayout from '@/Layouts/AppLayout'
-import GridHeader from '@/Layouts/GridHeader'
 import JetButton from '@/Jetstream/Button'
 import JetDangerButton from '@/Jetstream/DangerButton'
 import JetSecondaryButton from '@/Jetstream/SecondaryButton'
-import JetBreadcrumbs from '@/Jetstream/Breadcrumbs'
 import JetDropdown from '@/Jetstream/Dropdown'
 import JetModal from '@/Jetstream/Modal'
 import JetAlertModal from '@/Jetstream/AlertModal'
@@ -140,6 +134,9 @@ import JetSuccessNotification from '@/Jetstream/SuccessNotification'
 import JetDangerNotification from '@/Jetstream/DangerNotification'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
+import JetTableEngine from '@/Jetstream/TableEngine'
+
+JetTableEngine.enablePartial('periods')
 
 export default defineComponent({
     data() {
@@ -169,15 +166,13 @@ export default defineComponent({
             })
         }
     },
-    mixins: [JetTable.props.engine],
+    mixins: [JetTableEngine],
     props: {
-        quarters: Object
+        periods: Object
     },
     components: {
         AppLayout,
-        GridHeader,
         JetTable,
-        JetBreadcrumbs,
         JetDropdown,
         JetButton,
         JetDangerButton,
@@ -199,50 +194,50 @@ export default defineComponent({
     },
     methods: {
         store() {
-            this.storeForm.post(route('quarters.store'), {
+            this.storeForm.post(route('periods.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
                     this.closeStoreModal()
-                    this.showSuccessNotification('Quarter berhasil ditambahkan', 'Sistem telah berhasil menyimpan data quarter baru')
+                    this.showSuccessNotification('Periode berhasil ditambahkan', 'Sistem telah berhasil menyimpan data periode baru')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data quarter, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data periode, mohon periksa ulang form')
             })
         },
         update() {
-            this.updateForm.put(route('quarters.update', this.updateForm.id), {
+            this.updateForm.put(route('periods.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
                     this.closeUpdateModal()
-                    this.showSuccessNotification('Quarter berhasil diedit', 'Sistem telah berhasil mengedit data quarter')
+                    this.showSuccessNotification('Periode berhasil diedit', 'Sistem telah berhasil mengedit data periode')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data quarter, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data periode, mohon periksa ulang form')
             })
         },
         destroy() {
-            this.destroyForm.delete(route('quarters.destroy', this.destroyForm.id), {
+            this.destroyForm.delete(route('periods.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$inertia.reload()
                     this.closeDestroyModal()
-                    this.showSuccessNotification('Quarter berhasil dihapus', 'Sistem telah berhasil menghapus data quarter')
+                    this.showSuccessNotification('Periode berhasil dihapus', 'Sistem telah berhasil menghapus data periode')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data quarter')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data periode')
             })
         },
         confirmStore() {
             setTimeout(() => this.confirmingStore = true, 150)
             setTimeout(() => this.$refs.storeName.focus(), 300)
         },
-        confirmUpdate(quarter) {
-            this.updateForm.id = quarter.id
-            this.updateForm.name = quarter.name
+        confirmUpdate(period) {
+            this.updateForm.id = period.id
+            this.updateForm.name = period.name
             setTimeout(() => this.confirmingUpdate = true, 150)
             setTimeout(() => this.$refs.updateName.focus(), 300)
         },
-        confirmDestroy(quarter) {
-            this.destroyForm.id = quarter.id
+        confirmDestroy(period) {
+            this.destroyForm.id = period.id
             setTimeout(() => this.confirmingDestroy = true, 150)
         },
         closeStoreModal() {
