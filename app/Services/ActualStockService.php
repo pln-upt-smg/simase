@@ -124,9 +124,13 @@ class ActualStockService
             'materials.mtyp' => 'MType',
             'users.name' => 'Pembuat'
         ])->addFilter(
-            'materials.uom',
+            'uom',
             'UoM',
             Material::select('uom')->groupBy('uom')->get()->pluck('uom', 'uom')->toArray()
+        )->addFilter(
+            'mtyp',
+            'MType',
+            Material::select('mtyp')->groupBy('mtyp')->get()->pluck('mtyp', 'mtyp')->toArray()
         )->addColumns([
             'material_code' => 'Kode Material',
             'batch' => 'Batch',

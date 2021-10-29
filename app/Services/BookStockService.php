@@ -166,7 +166,7 @@ class BookStockService
             'plnt' => ['required', 'integer', 'min:0'],
             'sloc' => ['required', 'integer', 'min:0'],
             'qualinsp' => ['required', 'integer', 'min:0'],
-            'unrestricted' => ['required', 'float'],
+            'unrestricted' => ['required', 'numeric'],
             'quantity' => ['required', 'integer', 'min:0']
         ]);
         BookStock::create([
@@ -198,7 +198,7 @@ class BookStockService
             'plnt' => ['required', 'integer', 'min:0'],
             'sloc' => ['required', 'integer', 'min:0'],
             'qualinsp' => ['required', 'integer', 'min:0'],
-            'unrestricted' => ['required', 'float'],
+            'unrestricted' => ['required', 'numeric'],
             'quantity' => ['required', 'integer', 'min:0']
         ]);
         $book->updateOrFail([

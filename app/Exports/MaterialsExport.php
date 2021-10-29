@@ -45,8 +45,8 @@ class MaterialsExport implements FromCollection, WithHeadings, WithMapping
             Str::upper(trim($row->uom)),
             Str::upper(trim($row->mtyp)),
             Str::upper(trim($row->crcy)),
-            (int)$row->price,
-            (int)$row->per,
+            (string)$row->price,
+            (string)$row->per,
             (string)$row->updated_at->format('d-M-y')
         ];
     }

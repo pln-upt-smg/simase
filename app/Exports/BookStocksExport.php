@@ -43,13 +43,13 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             Str::upper(trim($row->material->code)),
-            (int)$row->plnt,
-            (int)$row->sloc,
+            (string)$row->plnt,
+            (string)$row->sloc,
             Str::upper(trim($row->batch)),
-            (float)$row->unrestricted,
-            (int)$row->qualinsp,
+            (string)$row->unrestricted,
+            (string)$row->qualinsp,
             Str::title(trim($row->material->description)),
-            (int)$row->quantity,
+            (string)$row->quantity,
             Str::upper(trim($row->material->uom)),
             Str::upper(trim($row->material->mtyp))
         ];

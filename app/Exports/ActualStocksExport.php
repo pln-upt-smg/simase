@@ -41,7 +41,7 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
             Str::upper(trim($row->material->code)),
             Str::upper(trim($row->batch)),
             Str::title(trim($row->material->description)),
-            (int)$row->quantity,
+            (string)$row->quantity,
             Str::upper(trim($row->material->uom)),
             Str::upper(trim($row->material->mtyp))
         ];
