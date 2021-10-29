@@ -36,20 +36,20 @@ class OperatorService
                 'users.name as name',
                 'users.phone as phone',
                 'users.nip as nip',
-                'users.role_id as role_id',
+                'roles.id as role_id',
                 'roles.name as role'
             ])
             ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
             ->whereNull('users.deleted_at')
             ->whereNull('roles.deleted_at')
-            ->where('users.role_id', '=', Role::operator()?->id ?? 2)
+            ->where('roles.id', '=', Role::operator()?->id ?? 2)
             ->defaultSort('name')
             ->allowedSorts(['name', 'phone', 'nip', 'role'])
             ->allowedFilters(InertiaHelper::filterBy([
                 'users.name',
                 'users.phone',
                 'users.nip',
-                'users.role_id',
+                'roles.id',
                 'roles.name'
             ]))
             ->paginate()
@@ -67,8 +67,6 @@ class OperatorService
             'users.phone' => 'Nomor Telepon',
             'users.nip' => 'Nomor Induk Pegawai',
             'roles.name' => 'Peran'
-        ])->addFilter('users.role_id', 'Peran', [
-            2 => 'Operator'
         ])->addColumns([
             'name' => 'Nama Pegawai',
             'phone' => 'Nomor Telepon',

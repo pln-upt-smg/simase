@@ -123,22 +123,14 @@ class ActualStockService
             'materials.uom' => 'UoM',
             'materials.mtyp' => 'MType',
             'users.name' => 'Pembuat'
-        ])->addFilter(
-            'uom',
-            'UoM',
-            Material::select('uom')->groupBy('uom')->get()->pluck('uom', 'uom')->toArray()
-        )->addFilter(
-            'mtyp',
-            'MType',
-            Material::select('mtyp')->groupBy('mtyp')->get()->pluck('mtyp', 'mtyp')->toArray()
-        )->addColumns([
+        ])->addColumns([
             'material_code' => 'Kode Material',
             'batch' => 'Batch',
             'material_description' => 'Deskripsi Material',
             'quantity' => 'Kuantitas',
             'uom' => 'UoM',
             'mtyp' => 'MType',
-            'creater_name' => 'Pembuat',
+            'creator_name' => 'Pembuat',
             'action' => 'Aksi'
         ]);
     }

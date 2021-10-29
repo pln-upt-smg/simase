@@ -116,19 +116,7 @@ class MaterialService
             'materials.crcy' => 'Currency',
             'materials.price' => 'Harga',
             'materials.per' => 'Per'
-        ])->addFilter(
-            'materials.uom',
-            'UoM',
-            Material::select('uom')->groupBy('uom')->get()->pluck('uom', 'uom')->toArray()
-        )->addFilter(
-            'materials.mtyp',
-            'MType',
-            Material::select('mtyp')->groupBy('mtyp')->get()->pluck('mtyp', 'mtyp')->toArray()
-        )->addFilter(
-            'materials.crcy',
-            'Currency',
-            Material::select('crcy')->groupBy('crcy')->get()->pluck('crcy', 'crcy')->toArray()
-        )->addColumns([
+        ])->addColumns([
             'code' => 'Kode Material',
             'description' => 'Deskripsi Material',
             'uom' => 'UoM',

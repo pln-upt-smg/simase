@@ -20,8 +20,14 @@
             :meta="areas"
             ref="table">
             <template #head>
-                <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Area</th>
-                <th v-show="showColumn('action')"></th>
+                <jet-table-header
+                    v-show="showColumn('name')"
+                    :cell="sortableHeader('name')">
+                    Nama Area
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('action')"
+                    :cell="staticHeader('action')"/>
             </template>
             <template #body>
                 <tr v-for="area in areas.data" :key="area.id">
@@ -217,12 +223,14 @@ import JetDangerNotification from '@/Jetstream/DangerNotification'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
+import JetTableHeader from '@/Jetstream/TableHeader'
 
 export default defineComponent({
     mixins: [JetTableEngine],
     components: {
         AppLayout,
         JetTable,
+        JetTableHeader,
         JetDropdown,
         JetButton,
         JetDangerButton,

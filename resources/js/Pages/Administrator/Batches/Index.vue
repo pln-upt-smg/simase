@@ -15,15 +15,24 @@
             </jet-button>
         </div>
         <jet-table
-            :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="batches"
             ref="table">
             <template #head>
-                <th v-show="showColumn('batch_code')" @click.prevent="sortBy('batch_code')">Kode Batch</th>
-                <th v-show="showColumn('material_code')" @click.prevent="sortBy('material_code')">Kode Material</th>
-                <th v-show="showColumn('action')"></th>
+                <jet-table-header
+                    v-show="showColumn('batch_code')"
+                    :cell="sortableHeader('batch_code')">
+                    Kode Batch
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('material_code')"
+                    :cell="sortableHeader('material_code')">
+                    Kode Material
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('action')"
+                    :cell="staticHeader('action')"/>
             </template>
             <template #body>
                 <tr v-for="batch in batches.data" :key="batch.id">
@@ -224,12 +233,14 @@ import JetDangerNotification from '@/Jetstream/DangerNotification'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
+import JetTableHeader from '@/Jetstream/TableHeader'
 
 export default defineComponent({
     mixins: [JetTableEngine],
     components: {
         AppLayout,
         JetTable,
+        JetTableHeader,
         JetDropdown,
         JetButton,
         JetDangerButton,

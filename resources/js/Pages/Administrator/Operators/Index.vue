@@ -15,17 +15,34 @@
             </jet-button>
         </div>
         <jet-table
-            :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="operators"
             ref="table">
             <template #head>
-                <th v-show="showColumn('name')" @click.prevent="sortBy('name')">Nama Pegawai</th>
-                <th v-show="showColumn('phone')" @click.prevent="sortBy('phone')">Nomor Telepon</th>
-                <th v-show="showColumn('nip')" @click.prevent="sortBy('nip')">Nomor Induk Pegawai</th>
-                <th v-show="showColumn('role')" @click.prevent="sortBy('role')">Peran</th>
-                <th v-show="showColumn('action')"></th>
+                <jet-table-header
+                    v-show="showColumn('name')"
+                    :cell="sortableHeader('name')">
+                    Nama Pegawai
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('phone')"
+                    :cell="sortableHeader('phone')">
+                    Nomor Telepon
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('nip')"
+                    :cell="sortableHeader('nip')">
+                    Nomor Induk Pegawai
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('role')"
+                    :cell="sortableHeader('role')">
+                    Peran
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('action')"
+                    :cell="staticHeader('action')"/>
             </template>
             <template #body>
                 <tr v-for="operator in operators.data" :key="operator.id">
@@ -241,6 +258,7 @@ import JetDangerNotification from '@/Jetstream/DangerNotification'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
+import JetTableHeader from '@/Jetstream/TableHeader'
 
 export default defineComponent({
     data() {
@@ -290,6 +308,7 @@ export default defineComponent({
     components: {
         AppLayout,
         JetTable,
+        JetTableHeader,
         JetDropdown,
         JetButton,
         JetDangerButton,

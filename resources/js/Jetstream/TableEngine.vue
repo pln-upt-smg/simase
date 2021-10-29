@@ -136,6 +136,7 @@ export default {
                         const value = url.get(param)
                         if (value !== null) query += query.length > 0 ? `&${param}=${value}` : `${param}=${value}`
                     })
+                    console.log(query)
                     this.$inertia.get(`${location.pathname}?${query}`, {}, {
                         replace: true,
                         preserveState: true,

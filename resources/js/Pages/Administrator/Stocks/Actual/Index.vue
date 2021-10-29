@@ -21,20 +21,49 @@
             </div>
         </div>
         <jet-table
-            :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="stocks"
             ref="table">
             <template #head>
-                <th v-show="showColumn('material_code')" @click.prevent="sortBy('material_code')">Kode Material</th>
-                <th v-show="showColumn('batch')" @click.prevent="sortBy('batch')">Batch</th>
-                <th v-show="showColumn('material_description')" @click.prevent="sortBy('material_description')">Deskripsi Material</th>
-                <th v-show="showColumn('quantity')" @click.prevent="sortBy('quantity')">Kuantitas</th>
-                <th v-show="showColumn('uom')" @click.prevent="sortBy('uom')">UoM</th>
-                <th v-show="showColumn('mtyp')" @click.prevent="sortBy('mtyp')">MType</th>
-                <th v-show="showColumn('creator_name')" @click.prevent="sortBy('creator_name')">Pembuat</th>
-                <th v-show="showColumn('action')"></th>
+                <jet-table-header
+                    v-show="showColumn('material_code')"
+                    :cell="sortableHeader('material_code')">
+                    Kode Material
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('batch')"
+                    :cell="sortableHeader('batch')">
+                    Kode Batch
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('material_description')"
+                    :cell="sortableHeader('material_description')">
+                    Deskripsi Material
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('quantity')"
+                    :cell="sortableHeader('quantity')">
+                    Kuantitas
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('uom')"
+                    :cell="sortableHeader('uom')">
+                    UoM
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('uom')"
+                    :cell="sortableHeader('mtyp')">
+                    MType
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('creator_name')"
+                    :cell="sortableHeader('creator_name')">
+                    Pembuat
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('action')"
+                    :cell="staticHeader('action')"/>
             </template>
             <template #body>
                 <tr v-for="stock in stocks.data" :key="stock.id">
@@ -267,6 +296,7 @@ import JetDangerNotification from '@/Jetstream/DangerNotification'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
+import JetTableHeader from '@/Jetstream/TableHeader'
 import JetAreaDropdown from '@/Jetstream/AreaDropdown'
 import JetPeriodDropdown from '@/Jetstream/PeriodDropdown'
 import JetSelect from '@/Jetstream/Select'
@@ -331,6 +361,7 @@ export default defineComponent({
     components: {
         AppLayout,
         JetTable,
+        JetTableHeader,
         JetDropdown,
         JetButton,
         JetDisabledButton,

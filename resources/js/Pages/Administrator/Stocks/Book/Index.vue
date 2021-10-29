@@ -21,25 +21,64 @@
             </div>
         </div>
         <jet-table
-            :filters="queryBuilderProps.filters"
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="stocks"
             ref="table">
             <template #head>
-                <th v-show="showColumn('material_code')" @click.prevent="sortBy('material_code')">Kode Material</th>
-                <th v-show="showColumn('batch')" @click.prevent="sortBy('batch')">Batch</th>
-                <th v-show="showColumn('material_description')" @click.prevent="sortBy('material_description')">
+                <jet-table-header
+                    v-show="showColumn('material_code')"
+                    :cell="sortableHeader('material_code')">
+                    Kode Material
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('batch')"
+                    :cell="sortableHeader('batch')">
+                    Kode Batch
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('material_description')"
+                    :cell="sortableHeader('material_description')">
                     Deskripsi Material
-                </th>
-                <th v-show="showColumn('quantity')" @click.prevent="sortBy('quantity')">Quantity</th>
-                <th v-show="showColumn('uom')" @click.prevent="sortBy('uom')">UoM</th>
-                <th v-show="showColumn('mtyp')" @click.prevent="sortBy('mtyp')">MTyp</th>
-                <th v-show="showColumn('plnt')" @click.prevent="sortBy('plnt')">Plnt</th>
-                <th v-show="showColumn('sloc')" @click.prevent="sortBy('sloc')">SLoc</th>
-                <th v-show="showColumn('unrestricted')" @click.prevent="sortBy('unrestricted')">Unrestricted</th>
-                <th v-show="showColumn('qualinsp')" @click.prevent="sortBy('qualinsp')">QualInsp</th>
-                <th v-show="showColumn('action')"></th>
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('quantity')"
+                    :cell="sortableHeader('quantity')">
+                    Kuantitas
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('uom')"
+                    :cell="sortableHeader('uom')">
+                    UoM
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('mtyp')"
+                    :cell="sortableHeader('mtyp')">
+                    MType
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('plnt')"
+                    :cell="sortableHeader('plnt')">
+                    Plnt
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('sloc')"
+                    :cell="sortableHeader('sloc')">
+                    SLoc
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('unrestricted')"
+                    :cell="sortableHeader('unrestricted')">
+                    Unrestricted
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('qualinsp')"
+                    :cell="sortableHeader('qualinsp')">
+                    QualInsp
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('qualinsp')"
+                    :cell="staticHeader('action')"/>
             </template>
             <template #body>
                 <tr v-for="stock in stocks.data" :key="stock.id">
@@ -290,6 +329,7 @@ import JetDangerNotification from '@/Jetstream/DangerNotification'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
+import JetTableHeader from '@/Jetstream/TableHeader'
 import JetAreaDropdown from '@/Jetstream/AreaDropdown'
 import JetPeriodDropdown from '@/Jetstream/PeriodDropdown'
 import JetSelect from '@/Jetstream/Select'
@@ -362,6 +402,7 @@ export default defineComponent({
     components: {
         AppLayout,
         JetTable,
+        JetTableHeader,
         JetDropdown,
         JetButton,
         JetDangerButton,

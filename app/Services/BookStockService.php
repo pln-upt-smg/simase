@@ -128,15 +128,7 @@ class BookStockService
             'materials.description' => 'Deskripsi Material',
             'materials.uom' => 'UoM',
             'materials.mtyp' => 'MType'
-        ])->addFilter(
-            'materials.uom',
-            'UoM',
-            Material::select('uom')->groupBy('uom')->get()->pluck('uom', 'uom')->toArray()
-        )->addFilter(
-            'materials.mtyp',
-            'MType',
-            Material::select('mtyp')->groupBy('mtyp')->get()->pluck('mtyp', 'mtyp')->toArray()
-        )->addColumns([
+        ])->addColumns([
             'material_code' => 'Kode Material',
             'material_description' => 'Deskripsi Material',
             'uom' => 'UoM',
