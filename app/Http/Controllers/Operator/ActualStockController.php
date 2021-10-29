@@ -11,7 +11,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
 class ActualStockController extends Controller
@@ -84,10 +83,10 @@ class ActualStockController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function store(Request $request): Response|RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $this->actualStockService->store($request);
         return back();
@@ -97,51 +96,26 @@ class ActualStockController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param ActualStock $actual
+     * @param ActualStock $stock
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, ActualStock $actual): RedirectResponse
+    public function update(Request $request, ActualStock $stock): RedirectResponse
     {
-        $this->actualStockService->update($request, $actual);
+        $this->actualStockService->update($request, $stock);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param ActualStock $actual
+     * @param ActualStock $stock
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(ActualStock $actual): RedirectResponse
+    public function destroy(ActualStock $stock): RedirectResponse
     {
-        $this->actualStockService->destroy($actual);
+        $this->actualStockService->destroy($stock);
         return back();
-    }
-
-    /**
-     * Import the resource from file.
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     * @throws Throwable
-     */
-    public function import(Request $request): RedirectResponse
-    {
-        $this->actualStockService->import($request);
-        return back();
-    }
-
-    /**
-     * Export the resource to specified file.
-     *
-     * @param Request $request
-     * @return BinaryFileResponse
-     * @throws Throwable
-     */
-    public function export(Request $request): BinaryFileResponse
-    {
-        return $this->actualStockService->export($request);
     }
 }
