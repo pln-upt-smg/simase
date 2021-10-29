@@ -172,7 +172,7 @@ class BookStockService
         BookStock::create([
             'area_id' => (int)$request->area,
             'period_id' => (int)$request->period,
-            'material_id' => Material::whereId($request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
@@ -204,7 +204,7 @@ class BookStockService
         $book->updateOrFail([
             'area_id' => (int)$request->area,
             'period_id' => (int)$request->period,
-            'material_id' => Material::whereId($request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,

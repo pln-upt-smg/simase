@@ -168,7 +168,7 @@ class ActualStockService
         ActualStock::create([
             'area_id' => (int)$request->area,
             'period_id' => (int)$request->period,
-            'material_id' => Material::whereId($request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
             'user_id' => auth()->user()?->id ?? 0,
             'batch' => Str::upper($request->batch),
             'quantity' => (int)$request->quantity
@@ -210,7 +210,7 @@ class ActualStockService
         $actual->updateOrFail([
             'area_id' => (int)$request->area,
             'period_id' => (int)$request->period,
-            'material_id' => Material::whereId($request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch),
             'quantity' => (int)$request->quantity
         ]);
