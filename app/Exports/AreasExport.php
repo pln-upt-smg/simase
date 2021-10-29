@@ -29,6 +29,6 @@ class AreasExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return Area::all()->whereNull('deleted_at')->sortBy('id');
+        return Area::whereNull('deleted_at')->orderBy('id')->get();
     }
 }

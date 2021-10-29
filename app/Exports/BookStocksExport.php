@@ -65,6 +65,6 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
         if (!is_null($this->period)) {
             $query = $query->where('book_stocks.period_id', $this->period->id);
         }
-        return $query->orderBy('materials.code')->get();
+        return $query->orderBy('materials.code')->get()->load('material');
     }
 }

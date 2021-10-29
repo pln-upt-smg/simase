@@ -29,6 +29,6 @@ class BatchesExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return Batch::all()->whereNull('deleted_at')->sortBy('code');
+        return Batch::whereNull('deleted_at')->orderBy('code')->get()->load('material');
     }
 }
