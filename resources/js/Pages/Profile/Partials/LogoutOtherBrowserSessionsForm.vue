@@ -57,7 +57,7 @@
                     Silakan masukkan kata sandi Anda untuk mengonfirmasi bahwa Anda ingin keluar dari sesi browser Anda
                     yang lain di semua perangkat Anda.
                     <div class="mt-4">
-                        <jet-input type="password" class="mt-1 block w-full" placeholder="Kata Sandi"
+                        <jet-input type="password" class="mt-1 block w-full normal-case" placeholder="Kata Sandi"
                                    ref="password"
                                    v-model="form.password"
                                    @keyup.enter="logoutOtherBrowserSessions"/>

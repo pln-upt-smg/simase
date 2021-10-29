@@ -58,14 +58,15 @@ class BookStockService
             ->select([
                 'book_stocks.id as id',
                 'book_stocks.batch as batch',
+                'book_stocks.quantity as quantity',
                 'book_stocks.plnt as plnt',
                 'book_stocks.sloc as sloc',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.unrestricted as unrestricted',
                 'materials.area_id as area_id',
                 'materials.period_id as period_id',
-                'materials.code as code',
-                'materials.description as description',
+                'materials.code as material_code',
+                'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp'
             ])
@@ -81,17 +82,18 @@ class BookStockService
             $query = $query->where('materials.period_id', $period->id);
         }
 
-        return $query->defaultSort('code')
+        return $query->defaultSort('material_code')
             ->allowedSorts([
-                'code',
-                'description',
+                'material_code',
+                'material_description',
                 'uom',
                 'mtyp',
                 'batch',
                 'plnt',
                 'sloc',
                 'qualinsp',
-                'unrestricted'
+                'unrestricted',
+                'quantity'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'book_stocks.batch',
@@ -99,6 +101,7 @@ class BookStockService
                 'book_stocks.sloc',
                 'book_stocks.qualinsp',
                 'book_stocks.unrestricted',
+                'book_stocks.quantity',
                 'materials.code',
                 'materials.description',
                 'materials.uom',
@@ -115,15 +118,16 @@ class BookStockService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'materials.code' => 'Kode Material',
-            'materials.description' => 'Deskripsi Material',
-            'materials.uom' => 'UoM',
-            'materials.mtyp' => 'MType',
             'book_stocks.batch' => 'Batch',
             'book_stocks.plnt' => 'Plnt',
             'book_stocks.sloc' => 'SLoc',
             'book_stocks.qualinsp' => 'QualInsp',
-            'book_stocks.unrestricted' => 'Unrestricted'
+            'book_stocks.unrestricted' => 'Unrestricted',
+            'book_stocks.quantity' => 'Kuantitas',
+            'materials.code' => 'Kode Material',
+            'materials.description' => 'Deskripsi Material',
+            'materials.uom' => 'UoM',
+            'materials.mtyp' => 'MType'
         ])->addFilter(
             'materials.uom',
             'UoM',
@@ -133,8 +137,8 @@ class BookStockService
             'MType',
             Material::select('mtyp')->groupBy('mtyp')->get()->pluck('mtyp', 'mtyp')->toArray()
         )->addColumns([
-            'code' => 'Kode Material',
-            'description' => 'Deskripsi Material',
+            'material_code' => 'Kode Material',
+            'material_description' => 'Deskripsi Material',
             'uom' => 'UoM',
             'mtyp' => 'MType',
             'batch' => 'Batch',
@@ -142,6 +146,7 @@ class BookStockService
             'sloc' => 'SLoc',
             'qualinsp' => 'QualInsp',
             'unrestricted' => 'Unrestricted',
+            'quantity' => 'Kuantitas',
             'update_date' => 'Tanggal Pembaruan',
             'action' => 'Aksi'
         ]);
@@ -156,22 +161,24 @@ class BookStockService
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
+            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch' => ['required', 'string', 'max:255'],
             'plnt' => ['required', 'integer', 'min:0'],
             'sloc' => ['required', 'integer', 'min:0'],
             'qualinsp' => ['required', 'integer', 'min:0'],
-            'unrestricted' => ['required', 'float']
+            'unrestricted' => ['required', 'float'],
+            'quantity' => ['required', 'integer', 'min:0']
         ]);
         BookStock::create([
-            'area_id' => $request->area,
-            'period_id' => $request->period,
-            'material_id' => Material::whereId($request->code)->first()?->id ?? 0,
+            'area_id' => (int)$request->area,
+            'period_id' => (int)$request->period,
+            'material_id' => Material::whereId($request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch),
-            'plnt' => $request->plnt,
-            'sloc' => $request->sloc,
-            'qualinsp' => $request->qualinsp,
-            'unrestricted' => $request->unrestricted
+            'plnt' => (int)$request->plnt,
+            'sloc' => (int)$request->sloc,
+            'qualinsp' => (int)$request->qualinsp,
+            'unrestricted' => (float)$request->unrestricted,
+            'quantity' => (int)$request->quantity
         ]);
     }
 
@@ -186,22 +193,24 @@ class BookStockService
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
+            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch' => ['required', 'string', 'max:255'],
             'plnt' => ['required', 'integer', 'min:0'],
             'sloc' => ['required', 'integer', 'min:0'],
             'qualinsp' => ['required', 'integer', 'min:0'],
-            'unrestricted' => ['required', 'float']
+            'unrestricted' => ['required', 'float'],
+            'quantity' => ['required', 'integer', 'min:0']
         ]);
         $book->updateOrFail([
-            'area_id' => $request->area,
-            'period_id' => $request->period,
-            'material_id' => Material::whereId($request->code)->first()?->id ?? 0,
+            'area_id' => (int)$request->area,
+            'period_id' => (int)$request->period,
+            'material_id' => Material::whereId($request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch),
-            'plnt' => $request->plnt,
-            'sloc' => $request->sloc,
-            'qualinsp' => $request->qualinsp,
-            'unrestricted' => $request->unrestricted
+            'plnt' => (int)$request->plnt,
+            'sloc' => (int)$request->sloc,
+            'qualinsp' => (int)$request->qualinsp,
+            'unrestricted' => (float)$request->unrestricted,
+            'quantity' => (int)$request->quantity
         ]);
         $book->save();
     }
@@ -242,7 +251,7 @@ class BookStockService
         return MediaHelper::exportSpreadsheet(new BookStocksExport(
             Area::find(empty($request->query('area')) ? null : (int)$request->query('area')),
             Period::find(empty($request->query('period')) ? null : (int)$request->query('period'))
-        ), new Material);
+        ), new BookStock);
     }
 
     /**

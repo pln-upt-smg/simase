@@ -1,4 +1,5 @@
 <template>
+    <Head :title="title"/>
     <div class="h-screen flex overflow-hidden bg-gray-100 ">
         <!-- Mobile Sidebar -->
         <TransitionRoot as="template" :show="sidebarOpen">
@@ -181,7 +182,7 @@ import {
     HomeIcon,
     LocationMarkerIcon,
     MenuAlt2Icon,
-    PencilIcon,
+    SaveIcon,
     SearchIcon,
     TicketIcon,
     UsersIcon,
@@ -210,9 +211,8 @@ const navigations = {
     },
     operator: {
         menu: [
-            {name: 'Input MC Code', href: 'login', icon: PencilIcon},
-            {name: 'Input SKU Code', href: 'login', icon: PencilIcon},
-            {name: 'Hasil Stock', href: 'login', icon: DocumentTextIcon}
+            {name: 'Entry Stock', href: 'stocks.create', icon: SaveIcon},
+            {name: 'Hasil Stock', href: 'stocks.index', icon: DocumentTextIcon}
         ],
         manage: [
             {name: 'Pengaturan', href: 'profile.show', icon: CogIcon}
@@ -249,7 +249,8 @@ export default defineComponent({
         LocationMarkerIcon,
         ArchiveIcon,
         DocumentSearchIcon,
-        TicketIcon
+        TicketIcon,
+        SaveIcon
     },
     setup() {
         const sidebarOpen = ref(false)

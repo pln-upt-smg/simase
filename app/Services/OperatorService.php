@@ -12,6 +12,7 @@ use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Rules\Password;
@@ -91,7 +92,7 @@ class OperatorService
         ]);
         User::create([
             'role_id' => Role::operator()?->id ?? 2,
-            'name' => $request->name,
+            'name' => Str::title($request->name),
             'phone' => $request->phone,
             'nip' => $request->nip,
             'password' => Hash::make($request->password)
@@ -114,7 +115,7 @@ class OperatorService
         ]);
         $operator->updateOrFail([
             'role_id' => Role::operator()?->id ?? 2,
-            'name' => $request->name,
+            'name' => Str::title($request->name),
             'phone' => $request->phone,
             'nip' => $request->nip,
             'password' => Hash::make($request->password)

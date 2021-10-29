@@ -41,9 +41,10 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
             'batch' => ['required', 'string', 'max:255'],
             'unrestricted' => ['required', 'float'],
             'qualinsp' => ['required', 'integer', 'min:0'],
-            'materialdescription' => ['required', 'string', 'max:255'],
-            'uom' => ['required', 'string', 'max:255'],
-            'mtyp' => ['required', 'string', 'max:255']
+            'materialdescription' => ['nullable', 'string', 'max:255'],
+            'quantity' => ['required', 'integer', 'min:0'],
+            'uom' => ['nullable', 'string', 'max:255'],
+            'mtyp' => ['nullable', 'string', 'max:255']
         ];
     }
 
@@ -57,10 +58,13 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
     public function model(array $row): BookStock|null
     {
         return new BookStock([
+            'area_id' => $this->area?->id ?? 0,
+            'period_id' => $this->period?->id ?? 0,
             'material_id' => $this->resolveMaterialId($row['material']),
+            'batch' => Str::upper(trim($row['batch'])),
+            'quantity' => (int)$row['quantity'],
             'plnt' => (int)$row['plnt'],
             'sloc' => (int)$row['sloc'],
-            'batch' => Str::upper(trim($row['batch'])),
             'unrestricted' => (float)$row['unrestricted'],
             'qualinsp' => (int)$row['qualinsp']
         ]);
@@ -73,10 +77,8 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
         return [
             BeforeSheet::class => static function () use ($area, $period) {
                 BookStock::whereNull('deleted_at')
-                    ->whereHas('material', static function ($query) use ($area, $period) {
-                        $query->where('area_id', $area?->id ?? 0);
-                        $query->where('period_id', $period?->id ?? 0);
-                    })
+                    ->where('area_id', $area?->id ?? 0)
+                    ->where('period_id', $period?->id ?? 0)
                     ->delete();
             }
         ];

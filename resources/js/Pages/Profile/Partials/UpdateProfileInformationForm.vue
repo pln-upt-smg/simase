@@ -31,17 +31,17 @@
             </div>
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="name" value="Nama"/>
-                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name"/>
+                <jet-input id="name" type="text" class="mt-1 block w-full normal-case" v-model="form.name" autocomplete="name"/>
                 <jet-input-error :message="form.errors.name" class="mt-2"/>
             </div>
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="phone" value="Nomor Telepon"/>
-                <jet-input id="phone" type="text" class="mt-1 block w-full" v-model="form.phone" autocomplete="phone"/>
+                <jet-input id="phone" type="text" class="mt-1 block w-full normal-case" v-model="form.phone" autocomplete="phone"/>
                 <jet-input-error :message="form.errors.phone" class="mt-2"/>
             </div>
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="nip" value="Nomor Induk Pegawai"/>
-                <jet-input id="nip" type="text" class="mt-1 block w-full bg-gray-100 cursor-not-allowed"
+                <jet-input id="nip" type="text" class="mt-1 block w-full bg-gray-100 cursor-not-allowed normal-case"
                            v-model="form.nip" disabled/>
                 <jet-input-error :message="form.errors.nip" class="mt-2"/>
             </div>

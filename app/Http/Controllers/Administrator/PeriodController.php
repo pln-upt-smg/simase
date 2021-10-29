@@ -7,8 +7,7 @@ use App\Models\Period;
 use App\Services\PeriodService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Inertia\ResponseFactory;
+use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Throwable;
 
@@ -32,9 +31,9 @@ class PeriodController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Inertia\Response|ResponseFactory
+     * @return Response
      */
-    public function index(): \Inertia\Response|ResponseFactory
+    public function index(): Response
     {
         return inertia('Administrator/Periods/Index', [
             'periods' => $this->periodService->tableData()
@@ -47,10 +46,10 @@ class PeriodController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function store(Request $request): Response|RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $this->periodService->store($request);
         return back();
@@ -61,10 +60,10 @@ class PeriodController extends Controller
      *
      * @param Request $request
      * @param Period $period
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Period $period): Response|RedirectResponse
+    public function update(Request $request, Period $period): RedirectResponse
     {
         $this->periodService->update($request, $period);
         return back();
@@ -74,10 +73,10 @@ class PeriodController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Period $period
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Period $period): Response|RedirectResponse
+    public function destroy(Period $period): RedirectResponse
     {
         $this->periodService->destroy($period);
         return back();

@@ -158,15 +158,15 @@ class MaterialService
             'per' => ['required', 'integer', 'min:0']
         ]);
         Material::create([
-            'area_id' => $request->area,
-            'period_id' => $request->period,
+            'area_id' => (int)$request->area,
+            'period_id' => (int)$request->period,
             'code' => Str::upper($request->code),
             'description' => Str::title($request->description),
             'uom' => Str::upper($request->uom),
             'mtyp' => Str::upper($request->mtyp),
             'crcy' => Str::upper($request->crcy),
-            'price' => $request->price,
-            'per' => $request->per
+            'price' => (int)$request->price,
+            'per' => (int)$request->per
         ]);
     }
 
@@ -189,15 +189,15 @@ class MaterialService
             'per' => ['required', 'integer', 'min:0']
         ]);
         $material->updateOrFail([
-            'area_id' => $request->area,
-            'period_id' => $request->period,
+            'area_id' => (int)$request->area,
+            'period_id' => (int)$request->period,
             'code' => Str::upper($request->code),
             'description' => Str::title($request->description),
             'uom' => Str::upper($request->uom),
             'mtyp' => Str::upper($request->mtyp),
             'crcy' => Str::upper($request->crcy),
-            'price' => $request->price,
-            'per' => $request->per
+            'price' => (int)$request->price,
+            'per' => (int)$request->per
         ]);
         $material->save();
     }

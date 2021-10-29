@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateActualStocksTable extends Migration
+class CreateProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,13 @@ class CreateActualStocksTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('actual_stocks', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('area_id')->constrained();
             $table->foreignId('period_id')->constrained();
-            $table->foreignId('material_id')->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->string('batch');
-            $table->integer('quantity');
-            $table->timestamps();
+            $table->string('name');
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -33,6 +30,6 @@ class CreateActualStocksTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('actual_stocks');
+        Schema::dropIfExists('products');
     }
 }

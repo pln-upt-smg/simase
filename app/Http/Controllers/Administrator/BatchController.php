@@ -7,8 +7,7 @@ use App\Models\Batch;
 use App\Services\BatchService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Inertia\ResponseFactory;
+use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -33,9 +32,9 @@ class BatchController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Inertia\Response|ResponseFactory
+     * @return Response
      */
-    public function index(): \Inertia\Response|ResponseFactory
+    public function index(): Response
     {
         return inertia('Administrator/Batches/Index', [
             'batches' => $this->batchService->tableData(),
@@ -49,10 +48,10 @@ class BatchController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function store(Request $request): Response|RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $this->batchService->store($request);
         return back();
@@ -63,10 +62,10 @@ class BatchController extends Controller
      *
      * @param Request $request
      * @param Batch $batch
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Batch $batch): Response|RedirectResponse
+    public function update(Request $request, Batch $batch): RedirectResponse
     {
         $this->batchService->update($request, $batch);
         return back();
@@ -76,10 +75,10 @@ class BatchController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Batch $batch
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Batch $batch): Response|RedirectResponse
+    public function destroy(Batch $batch): RedirectResponse
     {
         $this->batchService->destroy($batch);
         return back();
@@ -89,10 +88,10 @@ class BatchController extends Controller
      * Import the resource from file.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function import(Request $request): Response|RedirectResponse
+    public function import(Request $request): RedirectResponse
     {
         $this->batchService->import($request);
         return back();

@@ -9,8 +9,7 @@ use App\Services\AreaService;
 use App\Services\PeriodService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Inertia\ResponseFactory;
+use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -50,9 +49,9 @@ class ActualStockController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Inertia\Response|ResponseFactory
+     * @return Response
      */
-    public function index(Request $request): \Inertia\Response|ResponseFactory
+    public function index(Request $request): Response
     {
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
@@ -72,10 +71,10 @@ class ActualStockController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function store(Request $request): Response|RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $this->actualStockService->store($request);
         return back();
@@ -86,10 +85,10 @@ class ActualStockController extends Controller
      *
      * @param Request $request
      * @param ActualStock $actual
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, ActualStock $actual): Response|RedirectResponse
+    public function update(Request $request, ActualStock $actual): RedirectResponse
     {
         $this->actualStockService->update($request, $actual);
         return back();
@@ -99,10 +98,10 @@ class ActualStockController extends Controller
      * Remove the specified resource from storage.
      *
      * @param ActualStock $actual
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(ActualStock $actual): Response|RedirectResponse
+    public function destroy(ActualStock $actual): RedirectResponse
     {
         $this->actualStockService->destroy($actual);
         return back();
@@ -112,10 +111,10 @@ class ActualStockController extends Controller
      * Import the resource from file.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function import(Request $request): Response|RedirectResponse
+    public function import(Request $request): RedirectResponse
     {
         $this->actualStockService->import($request);
         return back();

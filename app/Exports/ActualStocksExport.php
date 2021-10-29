@@ -27,12 +27,9 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'Material',
-            'Plnt',
-            'SLoc',
             'Batch',
-            'Unrestricted',
-            'QualInsp',
             'MaterialDescription',
+            'Quantity',
             'UOM',
             'MTyp'
         ];
@@ -42,12 +39,9 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             Str::upper(trim($row->material->code)),
-            $row->plnt,
-            $row->sloc,
-            $row->batch,
-            $row->unrestricted,
-            $row->qualinsp,
+            Str::upper(trim($row->batch)),
             Str::title(trim($row->material->description)),
+            (int)$row->quantity,
             Str::upper(trim($row->material->uom)),
             Str::upper(trim($row->material->mtyp))
         ];
@@ -58,10 +52,10 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
         $query = ActualStock::whereNull('actual_stocks.deleted_at')
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id');
         if (!is_null($this->area)) {
-            $query = $query->where('materials.area_id', $this->area->id);
+            $query = $query->where('actual_stocks.area_id', $this->area->id);
         }
         if (!is_null($this->period)) {
-            $query = $query->where('materials.period_id', $this->period->id);
+            $query = $query->where('actual_stocks.period_id', $this->period->id);
         }
         return $query->orderBy('materials.code')->get();
     }

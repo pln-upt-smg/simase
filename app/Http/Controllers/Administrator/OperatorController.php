@@ -7,8 +7,7 @@ use App\Models\User;
 use App\Services\OperatorService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Inertia\ResponseFactory;
+use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -33,9 +32,9 @@ class OperatorController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Inertia\Response|ResponseFactory
+     * @return Response
      */
-    public function index(): \Inertia\Response|ResponseFactory
+    public function index(): Response
     {
         return inertia('Administrator/Operators/Index', [
             'operators' => $this->operatorService->tableData(),
@@ -49,10 +48,10 @@ class OperatorController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function store(Request $request): Response|RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $this->operatorService->store($request);
         return back();
@@ -63,10 +62,10 @@ class OperatorController extends Controller
      *
      * @param Request $request
      * @param User $operator
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, User $operator): Response|RedirectResponse
+    public function update(Request $request, User $operator): RedirectResponse
     {
         $this->operatorService->update($request, $operator);
         return back();
@@ -76,10 +75,10 @@ class OperatorController extends Controller
      * Remove the specified resource from storage.
      *
      * @param User $operator
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(User $operator): Response|RedirectResponse
+    public function destroy(User $operator): RedirectResponse
     {
         $this->operatorService->destroy($operator);
         return back();
@@ -89,10 +88,10 @@ class OperatorController extends Controller
      * Import the resource from file.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function import(Request $request): Response|RedirectResponse
+    public function import(Request $request): RedirectResponse
     {
         $this->operatorService->import($request);
         return back();

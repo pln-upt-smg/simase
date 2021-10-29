@@ -50,26 +50,27 @@ class ActualStockService
     /**
      * @param Area|null $area
      * @param Period|null $period
+     * @param bool $ownedByCurrentUser
      * @return LengthAwarePaginator
      */
-    public function tableData(?Area $area, ?Period $period): LengthAwarePaginator
+    public function tableData(?Area $area, ?Period $period, bool $ownedByCurrentUser = false): LengthAwarePaginator
     {
         $query = QueryBuilder::for(ActualStock::class)
             ->select([
                 'actual_stocks.id as id',
                 'actual_stocks.batch as batch',
-                'actual_stocks.plnt as plnt',
-                'actual_stocks.sloc as sloc',
-                'actual_stocks.qualinsp as qualinsp',
-                'actual_stocks.unrestricted as unrestricted',
+                'actual_stocks.quantity as quantity',
                 'materials.area_id as area_id',
                 'materials.period_id as period_id',
-                'materials.code as code',
-                'materials.description as description',
+                'materials.code as material_code',
+                'materials.description as material_description',
                 'materials.uom as uom',
-                'materials.mtyp as mtyp'
+                'materials.mtyp as mtyp',
+                'users.id as creator_id',
+                'users.name as creator_name'
             ])
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
+            ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
             ->whereNull('actual_stocks.deleted_at')
             ->whereNull('materials.deleted_at');
 
@@ -81,28 +82,28 @@ class ActualStockService
             $query = $query->where('materials.period_id', $period->id);
         }
 
-        return $query->defaultSort('code')
+        if ($ownedByCurrentUser) {
+            $query = $query->where('users.id', auth()->user()?->id ?? 0);
+        }
+
+        return $query->defaultSort('material_code')
             ->allowedSorts([
-                'code',
-                'description',
+                'batch',
+                'quantity',
+                'material_code',
+                'material_description',
                 'uom',
                 'mtyp',
-                'batch',
-                'plnt',
-                'sloc',
-                'qualinsp',
-                'unrestricted'
+                'creator_name'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'actual_stocks.batch',
-                'actual_stocks.plnt',
-                'actual_stocks.sloc',
-                'actual_stocks.qualinsp',
-                'actual_stocks.unrestricted',
+                'actual_stocks.quantity',
                 'materials.code',
                 'materials.description',
                 'materials.uom',
-                'materials.mtyp'
+                'materials.mtyp',
+                'users.name'
             ]))
             ->paginate()
             ->withQueryString();
@@ -115,15 +116,13 @@ class ActualStockService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
+            'actual_stocks.batch' => 'Kode Batch',
+            'actual_stocks.quantity' => 'Kuantitas',
             'materials.code' => 'Kode Material',
             'materials.description' => 'Deskripsi Material',
             'materials.uom' => 'UoM',
             'materials.mtyp' => 'MType',
-            'actual_stocks.batch' => 'Batch',
-            'actual_stocks.plnt' => 'Plnt',
-            'actual_stocks.sloc' => 'SLoc',
-            'actual_stocks.qualinsp' => 'QualInsp',
-            'actual_stocks.unrestricted' => 'Unrestricted'
+            'users.name' => 'Pembuat'
         ])->addFilter(
             'materials.uom',
             'UoM',
@@ -133,16 +132,13 @@ class ActualStockService
             'MType',
             Material::select('mtyp')->groupBy('mtyp')->get()->pluck('mtyp', 'mtyp')->toArray()
         )->addColumns([
-            'code' => 'Kode Material',
-            'description' => 'Deskripsi Material',
+            'material_code' => 'Kode Material',
+            'batch' => 'Batch',
+            'material_description' => 'Deskripsi Material',
+            'quantity' => 'Kuantitas',
             'uom' => 'UoM',
             'mtyp' => 'MType',
-            'batch' => 'Batch',
-            'plnt' => 'Plnt',
-            'sloc' => 'SLoc',
-            'qualinsp' => 'QualInsp',
-            'unrestricted' => 'Unrestricted',
-            'update_date' => 'Tanggal Pembaruan',
+            'creater_name' => 'Pembuat',
             'action' => 'Aksi'
         ]);
     }
@@ -153,25 +149,46 @@ class ActualStockService
      */
     public function store(Request $request): void
     {
+        $request->sku ? $this->storeBySkuCode($request) : $this->storeByMaterialCode($request);
+    }
+
+    /**
+     * @param Request $request
+     * @throws ValidationException
+     */
+    private function storeByMaterialCode(Request $request): void
+    {
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
+            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch' => ['required', 'string', 'max:255'],
-            'plnt' => ['required', 'integer', 'min:0'],
-            'sloc' => ['required', 'integer', 'min:0'],
-            'qualinsp' => ['required', 'integer', 'min:0'],
-            'unrestricted' => ['required', 'float']
+            'quantity' => ['required', 'integer', 'min:0']
         ]);
         ActualStock::create([
-            'area_id' => $request->area,
-            'period_id' => $request->period,
-            'material_id' => Material::whereId($request->code)->first()?->id ?? 0,
+            'area_id' => (int)$request->area,
+            'period_id' => (int)$request->period,
+            'material_id' => Material::whereId($request->material_code)->first()?->id ?? 0,
+            'user_id' => auth()->user()?->id ?? 0,
             'batch' => Str::upper($request->batch),
-            'plnt' => $request->plnt,
-            'sloc' => $request->sloc,
-            'qualinsp' => $request->qualinsp,
-            'unrestricted' => $request->unrestricted
+            'quantity' => (int)$request->quantity
+        ]);
+    }
+
+    /**
+     * TODO: implement the store process by product code
+     *
+     * @param Request $request
+     * @throws ValidationException
+     */
+    private function storeBySkuCode(Request $request): void
+    {
+        $this->validate($request, [
+            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
+            'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
+            'batch' => ['required', 'string', 'max:255'],
+            'quantity' => ['required', 'integer', 'min:0']
         ]);
     }
 
@@ -186,22 +203,16 @@ class ActualStockService
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
+            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch' => ['required', 'string', 'max:255'],
-            'plnt' => ['required', 'integer', 'min:0'],
-            'sloc' => ['required', 'integer', 'min:0'],
-            'qualinsp' => ['required', 'integer', 'min:0'],
-            'unrestricted' => ['required', 'float']
+            'quantity' => ['required', 'integer', 'min:0']
         ]);
         $actual->updateOrFail([
-            'area_id' => $request->area,
-            'period_id' => $request->period,
-            'material_id' => Material::whereId($request->code)->first()?->id ?? 0,
+            'area_id' => (int)$request->area,
+            'period_id' => (int)$request->period,
+            'material_id' => Material::whereId($request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch),
-            'plnt' => $request->plnt,
-            'sloc' => $request->sloc,
-            'qualinsp' => $request->qualinsp,
-            'unrestricted' => $request->unrestricted
+            'quantity' => (int)$request->quantity
         ]);
         $actual->save();
     }
@@ -242,7 +253,7 @@ class ActualStockService
         return MediaHelper::exportSpreadsheet(new ActualStocksExport(
             Area::find(empty($request->query('area')) ? null : (int)$request->query('area')),
             Period::find(empty($request->query('period')) ? null : (int)$request->query('period'))
-        ), new Material);
+        ), new ActualStock);
     }
 
     /**

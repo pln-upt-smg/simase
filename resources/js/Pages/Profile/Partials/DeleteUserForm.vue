@@ -22,7 +22,7 @@
                     data akan dihapus secara permanen. Silakan masukkan kata sandi Anda untuk mengonfirmasi bahwa Anda
                     ingin hapus akun Anda secara permanen.
                     <div class="mt-4">
-                        <jet-input type="password" class="mt-1 block w-full" placeholder="Kata Sandi"
+                        <jet-input type="password" class="mt-1 block w-full normal-case" placeholder="Kata Sandi"
                                    ref="password"
                                    v-model="form.password"
                                    @keyup.enter="deleteUser"/>

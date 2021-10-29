@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ActualStock extends Model
+class Product extends Model
 {
     use Fluent, HasFactory, SoftDeletes;
 
@@ -18,21 +18,11 @@ class ActualStock extends Model
     #[BelongsTo]
     public Period $period;
 
-    #[BelongsTo]
-    public Material $material;
-
-    #[BelongsTo]
-    public User $creator;
-
-    public string $batch;
-    public int $quantity;
+    public string $name;
 
     protected $fillable = [
         'area_id',
         'period_id',
-        'material_id',
-        'user_id',
-        'batch',
-        'quantity'
+        'name'
     ];
 }

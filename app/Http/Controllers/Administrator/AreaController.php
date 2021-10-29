@@ -7,8 +7,7 @@ use App\Models\Area;
 use App\Services\AreaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Inertia\ResponseFactory;
+use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -33,9 +32,9 @@ class AreaController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Inertia\Response|ResponseFactory
+     * @return Response
      */
-    public function index(): \Inertia\Response|ResponseFactory
+    public function index(): Response
     {
         return inertia('Administrator/Areas/Index', [
             'areas' => $this->areaService->tableData(),
@@ -49,10 +48,10 @@ class AreaController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function store(Request $request): Response|RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $this->areaService->store($request);
         return back();
@@ -63,10 +62,10 @@ class AreaController extends Controller
      *
      * @param Request $request
      * @param Area $area
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Area $area): Response|RedirectResponse
+    public function update(Request $request, Area $area): RedirectResponse
     {
         $this->areaService->update($request, $area);
         return back();
@@ -76,10 +75,10 @@ class AreaController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Area $area
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Area $area): Response|RedirectResponse
+    public function destroy(Area $area): RedirectResponse
     {
         $this->areaService->destroy($area);
         return back();
@@ -89,10 +88,10 @@ class AreaController extends Controller
      * Import the resource from file.
      *
      * @param Request $request
-     * @return Response|RedirectResponse
+     * @return RedirectResponse
      * @throws Throwable
      */
-    public function import(Request $request): Response|RedirectResponse
+    public function import(Request $request): RedirectResponse
     {
         $this->areaService->import($request);
         return back();

@@ -13,15 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', static function () {
     return redirect()->route('login');
 });
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return inertia('Dashboard');
-})->name('dashboard');
 
 /**
  * Role-specific web routes
  */
-include "Roleable/web.php";
+include "roleable/web.php";

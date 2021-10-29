@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Administrator;
+namespace App\Http\Controllers\Operator;
 
 use App\Http\Controllers\Controller;
-use App\Models\Material;
+use App\Models\ActualStock;
+use App\Services\ActualStockService;
 use App\Services\AreaService;
-use App\Services\MaterialService;
 use App\Services\PeriodService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,12 +14,12 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class MaterialController extends Controller
+class ActualStockController extends Controller
 {
     /**
-     * @var MaterialService
+     * @var ActualStockService
      */
-    private MaterialService $materialService;
+    private ActualStockService $actualStockService;
 
     /**
      * @var AreaService
@@ -34,13 +34,13 @@ class MaterialController extends Controller
     /**
      * Create a new Controller instance.
      *
-     * @param MaterialService $materialService
+     * @param ActualStockService $actualStockService
      * @param AreaService $areaService
      * @param PeriodService $periodService
      */
-    public function __construct(MaterialService $materialService, AreaService $areaService, PeriodService $periodService)
+    public function __construct(ActualStockService $actualStockService, AreaService $areaService, PeriodService $periodService)
     {
-        $this->materialService = $materialService;
+        $this->actualStockService = $actualStockService;
         $this->areaService = $areaService;
         $this->periodService = $periodService;
     }
@@ -55,16 +55,26 @@ class MaterialController extends Controller
     {
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
-        return inertia('Administrator/Materials/Index', [
+        return inertia('Operator/Stocks/Result/Index', [
             'area' => $area,
             'period' => $period,
             'areas' => $this->areaService->collection(),
             'periods' => $this->periodService->collection(),
-            'materials' => $this->materialService->tableData($area, $period),
-            'template' => $this->materialService->template()
+            'stocks' => $this->actualStockService->tableData($area, $period, true),
+            'template' => $this->actualStockService->template()
         ])->table(function (InertiaTable $table) {
-            $this->materialService->tableMeta($table);
+            $this->actualStockService->tableMeta($table);
         });
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create(): Response
+    {
+        return inertia('Operator/Stocks/Input/Index');
     }
 
     /**
@@ -76,7 +86,7 @@ class MaterialController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $this->materialService->store($request);
+        $this->actualStockService->store($request);
         return back();
     }
 
@@ -84,26 +94,26 @@ class MaterialController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Material $material
+     * @param ActualStock $actual
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Material $material): RedirectResponse
+    public function update(Request $request, ActualStock $actual): RedirectResponse
     {
-        $this->materialService->update($request, $material);
+        $this->actualStockService->update($request, $actual);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Material $material
+     * @param ActualStock $actual
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Material $material): RedirectResponse
+    public function destroy(ActualStock $actual): RedirectResponse
     {
-        $this->materialService->destroy($material);
+        $this->actualStockService->destroy($actual);
         return back();
     }
 
@@ -116,7 +126,7 @@ class MaterialController extends Controller
      */
     public function import(Request $request): RedirectResponse
     {
-        $this->materialService->import($request);
+        $this->actualStockService->import($request);
         return back();
     }
 
@@ -129,6 +139,6 @@ class MaterialController extends Controller
      */
     public function export(Request $request): BinaryFileResponse
     {
-        return $this->materialService->export($request);
+        return $this->actualStockService->export($request);
     }
 }

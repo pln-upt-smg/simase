@@ -27,11 +27,14 @@
             :meta="stocks"
             ref="table">
             <template #head>
-                <th v-show="showColumn('code')" @click.prevent="sortBy('code')">Kode Material</th>
-                <th v-show="showColumn('description')" @click.prevent="sortBy('description')">Deskripsi Material</th>
+                <th v-show="showColumn('material_code')" @click.prevent="sortBy('material_code')">Kode Material</th>
+                <th v-show="showColumn('batch')" @click.prevent="sortBy('batch')">Batch</th>
+                <th v-show="showColumn('material_description')" @click.prevent="sortBy('material_description')">
+                    Deskripsi Material
+                </th>
+                <th v-show="showColumn('quantity')" @click.prevent="sortBy('quantity')">Quantity</th>
                 <th v-show="showColumn('uom')" @click.prevent="sortBy('uom')">UoM</th>
                 <th v-show="showColumn('mtyp')" @click.prevent="sortBy('mtyp')">MTyp</th>
-                <th v-show="showColumn('batch')" @click.prevent="sortBy('batch')">Batch</th>
                 <th v-show="showColumn('plnt')" @click.prevent="sortBy('plnt')">Plnt</th>
                 <th v-show="showColumn('sloc')" @click.prevent="sortBy('sloc')">SLoc</th>
                 <th v-show="showColumn('unrestricted')" @click.prevent="sortBy('unrestricted')">Unrestricted</th>
@@ -40,11 +43,12 @@
             </template>
             <template #body>
                 <tr v-for="stock in stocks.data" :key="stock.id">
-                    <td v-show="showColumn('code')">{{ stock.code }}</td>
-                    <td v-show="showColumn('description')">{{ stock.description }}</td>
+                    <td v-show="showColumn('material_code')">{{ stock.material_code }}</td>
+                    <td v-show="showColumn('batch')">{{ stock.batch }}</td>
+                    <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
+                    <td v-show="showColumn('quantity')">{{ stock.quantity }}</td>
                     <td v-show="showColumn('uom')">{{ stock.uom }}</td>
                     <td v-show="showColumn('mtyp')">{{ stock.mtyp }}</td>
-                    <td v-show="showColumn('batch')">{{ stock.batch }}</td>
                     <td v-show="showColumn('plnt')">{{ stock.plnt }}</td>
                     <td v-show="showColumn('sloc')">{{ stock.sloc }}</td>
                     <td v-show="showColumn('unrestricted')">{{ stock.unrestricted }}</td>
@@ -80,9 +84,11 @@
                     <jet-select ref="storePeriod" placeholder="Pilih Periode" v-model="storeForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
-                               ref="storeCode" v-model="storeForm.code"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Batch"
+                               ref="storeMaterialCode" v-model="storeForm.material_code"/>
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Batch"
                                ref="storeBatch" v-model="storeForm.batch"/>
+                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas"
+                               ref="storeQuantity" v-model="storeForm.quantity"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Plnt"
                                ref="storePlnt" v-model="storeForm.plnt"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="SLoc"
@@ -116,9 +122,11 @@
                     <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
-                               ref="updateCode" v-model="updateForm.code"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Batch"
+                               ref="updateMaterialCode" v-model="updateForm.material_code"/>
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Batch"
                                ref="updateBatch" v-model="updateForm.batch"/>
+                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas"
+                               ref="updateQuantity" v-model="updateForm.quantity"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Plnt"
                                ref="updatePlnt" v-model="updateForm.plnt"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="SLoc"
@@ -309,8 +317,9 @@ export default defineComponent({
             storeForm: useForm({
                 area: null,
                 period: null,
-                code: null,
+                material_code: null,
                 batch: null,
+                quantity: null,
                 plnt: null,
                 sloc: null,
                 qualinsp: null,
@@ -320,8 +329,9 @@ export default defineComponent({
                 id: null,
                 area: null,
                 period: null,
-                code: null,
+                material_code: null,
                 batch: null,
+                quantity: null,
                 plnt: null,
                 sloc: null,
                 qualinsp: null,
@@ -435,8 +445,9 @@ export default defineComponent({
             this.updateForm.id = stock.id
             this.updateForm.area = stock.area_id
             this.updateForm.period = stock.period_id
-            this.updateForm.code = stock.code
+            this.updateForm.material_code = stock.material_code
             this.updateForm.batch = stock.batch
+            this.updateForm.quantity = stock.quantity
             this.updateForm.plnt = stock.plnt
             this.updateForm.sloc = stock.sloc
             this.updateForm.qualinsp = stock.qualinsp
@@ -464,8 +475,9 @@ export default defineComponent({
                 this.storeForm.reset()
                 this.storeForm.area = null
                 this.storeForm.period = null
-                this.storeForm.code = null
+                this.storeForm.material_code = null
                 this.storeForm.batch = null
+                this.storeForm.quantity = null
                 this.storeForm.plnt = null
                 this.storeForm.sloc = null
                 this.storeForm.qualinsp = null
@@ -481,8 +493,9 @@ export default defineComponent({
                 this.updateForm.id = null
                 this.updateForm.area = null
                 this.updateForm.period = null
-                this.updateForm.code = null
+                this.updateForm.material_code = null
                 this.updateForm.batch = null
+                this.updateForm.quantity = null
                 this.updateForm.plnt = null
                 this.updateForm.sloc = null
                 this.updateForm.qualinsp = null

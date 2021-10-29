@@ -21,7 +21,7 @@ class AreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValida
     public function rules(): array
     {
         return [
-            'areaid' => ['required', 'integer', 'min:1'],
+            'areaid' => ['nullable', 'integer', 'min:1'],
             'areadescription' => ['required', 'string', 'max:255']
         ];
     }

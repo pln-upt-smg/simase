@@ -33,6 +33,7 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
             'Unrestricted',
             'QualInsp',
             'MaterialDescription',
+            'Quantity',
             'UOM',
             'MTyp'
         ];
@@ -42,12 +43,13 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             Str::upper(trim($row->material->code)),
-            $row->plnt,
-            $row->sloc,
-            $row->batch,
-            $row->unrestricted,
-            $row->qualinsp,
+            (int)$row->plnt,
+            (int)$row->sloc,
+            Str::upper(trim($row->batch)),
+            (float)$row->unrestricted,
+            (int)$row->qualinsp,
             Str::title(trim($row->material->description)),
+            (int)$row->quantity,
             Str::upper(trim($row->material->uom)),
             Str::upper(trim($row->material->mtyp))
         ];
@@ -58,10 +60,10 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
         $query = BookStock::whereNull('book_stocks.deleted_at')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id');
         if (!is_null($this->area)) {
-            $query = $query->where('materials.area_id', $this->area->id);
+            $query = $query->where('book_stocks.area_id', $this->area->id);
         }
         if (!is_null($this->period)) {
-            $query = $query->where('materials.period_id', $this->period->id);
+            $query = $query->where('book_stocks.period_id', $this->period->id);
         }
         return $query->orderBy('materials.code')->get();
     }

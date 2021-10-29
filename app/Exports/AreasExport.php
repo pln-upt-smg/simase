@@ -22,7 +22,7 @@ class AreasExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
-            $row->id,
+            (int)$row->id,
             Str::title(trim($row->name))
         ];
     }
