@@ -74,17 +74,20 @@ class ActualStockController extends Controller
      */
     public function create(): Response
     {
-        return inertia('Operator/Stocks/Input/Index');
+        return inertia('Operator/Stocks/Input/Index', [
+            'areas' => $this->areaService->collection(),
+            'periods' => $this->periodService->collection()
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return RedirectResponse
+     * @return Response|RedirectResponse
      * @throws Throwable
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): Response|RedirectResponse
     {
         $this->actualStockService->store($request);
         return back();

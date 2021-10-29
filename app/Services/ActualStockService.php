@@ -141,7 +141,7 @@ class ActualStockService
      */
     public function store(Request $request): void
     {
-        $request->sku ? $this->storeBySkuCode($request) : $this->storeByMaterialCode($request);
+        is_null($request->product_code) ? $this->storeByMaterialCode($request) : $this->storeBySkuCode($request);
     }
 
     /**
@@ -154,7 +154,7 @@ class ActualStockService
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
-            'batch' => ['required', 'string', 'max:255'],
+            'batch_code' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'integer', 'min:0']
         ]);
         ActualStock::create([
@@ -162,7 +162,7 @@ class ActualStockService
             'period_id' => (int)$request->period,
             'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
             'user_id' => auth()->user()?->id ?? 0,
-            'batch' => Str::upper($request->batch),
+            'batch' => Str::upper($request->batch_code),
             'quantity' => (int)$request->quantity
         ]);
     }
