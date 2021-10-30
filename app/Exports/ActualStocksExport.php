@@ -52,10 +52,10 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
         $query = ActualStock::whereNull('actual_stocks.deleted_at')
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id');
         if (!is_null($this->area)) {
-            $query = $query->where('actual_stocks.area_id', $this->area->id);
+            $query = $query->where('materials.area_id', $this->area->id);
         }
         if (!is_null($this->period)) {
-            $query = $query->where('actual_stocks.period_id', $this->period->id);
+            $query = $query->where('materials.period_id', $this->period->id);
         }
         return $query->orderBy('materials.code')->get()->load('material');
     }

@@ -28,26 +28,6 @@ class MaterialService
     use HasValidator;
 
     /**
-     * @var AreaService
-     */
-    public AreaService $areaService;
-
-    /**
-     * @var PeriodService
-     */
-    public PeriodService $periodService;
-
-    /**
-     * @param AreaService $areaService
-     * @param PeriodService $periodService
-     */
-    public function __construct(AreaService $areaService, PeriodService $periodService)
-    {
-        $this->areaService = $areaService;
-        $this->periodService = $periodService;
-    }
-
-    /**
      * @param Area|null $area
      * @param Period|null $period
      * @return LengthAwarePaginator

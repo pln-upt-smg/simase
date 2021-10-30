@@ -58,8 +58,6 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
     public function model(array $row): BookStock|null
     {
         return new BookStock([
-            'area_id' => $this->area?->id ?? 0,
-            'period_id' => $this->period?->id ?? 0,
             'material_id' => $this->resolveMaterialId($row['material']),
             'batch' => Str::upper(trim($row['batch'])),
             'quantity' => (int)$row['quantity'],
@@ -77,8 +75,9 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
         return [
             BeforeSheet::class => static function () use ($area, $period) {
                 BookStock::whereNull('deleted_at')
-                    ->where('area_id', $area?->id ?? 0)
-                    ->where('period_id', $period?->id ?? 0)
+                    ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
+                    ->where('materials.area_id', $area?->id ?? 0)
+                    ->where('materials.period_id', $period?->id ?? 0)
                     ->delete();
             }
         ];

@@ -17,6 +17,6 @@ class AreaSeeder extends Seeder
         if (app()->isProduction() && !config('app.env_staging')) {
             return;
         }
-        Area::factory(20)->create();
+        Area::factory(5)->create();
     }
 }

@@ -26,6 +26,11 @@ include 'endpoints/materials.php';
 include 'endpoints/stocks.php';
 
 /**
+ * PIDs endpoints
+ */
+include 'endpoints/pids.php';
+
+/**
  * Operators endpoints
  */
 include 'endpoints/operators.php';

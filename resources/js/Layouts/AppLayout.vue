@@ -199,8 +199,8 @@ const navigations = {
             {name: 'Material', href: 'materials.index', icon: ArchiveIcon},
             {name: 'Actual Stock', href: 'stocks.actuals.index', icon: CollectionIcon},
             {name: 'Book Stock', href: 'stocks.books.index', icon: CollectionIcon},
-            {name: 'PID', href: 'login', icon: DocumentTextIcon},
-            {name: 'PID Detail', href: 'login', icon: DocumentSearchIcon},
+            {name: 'PID', href: 'pids.index', icon: DocumentTextIcon},
+            {name: 'PID Detail', href: 'pids.details.index', icon: DocumentSearchIcon},
             {name: 'Final Summary', href: 'login', icon: DocumentReportIcon},
             {name: 'Batch Not Exist', href: 'login', icon: ExclamationIcon}
         ],

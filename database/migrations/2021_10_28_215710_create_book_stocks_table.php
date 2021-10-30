@@ -15,8 +15,6 @@ class CreateBookStocksTable extends Migration
     {
         Schema::create('book_stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('area_id')->constrained();
-            $table->foreignId('period_id')->constrained();
             $table->foreignId('material_id')->constrained();
             $table->string('batch');
             $table->integer('quantity');

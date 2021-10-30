@@ -13,12 +13,6 @@ class ActualStock extends Model
     use Fluent, HasFactory, SoftDeletes;
 
     #[BelongsTo]
-    public Area $area;
-
-    #[BelongsTo]
-    public Period $period;
-
-    #[BelongsTo]
     public Material $material;
 
     #[BelongsTo]
@@ -28,8 +22,6 @@ class ActualStock extends Model
     public int $quantity;
 
     protected $fillable = [
-        'area_id',
-        'period_id',
         'material_id',
         'user_id',
         'batch',

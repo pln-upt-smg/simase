@@ -28,26 +28,6 @@ class ActualStockService
     use HasValidator;
 
     /**
-     * @var AreaService
-     */
-    public AreaService $areaService;
-
-    /**
-     * @var PeriodService
-     */
-    public PeriodService $periodService;
-
-    /**
-     * @param AreaService $areaService
-     * @param PeriodService $periodService
-     */
-    public function __construct(AreaService $areaService, PeriodService $periodService)
-    {
-        $this->areaService = $areaService;
-        $this->periodService = $periodService;
-    }
-
-    /**
      * @param Area|null $area
      * @param Period|null $period
      * @param bool $ownedByCurrentUser
@@ -158,8 +138,6 @@ class ActualStockService
             'quantity' => ['required', 'integer', 'min:0']
         ]);
         ActualStock::create([
-            'area_id' => (int)$request->area,
-            'period_id' => (int)$request->period,
             'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
             'user_id' => auth()->user()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
@@ -200,8 +178,6 @@ class ActualStockService
             'quantity' => ['required', 'integer', 'min:0']
         ]);
         $actual->updateOrFail([
-            'area_id' => (int)$request->area,
-            'period_id' => (int)$request->period,
             'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch),
             'quantity' => (int)$request->quantity
