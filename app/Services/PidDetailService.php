@@ -128,9 +128,10 @@ class PidDetailService
 
                 // each iteration, fetch the quantity of the stock based on the material and area
                 $query = ActualStock::select('quantity')
-                    ->where('material_id', $stock->material_id)
-                    ->where('area_id', $area->id)
-                    ->whereNull('deleted_at');
+                    ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
+                    ->where('materials.id', $stock->material_id)
+                    ->where('materials.area_id', $area->id)
+                    ->whereNull(['actual_stocks.deleted_at', 'materials.deleted_at']);
 
                 // dont forget to apply the period query!
                 if (!is_null($period)) {
