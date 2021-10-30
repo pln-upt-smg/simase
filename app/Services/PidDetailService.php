@@ -49,7 +49,7 @@ class PidDetailService
                 'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
-                DB::raw('(select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id) as sum_quantity')
+                DB::raw('coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id), 0) as sum_quantity')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
