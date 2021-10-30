@@ -55,8 +55,8 @@ class PidDetailController extends Controller
         $period = $this->periodService->resolve($request);
         return inertia('Administrator/Pids/Details/Index', [
             'period' => $period,
-            'areas' => $this->areaService->collection(),
-            'periods' => $this->periodService->collection(),
+            'areas' => $this->areaService->collection()->toArray(),
+            'periods' => $this->periodService->collection()->toArray(),
             'stocks' => $this->pidDetailService->tableData($period),
             'areaStocks' => $this->pidDetailService->tableAreaData($period)
         ])->table(function (InertiaTable $table) {

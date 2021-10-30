@@ -57,8 +57,8 @@ class PidController extends Controller
         return inertia('Administrator/Pids/Index', [
             'area' => $area,
             'period' => $period,
-            'areas' => $this->areaService->collection(),
-            'periods' => $this->periodService->collection(),
+            'areas' => $this->areaService->collection()->toArray(),
+            'periods' => $this->periodService->collection()->toArray(),
             'stocks' => $this->pidService->tableData($area, $period)
         ])->table(function (InertiaTable $table) {
             $this->pidService->tableMeta($table);

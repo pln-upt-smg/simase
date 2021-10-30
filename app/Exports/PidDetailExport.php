@@ -31,7 +31,7 @@ class PidDetailExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        $areas = $this->areaService->collection();
+        $areas = $this->areaService->collection()->toArray();
         return array_merge([
             'Material',
             'MaterialDescription',

@@ -59,8 +59,8 @@ class MaterialController extends Controller
         return inertia('Administrator/Materials/Index', [
             'area' => $area,
             'period' => $period,
-            'areas' => $this->areaService->collection(),
-            'periods' => $this->periodService->collection(),
+            'areas' => $this->areaService->collection()->toArray(),
+            'periods' => $this->periodService->collection()->toArray(),
             'materials' => $this->materialService->tableData($area, $period),
             'template' => $this->materialService->template()
         ])->table(function (InertiaTable $table) {

@@ -58,8 +58,8 @@ class ActualStockController extends Controller
         return inertia('Operator/Stocks/Result/Index', [
             'area' => $area,
             'period' => $period,
-            'areas' => $this->areaService->collection(),
-            'periods' => $this->periodService->collection(),
+            'areas' => $this->areaService->collection()->toArray(),
+            'periods' => $this->periodService->collection()->toArray(),
             'stocks' => $this->actualStockService->tableData($area, $period, true),
             'template' => $this->actualStockService->template()
         ])->table(function (InertiaTable $table) {
@@ -75,8 +75,8 @@ class ActualStockController extends Controller
     public function create(): Response|ResponseFactory
     {
         return inertia('Operator/Stocks/Input/Index', [
-            'areas' => $this->areaService->collection(),
-            'periods' => $this->periodService->collection()
+            'areas' => $this->areaService->collection()->toArray(),
+            'periods' => $this->periodService->collection()->toArray()
         ]);
     }
 

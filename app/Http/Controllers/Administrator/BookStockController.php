@@ -59,8 +59,8 @@ class BookStockController extends Controller
         return inertia('Administrator/Stocks/Book/Index', [
             'area' => $area,
             'period' => $period,
-            'areas' => $this->areaService->collection(),
-            'periods' => $this->periodService->collection(),
+            'areas' => $this->areaService->collection()->toArray(),
+            'periods' => $this->periodService->collection()->toArray(),
             'stocks' => $this->bookStockService->tableData($area, $period),
             'template' => $this->bookStockService->template()
         ])->table(function (InertiaTable $table) {

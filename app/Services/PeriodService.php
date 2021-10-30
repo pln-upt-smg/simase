@@ -7,6 +7,7 @@ use App\Models\Period;
 use App\Services\Helper\HasValidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -101,10 +102,10 @@ class PeriodService
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function collection(): array
+    public function collection(): Collection
     {
-        return Period::whereNull('deleted_at')->orderBy('name')->get()->toArray();
+        return Period::orderBy('name')->whereNull('deleted_at')->get();
     }
 }

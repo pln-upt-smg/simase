@@ -10,6 +10,7 @@ use App\Models\Area;
 use App\Services\Helper\HasValidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -131,10 +132,10 @@ class AreaService
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function collection(): array
+    public function collection(): Collection
     {
-        return Area::orderBy('name')->whereNull('deleted_at')->get()->toArray();
+        return Area::orderBy('name')->whereNull('deleted_at')->get();
     }
 }

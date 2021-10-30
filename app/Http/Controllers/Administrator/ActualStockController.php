@@ -59,8 +59,8 @@ class ActualStockController extends Controller
         return inertia('Administrator/Stocks/Actual/Index', [
             'area' => $area,
             'period' => $period,
-            'areas' => $this->areaService->collection(),
-            'periods' => $this->periodService->collection(),
+            'areas' => $this->areaService->collection()->toArray(),
+            'periods' => $this->periodService->collection()->toArray(),
             'stocks' => $this->actualStockService->tableData($area, $period),
             'template' => $this->actualStockService->template()
         ])->table(function (InertiaTable $table) {
