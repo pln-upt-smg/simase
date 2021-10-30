@@ -69,7 +69,7 @@ jobs:
         run: php artisan db:seed --force
 
       - name: 🗑️ Clear Laravel Cache
-        run: php artisan optimize:clear
+        run: sudo php artisan optimize:clear
 
       - name: 🔧 Optimize Laravel Configuration
         run: |

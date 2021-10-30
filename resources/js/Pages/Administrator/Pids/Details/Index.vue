@@ -49,8 +49,11 @@
                     <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
                     <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>
                     <td v-show="showColumn('sum_quantity')">{{ stock.sum_quantity }}</td>
-                    <template v-for="areaStock in areaStocks">
+                    <template v-if="areaStocks[stock.id]" v-for="areaStock in areaStocks[stock.id]">
                         <td>{{ areaStock }}</td>
+                    </template>
+                    <template v-else>
+                        <td v-for="area in areas" :key="stock.id + '_' + area.id">0</td>
                     </template>
                 </tr>
             </template>
