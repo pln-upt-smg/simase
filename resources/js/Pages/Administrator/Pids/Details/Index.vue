@@ -49,7 +49,9 @@
                     <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
                     <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>
                     <td v-show="showColumn('sum_quantity')">{{ stock.sum_quantity }}</td>
-                    <td v-for="areaStock in areaStocks">{{ areaStock }}</td>
+                    <template v-for="areaStock in areaStocks">
+                        <td>{{ areaStock }}</td>
+                    </template>
                 </tr>
             </template>
         </jet-table>

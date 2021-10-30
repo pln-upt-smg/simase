@@ -107,7 +107,7 @@ class PidDetailService
         $areas = $this->areaService->collection();
 
         // get the book stock id list
-        $stocks = BookStock::select('id')->whereNull('book_stocks.deleted_at');
+        $stocks = BookStock::select(['id', 'material_id'])->whereNull('book_stocks.deleted_at');
 
         // apply the period condition on the stock list
         if (!is_null($period)) {
@@ -129,7 +129,7 @@ class PidDetailService
                 // each iteration, fetch the quantity of the stock based on the material and area
                 $query = ActualStock::select('quantity')
                     ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
-                    ->where('materials.id', $stock->material_id)
+                    ->where('actual_stocks.material_id', $stock->material_id)
                     ->where('materials.area_id', $area->id)
                     ->whereNull(['actual_stocks.deleted_at', 'materials.deleted_at']);
 
@@ -170,8 +170,7 @@ class PidDetailService
             ->select([
                 'book_stocks.id as id',
                 'book_stocks.batch as batch_code',
-                'materials.code as materi
-                al_code',
+                'materials.code as material_code',
                 'materials.description as material_description',
                 DB::raw('(select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id) as sum_quantity')
             ])
