@@ -10,6 +10,7 @@ use App\Services\PeriodService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Throwable;
 
@@ -48,9 +49,9 @@ class ActualStockController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return Response
+     * @return Response|ResponseFactory
      */
-    public function index(Request $request): Response
+    public function index(Request $request): Response|ResponseFactory
     {
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
@@ -69,9 +70,9 @@ class ActualStockController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return Response|ResponseFactory
      */
-    public function create(): Response
+    public function create(): Response|ResponseFactory
     {
         return inertia('Operator/Stocks/Input/Index', [
             'areas' => $this->areaService->collection(),

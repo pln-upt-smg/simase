@@ -8,6 +8,7 @@ use App\Services\PeriodService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Throwable;
 
@@ -31,9 +32,9 @@ class PeriodController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return Response|ResponseFactory
      */
-    public function index(): Response
+    public function index(): Response|ResponseFactory
     {
         return inertia('Administrator/Periods/Index', [
             'periods' => $this->periodService->tableData()

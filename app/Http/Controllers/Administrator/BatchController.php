@@ -8,6 +8,7 @@ use App\Services\BatchService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -32,9 +33,9 @@ class BatchController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return Response|ResponseFactory
      */
-    public function index(): Response
+    public function index(): Response|ResponseFactory
     {
         return inertia('Administrator/Batches/Index', [
             'batches' => $this->batchService->tableData(),

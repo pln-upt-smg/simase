@@ -2,9 +2,9 @@
 
 namespace App\Exports;
 
-use App\Models\ActualStock;
 use App\Models\Area;
 use App\Models\Period;
+use App\Services\ActualStockService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -17,10 +17,13 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
 
     private ?Period $period;
 
-    public function __construct(?Area $area, ?Period $period)
+    private ActualStockService $actualStockService;
+
+    public function __construct(?Area $area, ?Period $period, ActualStockService $actualStockService)
     {
         $this->area = $area;
         $this->period = $period;
+        $this->actualStockService = $actualStockService;
     }
 
     public function headings(): array
@@ -49,14 +52,6 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        $query = ActualStock::whereNull('actual_stocks.deleted_at')
-            ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id');
-        if (!is_null($this->area)) {
-            $query = $query->where('materials.area_id', $this->area->id);
-        }
-        if (!is_null($this->period)) {
-            $query = $query->where('materials.period_id', $this->period->id);
-        }
-        return $query->orderBy('materials.code')->get()->load('material');
+        return $this->actualStockService->collection($this->area, $this->period);
     }
 }

@@ -12,6 +12,7 @@ use App\Models\Period;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -205,7 +206,8 @@ class MaterialService
     {
         return MediaHelper::exportSpreadsheet(new MaterialsExport(
             Area::find(empty($request->query('area')) ? null : (int)$request->query('area')),
-            Period::find(empty($request->query('period')) ? null : (int)$request->query('period'))
+            Period::find(empty($request->query('period')) ? null : (int)$request->query('period')),
+            $this
         ), new Material);
     }
 
@@ -215,5 +217,22 @@ class MaterialService
     public function template(): string
     {
         return 'https://docs.google.com/spreadsheets/d/195BdCWN1KWWKSoImWSHFg-9vq67s-O7IsaMV7pAI-Mg/edit?usp=sharing';
+    }
+
+    /**
+     * @param Area|null $area
+     * @param Period|null $period
+     * @return Collection
+     */
+    public function collection(?Area $area, ?Period $period): Collection
+    {
+        $query = Material::whereNull('deleted_at');
+        if (!is_null($area)) {
+            $query = $query->where('area_id', $area->id);
+        }
+        if (!is_null($period)) {
+            $query = $query->where('period_id', $period->id);
+        }
+        return $query->orderBy('code')->get();
     }
 }

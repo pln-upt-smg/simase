@@ -2,8 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Role;
-use App\Models\User;
+use App\Services\OperatorService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -12,6 +11,13 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class OperatorsExport implements FromCollection, WithHeadings, WithMapping
 {
+    private OperatorService $operatorService;
+
+    public function __construct(OperatorService $operatorService)
+    {
+        $this->operatorService = $operatorService;
+    }
+
     public function headings(): array
     {
         return [
@@ -34,10 +40,6 @@ class OperatorsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return User::whereRoleId(Role::operator()?->id ?? 2)
-            ->whereNull('deleted_at')
-            ->orderBy('name')
-            ->get()
-            ->load('role');
+        return $this->operatorService->collection();
     }
 }

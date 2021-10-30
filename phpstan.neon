@@ -18,4 +18,5 @@ parameters:
         - '#of function trim expects string#'
         - '#Call to an undefined method#'
         - '#Illuminate\\Support\\Collection#'
+        - '#supplied for foreach, only iterables are supported#'
     checkMissingIterableValueType: false

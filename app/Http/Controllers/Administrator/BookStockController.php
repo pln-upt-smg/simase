@@ -10,6 +10,7 @@ use App\Services\PeriodService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -49,9 +50,9 @@ class BookStockController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return Response
+     * @return Response|ResponseFactory
      */
-    public function index(Request $request): Response
+    public function index(Request $request): Response|ResponseFactory
     {
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);

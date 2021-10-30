@@ -49,12 +49,7 @@ class PidDetailService
                 'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
-                DB::raw('
-                (select sum(actual_stocks.quantity) from actual_stocks
-                where actual_stocks.material_id = book_stocks.material_id
-                ' . !is_null($period) ? 'and actual_stocks.period_id = book_stocks.period_id' : '' . ')
-                as sum_quantity
-                ')
+                DB::raw('(select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id) as sum_quantity')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
@@ -143,7 +138,7 @@ class PidDetailService
                 }
 
                 // fetch it and append the quantity to areaData (default is 0)
-                $areaData[] = $query->get()?->quantity ?? 0;
+                $areaData[] = $query->first()?->quantity ?? 0;
             }
 
             // append the data to result array
@@ -174,14 +169,10 @@ class PidDetailService
             ->select([
                 'book_stocks.id as id',
                 'book_stocks.batch as batch_code',
-                'materials.code as material_code',
+                'materials.code as materi
+                al_code',
                 'materials.description as material_description',
-                DB::raw('
-                (select sum(actual_stocks.quantity) from actual_stocks
-                where actual_stocks.material_id = book_stocks.material_id
-                ' . !is_null($period) ? 'and actual_stocks.period_id = book_stocks.period_id' : '' . ')
-                as sum_quantity
-                ')
+                DB::raw('(select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id) as sum_quantity')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);

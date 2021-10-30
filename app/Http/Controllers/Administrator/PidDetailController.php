@@ -8,6 +8,7 @@ use App\Services\PeriodService;
 use App\Services\PidDetailService;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -47,9 +48,9 @@ class PidDetailController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return Response
+     * @return Response|ResponseFactory
      */
-    public function index(Request $request): Response
+    public function index(Request $request): Response|ResponseFactory
     {
         $period = $this->periodService->resolve($request);
         return inertia('Administrator/Pids/Details/Index', [

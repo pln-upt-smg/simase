@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -145,7 +146,7 @@ class OperatorService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new OperatorsExport, 'operators');
+        return MediaHelper::exportSpreadsheet(new OperatorsExport($this), 'operators');
     }
 
     /**
@@ -154,5 +155,17 @@ class OperatorService
     public function template(): string
     {
         return 'https://docs.google.com/spreadsheets/d/1uOA5ear--StRXSFf_iIYVW-50daP4KmA1vOcDxIRZoo/edit?usp=sharing';
+    }
+
+    /**
+     * @return Collection
+     */
+    public function collection(): Collection
+    {
+        return User::whereRoleId(Role::operator()?->id ?? 2)
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get()
+            ->load('role');
     }
 }

@@ -11,6 +11,7 @@ use App\Models\Material;
 use App\Services\Helper\HasValidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -115,7 +116,7 @@ class BatchService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new BatchesExport, new Batch);
+        return MediaHelper::exportSpreadsheet(new BatchesExport($this), new Batch);
     }
 
     /**
@@ -124,5 +125,13 @@ class BatchService
     public function template(): string
     {
         return 'https://docs.google.com/spreadsheets/d/1B0bHeX76LRUMzFOhODHvgnV32jh5krATVekEq_JMaZI/edit?usp=sharing';
+    }
+
+    /**
+     * @return Collection
+     */
+    public function collection(): Collection
+    {
+        return Batch::orderBy('code')->whereNull('deleted_at')->get()->load('material');
     }
 }

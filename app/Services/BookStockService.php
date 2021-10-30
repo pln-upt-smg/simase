@@ -13,6 +13,7 @@ use App\Models\Period;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -218,7 +219,8 @@ class BookStockService
     {
         return MediaHelper::exportSpreadsheet(new BookStocksExport(
             Area::find(empty($request->query('area')) ? null : (int)$request->query('area')),
-            Period::find(empty($request->query('period')) ? null : (int)$request->query('period'))
+            Period::find(empty($request->query('period')) ? null : (int)$request->query('period')),
+            $this
         ), new BookStock);
     }
 
@@ -228,5 +230,23 @@ class BookStockService
     public function template(): string
     {
         return 'https://docs.google.com/spreadsheets/d/1v3iWj5ZJ-MUwNkVZI6VEDC_Cf3RufSnRREuYFewXyYg/edit?usp=sharing';
+    }
+
+    /**
+     * @param Area|null $area
+     * @param Period|null $period
+     * @return Collection
+     */
+    public function collection(?Area $area, ?Period $period): Collection
+    {
+        $query = BookStock::whereNull('book_stocks.deleted_at')
+            ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id');
+        if (!is_null($area)) {
+            $query = $query->where('materials.area_id', $area->id);
+        }
+        if (!is_null($period)) {
+            $query = $query->where('materials.period_id', $period->id);
+        }
+        return $query->orderBy('materials.code')->get()->load('material');
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Exports;
 
 use App\Models\Area;
-use App\Models\BookStock;
 use App\Models\Period;
+use App\Services\BookStockService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -17,10 +17,13 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
 
     private ?Period $period;
 
-    public function __construct(?Area $area, ?Period $period)
+    private BookStockService $bookStockService;
+
+    public function __construct(?Area $area, ?Period $period, BookStockService $bookStockService)
     {
         $this->area = $area;
         $this->period = $period;
+        $this->bookStockService = $bookStockService;
     }
 
     public function headings(): array
@@ -57,14 +60,6 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        $query = BookStock::whereNull('book_stocks.deleted_at')
-            ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id');
-        if (!is_null($this->area)) {
-            $query = $query->where('materials.area_id', $this->area->id);
-        }
-        if (!is_null($this->period)) {
-            $query = $query->where('materials.period_id', $this->period->id);
-        }
-        return $query->orderBy('materials.code')->get()->load('material');
+        return $this->bookStockService->collection($this->area, $this->period);
     }
 }

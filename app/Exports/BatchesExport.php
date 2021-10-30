@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Batch;
+use App\Services\BatchService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -11,6 +11,13 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class BatchesExport implements FromCollection, WithHeadings, WithMapping
 {
+    private BatchService $batchService;
+
+    public function __construct(BatchService $batchService)
+    {
+        $this->batchService = $batchService;
+    }
+
     public function headings(): array
     {
         return [
@@ -29,6 +36,6 @@ class BatchesExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return Batch::whereNull('deleted_at')->orderBy('code')->get()->load('material');
+        return $this->batchService->collection();
     }
 }
