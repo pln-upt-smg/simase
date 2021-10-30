@@ -46,7 +46,7 @@ class PidDetailExport implements FromCollection, WithHeadings, WithMapping
         return array_merge([
             Str::upper(trim($row->material_code)),
             Str::title(trim($row->material_description)),
-            Str::upper(trim($row->batch)),
+            Str::upper(trim($row->batch_code)),
             Str::upper(trim($row->sum_quantity))
         ], $data);
     }
