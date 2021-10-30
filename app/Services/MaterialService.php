@@ -118,7 +118,7 @@ class MaterialService
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
@@ -149,7 +149,7 @@ class MaterialService
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->ignore($material->id)->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->ignore($material->id)->whereNull('deleted_at')],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
