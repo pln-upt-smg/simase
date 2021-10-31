@@ -42,7 +42,7 @@ class BatchNotExistService
                 'materials.mtyp as mtyp',
                 'areas.name as area_name',
                 'users.name as creator_name',
-                "('" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS, "') as batch_status",
+                DB::raw("'" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS . "' as batch_status"),
                 DB::raw('date_format(actual_stock.created_at, "%d/%m/%Y %H:%i") as creation_date')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
@@ -137,7 +137,6 @@ class BatchNotExistService
      * @param Area|null $area
      * @param Period|null $period
      * @return Collection
-     * @noinspection UnknownColumnInspection
      */
     public function collection(?Area $area, ?Period $period): Collection
     {
@@ -152,7 +151,7 @@ class BatchNotExistService
                 'materials.mtyp as mtyp',
                 'areas.name as area_name',
                 'users.nip as creator_nip',
-                "('" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS, "') as batch_status",
+                DB::raw("'" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS . "' as batch_status"),
                 DB::raw('date_format(actual_stock.created_at, "%d/%m/%Y %H:%i") as creation_date')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
