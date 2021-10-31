@@ -43,7 +43,7 @@ class BatchNotExistService
                 'areas.name as area_name',
                 'users.name as creator_name',
                 DB::raw("'" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS . "' as batch_status"),
-                DB::raw('date_format(actual_stock.created_at, "%d/%m/%Y %H:%i") as creation_date')
+                DB::raw('date_format(actual_stocks.created_at, "%d/%m/%Y %H:%i") as creation_date')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
@@ -152,7 +152,7 @@ class BatchNotExistService
                 'areas.name as area_name',
                 'users.nip as creator_nip',
                 DB::raw("'" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS . "' as batch_status"),
-                DB::raw('date_format(actual_stock.created_at, "%d/%m/%Y %H:%i") as creation_date')
+                DB::raw('date_format(actual_stocks.created_at, "%d/%m/%Y %H:%i") as creation_date')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
