@@ -31,6 +31,16 @@ include 'endpoints/stocks.php';
 include 'endpoints/pids.php';
 
 /**
+ * Final Summaries endpoints
+ */
+include 'endpoints/summaries.php';
+
+/**
+ * Batch Not Exists endpoints
+ */
+include 'endpoints/batch_not_exists.php';
+
+/**
  * Operators endpoints
  */
 include 'endpoints/operators.php';

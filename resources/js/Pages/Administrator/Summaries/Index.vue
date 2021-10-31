@@ -1,8 +1,7 @@
 <template>
-    <app-layout title="PID">
+    <app-layout title="Final Summary">
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6 mb-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 mb-4 lg:mb-0">
-                <jet-area-dropdown :selected="area" :areas="areas" partial="stocks" class="mb-4 lg:mb-0"/>
                 <jet-period-dropdown :selected="period" :periods="periods" partial="stocks" class="mb-2 lg:mb-0"/>
             </div>
             <div class="lg:text-right">
@@ -15,7 +14,7 @@
         <jet-table
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="stocks"
+            :meta="summaries"
             ref="table">
             <template #head>
                 <jet-table-header
@@ -39,11 +38,6 @@
                     MType
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('batch_code')"
-                    :cell="sortableHeader('batch_code')">
-                    Kode Batch
-                </jet-table-header>
-                <jet-table-header
                     v-show="showColumn('unrestricted')"
                     :cell="sortableHeader('unrestricted')">
                     Unrestricted
@@ -54,52 +48,49 @@
                     QualInsp
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('book_qty')"
-                    :cell="sortableHeader('book_qty')">
-                    BookQty
+                    v-show="showColumn('total_stock')"
+                    :cell="sortableHeader('total_stock')">
+                    Total Stock
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('actual_qty')"
-                    :cell="sortableHeader('actual_qty')">
-                    ActualQty
+                    v-show="showColumn('gap_stock')"
+                    :cell="sortableHeader('gap_stock')">
+                    Gap Stock
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('gap_qty')"
-                    :cell="sortableHeader('gap_qty')">
-                    GapQty
+                    v-show="showColumn('gap_value')"
+                    :cell="sortableHeader('gap_value')">
+                    Gap Value
                 </jet-table-header>
             </template>
             <template #body>
-                <tr v-for="stock in stocks.data" :key="stock.id">
-                    <td v-show="showColumn('material_code')">{{ stock.material_code }}</td>
-                    <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
-                    <td v-show="showColumn('uom')">{{ stock.uom }}</td>
-                    <td v-show="showColumn('mtyp')">{{ stock.mtyp }}</td>
-                    <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>
-                    <td v-show="showColumn('unrestricted')">{{ stock.unrestricted }}</td>
-                    <td v-show="showColumn('qualinsp')">{{ stock.qualinsp }}</td>
-                    <td v-show="showColumn('book_qty')">{{ stock.book_qty }}</td>
-                    <td v-show="showColumn('actual_qty')">{{ stock.actual_qty }}</td>
-                    <td v-show="showColumn('gap_qty')">{{ stock.gap_qty }}</td>
+                <tr v-for="summary in summaries.data" :key="summary.id">
+                    <td v-show="showColumn('material_code')">{{ summary.material_code }}</td>
+                    <td v-show="showColumn('material_description')">{{ summary.material_description }}</td>
+                    <td v-show="showColumn('uom')">{{ summary.uom }}</td>
+                    <td v-show="showColumn('mtyp')">{{ summary.mtyp }}</td>
+                    <td v-show="showColumn('unrestricted')">{{ summary.unrestricted }}</td>
+                    <td v-show="showColumn('qualinsp')">{{ summary.qualinsp }}</td>
+                    <td v-show="showColumn('total_stock')">{{ summary.total_stock }}</td>
+                    <td v-show="showColumn('gap_stock')">{{ summary.gap_stock }}</td>
+                    <td v-show="showColumn('gap_value')">{{ summary.gap_value }}</td>
                 </tr>
             </template>
         </jet-table>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data PID">
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data final summary">
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data PID? Proses ekspor dapat memakan waktu lama,
+                    Apakah Anda yakin ingin mengekspor semua data final summary? Proses ekspor dapat memakan waktu lama,
                     tergantung dari banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
                     Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
                 </p>
                 <p class="mt-2">
-                    Anda dapat menyaring data PID berdasarkan area dan periodenya dengan menyesuaikan kolom
+                    Anda dapat menyaring data final summary berdasarkan periodenya dengan menyesuaikan kolom
                     pilihan dibawah ini.
                 </p>
                 <div class="mt-4">
-                    <jet-select ref="exportArea" placeholder="Semua Area" v-model="exportForm.area"
-                                :data="areas" class="block w-full"/>
                     <jet-select ref="exportPeriod" placeholder="Semua Periode" v-model="exportForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
                 </div>
@@ -131,29 +122,25 @@ import JetExportModal from '@/Jetstream/ExportModal'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
 import JetTableHeader from '@/Jetstream/TableHeader'
-import JetAreaDropdown from '@/Jetstream/AreaDropdown'
 import JetPeriodDropdown from '@/Jetstream/PeriodDropdown'
 import JetSelect from '@/Jetstream/Select'
 
-JetTableEngine.respectParams(['area', 'period'])
+JetTableEngine.respectParams(['period'])
 
 export default defineComponent({
     data() {
         return {
             confirmingExport: false,
             exportForm: useForm({
-                area: null,
                 period: null
             })
         }
     },
     mixins: [JetTableEngine],
     props: {
-        area: Object,
-        areas: Object,
         period: Object,
         periods: Object,
-        stocks: Object
+        summaries: Object
     },
     components: {
         AppLayout,
@@ -163,7 +150,6 @@ export default defineComponent({
         JetButton,
         JetSecondaryButton,
         JetExportModal,
-        JetAreaDropdown,
         JetPeriodDropdown,
         JetSelect,
         MenuItem,
@@ -171,21 +157,19 @@ export default defineComponent({
     },
     methods: {
         exportFile() {
-            window.open(route('pids.export', {
-                area: this.exportForm.area,
+            window.open(route('summaries.export', {
                 period: this.exportForm.period
             }))
             this.closeExportModal()
         },
         confirmExport() {
             setTimeout(() => this.confirmingExport = true, 150)
-            setTimeout(() => this.$refs.exportArea.focus(), 300)
+            setTimeout(() => this.$refs.exportPeriod.focus(), 300)
         },
         closeExportModal() {
             this.confirmingExport = false
             setTimeout(() => {
                 this.exportForm.reset()
-                this.exportForm.area = null
                 this.exportForm.period = null
             }, 500)
         }

@@ -14,7 +14,7 @@ Route::group([
         if (auth()->user()->load('role')->role->isOperator()) {
             return redirect()->route('stocks.create');
         }
-        return inertia('Administrator/Dashboard');
+        return inertia('Administrator/Dashboard/Index');
     })->name('dashboard');
 
     /**

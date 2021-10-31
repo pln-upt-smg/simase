@@ -201,8 +201,8 @@ const navigations = {
             {name: 'Book Stock', href: 'stocks.books.index', icon: CollectionIcon},
             {name: 'PID', href: 'pids.index', icon: DocumentTextIcon},
             {name: 'PID Detail', href: 'pids.details.index', icon: DocumentSearchIcon},
-            {name: 'Final Summary', href: 'login', icon: DocumentReportIcon},
-            {name: 'Batch Not Exist', href: 'login', icon: ExclamationIcon}
+            {name: 'Final Summary', href: 'summaries.index', icon: DocumentReportIcon},
+            {name: 'Batch Not Exist', href: 'batch-not-exists.index', icon: ExclamationIcon}
         ],
         manage: [
             {name: 'Pegawai', href: 'operators.index', icon: UsersIcon},

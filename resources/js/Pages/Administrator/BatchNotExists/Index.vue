@@ -1,5 +1,5 @@
 <template>
-    <app-layout title="PID">
+    <app-layout title="Batch Not Exist">
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6 mb-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 mb-4 lg:mb-0">
                 <jet-area-dropdown :selected="area" :areas="areas" partial="stocks" class="mb-4 lg:mb-0"/>
@@ -19,6 +19,11 @@
             ref="table">
             <template #head>
                 <jet-table-header
+                    v-show="showColumn('area_name')"
+                    :cell="sortableHeader('area_name')">
+                    Area
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('material_code')"
                     :cell="sortableHeader('material_code')">
                     Kode Material
@@ -27,6 +32,16 @@
                     v-show="showColumn('material_description')"
                     :cell="sortableHeader('material_description')">
                     Deskripsi Material
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('batch_code')"
+                    :cell="sortableHeader('batch_code')">
+                    Kode Batch
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('quantity')"
+                    :cell="sortableHeader('quantity')">
+                    Kuantitas
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('uom')"
@@ -39,62 +54,47 @@
                     MType
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('batch_code')"
-                    :cell="sortableHeader('batch_code')">
-                    Kode Batch
+                    v-show="showColumn('batch_status')"
+                    :cell="sortableHeader('batch_status')">
+                    Status
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('unrestricted')"
-                    :cell="sortableHeader('unrestricted')">
-                    Unrestricted
+                    v-show="showColumn('creator_name')"
+                    :cell="sortableHeader('creator_name')">
+                    Pembuat
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('qualinsp')"
-                    :cell="sortableHeader('qualinsp')">
-                    QualInsp
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('book_qty')"
-                    :cell="sortableHeader('book_qty')">
-                    BookQty
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('actual_qty')"
-                    :cell="sortableHeader('actual_qty')">
-                    ActualQty
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('gap_qty')"
-                    :cell="sortableHeader('gap_qty')">
-                    GapQty
+                    v-show="showColumn('creation_date')"
+                    :cell="sortableHeader('creation_date')">
+                    Tanggal Dibuat
                 </jet-table-header>
             </template>
             <template #body>
                 <tr v-for="stock in stocks.data" :key="stock.id">
+                    <td v-show="showColumn('area_name')">{{ stock.area_name }}</td>
                     <td v-show="showColumn('material_code')">{{ stock.material_code }}</td>
                     <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
+                    <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>
+                    <td v-show="showColumn('quantity')">{{ stock.quantity }}</td>
                     <td v-show="showColumn('uom')">{{ stock.uom }}</td>
                     <td v-show="showColumn('mtyp')">{{ stock.mtyp }}</td>
-                    <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>
-                    <td v-show="showColumn('unrestricted')">{{ stock.unrestricted }}</td>
-                    <td v-show="showColumn('qualinsp')">{{ stock.qualinsp }}</td>
-                    <td v-show="showColumn('book_qty')">{{ stock.book_qty }}</td>
-                    <td v-show="showColumn('actual_qty')">{{ stock.actual_qty }}</td>
-                    <td v-show="showColumn('gap_qty')">{{ stock.gap_qty }}</td>
+                    <td v-show="showColumn('batch_status')">{{ stock.batch_status }}</td>
+                    <td v-show="showColumn('creator_name')">{{ stock.creator_name }}</td>
+                    <td v-show="showColumn('creation_date')">{{ stock.creation_date }}</td>
                 </tr>
             </template>
         </jet-table>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data PID">
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data batch not exist">
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data PID? Proses ekspor dapat memakan waktu lama,
-                    tergantung dari banyaknya data yang tersedia.
+                    Apakah Anda yakin ingin mengekspor semua data batch not exist? Proses ekspor dapat memakan waktu
+                    lama, tergantung dari banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
                     Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
                 </p>
                 <p class="mt-2">
-                    Anda dapat menyaring data PID berdasarkan area dan periodenya dengan menyesuaikan kolom
+                    Anda dapat menyaring data batch not exist berdasarkan area dan periodenya dengan menyesuaikan kolom
                     pilihan dibawah ini.
                 </p>
                 <div class="mt-4">
@@ -171,7 +171,7 @@ export default defineComponent({
     },
     methods: {
         exportFile() {
-            window.open(route('pids.export', {
+            window.open(route('batch-not-exists.export', {
                 area: this.exportForm.area,
                 period: this.exportForm.period
             }))

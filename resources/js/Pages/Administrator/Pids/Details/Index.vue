@@ -58,22 +58,20 @@
                 </tr>
             </template>
         </jet-table>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data PID Detail">
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data PID detail">
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data PID Detail? Proses ekspor dapat memakan waktu lama,
+                    Apakah Anda yakin ingin mengekspor semua data PID detail? Proses ekspor dapat memakan waktu lama,
                     tergantung dari banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
                     Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
                 </p>
                 <p class="mt-2">
-                    Anda dapat menyaring data material berdasarkan area dan periodenya dengan menyesuaikan kolom
+                    Anda dapat menyaring data PID detail berdasarkan periodenya dengan menyesuaikan kolom
                     pilihan dibawah ini.
                 </p>
                 <div class="mt-4">
-                    <jet-select ref="exportArea" placeholder="Semua Area" v-model="exportForm.area"
-                                :data="areas" class="block w-full"/>
                     <jet-select ref="exportPeriod" placeholder="Semua Periode" v-model="exportForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
                 </div>
@@ -115,7 +113,6 @@ export default defineComponent({
         return {
             confirmingExport: false,
             exportForm: useForm({
-                area: null,
                 period: null
             })
         }
@@ -145,20 +142,18 @@ export default defineComponent({
     methods: {
         exportFile() {
             window.open(route('pids.details.export', {
-                area: this.exportForm.area,
                 period: this.exportForm.period
             }))
             this.closeExportModal()
         },
         confirmExport() {
             setTimeout(() => this.confirmingExport = true, 150)
-            setTimeout(() => this.$refs.exportArea.focus(), 300)
+            setTimeout(() => this.$refs.exportPeriod.focus(), 300)
         },
         closeExportModal() {
             this.confirmingExport = false
             setTimeout(() => {
                 this.exportForm.reset()
-                this.exportForm.area = null
                 this.exportForm.period = null
             }, 500)
         }

@@ -31,24 +31,22 @@ class PidDetailExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        $areas = $this->areaService->collection()->toArray();
         return array_merge([
             'Material',
             'MaterialDescription',
             'Batch',
             'Total Of SumOfQuantity'
-        ], $areas);
+        ], $this->areaService->collection()->pluck('name')->toArray());
     }
 
     public function map($row): array
     {
-        $data = $this->areaStocks[$row->id];
         return array_merge([
             Str::upper(trim($row->material_code)),
             Str::title(trim($row->material_description)),
             Str::upper(trim($row->batch_code)),
             Str::upper(trim($row->sum_quantity))
-        ], $data);
+        ], $this->areaStocks[$row->id]);
     }
 
     public function collection(): Collection
