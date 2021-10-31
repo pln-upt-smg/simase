@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+
 Route::group([
     'middleware' => ['auth:sanctum', 'verified']
 ], static function () {
@@ -7,15 +9,7 @@ Route::group([
     /**
      * Role-specific initial redirection
      */
-    Route::get('dashboard', static function () {
-        if (is_null(auth()->user())) {
-            return redirect()->route('login');
-        }
-        if (auth()->user()->load('role')->role->isOperator()) {
-            return redirect()->route('stocks.create');
-        }
-        return inertia('Administrator/Dashboard/Index');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     /**
      * Administrator web routes

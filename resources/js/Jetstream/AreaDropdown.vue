@@ -18,23 +18,26 @@ export default defineComponent({
     props: {
         selected: Object,
         areas: Object,
-        partial: String
+        partial: String,
+        multiplePartials: Array,
+        enablePartial: {
+            type: Boolean,
+            default: true
+        }
     },
     methods: {
         loadArea(index) {
             index--
+            let options = {replace: true, preserveState: true, preserveScroll: true}
+            let partials = ['area', 'areas']
+            if (this.partial) partials.push(this.partial)
+            if (this.multiplePartials) this.multiplePartials.forEach((partial) => {
+                partials.push(partial)
+            })
+            if (this.enablePartial) options.only = partials
             this.$inertia.get(route(route().current(), route().params), {
                 area: index >= 0 && this.areas[index] ? this.areas[index].id : 0
-            }, {
-                replace: true,
-                preserveState: true,
-                preserveScroll: true,
-                only: [
-                    this.partial ? this.partial : '',
-                    'area',
-                    'areas'
-                ]
-            })
+            }, options)
         }
     }
 })

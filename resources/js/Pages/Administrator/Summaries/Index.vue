@@ -15,6 +15,7 @@
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="summaries"
+            :bottom-spacing="true"
             ref="table">
             <template #head>
                 <jet-table-header

@@ -87,7 +87,7 @@ table :deep(tr:hover td) {
                 <div
                     class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                        <div class="shadow border-b border-gray-200">
+                        <div class="shadow border-b border-gray-200" :class="[bottomSpacing ? 'mb-8' : 'mb-0']">
                             <slot name="table">
                                 <table class="min-w-full divide-y divide-gray-200 bg-white mt-4 lg:mt-6 z-0">
                                     <thead class="bg-indigo-100 text-white">
@@ -100,7 +100,7 @@ table :deep(tr:hover td) {
                                     </tbody>
                                 </table>
                             </slot>
-                            <slot name="pagination">
+                            <slot name="pagination" v-if="paginate">
                                 <table-pagination :meta="paginationMeta"/>
                             </slot>
                         </div>
@@ -122,6 +122,16 @@ import TablePagination from '@/Jetstream/TablePagination'
 
 export default defineComponent({
     mixins: [Components.Table],
+    props: {
+        bottomSpacing: {
+            type: Boolean,
+            default: false
+        },
+        paginate: {
+            type: Boolean,
+            default: true
+        }
+    },
     components: {
         TableColumns: Tailwind2.TableColumns,
         TableFilter,

@@ -18,23 +18,26 @@ export default defineComponent({
     props: {
         selected: Object,
         periods: Object,
-        partial: String
+        partial: String,
+        multiplePartials: Array,
+        enablePartial: {
+            type: Boolean,
+            default: true
+        }
     },
     methods: {
         loadPeriod(index) {
             index--
+            let options = {replace: true, preserveState: true, preserveScroll: true}
+            let partials = ['period', 'periods']
+            if (this.partial) partials.push(this.partial)
+            if (this.multiplePartials) this.multiplePartials.forEach((partial) => {
+                partials.push(partial)
+            })
+            if (this.enablePartial) options.only = partials
             this.$inertia.get(route(route().current(), route().params), {
                 period: index >= 0 && this.periods[index] ? this.periods[index].id : 0
-            }, {
-                replace: true,
-                preserveState: true,
-                preserveScroll: true,
-                only: [
-                    this.partial ? this.partial : '',
-                    'period',
-                    'periods'
-                ]
-            })
+            }, options)
         }
     }
 })

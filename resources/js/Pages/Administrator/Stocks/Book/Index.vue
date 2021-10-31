@@ -24,6 +24,7 @@
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="stocks"
+            :bottom-spacing="true"
             ref="table">
             <template #head>
                 <jet-table-header

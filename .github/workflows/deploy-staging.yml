@@ -30,13 +30,15 @@ jobs:
             git pull
             sudo chmod -R ug+rwx storage bootstrap/cache
             sudo chmod -R g+w storage/logs
-            sudo php artisan optimize:clear
+            php artisan optimize:clear
             php artisan view:clear
             npm i --silent
             composer i -o -n --no-dev
             php artisan cloudflare:reload
             php artisan optimize
             php artisan view:cache
+            sudo chmod -R ug+rwx storage bootstrap/cache
+            sudo chmod -R g+w storage/logs
             npm run prod --silent
             sudo service redis-server restart
             sudo supervisorctl restart stocktake-web-cron:stocktake-web-cron_00
