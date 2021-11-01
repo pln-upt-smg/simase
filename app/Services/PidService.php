@@ -48,15 +48,12 @@ class PidService
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'actual_stocks.deleted_at', 'materials.deleted_at']);
-
         if (!is_null($area)) {
             $query = $query->where('materials.area_id', $area->id);
         }
-
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-
         return $query->defaultSort('material_code')
             ->allowedSorts([
                 'batch_code',
@@ -71,15 +68,15 @@ class PidService
                 'gap_qty'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'book_stocks.unrestricted',
-                'book_stocks.unrestricted',
-                'book_stocks.qualinsp',
-                'book_stocks.quantity',
-                'actual_stocks.quantity',
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp',
+                'batch_code',
+                'unrestricted',
+                'qualinsp',
+                'book_qty',
+                'actual_qty',
+                'material_code',
+                'material_description',
+                'uom',
+                'mtyp',
                 'gap_qty'
             ]))
             ->paginate()
@@ -93,15 +90,15 @@ class PidService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'materials.code' => 'Kode Material',
-            'materials.description' => 'Deskripsi Material',
-            'materials.uom' => 'UoM',
-            'materials.mtyp' => 'MType',
-            'book_stocks.batch' => 'Kode Batch',
-            'book_stocks.unrestricted' => 'Unrestricted',
-            'book_stocks.qualinsp' => 'QualInsp',
-            'book_stocks.quantity' => 'BookQty',
-            'actual_stocks.quantity' => 'ActualQty',
+            'material_code' => 'Kode Material',
+            'material_description' => 'Deskripsi Material',
+            'uom' => 'UoM',
+            'mtyp' => 'MType',
+            'batch_code' => 'Kode Batch',
+            'unrestricted' => 'Unrestricted',
+            'qualinsp' => 'QualInsp',
+            'book_qty' => 'BookQty',
+            'actual_qty' => 'ActualQty',
             'gap_qty' => 'GapQty'
         ])->addColumns([
             'material_code' => 'Kode Material',

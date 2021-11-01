@@ -36,11 +36,10 @@ class BatchService
                 'materials.code as material_code'
             ])
             ->leftJoin('materials', 'materials.id', '=', 'batches.material_id')
-            ->whereNull('batches.deleted_at')
-            ->whereNull('materials.deleted_at')
+            ->whereNull(['batches.deleted_at', 'materials.deleted_at'])
             ->defaultSort('batch_code')
             ->allowedSorts(['batch_code', 'material_code'])
-            ->allowedFilters(InertiaHelper::filterBy(['batches.code', 'materials.code']))
+            ->allowedFilters(InertiaHelper::filterBy(['batch_code', 'material_code']))
             ->paginate()
             ->withQueryString();
     }
@@ -48,8 +47,8 @@ class BatchService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'batches.code' => 'Kode Batch',
-            'materials.code' => 'Kode Material'
+            'batch_code' => 'Kode Batch',
+            'material_code' => 'Kode Material'
         ])->addColumns([
             'batch_code' => 'Kode Batch',
             'material_code' => 'Kode Material',

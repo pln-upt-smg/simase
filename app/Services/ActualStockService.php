@@ -52,21 +52,16 @@ class ActualStockService
             ])
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
             ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
-            ->whereNull('actual_stocks.deleted_at')
-            ->whereNull('materials.deleted_at');
-
+            ->whereNull(['actual_stocks.deleted_at', 'materials.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('materials.area_id', $area->id);
         }
-
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-
         if ($ownedByCurrentUser) {
             $query = $query->where('users.id', auth()->user()?->id ?? 0);
         }
-
         return $query->defaultSort('material_code')
             ->allowedSorts([
                 'batch',
@@ -78,13 +73,13 @@ class ActualStockService
                 'creator_name'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'actual_stocks.batch',
-                'actual_stocks.quantity',
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp',
-                'users.name'
+                'batch',
+                'quantity',
+                'material_code',
+                'material_description',
+                'uom',
+                'mtyp',
+                'creator_name'
             ]))
             ->paginate()
             ->withQueryString();
@@ -97,13 +92,13 @@ class ActualStockService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'actual_stocks.batch' => 'Kode Batch',
-            'actual_stocks.quantity' => 'Kuantitas',
-            'materials.code' => 'Kode Material',
-            'materials.description' => 'Deskripsi Material',
-            'materials.uom' => 'UoM',
-            'materials.mtyp' => 'MType',
-            'users.name' => 'Pembuat'
+            'material_code' => 'Kode Material',
+            'batch' => 'Batch',
+            'material_description' => 'Deskripsi Material',
+            'quantity' => 'Kuantitas',
+            'uom' => 'UoM',
+            'mtyp' => 'MType',
+            'creator_name' => 'Pembuat'
         ])->addColumns([
             'material_code' => 'Kode Material',
             'batch' => 'Batch',

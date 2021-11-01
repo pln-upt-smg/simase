@@ -50,15 +50,12 @@ class MaterialService
                 DB::raw('date_format(materials.updated_at, "%d %b %Y") as update_date')
             ])
             ->whereNull('materials.deleted_at');
-
         if (!is_null($area)) {
             $query = $query->where('materials.area_id', $area->id);
         }
-
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-
         return $query->defaultSort('code')
             ->allowedSorts([
                 'code',
@@ -71,13 +68,14 @@ class MaterialService
                 'update_date'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp',
-                'materials.crcy',
-                'materials.price',
-                'materials.per'
+                'code',
+                'description',
+                'uom',
+                'mtyp',
+                'crcy',
+                'price',
+                'per',
+                'update_date'
             ]))
             ->paginate()
             ->withQueryString();
@@ -90,13 +88,14 @@ class MaterialService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'materials.code' => 'Kode Material',
-            'materials.description' => 'Deskripsi Material',
-            'materials.uom' => 'UoM',
-            'materials.mtyp' => 'MType',
-            'materials.crcy' => 'Currency',
-            'materials.price' => 'Harga',
-            'materials.per' => 'Per'
+            'code' => 'Kode Material',
+            'description' => 'Deskripsi Material',
+            'uom' => 'UoM',
+            'mtyp' => 'MType',
+            'crcy' => 'Currency',
+            'price' => 'Harga',
+            'per' => 'Per',
+            'update_date' => 'Tanggal Pembaruan'
         ])->addColumns([
             'code' => 'Kode Material',
             'description' => 'Deskripsi Material',

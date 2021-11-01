@@ -81,9 +81,9 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
         $period = $this->period;
         return [
             BeforeSheet::class => static function () use ($area, $period) {
-                Material::whereNull('deleted_at')
-                    ->where('area_id', $area?->id ?? 0)
+                Material::where('area_id', $area?->id ?? 0)
                     ->where('period_id', $period?->id ?? 0)
+                    ->whereNull('deleted_at')
                     ->delete();
             }
         ];

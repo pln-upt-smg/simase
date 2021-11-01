@@ -41,17 +41,20 @@ class OperatorService
                 'roles.name as role'
             ])
             ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->whereNull('users.deleted_at')
-            ->whereNull('roles.deleted_at')
+            ->whereNull(['users.deleted_at', 'roles.deleted_at'])
             ->where('roles.id', '=', Role::operator()?->id ?? 2)
             ->defaultSort('name')
-            ->allowedSorts(['name', 'phone', 'nip', 'role'])
+            ->allowedSorts([
+                'name',
+                'phone',
+                'nip',
+                'role'
+            ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'users.name',
-                'users.phone',
-                'users.nip',
-                'roles.id',
-                'roles.name'
+                'name',
+                'phone',
+                'nip',
+                'role'
             ]))
             ->paginate()
             ->withQueryString();
@@ -64,10 +67,10 @@ class OperatorService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'users.name' => 'Nama Pegawai',
-            'users.phone' => 'Nomor Telepon',
-            'users.nip' => 'Nomor Induk Pegawai',
-            'roles.name' => 'Peran'
+            'name' => 'Nama Pegawai',
+            'phone' => 'Nomor Telepon',
+            'nip' => 'Nomor Induk Pegawai',
+            'role' => 'Peran'
         ])->addColumns([
             'name' => 'Nama Pegawai',
             'phone' => 'Nomor Telepon',

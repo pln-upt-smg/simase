@@ -53,11 +53,9 @@ class FinalSummaryService
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
-
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-
         return $query->defaultSort('material_code')
             ->allowedSorts([
                 'unrestricted',
@@ -113,15 +111,12 @@ class FinalSummaryService
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
-
         if (!is_null($area)) {
             $query = $query->where('materials.area_id', $area->id);
         }
-
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-
         return $query->defaultSort('material_code')
             ->allowedSorts([
                 'unrestricted',
@@ -166,7 +161,7 @@ class FinalSummaryService
             'qualinsp' => 'QualInsp',
             'total_stock' => 'Total Stock',
             'gap_stock' => 'Gap Stock',
-            'gap_value' => 'Gap Value',
+            'gap_value' => 'Gap Value'
         ])->addColumns([
             'material_code' => 'Kode Material',
             'material_description' => 'Deskripsi Material',
@@ -176,7 +171,7 @@ class FinalSummaryService
             'qualinsp' => 'QualInsp',
             'total_stock' => 'Total Stock',
             'gap_stock' => 'Gap Stock',
-            'gap_value' => 'Gap Value',
+            'gap_value' => 'Gap Value'
         ]);
     }
 

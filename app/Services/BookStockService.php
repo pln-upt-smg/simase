@@ -52,41 +52,37 @@ class BookStockService
                 'materials.mtyp as mtyp'
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
-            ->whereNull('book_stocks.deleted_at')
-            ->whereNull('materials.deleted_at');
-
+            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('materials.area_id', $area->id);
         }
-
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-
         return $query->defaultSort('material_code')
             ->allowedSorts([
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
                 'batch',
+                'quantity',
                 'plnt',
                 'sloc',
                 'qualinsp',
                 'unrestricted',
-                'quantity'
+                'material_code',
+                'material_description',
+                'uom',
+                'mtyp'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'book_stocks.batch',
-                'book_stocks.plnt',
-                'book_stocks.sloc',
-                'book_stocks.qualinsp',
-                'book_stocks.unrestricted',
-                'book_stocks.quantity',
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp'
+                'batch',
+                'quantity',
+                'plnt',
+                'sloc',
+                'qualinsp',
+                'unrestricted',
+                'material_code',
+                'material_description',
+                'uom',
+                'mtyp'
             ]))
             ->paginate()
             ->withQueryString();
@@ -99,16 +95,17 @@ class BookStockService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'book_stocks.batch' => 'Batch',
-            'book_stocks.plnt' => 'Plnt',
-            'book_stocks.sloc' => 'SLoc',
-            'book_stocks.qualinsp' => 'QualInsp',
-            'book_stocks.unrestricted' => 'Unrestricted',
-            'book_stocks.quantity' => 'Kuantitas',
-            'materials.code' => 'Kode Material',
-            'materials.description' => 'Deskripsi Material',
-            'materials.uom' => 'UoM',
-            'materials.mtyp' => 'MType'
+            'material_code' => 'Kode Material',
+            'material_description' => 'Deskripsi Material',
+            'uom' => 'UoM',
+            'mtyp' => 'MType',
+            'batch' => 'Batch',
+            'plnt' => 'Plnt',
+            'sloc' => 'SLoc',
+            'qualinsp' => 'QualInsp',
+            'unrestricted' => 'Unrestricted',
+            'quantity' => 'Kuantitas',
+            'update_date' => 'Tanggal Pembaruan'
         ])->addColumns([
             'material_code' => 'Kode Material',
             'material_description' => 'Deskripsi Material',

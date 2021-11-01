@@ -53,11 +53,9 @@ class PidDetailService
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
-
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-
         return $query->defaultSort('material_code')
             ->allowedSorts([
                 'batch_code',
@@ -66,9 +64,9 @@ class PidDetailService
                 'sum_quantity'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'book_stocks.batch',
-                'materials.code',
-                'materials.description',
+                'batch_code',
+                'material_code',
+                'material_description',
                 'sum_quantity'
             ]))
             ->paginate()
@@ -82,9 +80,9 @@ class PidDetailService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'materials.code' => 'Kode Material',
-            'materials.description' => 'Deskripsi Material',
-            'book_stocks.batch' => 'Kode Batch',
+            'material_code' => 'Kode Material',
+            'material_description' => 'Deskripsi Material',
+            'batch_code' => 'Kode Batch',
             'sum_quantity' => 'Jumlah Kuantitas'
         ])->addColumns([
             'material_code' => 'Kode Material',
