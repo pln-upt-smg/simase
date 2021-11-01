@@ -74,10 +74,10 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
         $period = $this->period;
         return [
             BeforeSheet::class => static function () use ($area, $period) {
-                BookStock::whereNull('deleted_at')
-                    ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
+                BookStock::leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
                     ->where('materials.area_id', $area?->id ?? 0)
                     ->where('materials.period_id', $period?->id ?? 0)
+                    ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at'])
                     ->delete();
             }
         ];

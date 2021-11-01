@@ -107,11 +107,11 @@ class PidDetailService
         $areas = $this->areaService->collection();
 
         // get the book stock id list
-        $stocks = BookStock::select(['id', 'material_id'])->whereNull('book_stocks.deleted_at');
+        $stocks = BookStock::select(['id', 'material_id', 'deleted_at'])->whereNull('book_stocks.deleted_at');
 
         // apply the period condition on the stock list
         if (!is_null($period)) {
-            $stocks = $stocks->where('period_id', $period->id);
+            $stocks = $stocks->where('materials.period_id', $period->id);
         }
 
         // fetch the stock!

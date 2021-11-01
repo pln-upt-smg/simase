@@ -71,7 +71,7 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
         $period = $this->period;
         return [
             BeforeSheet::class => static function () use ($area, $period) {
-                ActualStock::whereNull('deleted_at')
+                ActualStock::whereNull('actual_stocks.deleted_at')
                     ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
                     ->where('materials.area_id', $area?->id ?? 0)
                     ->where('materials.period_id', $period?->id ?? 0)

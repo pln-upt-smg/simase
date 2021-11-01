@@ -50,15 +50,12 @@ class BatchNotExistService
             ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
             ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
             ->whereNull(['batches.code', 'actual_stocks.deleted_at', 'materials.deleted_at', 'users.deleted_at']);
-
         if (!is_null($area)) {
             $query = $query->where('materials.area_id', $area->id);
         }
-
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-
         return $query->defaultSort('material_code')
             ->allowedSorts([
                 'batch_code',
@@ -160,10 +157,10 @@ class BatchNotExistService
             ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
             ->whereNull(['batches.code', 'actual_stocks.deleted_at', 'materials.deleted_at', 'users.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->where('area_id', $area->id);
+            $query = $query->where('materials.area_id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->where('period_id', $period->id);
+            $query = $query->where('materials.period_id', $period->id);
         }
         return $query->get();
     }
