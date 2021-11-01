@@ -2,6 +2,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import 'vue-select/dist/vue-select.css';
 
 /**
  * https://stackoverflow.com/questions/25704650/disable-blue-highlight-when-touch-press-object-with-cursorpointer
@@ -42,4 +43,27 @@ input {
  */
 .clickable-table-header th:hover {
     cursor: pointer;
+}
+
+/**
+ * Vue Select styling
+ */
+.vue-select .vs__search::placeholder,
+.vue-select .vs__dropdown-toggle,
+.vue-select .vs__dropdown-menu {
+    font-size: 16px;
+    font-family: "Nunito Sans", serif;
+    background: #FFFFFF;
+    color: #1F2937;
+    padding: 6px 2px;
+}
+
+.vue-select .vs__search::placeholder {
+    --tw-placeholder-opacity: 1;
+    color: rgba(156, 163, 175, var(--tw-placeholder-opacity));
+}
+
+.vue-select .vs__clear,
+.vue-select .vs__open-indicator {
+    display: none;
 }

@@ -41,7 +41,7 @@
             </div>
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="nip" value="Nomor Induk Pegawai"/>
-                <jet-input id="nip" type="text" class="mt-1 block w-full bg-gray-100 cursor-not-allowed normal-case"
+                <jet-input id="nip" type="text" class="mt-1 block w-full bg-gray-100 cursor-not-allowed capitalize"
                            v-model="form.nip" disabled/>
                 <jet-input-error :message="form.errors.nip" class="mt-2"/>
             </div>

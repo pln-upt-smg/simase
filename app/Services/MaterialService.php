@@ -28,6 +28,16 @@ class MaterialService
 {
     use HasValidator;
 
+    private AreaService $areaService;
+
+    private PeriodService $periodService;
+
+    public function __construct(AreaService $areaService, PeriodService $periodService)
+    {
+        $this->areaService = $areaService;
+        $this->periodService = $periodService;
+    }
+
     /**
      * @param Area|null $area
      * @param Period|null $period
@@ -74,8 +84,7 @@ class MaterialService
                 'mtyp',
                 'crcy',
                 'price',
-                'per',
-                'update_date'
+                'per'
             ]))
             ->paginate()
             ->withQueryString();
@@ -94,8 +103,7 @@ class MaterialService
             'mtyp' => 'MType',
             'crcy' => 'Currency',
             'price' => 'Harga',
-            'per' => 'Per',
-            'update_date' => 'Tanggal Pembaruan'
+            'per' => 'Per'
         ])->addColumns([
             'code' => 'Kode Material',
             'description' => 'Deskripsi Material',
@@ -233,5 +241,27 @@ class MaterialService
             $query = $query->where('period_id', $period->id);
         }
         return $query->orderBy('code')->get();
+    }
+
+    public function materialCodeCollection(Request $request, bool $strict = true): Collection
+    {
+        $area = $this->areaService->resolve($request);
+        $period = $this->periodService->resolve($request);
+        $query = Material::select(['code', 'description', 'uom'])
+            ->orderBy('code')
+            ->distinct()
+            ->whereNull('deleted_at')
+            ->whereRaw('lower(code) like ?', '%' . Str::lower(trim($request->query('q') ?? '')) . '%');
+        if ($strict) {
+            $query = $query->where('area_id', $area?->id ?? 0)->where('period_id', $period?->id ?? 0);
+        } else {
+            if (!is_null($area)) {
+                $query = $query->where('area_id', $area?->id ?? 0);
+            }
+            if (!is_null($period)) {
+                $query = $query->where('period_id', $period?->id ?? 0);
+            }
+        }
+        return $query->get();
     }
 }

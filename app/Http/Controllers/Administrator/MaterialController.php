@@ -7,6 +7,7 @@ use App\Models\Material;
 use App\Services\AreaService;
 use App\Services\MaterialService;
 use App\Services\PeriodService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -131,5 +132,20 @@ class MaterialController extends Controller
     public function export(Request $request): BinaryFileResponse
     {
         return $this->materialService->export($request);
+    }
+
+    /**
+     * Generate the JSON-formatted resource data.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function materialCodeJsonCollection(Request $request): JsonResponse
+    {
+        $codes = $this->materialService->materialCodeCollection($request);
+        return response()->json([
+            'items' => $codes->toArray(),
+            'total_count' => $codes->count()
+        ]);
     }
 }

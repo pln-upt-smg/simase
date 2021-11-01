@@ -20,4 +20,4 @@ Route::get('/', static function () {
 /**
  * Role-specific web routes
  */
-include "roleable/web.php";
+include "roleable/web/web.php";

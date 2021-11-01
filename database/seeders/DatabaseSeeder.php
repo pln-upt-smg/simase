@@ -8,6 +8,7 @@ use App\Models\Period;
 use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\Data\AreaSeeder;
+use Database\Seeders\Data\MaterialSeeder;
 use Database\Seeders\Data\PeriodSeeder;
 use Database\Seeders\Data\RoleSeeder;
 use Database\Seeders\Data\UserSeeder;
@@ -46,5 +47,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(PeriodSeeder::class);
         $this->call(AreaSeeder::class);
+        $this->call(MaterialSeeder::class);
     }
 }
