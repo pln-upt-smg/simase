@@ -27,8 +27,18 @@ import Vue3ChartJs from '@j-t-mcc/vue3-chartjs'
 
 export default defineComponent({
     props: {
+        ids: Object,
         labels: Object,
-        data: Object
+        data: Object,
+        partials: {
+            type: Array,
+            default: [
+                'area',
+                'areas',
+                'areaIds',
+                'gapValueRank'
+            ]
+        }
     },
     components: {
         Vue3ChartJs
@@ -79,17 +89,37 @@ export default defineComponent({
             }]
             chart.value.update()
         }
+        const registerOnBarClickListener = (callback) => {
+            chartData.options.onClick = callback
+            chart.value.update()
+        }
         return {
             chart,
             chartData,
-            updateChart
+            updateChart,
+            registerOnBarClickListener
         }
     },
     mounted() {
-        this.updateChart(Object.values(this.labels), Object.values(this.data))
+        this.reloadData()
     },
     updated() {
-        this.updateChart(Object.values(this.labels), Object.values(this.data))
+        this.reloadData()
+    },
+    methods: {
+        reloadData() {
+            this.updateChart(Object.values(this.labels), Object.values(this.data))
+            this.registerOnBarClickListener((point, event) => {
+                this.$inertia.get(route(route().current(), route().params), {
+                    area: this.ids && event[0] ? this.ids[event[0].index] : 0
+                }, {
+                    replace: true,
+                    preserveState: true,
+                    preserveScroll: true,
+                    only: this.partials
+                })
+            })
+        }
     }
 })
 </script>

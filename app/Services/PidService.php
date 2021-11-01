@@ -36,14 +36,14 @@ class PidService
                 'book_stocks.unrestricted as unrestricted',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.quantity as book_qty',
-                'actual_stocks.quantity as actual_qty',
+                DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
                 'materials.area_id as area_id',
                 'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
-                DB::raw('(actual_stocks.quantity - book_stocks.quantity) as gap_qty')
+                DB::raw('coalesce(((case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end) - book_stocks.quantity), 0) as gap_qty')
             ])
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
@@ -145,12 +145,12 @@ class PidService
                 'book_stocks.unrestricted as unrestricted',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.quantity as book_qty',
-                'actual_stocks.quantity as actual_qty',
+                DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
-                DB::raw('(actual_stocks.quantity - book_stocks.quantity) as gap_qty')
+                DB::raw('coalesce((actual_stocks.quantity - book_stocks.quantity), 0) as gap_qty')
             ])
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')

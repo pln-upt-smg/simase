@@ -58,10 +58,12 @@ class DashboardController extends Controller
         }
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
+        $areas = $this->areaService->collection();
         return inertia('Administrator/Dashboard/Index', [
             'area' => $area,
             'period' => $period,
-            'areas' => $this->areaService->collection()->pluck('name')->toArray(),
+            'areaIds' => $areas->pluck('id')->toArray(),
+            'areas' => $areas->pluck('name')->toArray(),
             'periods' => $this->periodService->collection()->toArray(),
             'areaFinalSummaries' => $this->finalSummaryService->chart($period),
             'gapValueRank' => $this->finalSummaryService->gapValueRankTableData($area, $period)

@@ -16,7 +16,7 @@
                 <th>Gap Value</th>
             </template>
             <template #body>
-                <tr v-for="entry in data.data" :key="entry.id">
+                <tr v-if="data.data && data.data.length > 0" v-for="entry in data.data" :key="entry.id">
                     <td>{{ entry.material_code }}</td>
                     <td>{{ entry.material_description }}</td>
                     <td>{{ entry.uom }}</td>
@@ -26,6 +26,11 @@
                     <td>{{ entry.total_stock }}</td>
                     <td>{{ entry.gap_stock }}</td>
                     <td>{{ entry.gap_value }}</td>
+                </tr>
+                <tr v-else>
+                    <td colspan="9" class="font-normal text-black">
+                        Tidak ada data tersedia
+                    </td>
                 </tr>
             </template>
         </jet-table>

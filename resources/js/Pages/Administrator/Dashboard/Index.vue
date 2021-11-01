@@ -7,7 +7,7 @@
                 :multiple-partials="['areaFinalSummaries', 'gapValueRank']"/>
         </div>
         <div class="px-4 py-5 bg-white sm:p-6 shadow rounded-lg mt-7">
-            <final-summary-chart :labels="areas" :data="areaFinalSummaries"/>
+            <final-summary-chart :ids="areaIds" :labels="areas" :data="areaFinalSummaries"/>
         </div>
         <div class="px-4 py-5 bg-white sm:p-6 shadow rounded-lg mt-8">
             <gap-value-rank-table :area="area" :data="gapValueRank"/>
@@ -28,6 +28,7 @@ export default defineComponent({
         areas: Object,
         period: Object,
         periods: Object,
+        areaIds: Object,
         areaFinalSummaries: Object,
         gapValueRank: Object
     },
