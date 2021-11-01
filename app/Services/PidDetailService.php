@@ -133,7 +133,7 @@ class PidDetailService
 
                 // dont forget to apply the period query!
                 if (!is_null($period)) {
-                    $query = $query->where('period_id', $period->id);
+                    $query = $query->where('materials.period_id', $period->id);
                 }
 
                 // fetch it and append the quantity to areaData (default is 0)
@@ -175,7 +175,7 @@ class PidDetailService
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->where('period_id', $period->id);
+            $query = $query->where('materials.period_id', $period->id);
         }
         return $query->get();
     }

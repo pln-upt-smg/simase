@@ -156,7 +156,7 @@ class PidService
             $query = $query->where('materials.area_id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->where('period_id', $period->id);
+            $query = $query->where('materials.period_id', $period->id);
         }
         return $query->get();
     }

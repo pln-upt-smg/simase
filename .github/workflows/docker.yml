@@ -63,7 +63,6 @@ jobs:
         run: |
           docker exec -t stocktake-web-app-1 chmod -R g+w storage/logs
           docker exec -t stocktake-web-app-1 chmod -R ug+rwx storage bootstrap/cache
-          docker exec -t stocktake-web-app-1 chown -R $(whoami) storage bootstrap/cache
 
       - name: 📦 Install NPM Dependencies
         run: docker exec -t stocktake-web-app-1 npm i
