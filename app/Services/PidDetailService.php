@@ -28,11 +28,18 @@ class PidDetailService
     private AreaService $areaService;
 
     /**
-     * @param AreaService $areaService
+     * @var PeriodService
      */
-    public function __construct(AreaService $areaService)
+    private PeriodService $periodService;
+
+    /**
+     * @param AreaService $areaService
+     * @param PeriodService $periodService
+     */
+    public function __construct(AreaService $areaService, PeriodService $periodService)
     {
         $this->areaService = $areaService;
+        $this->periodService = $periodService;
     }
 
     /**
@@ -159,7 +166,7 @@ class PidDetailService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new PidDetailExport(
-            Period::find(empty($request->query('period')) ? null : (int)$request->query('period')),
+            $this->periodService->resolve($request),
             $this->areaService,
             $this
         ), 'pid_details');

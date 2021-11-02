@@ -22,11 +22,24 @@ class FinalSummaryService
 {
     use HasValidator;
 
+    /**
+     * @var AreaService
+     */
     private AreaService $areaService;
 
-    public function __construct(AreaService $areaService)
+    /**
+     * @var PeriodService
+     */
+    private PeriodService $periodService;
+
+    /**
+     * @param AreaService $areaService
+     * @param PeriodService $periodService
+     */
+    public function __construct(AreaService $areaService, PeriodService $periodService)
     {
         $this->areaService = $areaService;
+        $this->periodService = $periodService;
     }
 
     /**
@@ -167,7 +180,7 @@ class FinalSummaryService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new FinalSummaryExport(
-            Period::find(empty($request->query('period')) ? null : (int)$request->query('period')),
+            $this->periodService->resolve($request),
             $this
         ), 'final_summaries');
     }
@@ -208,8 +221,8 @@ class FinalSummaryService
      */
     public function chart(?Period $period): array
     {
-        $areas = $this->areaService->collection();
         $result = [];
+        $areas = $this->areaService->collection();
         foreach ($areas as $area) {
             $query = BookStock::select([
                 DB::raw('sum(((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) * materials.price)) as gap_value')

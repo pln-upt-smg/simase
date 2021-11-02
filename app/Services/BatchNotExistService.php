@@ -22,7 +22,26 @@ class BatchNotExistService
 {
     use HasValidator;
 
+    /**
+     * @var AreaService
+     */
+    private AreaService $areaService;
+
+    /**
+     * @var PeriodService
+     */
+    private PeriodService $periodService;
+
+    /**
+     * The default Batch Status value
+     */
     private const DEFAULT_BATCH_NOT_EXISTS_STATUS = 'Batch tidak sesuai';
+
+    public function __construct(AreaService $areaService, PeriodService $periodService)
+    {
+        $this->areaService = $areaService;
+        $this->periodService = $periodService;
+    }
 
     /**
      * @param Area|null $area
@@ -124,8 +143,8 @@ class BatchNotExistService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new BatchNotExistsExport(
-            Area::find(empty($request->query('area')) ? null : (int)$request->query('area')),
-            Period::find(empty($request->query('period')) ? null : (int)$request->query('period')),
+            $this->areaService->resolve($request),
+            $this->periodService->resolve($request),
             $this
         ), 'batch_not_exists');
     }

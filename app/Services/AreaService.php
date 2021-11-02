@@ -126,7 +126,7 @@ class AreaService
         if ($request->query('area') === '0' || $request->query('area') === 0) {
             return null;
         }
-        return Area::whereId($request->query('area') ? (int)$request->query('area') : 0)
+        return Area::where('id', $request->query('area') ? (int)$request->query('area') : 0)
             ->whereNull('deleted_at')
             ->first();
     }

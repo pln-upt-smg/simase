@@ -96,7 +96,7 @@ class PeriodService
         if ($request->query('period') === '0' || $request->query('period') === 0) {
             return null;
         }
-        return Period::whereId($request->query('period') ? (int)$request->query('period') : 0)
+        return Period::where('id', $request->query('period') ? (int)$request->query('period') : 0)
             ->whereNull('deleted_at')
             ->first();
     }

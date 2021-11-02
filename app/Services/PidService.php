@@ -23,6 +23,26 @@ class PidService
     use HasValidator;
 
     /**
+     * @var AreaService
+     */
+    private AreaService $areaService;
+
+    /**
+     * @var PeriodService
+     */
+    private PeriodService $periodService;
+
+    /**
+     * @param AreaService $areaService
+     * @param PeriodService $periodService
+     */
+    public function __construct(AreaService $areaService, PeriodService $periodService)
+    {
+        $this->areaService = $areaService;
+        $this->periodService = $periodService;
+    }
+
+    /**
      * @param Area|null $area
      * @param Period|null $period
      * @return LengthAwarePaginator
@@ -120,8 +140,8 @@ class PidService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new PidExport(
-            Area::find(empty($request->query('area')) ? null : (int)$request->query('area')),
-            Period::find(empty($request->query('period')) ? null : (int)$request->query('period')),
+            $this->areaService->resolve($request),
+            $this->periodService->resolve($request),
             $this
         ), 'pids');
     }

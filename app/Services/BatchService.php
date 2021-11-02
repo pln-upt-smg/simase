@@ -85,7 +85,7 @@ class BatchService
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')]
         ]);
         $batch->updateOrFail([
-            'material_id' => Material::whereCode($request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
             'code' => Str::upper($request->batch_code)
         ]);
         $batch->save();
