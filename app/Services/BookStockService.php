@@ -44,8 +44,6 @@ class BookStockService
                 'book_stocks.sloc as sloc',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.unrestricted as unrestricted',
-                'materials.area_id as area_id',
-                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
@@ -59,30 +57,30 @@ class BookStockService
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-        return $query->defaultSort('material_code')
+        return $query->defaultSort('materials.code')
             ->allowedSorts([
-                'batch',
-                'quantity',
-                'plnt',
-                'sloc',
-                'qualinsp',
-                'unrestricted',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp'
+                'book_stocks.batch',
+                'book_stocks.quantity',
+                'book_stocks.plnt',
+                'book_stocks.sloc',
+                'book_stocks.qualinsp',
+                'book_stocks.unrestricted',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'batch',
-                'quantity',
-                'plnt',
-                'sloc',
-                'qualinsp',
-                'unrestricted',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp'
+                'book_stocks.batch',
+                'book_stocks.quantity',
+                'book_stocks.plnt',
+                'book_stocks.sloc',
+                'book_stocks.qualinsp',
+                'book_stocks.unrestricted',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp'
             ]))
             ->paginate()
             ->withQueryString();
@@ -95,29 +93,27 @@ class BookStockService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'material_code' => 'Kode Material',
-            'material_description' => 'Deskripsi Material',
-            'uom' => 'UoM',
-            'mtyp' => 'MType',
-            'batch' => 'Batch',
-            'plnt' => 'Plnt',
-            'sloc' => 'SLoc',
-            'qualinsp' => 'QualInsp',
-            'unrestricted' => 'Unrestricted',
-            'quantity' => 'Kuantitas',
-            'update_date' => 'Tanggal Pembaruan'
+            'materials.code' => 'Kode Material',
+            'materials.description' => 'Deskripsi Material',
+            'materials.uom' => 'UoM',
+            'materials.mtyp' => 'MType',
+            'book_stocks.batch' => 'Kode Batch',
+            'book_stocks.plnt' => 'Plnt',
+            'book_stocks.sloc' => 'SLoc',
+            'book_stocks.qualinsp' => 'QualInsp',
+            'book_stocks.unrestricted' => 'Unrestricted',
+            'book_stocks.quantity' => 'Kuantitas'
         ])->addColumns([
             'material_code' => 'Kode Material',
             'material_description' => 'Deskripsi Material',
             'uom' => 'UoM',
             'mtyp' => 'MType',
-            'batch' => 'Batch',
+            'batch' => 'Kode Batch',
             'plnt' => 'Plnt',
             'sloc' => 'SLoc',
             'qualinsp' => 'QualInsp',
             'unrestricted' => 'Unrestricted',
             'quantity' => 'Kuantitas',
-            'update_date' => 'Tanggal Pembaruan',
             'action' => 'Aksi'
         ]);
     }

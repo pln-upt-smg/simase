@@ -45,8 +45,6 @@ class PidDetailService
             ->select([
                 'book_stocks.id as id',
                 'book_stocks.batch as batch_code',
-                'materials.area_id as area_id',
-                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 DB::raw('coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id), 0) as sum_quantity')
@@ -58,16 +56,15 @@ class PidDetailService
         }
         return $query->defaultSort('material_code')
             ->allowedSorts([
-                'batch_code',
-                'material_code',
-                'material_description',
+                'book_stocks.batch',
+                'materials.code',
+                'materials.description',
                 'sum_quantity'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'batch_code',
-                'material_code',
-                'material_description',
-                'sum_quantity'
+                'book_stocks.batch',
+                'materials.code',
+                'materials.description'
             ]))
             ->paginate()
             ->withQueryString();
@@ -80,10 +77,9 @@ class PidDetailService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'material_code' => 'Kode Material',
-            'material_description' => 'Deskripsi Material',
-            'batch_code' => 'Kode Batch',
-            'sum_quantity' => 'Jumlah Kuantitas'
+            'materials.code' => 'Kode Material',
+            'materials.description' => 'Deskripsi Material',
+            'book_stocks.batch' => 'Kode Batch'
         ])->addColumns([
             'material_code' => 'Kode Material',
             'material_description' => 'Deskripsi Material',

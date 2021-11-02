@@ -41,13 +41,10 @@ class ActualStockService
                 'actual_stocks.id as id',
                 'actual_stocks.batch as batch',
                 'actual_stocks.quantity as quantity',
-                'materials.area_id as area_id',
-                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
-                'users.id as creator_id',
                 'users.name as creator_name'
             ])
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
@@ -62,24 +59,24 @@ class ActualStockService
         if ($ownedByCurrentUser) {
             $query = $query->where('users.id', auth()->user()?->id ?? 0);
         }
-        return $query->defaultSort('material_code')
+        return $query->defaultSort('materials.code')
             ->allowedSorts([
-                'batch',
-                'quantity',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
-                'creator_name'
+                'actual_stocks.batch',
+                'actual_stocks.quantity',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
+                'users.name'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'batch',
-                'quantity',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
-                'creator_name'
+                'actual_stocks.batch',
+                'actual_stocks.quantity',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
+                'users.name'
             ]))
             ->paginate()
             ->withQueryString();
@@ -92,16 +89,16 @@ class ActualStockService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'material_code' => 'Kode Material',
-            'batch' => 'Batch',
-            'material_description' => 'Deskripsi Material',
-            'quantity' => 'Kuantitas',
-            'uom' => 'UoM',
-            'mtyp' => 'MType',
-            'creator_name' => 'Pembuat'
+            'materials.code' => 'Kode Material',
+            'actual_stocks.batch' => 'Kode Batch',
+            'materials.description' => 'Deskripsi Material',
+            'actual_stocks.quantity' => 'Kuantitas',
+            'materials.uom' => 'UoM',
+            'materials.mtyp' => 'MType',
+            'users.name' => 'Pembuat'
         ])->addColumns([
             'material_code' => 'Kode Material',
-            'batch' => 'Batch',
+            'batch' => 'Kode Batch',
             'material_description' => 'Deskripsi Material',
             'quantity' => 'Kuantitas',
             'uom' => 'UoM',

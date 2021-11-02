@@ -41,8 +41,6 @@ class FinalSummaryService
                 'book_stocks.unrestricted as unrestricted',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.material_id as material_id',
-                'materials.area_id as area_id',
-                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
@@ -56,28 +54,25 @@ class FinalSummaryService
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-        return $query->defaultSort('material_code')
+        return $query->defaultSort('materials.code')
             ->allowedSorts([
-                'unrestricted',
-                'qualinsp',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
+                'book_stocks.unrestricted',
+                'book_stocks.qualinsp',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
                 'total_stock',
                 'gap_stock',
                 'gap_value'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'unrestricted',
-                'qualinsp',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
-                'total_stock',
-                'gap_stock',
-                'gap_value'
+                'book_stocks.unrestricted',
+                'book_stocks.qualinsp',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp'
             ]))
             ->paginate()
             ->withQueryString();
@@ -97,8 +92,6 @@ class FinalSummaryService
                 'book_stocks.unrestricted as unrestricted',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.material_id as material_id',
-                'materials.area_id as area_id',
-                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
@@ -110,36 +103,25 @@ class FinalSummaryService
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
+            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('materials.area_id', $area->id);
         }
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-        return $query->defaultSort('material_code')
+        return $query->defaultSort('materials.code')
             ->allowedSorts([
-                'unrestricted',
-                'qualinsp',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
+                'book_stocks.unrestricted',
+                'book_stocks.qualinsp',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
                 'total_stock',
                 'gap_stock',
                 'gap_value'
             ])
-            ->allowedFilters(InertiaHelper::filterBy([
-                'unrestricted',
-                'qualinsp',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
-                'total_stock',
-                'gap_stock',
-                'gap_value'
-            ]))
             ->orderBy('gap_value')
             ->limit($limit)
             ->paginate()
@@ -153,15 +135,12 @@ class FinalSummaryService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'material_code' => 'Kode Material',
-            'material_description' => 'Deskripsi Material',
-            'uom' => 'UoM',
-            'mtyp' => 'MType',
-            'unrestricted' => 'Unrestricted',
-            'qualinsp' => 'QualInsp',
-            'total_stock' => 'Total Stock',
-            'gap_stock' => 'Gap Stock',
-            'gap_value' => 'Gap Value'
+            'materials.code' => 'Kode Material',
+            'materials.description' => 'Deskripsi Material',
+            'materials.uom' => 'UoM',
+            'materials.mtyp' => 'MType',
+            'book_stocks.unrestricted' => 'Unrestricted',
+            'book_stocks.qualinsp' => 'QualInsp'
         ])->addColumns([
             'material_code' => 'Kode Material',
             'material_description' => 'Deskripsi Material',

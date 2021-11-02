@@ -56,30 +56,28 @@ class BatchNotExistService
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-        return $query->defaultSort('material_code')
+        return $query->defaultSort('materials.code')
             ->allowedSorts([
-                'batch_code',
-                'quantity',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
-                'area_name',
-                'creator_name',
+                'actual_stocks.batch',
+                'actual_stocks.quantity',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
+                'areas.name',
+                'users.name',
                 'creation_date',
                 'batch_status'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'batch_code',
-                'quantity',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
-                'area_name',
-                'creator_name',
-                'creation_date',
-                'batch_status'
+                'actual_stocks.batch',
+                'actual_stocks.quantity',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
+                'areas.name',
+                'users.name'
             ]))
             ->paginate()
             ->withQueryString();
@@ -92,16 +90,15 @@ class BatchNotExistService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'area_name' => 'Area',
-            'material_code' => 'Kode Material',
-            'material_description' => 'Deskripsi Material',
-            'uom' => 'UoM',
-            'mtyp' => 'MType',
-            'batch_code' => 'Kode Batch',
-            'quantity' => 'Kuantitas',
+            'areas.name' => 'Area',
+            'materials.code' => 'Kode Material',
+            'materials.description' => 'Deskripsi Material',
+            'materials.uom' => 'UoM',
+            'materials.mtyp' => 'MType',
+            'actual_stocks.batch' => 'Kode Batch',
+            'actual_stocks.quantity' => 'Kuantitas',
             'creation_date' => 'Tanggal Dibuat',
-            'creator_name' => 'Pembuat',
-            'batch_status' => 'Status'
+            'users.name' => 'Pembuat'
         ])->addColumns([
             'area_name' => 'Area',
             'material_code' => 'Kode Material',
@@ -137,24 +134,24 @@ class BatchNotExistService
      */
     public function collection(?Area $area, ?Period $period): Collection
     {
-        $query = ActualStock::orderBy('materials.code')
-            ->select([
-                'actual_stocks.id as id',
-                'actual_stocks.batch as batch_code',
-                'actual_stocks.quantity as quantity',
-                'materials.code as material_code',
-                'materials.description as material_description',
-                'materials.uom as uom',
-                'materials.mtyp as mtyp',
-                'areas.name as area_name',
-                'users.nip as creator_nip',
-                DB::raw("'" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS . "' as batch_status"),
-                DB::raw('date_format(actual_stocks.created_at, "%d/%m/%Y %H:%i") as creation_date')
-            ])
+        $query = ActualStock::select([
+            'actual_stocks.id as id',
+            'actual_stocks.batch as batch_code',
+            'actual_stocks.quantity as quantity',
+            'materials.code as material_code',
+            'materials.description as material_description',
+            'materials.uom as uom',
+            'materials.mtyp as mtyp',
+            'areas.name as area_name',
+            'users.nip as creator_nip',
+            DB::raw("'" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS . "' as batch_status"),
+            DB::raw('date_format(actual_stocks.created_at, "%d/%m/%Y %H:%i") as creation_date')
+        ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
             ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
             ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
+            ->orderBy('materials.code')
             ->whereNull(['batches.code', 'actual_stocks.deleted_at', 'materials.deleted_at', 'users.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('materials.area_id', $area->id);

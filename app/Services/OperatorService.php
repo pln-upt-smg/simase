@@ -37,24 +37,23 @@ class OperatorService
                 'users.name as name',
                 'users.phone as phone',
                 'users.nip as nip',
-                'roles.id as role_id',
                 'roles.name as role'
             ])
             ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->whereNull(['users.deleted_at', 'roles.deleted_at'])
             ->where('roles.id', '=', Role::operator()?->id ?? 2)
-            ->defaultSort('name')
+            ->whereNull(['users.deleted_at', 'roles.deleted_at'])
+            ->defaultSort('users.name')
             ->allowedSorts([
-                'name',
-                'phone',
-                'nip',
-                'role'
+                'users.name',
+                'users.phone',
+                'users.nip',
+                'roles.name'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'name',
-                'phone',
-                'nip',
-                'role'
+                'users.name',
+                'users.phone',
+                'users.nip',
+                'roles.name'
             ]))
             ->paginate()
             ->withQueryString();
@@ -67,10 +66,10 @@ class OperatorService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'name' => 'Nama Pegawai',
-            'phone' => 'Nomor Telepon',
-            'nip' => 'Nomor Induk Pegawai',
-            'role' => 'Peran'
+            'users.name' => 'Nama Pegawai',
+            'users.phone' => 'Nomor Telepon',
+            'users.nip' => 'Nomor Induk Pegawai',
+            'roles.name' => 'Peran'
         ])->addColumns([
             'name' => 'Nama Pegawai',
             'phone' => 'Nomor Telepon',
@@ -165,9 +164,10 @@ class OperatorService
      */
     public function collection(): Collection
     {
-        return User::whereRoleId(Role::operator()?->id ?? 2)
-            ->whereNull('deleted_at')
-            ->orderBy('name')
+        return User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
+            ->where('users.role_id', Role::operator()?->id ?? 2)
+            ->whereNull(['users.deleted_at', 'roles.deleted_at'])
+            ->orderBy('users.name')
             ->get()
             ->load('role');
     }

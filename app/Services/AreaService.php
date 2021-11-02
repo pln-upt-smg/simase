@@ -34,9 +34,9 @@ class AreaService
                 'areas.name as name'
             ])
             ->whereNull('areas.deleted_at')
-            ->defaultSort('name')
-            ->allowedSorts(['name'])
-            ->allowedFilters(InertiaHelper::filterBy(['name']))
+            ->defaultSort('areas.name')
+            ->allowedSorts(['areas.name'])
+            ->allowedFilters(InertiaHelper::filterBy(['areas.name']))
             ->paginate()
             ->withQueryString();
     }
@@ -44,7 +44,7 @@ class AreaService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'name' => 'Nama Area'
+            'areas.name' => 'Nama Area'
         ])->addColumns([
             'name' => 'Nama Area',
             'action' => 'Aksi'

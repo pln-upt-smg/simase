@@ -48,8 +48,6 @@ class MaterialService
         $query = QueryBuilder::for(Material::class)
             ->select([
                 'materials.id as id',
-                'materials.area_id as area_id',
-                'materials.period_id as period_id',
                 'materials.code as code',
                 'materials.description as description',
                 'materials.uom as uom',
@@ -66,25 +64,25 @@ class MaterialService
         if (!is_null($period)) {
             $query = $query->where('materials.period_id', $period->id);
         }
-        return $query->defaultSort('code')
+        return $query->defaultSort('materials.code')
             ->allowedSorts([
-                'code',
-                'description',
-                'uom',
-                'mtyp',
-                'crcy',
-                'price',
-                'per',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
+                'materials.crcy',
+                'materials.price',
+                'materials.per',
                 'update_date'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'code',
-                'description',
-                'uom',
-                'mtyp',
-                'crcy',
-                'price',
-                'per'
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
+                'materials.crcy',
+                'materials.price',
+                'materials.per'
             ]))
             ->paginate()
             ->withQueryString();
@@ -97,13 +95,13 @@ class MaterialService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'code' => 'Kode Material',
-            'description' => 'Deskripsi Material',
-            'uom' => 'UoM',
-            'mtyp' => 'MType',
-            'crcy' => 'Currency',
-            'price' => 'Harga',
-            'per' => 'Per'
+            'materials.code' => 'Kode Material',
+            'materials.description' => 'Deskripsi Material',
+            'materials.uom' => 'UoM',
+            'materials.mtyp' => 'MType',
+            'materials.crcy' => 'Currency',
+            'materials.price' => 'Harga',
+            'materials.per' => 'Per'
         ])->addColumns([
             'code' => 'Kode Material',
             'description' => 'Deskripsi Material',
@@ -267,8 +265,8 @@ class MaterialService
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
         $query = Material::select(['code', 'description', 'uom'])
-            ->orderBy('code')
             ->distinct()
+            ->orderBy('code')
             ->whereNull('deleted_at')
             ->whereRaw('lower(code) like ?', '%' . Str::lower(trim($request->query('q') ?? '')) . '%');
         if ($strict) {

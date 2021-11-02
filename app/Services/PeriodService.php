@@ -30,9 +30,9 @@ class PeriodService
                 'periods.name as name'
             ])
             ->whereNull('periods.deleted_at')
-            ->defaultSort('name')
-            ->allowedSorts(['name'])
-            ->allowedFilters(InertiaHelper::filterBy(['name']))
+            ->defaultSort('periods.name')
+            ->allowedSorts(['periods.name'])
+            ->allowedFilters(InertiaHelper::filterBy(['periods.name']))
             ->paginate()
             ->withQueryString();
     }
@@ -40,7 +40,7 @@ class PeriodService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'name' => 'Nama Periode'
+            'periods.name' => 'Nama Periode'
         ])->addColumns([
             'name' => 'Nama Periode',
             'action' => 'Aksi'

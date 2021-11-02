@@ -36,13 +36,11 @@ class PidService
                 'book_stocks.unrestricted as unrestricted',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.quantity as book_qty',
-                DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
-                'materials.area_id as area_id',
-                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
+                DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
                 DB::raw('coalesce(((case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end) - book_stocks.quantity), 0) as gap_qty')
             ])
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
@@ -56,28 +54,26 @@ class PidService
         }
         return $query->defaultSort('material_code')
             ->allowedSorts([
-                'batch_code',
-                'unrestricted',
-                'qualinsp',
-                'book_qty',
+                'book_stocks.batch',
+                'book_stocks.unrestricted',
+                'book_stocks.qualinsp',
+                'book_stocks.quantity',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
                 'actual_qty',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
                 'gap_qty'
             ])
             ->allowedFilters(InertiaHelper::filterBy([
-                'batch_code',
-                'unrestricted',
-                'qualinsp',
-                'book_qty',
-                'actual_qty',
-                'material_code',
-                'material_description',
-                'uom',
-                'mtyp',
-                'gap_qty'
+                'book_stocks.batch',
+                'book_stocks.unrestricted',
+                'book_stocks.qualinsp',
+                'book_stocks.quantity',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp'
             ]))
             ->paginate()
             ->withQueryString();
@@ -90,16 +86,14 @@ class PidService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'material_code' => 'Kode Material',
-            'material_description' => 'Deskripsi Material',
-            'uom' => 'UoM',
-            'mtyp' => 'MType',
-            'batch_code' => 'Kode Batch',
-            'unrestricted' => 'Unrestricted',
-            'qualinsp' => 'QualInsp',
-            'book_qty' => 'BookQty',
-            'actual_qty' => 'ActualQty',
-            'gap_qty' => 'GapQty'
+            'materials.code' => 'Kode Material',
+            'materials.description' => 'Deskripsi Material',
+            'materials.uom' => 'UoM',
+            'materials.mtyp' => 'MType',
+            'book_stocks.batch' => 'Kode Batch',
+            'book_stocks.unrestricted' => 'Unrestricted',
+            'book_stocks.qualinsp' => 'QualInsp',
+            'book_stocks.quantity' => 'BookQty'
         ])->addColumns([
             'material_code' => 'Kode Material',
             'material_description' => 'Deskripsi Material',
@@ -142,11 +136,11 @@ class PidService
                 'book_stocks.unrestricted as unrestricted',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.quantity as book_qty',
-                DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
+                DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
                 DB::raw('coalesce((actual_stocks.quantity - book_stocks.quantity), 0) as gap_qty')
             ])
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
