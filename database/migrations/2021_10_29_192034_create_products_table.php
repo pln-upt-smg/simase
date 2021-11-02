@@ -17,8 +17,10 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->foreignId('area_id')->constrained();
             $table->foreignId('period_id')->constrained();
-            $table->string('name');
             $table->string('code');
+            $table->string('description');
+            $table->string('uom');
+            $table->integer('quantity');
             $table->softDeletes();
             $table->timestamps();
         });

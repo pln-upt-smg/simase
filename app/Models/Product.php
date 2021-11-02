@@ -18,11 +18,15 @@ class Product extends Model
     #[BelongsTo]
     public Period $period;
 
-    public string $name;
+    public string $code, $description, $uom;
+    public int $quantity;
 
     protected $fillable = [
         'area_id',
         'period_id',
-        'name'
+        'code',
+        'description',
+        'uom',
+        'quantity'
     ];
 }

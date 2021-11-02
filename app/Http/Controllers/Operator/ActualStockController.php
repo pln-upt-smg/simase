@@ -63,7 +63,7 @@ class ActualStockController extends Controller
             'stocks' => $this->actualStockService->tableData($area, $period, true),
             'template' => $this->actualStockService->template()
         ])->table(function (InertiaTable $table) {
-            $this->actualStockService->tableMeta($table);
+            $this->actualStockService->tableMeta($table, true);
         });
     }
 

@@ -107,28 +107,33 @@ class ActualStockService
 
     /**
      * @param InertiaTable $table
+     * @param bool $ownedByCurrentUser
      * @return InertiaTable
      */
-    public function tableMeta(InertiaTable $table): InertiaTable
+    public function tableMeta(InertiaTable $table, bool $ownedByCurrentUser = false): InertiaTable
     {
-        return $table->addSearchRows([
+        $searchRows = [
             'materials.code' => 'Kode Material',
             'actual_stocks.batch' => 'Kode Batch',
             'materials.description' => 'Deskripsi Material',
             'actual_stocks.quantity' => 'Kuantitas',
             'materials.uom' => 'UoM',
-            'materials.mtyp' => 'MType',
-            'users.name' => 'Pembuat'
-        ])->addColumns([
+            'materials.mtyp' => 'MType'
+        ];
+        $columns = [
             'material_code' => 'Kode Material',
             'batch' => 'Kode Batch',
             'material_description' => 'Deskripsi Material',
             'quantity' => 'Kuantitas',
             'uom' => 'UoM',
             'mtyp' => 'MType',
-            'creator_name' => 'Pembuat',
             'action' => 'Aksi'
-        ]);
+        ];
+        if (!$ownedByCurrentUser) {
+            $searchRows['users.name'] = 'Pembuat';
+            $columns['creator_name'] = 'Pembuat';
+        }
+        return $table->addSearchRows($searchRows)->addColumns($columns);
     }
 
     /**
