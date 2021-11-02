@@ -119,7 +119,6 @@ class BatchNotExistService
             'materials.mtyp' => 'MType',
             'actual_stocks.batch' => 'Kode Batch',
             'actual_stocks.quantity' => 'Kuantitas',
-            'creation_date' => 'Tanggal Dibuat',
             'users.name' => 'Pembuat'
         ])->addColumns([
             'area_name' => 'Area',
