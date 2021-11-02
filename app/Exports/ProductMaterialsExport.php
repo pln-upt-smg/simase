@@ -29,11 +29,11 @@ class ProductMaterialsExport implements FromCollection, WithHeadings, WithMappin
     public function headings(): array
     {
         return [
-            'SKU',
-            'Desc',
-            'Qty',
-            'MC',
-            'Desc',
+            'Product',
+            'ProductDescription',
+            'ProductQty',
+            'Material',
+            'MaterialDescription',
             'UoM',
             'Qty'
         ];

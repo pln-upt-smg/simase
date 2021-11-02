@@ -265,7 +265,7 @@ class ProductMaterialService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1sG-gvu4fANyxE_g05BC4WU4navY8w0rp95crvXZf6Cw/edit?usp=sharing';
+        return 'https://docs.google.com/spreadsheets/d/1FEG6LsAx-FU015JYA95jletTaKUS8ZMCVMLH72KW9UE/edit?usp=sharing';
     }
 
     /**
