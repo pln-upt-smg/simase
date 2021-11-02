@@ -44,7 +44,7 @@ class FinalSummaryExport implements FromCollection, WithHeadings, WithMapping
             Str::title(trim($row->material_description)),
             Str::upper(trim($row->uom)),
             Str::upper(trim($row->mtyp)),
-            (string)$row->unrectricted,
+            (string)$row->unrestricted,
             (string)$row->qualinsp,
             (string)$row->total_stock,
             (string)$row->gap_stock,
