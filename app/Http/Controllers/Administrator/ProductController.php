@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
-use App\Models\Material;
+use App\Models\Product;
 use App\Services\AreaService;
-use App\Services\MaterialService;
 use App\Services\PeriodService;
+use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,12 +16,12 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class MaterialController extends Controller
+class ProductController extends Controller
 {
     /**
-     * @var MaterialService
+     * @var ProductService
      */
-    private MaterialService $materialService;
+    private ProductService $productService;
 
     /**
      * @var AreaService
@@ -36,13 +36,13 @@ class MaterialController extends Controller
     /**
      * Create a new Controller instance.
      *
-     * @param MaterialService $materialService
+     * @param ProductService $productService
      * @param AreaService $areaService
      * @param PeriodService $periodService
      */
-    public function __construct(MaterialService $materialService, AreaService $areaService, PeriodService $periodService)
+    public function __construct(ProductService $productService, AreaService $areaService, PeriodService $periodService)
     {
-        $this->materialService = $materialService;
+        $this->productService = $productService;
         $this->areaService = $areaService;
         $this->periodService = $periodService;
     }
@@ -57,15 +57,15 @@ class MaterialController extends Controller
     {
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
-        return inertia('Administrator/Materials/Index', [
+        return inertia('Administrator/Products/Index', [
             'area' => $area,
             'period' => $period,
             'areas' => $this->areaService->collection()->toArray(),
             'periods' => $this->periodService->collection()->toArray(),
-            'materials' => $this->materialService->tableData($area, $period),
-            'template' => $this->materialService->template()
+            'products' => $this->productService->tableData($area, $period),
+            'template' => $this->productService->template()
         ])->table(function (InertiaTable $table) {
-            $this->materialService->tableMeta($table);
+            $this->productService->tableMeta($table);
         });
     }
 
@@ -78,7 +78,7 @@ class MaterialController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $this->materialService->store($request);
+        $this->productService->store($request);
         return back();
     }
 
@@ -86,26 +86,26 @@ class MaterialController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Material $material
+     * @param Product $product
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Material $material): RedirectResponse
+    public function update(Request $request, Product $product): RedirectResponse
     {
-        $this->materialService->update($request, $material);
+        $this->productService->update($request, $product);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Material $material
+     * @param Product $product
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Material $material): RedirectResponse
+    public function destroy(Product $product): RedirectResponse
     {
-        $this->materialService->destroy($material);
+        $this->productService->destroy($product);
         return back();
     }
 
@@ -118,7 +118,7 @@ class MaterialController extends Controller
      */
     public function import(Request $request): RedirectResponse
     {
-        $this->materialService->import($request);
+        $this->productService->import($request);
         return back();
     }
 
@@ -131,7 +131,7 @@ class MaterialController extends Controller
      */
     public function export(Request $request): BinaryFileResponse
     {
-        return $this->materialService->export($request);
+        return $this->productService->export($request);
     }
 
     /**
@@ -140,10 +140,10 @@ class MaterialController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function materialJson(Request $request): JsonResponse
+    public function productJson(Request $request): JsonResponse
     {
-        $material = $this->materialService->resolveMaterialCode($request);
-        return response()->json($material?->toJson());
+        $product = $this->productService->resolveProductCode($request);
+        return response()->json($product?->toJson());
     }
 
     /**
@@ -152,9 +152,9 @@ class MaterialController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function materialCodeJsonCollection(Request $request): JsonResponse
+    public function productCodeJsonCollection(Request $request): JsonResponse
     {
-        $codes = $this->materialService->materialCodeCollection($request);
+        $codes = $this->productService->productCodeJsonCollection($request);
         return response()->json([
             'items' => $codes->toArray(),
             'total_count' => $codes->count()

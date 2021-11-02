@@ -21,6 +21,11 @@ include 'endpoints/batches.php';
 include 'endpoints/materials.php';
 
 /**
+ * Products endpoints
+ */
+include 'endpoints/products.php';
+
+/**
  * Stocks endpoints
  */
 include 'endpoints/stocks.php';

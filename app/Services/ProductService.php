@@ -279,7 +279,7 @@ class ProductService
         return $query->orderBy('products.code')->get();
     }
 
-    public function resolveSkuCode(Request $request, bool $strict = true): ?Product
+    public function resolveProductCode(Request $request, bool $strict = true): ?Product
     {
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
@@ -306,7 +306,7 @@ class ProductService
         return $query->first();
     }
 
-    public function skuCodeCollection(Request $request, bool $strict = true): Collection
+    public function productCodeJsonCollection(Request $request, bool $strict = true): Collection
     {
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);

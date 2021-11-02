@@ -186,7 +186,9 @@ import {
     SearchIcon,
     TicketIcon,
     UsersIcon,
-    XIcon
+    XIcon,
+    CubeIcon,
+    CubeTransparentIcon
 } from '@heroicons/vue/outline'
 
 const navigations = {
@@ -197,6 +199,8 @@ const navigations = {
             {name: 'Periode', href: 'periods.index', icon: CalendarIcon},
             {name: 'Batch', href: 'batches.index', icon: TicketIcon},
             {name: 'Material', href: 'materials.index', icon: ArchiveIcon},
+            {name: 'Product', href: 'products.index', icon: CubeIcon},
+            {name: 'Product Material', href: 'products.materials.index', icon: CubeTransparentIcon},
             {name: 'Actual Stock', href: 'stocks.actuals.index', icon: CollectionIcon},
             {name: 'Book Stock', href: 'stocks.books.index', icon: CollectionIcon},
             {name: 'PID', href: 'pids.index', icon: DocumentTextIcon},
@@ -250,7 +254,9 @@ export default defineComponent({
         ArchiveIcon,
         DocumentSearchIcon,
         TicketIcon,
-        SaveIcon
+        SaveIcon,
+        CubeIcon,
+        CubeTransparentIcon
     },
     setup() {
         const sidebarOpen = ref(false)

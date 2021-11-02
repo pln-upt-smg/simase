@@ -120,13 +120,13 @@ class ProductMaterialService
             'product_materials.material_uom' => 'UoM Material',
             'product_materials.material_quantity' => 'Kuantitas Material'
         ])->addColumns([
-            'products.code' => 'Kode SKU',
-            'products.description' => 'Deskripsi Produk',
-            'product_materials.product_quantity' => 'Kuantitas Produk',
-            'materials.code' => 'Kode Material',
-            'materials.description' => 'Deskripsi Material',
-            'product_materials.material_uom' => 'UoM Material',
-            'product_materials.material_quantity' => 'Kuantitas Material',
+            'product_code' => 'Kode SKU',
+            'product_description' => 'Deskripsi Produk',
+            'product_quantity' => 'Kuantitas Produk',
+            'material_code' => 'Kode Material',
+            'material_description' => 'Deskripsi Material',
+            'material_uom' => 'UoM Material',
+            'material_quantity' => 'Kuantitas Material',
             'action' => 'Aksi'
         ]);
     }

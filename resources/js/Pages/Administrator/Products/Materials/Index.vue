@@ -1,9 +1,9 @@
 <template>
-    <app-layout title="Actual Stock">
+    <app-layout title="Product Material">
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6 mb-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 mb-4 lg:mb-0">
-                <jet-area-dropdown :selected="area" :areas="areas" partial="stocks" class="mb-4 lg:mb-0"/>
-                <jet-period-dropdown :selected="period" :periods="periods" partial="stocks" class="mb-2 lg:mb-0"/>
+                <jet-area-dropdown :selected="area" :areas="areas" partial="productMaterials" class="mb-4 lg:mb-0"/>
+                <jet-period-dropdown :selected="period" :periods="periods" partial="productMaterials" class="mb-2 lg:mb-0"/>
             </div>
             <div class="lg:text-right">
                 <jet-button type="button" @click="confirmStore" class="mr-2 mb-2 lg:mb-0">
@@ -23,19 +23,29 @@
         <jet-table
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="stocks"
+            :meta="productMaterials"
             :bottom-spacing="true"
             ref="table">
             <template #head>
                 <jet-table-header
+                    v-show="showColumn('product_code')"
+                    :cell="sortableHeader('product_code')">
+                    Kode SKU
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('product_description')"
+                    :cell="sortableHeader('product_description')">
+                    Deskripsi Produk
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('product_quantity')"
+                    :cell="sortableHeader('product_quantity')">
+                    Kuantitas Produk
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('material_code')"
                     :cell="sortableHeader('material_code')">
                     Kode Material
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('batch_code')"
-                    :cell="sortableHeader('batch_code')">
-                    Kode Batch
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('material_description')"
@@ -43,49 +53,39 @@
                     Deskripsi Material
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('quantity')"
-                    :cell="sortableHeader('quantity')">
-                    Kuantitas
+                    v-show="showColumn('material_uom')"
+                    :cell="sortableHeader('material_uom')">
+                    UoM Material
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('uom')"
-                    :cell="sortableHeader('uom')">
-                    UoM
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('uom')"
-                    :cell="sortableHeader('mtyp')">
-                    MType
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('creator_name')"
-                    :cell="sortableHeader('creator_name')">
-                    Pembuat
+                    v-show="showColumn('material_quantity')"
+                    :cell="sortableHeader('material_quantity')">
+                    Kuantitas Material
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('action')"
                     :cell="staticHeader('action')"/>
             </template>
             <template #body>
-                <tr v-for="stock in stocks.data" :key="stock.id">
-                    <td v-show="showColumn('material_code')">{{ stock.material_code }}</td>
-                    <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>
-                    <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
-                    <td v-show="showColumn('quantity')">{{ stock.quantity }}</td>
-                    <td v-show="showColumn('uom')">{{ stock.uom }}</td>
-                    <td v-show="showColumn('mtyp')">{{ stock.mtyp }}</td>
-                    <td v-show="showColumn('creator_name')">{{ stock.creator_name }}</td>
+                <tr v-for="productMaterial in productMaterials.data" :key="productMaterial.id">
+                    <td v-show="showColumn('product_code')">{{ productMaterial.product_code }}</td>
+                    <td v-show="showColumn('product_description')">{{ productMaterial.product_description }}</td>
+                    <td v-show="showColumn('product_quantity')">{{ productMaterial.product_quantity }}</td>
+                    <td v-show="showColumn('material_code')">{{ productMaterial.material_code }}</td>
+                    <td v-show="showColumn('material_description')">{{ productMaterial.material_description }}</td>
+                    <td v-show="showColumn('material_uom')">{{ productMaterial.material_uom }}</td>
+                    <td v-show="showColumn('material_quantity')">{{ productMaterial.material_quantity }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
-                                <button @click="confirmUpdate(stock)"
+                                <button @click="confirmUpdate(productMaterial)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <pencil-alt-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Edit
                                 </button>
                             </menu-item>
                             <menu-item>
-                                <button @click="confirmDestroy(stock)"
+                                <button @click="confirmDestroy(productMaterial)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <trash-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Hapus
@@ -96,21 +96,25 @@
                 </tr>
             </template>
         </jet-table>
-        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah actual stock">
+        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah product material">
             <template #content>
-                Silakan masukkan data actual stock yang ingin ditambahkan.
+                Silakan masukkan data product material yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
                     <jet-select ref="storeArea" placeholder="Pilih Area" v-model="storeForm.area"
                                 :data="areas" class="block w-full"/>
                     <jet-select ref="storePeriod" placeholder="Pilih Periode" v-model="storeForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode SKU"
+                               ref="storeProductCode" v-model="storeForm.product_code"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
                                ref="storeMaterialCode" v-model="storeForm.material_code"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Batch"
-                               ref="storeBatch" v-model="storeForm.batch_code"/>
-                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas"
-                               ref="storeQuantity" v-model="storeForm.quantity" @keyup.enter="store"/>
+                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas Produk"
+                               ref="storeProductQuantity" v-model="storeForm.product_quantity"/>
+                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas Material"
+                               ref="storeMaterialQuantity" v-model="storeForm.material_quantity"/>
+                    <jet-input type="text" class="mt-4 block w-full uppercasse" placeholder="UoM Material"
+                               ref="storeMaterialUom" v-model="storeForm.material_uom" @keyup.enter="store"/>
                 </div>
             </template>
             <template #buttons>
@@ -126,21 +130,25 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit actual stock">
+        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit product material">
             <template #content>
-                Silakan masukkan data actual stock yang ingin diubah.
+                Silakan masukkan data product material yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
                     <jet-select ref="updateArea" placeholder="Pilih Area" v-model="updateForm.area"
                                 :data="areas" class="block w-full"/>
                     <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode SKU"
+                               ref="updateProductCode" v-model="updateForm.product_code"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
                                ref="updateMaterialCode" v-model="updateForm.material_code"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Batch"
-                               ref="updateBatch" v-model="updateForm.batch_code"/>
-                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas"
-                               ref="updateQuantity" v-model="updateForm.quantity" @keyup.enter="update"/>
+                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas Produk"
+                               ref="updateProductQuantity" v-model="updateForm.product_quantity"/>
+                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas Material"
+                               ref="updateMaterialQuantity" v-model="updateForm.material_quantity"/>
+                    <jet-input type="text" class="mt-4 block w-full uppercasse" placeholder="UoM Material"
+                               ref="updateMaterialUom" v-model="updateForm.material_uom" @keyup.enter="update"/>
                 </div>
             </template>
             <template #buttons>
@@ -156,9 +164,9 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus actual stock">
+        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus product material">
             <template #content>
-                Apakah Anda yakin ingin menghapus actual stock ini? Setelah actual stock dihapus, semua sumber daya
+                Apakah Anda yakin ingin menghapus product material ini? Setelah product material dihapus, semua sumber daya
                 dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
@@ -174,10 +182,10 @@
                 </jet-secondary-button>
             </template>
         </jet-alert-modal>
-        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor actual stock">
+        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data product material">
             <template #content>
                 <p>
-                    Silakan unggah file data actual stock yang ingin di-impor. Pastikan Anda sudah menggunakan template
+                    Silakan unggah file data product material yang ingin di-impor. Pastikan Anda sudah menggunakan template
                     spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
                 </p>
                 <p class="mt-2">
@@ -232,17 +240,17 @@
                 </jet-secondary-button>
             </template>
         </jet-import-modal>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor actual stock">
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data product material">
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data actual stock? Proses ekspor dapat memakan waktu lama,
+                    Apakah Anda yakin ingin mengekspor semua data product material? Proses ekspor dapat memakan waktu lama,
                     tergantung dari banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
                     Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
                 </p>
                 <p class="mt-2">
-                    Anda dapat menyaring data actual stock berdasarkan area dan periodenya dengan menyesuaikan kolom
+                    Anda dapat menyaring data product material berdasarkan area dan periodenya dengan menyesuaikan kolom
                     pilihan dibawah ini.
                 </p>
                 <div class="mt-4">
@@ -324,17 +332,21 @@ export default defineComponent({
             storeForm: useForm({
                 area: null,
                 period: null,
+                product_code: null,
+                product_quantity: null,
                 material_code: null,
-                batch_code: null,
-                quantity: null
+                material_quantity: null,
+                material_uom: null
             }),
             updateForm: useForm({
-                id: null,
                 area: null,
                 period: null,
+                id: null,
+                product_code: null,
+                product_quantity: null,
                 material_code: null,
-                batch_code: null,
-                quantity: null
+                material_quantity: null,
+                material_uom: null
             }),
             destroyForm: useForm({
                 id: null
@@ -356,7 +368,7 @@ export default defineComponent({
         areas: Object,
         period: Object,
         periods: Object,
-        stocks: Object
+        productMaterials: Object
     },
     components: {
         AppLayout,
@@ -387,51 +399,51 @@ export default defineComponent({
     },
     methods: {
         store() {
-            this.storeForm.post(route('stocks.actuals.store'), {
+            this.storeForm.post(route('products.materials.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeStoreModal()
-                    this.showSuccessNotification('Actual stock berhasil ditambahkan', 'Sistem telah berhasil menyimpan data actual stock baru')
+                    this.showSuccessNotification('Product material berhasil ditambahkan', 'Sistem telah berhasil menyimpan data product material baru')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data actual stock, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data product material, mohon periksa ulang form')
             })
         },
         update() {
-            this.updateForm.put(route('stocks.actuals.update', this.updateForm.id), {
+            this.updateForm.put(route('products.materials.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeUpdateModal()
-                    this.showSuccessNotification('Actual stock berhasil diedit', 'Sistem telah berhasil mengedit data actual stock')
+                    this.showSuccessNotification('Product material berhasil diedit', 'Sistem telah berhasil mengedit data product material')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data actual stock, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data product material, mohon periksa ulang form')
             })
         },
         destroy() {
-            this.destroyForm.delete(route('stocks.actuals.destroy', this.destroyForm.id), {
+            this.destroyForm.delete(route('products.materials.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeDestroyModal()
-                    this.showSuccessNotification('Actual stock berhasil dihapus', 'Sistem telah berhasil menghapus data actual stock')
+                    this.showSuccessNotification('Product material berhasil dihapus', 'Sistem telah berhasil menghapus data product material')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data actual stock')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data product material')
             })
         },
         importFile() {
-            this.importForm.post(route('stocks.actuals.import'), {
+            this.importForm.post(route('products.materials.import'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeImportModal()
-                    this.showSuccessNotification('Data actual stock berhasil di-impor', 'Sistem telah berhasil mengimpor data actual stock')
+                    this.showSuccessNotification('Data product material berhasil di-impor', 'Sistem telah berhasil mengimpor data product material')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data actual stock, mohon gunakan template yang sudah ditentukan')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data product material, mohon gunakan template yang sudah ditentukan')
             })
         },
         exportFile() {
-            window.open(route('stocks.actuals.export', {
+            window.open(route('products.materials.export', {
                 area: this.exportForm.area,
                 period: this.exportForm.period
             }))
@@ -441,18 +453,21 @@ export default defineComponent({
             setTimeout(() => this.confirmingStore = true, 150)
             setTimeout(() => this.$refs.storeArea.focus(), 300)
         },
-        confirmUpdate(stock) {
-            this.updateForm.id = stock.id
-            this.updateForm.area = stock.area_id
-            this.updateForm.period = stock.period_id
-            this.updateForm.material_code = stock.material_code
-            this.updateForm.batch_code = stock.batch_code
-            this.updateForm.quantity = stock.quantity
+        confirmUpdate(productMaterial) {
+            this.updateForm.id = productMaterial.id
+            this.updateForm.area = productMaterial.area_id
+            this.updateForm.period = productMaterial.period_id
+            this.updateForm.code = productMaterial.code
+            this.updateForm.description = productMaterial.description
+            this.updateForm.uom = productMaterial.uom
+            this.updateForm.mtyp = productMaterial.mtyp
+            this.updateForm.price = productMaterial.price
+            this.updateForm.per = productMaterial.per
             setTimeout(() => this.confirmingUpdate = true, 150)
             setTimeout(() => this.$refs.updateArea.focus(), 300)
         },
-        confirmDestroy(stock) {
-            this.destroyForm.id = stock.id
+        confirmDestroy(productMaterial) {
+            this.destroyForm.id = productMaterial.id
             setTimeout(() => this.confirmingDestroy = true, 150)
         },
         confirmImport() {
@@ -471,9 +486,12 @@ export default defineComponent({
                 this.storeForm.reset()
                 this.storeForm.area = null
                 this.storeForm.period = null
-                this.storeForm.material_code = null
-                this.storeForm.batch_code = null
-                this.storeForm.quantity = null
+                this.storeForm.code = null
+                this.storeForm.description = null
+                this.storeForm.uom = null
+                this.storeForm.mtyp = null
+                this.storeForm.price = null
+                this.storeForm.per = null
             }, 500)
         },
         closeUpdateModal() {
@@ -485,9 +503,12 @@ export default defineComponent({
                 this.updateForm.id = null
                 this.updateForm.area = null
                 this.updateForm.period = null
-                this.updateForm.material_code = null
-                this.updateForm.batch_code = null
-                this.updateForm.quantity = null
+                this.updateForm.code = null
+                this.updateForm.description = null
+                this.updateForm.uom = null
+                this.updateForm.mtyp = null
+                this.updateForm.price = null
+                this.updateForm.per = null
             }, 500)
         },
         closeDestroyModal() {
@@ -544,7 +565,7 @@ export default defineComponent({
             this.$page.props.errors = []
         },
         reloadData() {
-            this.$refs.table.reload('stocks')
+            this.$refs.table.reload('productMaterials')
         }
     }
 })
