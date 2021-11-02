@@ -1,6 +1,3 @@
-<style scoped>
-</style>
-
 <template>
     <app-layout title="Entry Stock">
         <jet-form-section @submitted="store">
@@ -25,38 +22,47 @@
                 </div>
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="material_code" value="Kode Material"/>
-                    <v-select
-                        id="material_code"
-                        label="code"
-                        placeholder="Masukkan Kode Material"
-                        class="vue-select mt-2"
-                        v-model="form.material_code"
-                        v-on:option:selected="onSelected"
-                        :filterable="false"
-                        :clearable="false"
-                        :options="options"
-                        :reduce="option => option.code"
-                        @search="onSearch">
-                        <template slot="no-options">
-                            Tidak ada hasil tersedia.
-                        </template>
-                        <template v-slot:no-options="{ search, searching }">
-                            <template v-if="searching">
-                                Tidak ada hasil untuk <em>{{ search }}</em>.
-                            </template>
-                            <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari kode material.</em>
-                        </template>
-                        <template slot="option" slot-scope="option">
-                            <div class="d-center">
-                                {{ option.code }}
-                            </div>
-                        </template>
-                        <template slot="selected-option" slot-scope="option">
-                            <div class="selected d-center">
-                                {{ option.code }}
-                            </div>
-                        </template>
-                    </v-select>
+                    <div class="flex mt-2">
+                        <div class="w-full">
+                            <v-select
+                                id="material_code"
+                                label="code"
+                                placeholder="Masukkan Kode Material"
+                                class="vue-select rounded-md"
+                                v-model="form.material_code"
+                                v-on:option:selected="onSelected"
+                                :filterable="false"
+                                :clearable="false"
+                                :options="options"
+                                :reduce="option => option.code"
+                                @search="onSearch">
+                                <template slot="no-options">
+                                    Tidak ada hasil tersedia.
+                                </template>
+                                <template v-slot:no-options="{ search, searching }">
+                                    <template v-if="searching">
+                                        Tidak ada hasil untuk <em>{{ search }}</em>.
+                                    </template>
+                                    <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari kode material.</em>
+                                </template>
+                                <template slot="option" slot-scope="option">
+                                    <div class="d-center">
+                                        {{ option.code }}
+                                    </div>
+                                </template>
+                                <template slot="selected-option" slot-scope="option">
+                                    <div class="selected d-center">
+                                        {{ option.code }}
+                                    </div>
+                                </template>
+                            </v-select>
+                        </div>
+                        <div class="ml-2">
+                            <jet-secondary-button type="button" @click="confirmScanMaterialBarcode" class="h-full">
+                                <qrcode-icon class="h-5 w-5 text-gray-800" aria-hidden="true"/>
+                            </jet-secondary-button>
+                        </div>
+                    </div>
                     <jet-input-error :message="form.errors.material_code" class="mt-2"/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
@@ -68,9 +74,18 @@
                 </div>
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="batch_code" value="Kode Batch"/>
-                    <jet-input id="batch_code" type="text" class="mt-2 block w-full uppercase"
-                               v-model="form.batch_code" placeholder="Masukkan Kode Batch"
-                               autocomplete="batch_code"/>
+                    <div class="flex mt-2">
+                        <div class="w-full">
+                            <jet-input id="batch_code" type="text" class="block w-full uppercase"
+                                       v-model="form.batch_code" placeholder="Masukkan Kode Batch"
+                                       autocomplete="batch_code"/>
+                        </div>
+                        <div class="ml-2">
+                            <jet-secondary-button type="button" @click="confirmScanBatchBarcode" class="h-full">
+                                <qrcode-icon class="h-5 w-5 text-gray-800" aria-hidden="true"/>
+                            </jet-secondary-button>
+                        </div>
+                    </div>
                     <jet-input-error :message="form.errors.batch_code" class="mt-2"/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
@@ -96,6 +111,16 @@
                 </jet-button>
             </template>
         </jet-form-section>
+        <barcode-scanner
+            title="Scan Material Barcode"
+            :show="confirmingMaterialBarcodeScanning"
+            @close="closeMaterialBarcodeScanner"
+            @decode="onMaterialBarcodeDecoded"/>
+        <barcode-scanner
+            title="Scan Batch Barcode"
+            :show="confirmingBatchBarcodeScanning"
+            @close="closeBatchBarcodeScanner"
+            @decode="onBatchBarcodeDecoded"/>
         <jet-success-notification
             :show="showingSuccessNotification"
             :title="successNotification.title"
@@ -113,7 +138,9 @@
 import {defineComponent} from 'vue'
 import {useForm} from '@inertiajs/inertia-vue3'
 import AppLayout from '@/Layouts/AppLayout'
+import BarcodeScanner from '@/Pages/Operator/Stocks/Input/BarcodeScanner'
 import JetButton from '@/Jetstream/Button'
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 import JetFormSection from '@/Jetstream/FormSection'
 import JetInput from '@/Jetstream/Input'
 import JetInputError from '@/Jetstream/InputError'
@@ -123,12 +150,15 @@ import JetSelect from '@/Jetstream/Select'
 import JetSuccessNotification from '@/Jetstream/SuccessNotification'
 import JetDangerNotification from '@/Jetstream/DangerNotification'
 import vSelect from 'vue-select'
+import {QrcodeIcon} from '@heroicons/vue/outline'
 
 export default defineComponent({
     components: {
         AppLayout,
+        BarcodeScanner,
         JetActionMessage,
         JetButton,
+        JetSecondaryButton,
         JetFormSection,
         JetInput,
         JetInputError,
@@ -136,7 +166,8 @@ export default defineComponent({
         JetSelect,
         JetSuccessNotification,
         JetDangerNotification,
-        vSelect
+        vSelect,
+        QrcodeIcon
     },
     props: {
         areas: Object,
@@ -144,6 +175,8 @@ export default defineComponent({
     },
     data() {
         return {
+            confirmingMaterialBarcodeScanning: false,
+            confirmingBatchBarcodeScanning: false,
             showingSuccessNotification: false,
             showingDangerNotification: false,
             successNotification: {
@@ -190,6 +223,12 @@ export default defineComponent({
             this.materialData.description = '-'
             this.materialData.uom = '-'
         },
+        confirmScanMaterialBarcode() {
+            this.confirmingMaterialBarcodeScanning = true
+        },
+        confirmScanBatchBarcode() {
+            this.confirmingBatchBarcodeScanning = true
+        },
         showSuccessNotification(title, description) {
             this.successNotification.title = title
             this.successNotification.description = description
@@ -208,8 +247,18 @@ export default defineComponent({
         closeDangerNotification() {
             this.showingDangerNotification = false
         },
-        onBarcodeScanned(code) {
-
+        closeMaterialBarcodeScanner() {
+            this.confirmingMaterialBarcodeScanning = false
+        },
+        closeBatchBarcodeScanner() {
+            this.confirmingBatchBarcodeScanning = false
+        },
+        onMaterialBarcodeDecoded(code) {
+            this.form.material_code = code
+            this.resolveMaterialData()
+        },
+        onBatchBarcodeDecoded(code) {
+            this.form.batch_code = code
         },
         onSelected(material) {
             this.materialData.description = material.description
@@ -230,13 +279,27 @@ export default defineComponent({
                 params: params
             }).then(res => {
                 vm.options = res.data.items
-            }).catch(err => {
-                console.error(err)
+            }).catch(() => {
                 errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode material, mohon coba lagi nanti')
             }).finally(() => {
                 loading(false)
             })
-        }, 300)
+        }, 300),
+        resolveMaterialData() {
+            axios.get(route('api.materials.code'), {
+                params: {
+                    q: escape(this.form.material_code),
+                    area: this.form.area ?? 0,
+                    period: this.form.period ?? 0
+                }
+            }).then(res => {
+                if (_.isEmpty(res.data)) this.showDangerNotification('Kode material tidak valid!', 'Sistem tidak dapat mengenali kode material yang diberikan, mohon periksa kembali')
+                this.materialData.description = res.data.description ?? '-'
+                this.materialData.uom = res.data.uom ?? '-'
+            }).catch(() => {
+                this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data material, mohon coba lagi nanti')
+            })
+        }
     }
 })
 </script>

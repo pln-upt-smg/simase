@@ -46,9 +46,11 @@ export default defineComponent({
     emits: ['close'],
     props: {
         show: {
+            type: Boolean,
             default: false
         },
         closeable: {
+            type: Boolean,
             default: true
         },
         title: String

@@ -243,6 +243,25 @@ class MaterialService
         return $query->orderBy('code')->get();
     }
 
+    public function resolveMaterialCode(Request $request, bool $strict = true): ?Material
+    {
+        $area = $this->areaService->resolve($request);
+        $period = $this->periodService->resolve($request);
+        $query = Material::whereNull('deleted_at')
+            ->whereRaw('lower(code) = ?', Str::lower(trim($request->query('q') ?? '')));
+        if ($strict) {
+            $query = $query->where('area_id', $area?->id ?? 0)->where('period_id', $period?->id ?? 0);
+        } else {
+            if (!is_null($area)) {
+                $query = $query->where('area_id', $area->id);
+            }
+            if (!is_null($period)) {
+                $query = $query->where('period_id', $period->id);
+            }
+        }
+        return $query->first();
+    }
+
     public function materialCodeCollection(Request $request, bool $strict = true): Collection
     {
         $area = $this->areaService->resolve($request);
@@ -256,10 +275,10 @@ class MaterialService
             $query = $query->where('area_id', $area?->id ?? 0)->where('period_id', $period?->id ?? 0);
         } else {
             if (!is_null($area)) {
-                $query = $query->where('area_id', $area?->id ?? 0);
+                $query = $query->where('area_id', $area->id);
             }
             if (!is_null($period)) {
-                $query = $query->where('period_id', $period?->id ?? 0);
+                $query = $query->where('period_id', $period->id);
             }
         }
         return $query->get();

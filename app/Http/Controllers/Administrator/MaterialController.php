@@ -148,4 +148,10 @@ class MaterialController extends Controller
             'total_count' => $codes->count()
         ]);
     }
+
+    public function materialJson(Request $request): JsonResponse
+    {
+        $material = $this->materialService->resolveMaterialCode($request);
+        return response()->json($material?->toJson());
+    }
 }
