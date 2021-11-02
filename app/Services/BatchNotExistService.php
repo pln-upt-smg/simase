@@ -169,7 +169,7 @@ class BatchNotExistService
             DB::raw('date_format(actual_stocks.created_at, "%d/%m/%Y %H:%i") as creation_date')
         ])
             ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
-            ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
+            ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
             ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
             ->orderBy('materials.code')
