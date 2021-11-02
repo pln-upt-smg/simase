@@ -165,7 +165,7 @@ class OperatorService
     public function collection(): Collection
     {
         return User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->where('users.role_id', Role::operator()?->id ?? 2)
+            ->where('roles.id', Role::operator()?->id ?? 2)
             ->whereNull(['users.deleted_at', 'roles.deleted_at'])
             ->orderBy('users.name')
             ->get()

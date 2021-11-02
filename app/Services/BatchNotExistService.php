@@ -45,16 +45,19 @@ class BatchNotExistService
                 DB::raw("'" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS . "' as batch_status"),
                 DB::raw('date_format(actual_stocks.created_at, "%d/%m/%Y %H:%i") as creation_date')
             ])
+            ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
             ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
-            ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
-            ->whereNull(['batches.code', 'actual_stocks.deleted_at', 'materials.deleted_at', 'users.deleted_at']);
+            ->whereNull(['batches.code', 'actual_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at', 'users.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->where('materials.area_id', $area->id);
+            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
+                ->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->where('materials.period_id', $period->id);
+            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                ->where('periods.id', $period->id)
+                ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('materials.code')
             ->allowedSorts([
@@ -147,17 +150,20 @@ class BatchNotExistService
             DB::raw("'" . self::DEFAULT_BATCH_NOT_EXISTS_STATUS . "' as batch_status"),
             DB::raw('date_format(actual_stocks.created_at, "%d/%m/%Y %H:%i") as creation_date')
         ])
+            ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
             ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
-            ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
             ->orderBy('materials.code')
-            ->whereNull(['batches.code', 'actual_stocks.deleted_at', 'materials.deleted_at', 'users.deleted_at']);
+            ->whereNull(['batches.code', 'actual_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at', 'users.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->where('materials.area_id', $area->id);
+            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
+                ->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->where('materials.period_id', $period->id);
+            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                ->where('periods.id', $period->id)
+                ->whereNull('periods.deleted_at');
         }
         return $query->get();
     }

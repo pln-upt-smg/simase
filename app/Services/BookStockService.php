@@ -52,10 +52,14 @@ class BookStockService
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->where('materials.area_id', $area->id);
+            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
+                ->where('areas.id', $area->id)
+                ->whereNull('areas.deleted_at');
         }
         if (!is_null($period)) {
-            $query = $query->where('materials.period_id', $period->id);
+            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                ->where('periods.id', $period->id)
+                ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('materials.code')
             ->allowedSorts([
@@ -232,13 +236,17 @@ class BookStockService
      */
     public function collection(?Area $area, ?Period $period): Collection
     {
-        $query = BookStock::whereNull('book_stocks.deleted_at')
-            ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id');
+        $query = BookStock::leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
+            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->where('materials.area_id', $area->id);
+            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
+                ->where('areas.id', $area->id)
+                ->whereNull('areas.deleted_at');
         }
         if (!is_null($period)) {
-            $query = $query->where('materials.period_id', $period->id);
+            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                ->where('periods.id', $period->id)
+                ->whereNull('periods.deleted_at');
         }
         return $query->orderBy('materials.code')->get()->load('material');
     }

@@ -52,9 +52,11 @@ class PidDetailService
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->where('materials.period_id', $period->id);
+            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                ->where('periods.id', $period->id)
+                ->whereNull('periods.deleted_at');
         }
-        return $query->defaultSort('material_code')
+        return $query->defaultSort('materials.code')
             ->allowedSorts([
                 'book_stocks.batch',
                 'materials.code',
@@ -101,13 +103,14 @@ class PidDetailService
         $areas = $this->areaService->collection();
 
         // get the book stock id list
-        $stocks = BookStock::select(['id', 'material_id', 'deleted_at'])
-            ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
-            ->whereNull('book_stocks.deleted_at');
+        $stocks = BookStock::leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
+            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
 
         // apply the period condition on the stock list
         if (!is_null($period)) {
-            $stocks = $stocks->where('materials.period_id', $period->id);
+            $stocks = $stocks->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                ->where('periods.id', $period->id)
+                ->whereNull('periods.deleted_at');
         }
 
         // fetch the stock!
@@ -123,15 +126,17 @@ class PidDetailService
             foreach ($areas as $area) {
 
                 // each iteration, fetch the quantity of the stock based on the material and area
-                $query = ActualStock::select('quantity')
-                    ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
-                    ->where('actual_stocks.material_id', $stock->material_id)
-                    ->where('materials.area_id', $area->id)
-                    ->whereNull(['actual_stocks.deleted_at', 'materials.deleted_at']);
+                $query = ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
+                    ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
+                    ->where('materials.id', $stock->material_id)
+                    ->where('areas.id', $area->id)
+                    ->whereNull(['actual_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at']);
 
                 // dont forget to apply the period query!
                 if (!is_null($period)) {
-                    $query = $query->where('materials.period_id', $period->id);
+                    $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                        ->where('periods.id', $period->id)
+                        ->whereNull('periods.deleted_at');
                 }
 
                 // fetch it and append the quantity to areaData (default is 0)
@@ -162,18 +167,20 @@ class PidDetailService
 
     public function collection(?Period $period): Collection
     {
-        $query = BookStock::orderBy('materials.code')
-            ->select([
-                'book_stocks.id as id',
-                'book_stocks.batch as batch_code',
-                'materials.code as material_code',
-                'materials.description as material_description',
-                DB::raw('(select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id) as sum_quantity')
-            ])
+        $query = BookStock::select([
+            'book_stocks.id as id',
+            'book_stocks.batch as batch_code',
+            'materials.code as material_code',
+            'materials.description as material_description',
+            DB::raw('(select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id) as sum_quantity')
+        ])
+            ->orderBy('materials.code')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->where('materials.period_id', $period->id);
+            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                ->where('periods.id', $period->id)
+                ->whereNull('periods.deleted_at');
         }
         return $query->get();
     }

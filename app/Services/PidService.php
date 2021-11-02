@@ -47,12 +47,16 @@ class PidService
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'actual_stocks.deleted_at', 'materials.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->where('materials.area_id', $area->id);
+            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
+                ->where('areas.id', $area->id)
+                ->whereNull('areas.deleted_at');
         }
         if (!is_null($period)) {
-            $query = $query->where('materials.period_id', $period->id);
+            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                ->where('periods.id', $period->id)
+                ->whereNull('periods.deleted_at');
         }
-        return $query->defaultSort('material_code')
+        return $query->defaultSort('materials.code')
             ->allowedSorts([
                 'book_stocks.batch',
                 'book_stocks.unrestricted',
@@ -129,28 +133,32 @@ class PidService
      */
     public function collection(?Area $area, ?Period $period): Collection
     {
-        $query = BookStock::orderBy('materials.code')
-            ->select([
-                'book_stocks.id as id',
-                'book_stocks.batch as batch_code',
-                'book_stocks.unrestricted as unrestricted',
-                'book_stocks.qualinsp as qualinsp',
-                'book_stocks.quantity as book_qty',
-                'materials.code as material_code',
-                'materials.description as material_description',
-                'materials.uom as uom',
-                'materials.mtyp as mtyp',
-                DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
-                DB::raw('coalesce((actual_stocks.quantity - book_stocks.quantity), 0) as gap_qty')
-            ])
+        $query = BookStock::select([
+            'book_stocks.id as id',
+            'book_stocks.batch as batch_code',
+            'book_stocks.unrestricted as unrestricted',
+            'book_stocks.qualinsp as qualinsp',
+            'book_stocks.quantity as book_qty',
+            'materials.code as material_code',
+            'materials.description as material_description',
+            'materials.uom as uom',
+            'materials.mtyp as mtyp',
+            DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
+            DB::raw('coalesce((actual_stocks.quantity - book_stocks.quantity), 0) as gap_qty')
+        ])
+            ->orderBy('materials.code')
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->whereNull(['book_stocks.deleted_at', 'actual_stocks.deleted_at', 'materials.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->where('materials.area_id', $area->id);
+            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
+                ->where('areas.id', $area->id)
+                ->whereNull('areas.deleted_at');
         }
         if (!is_null($period)) {
-            $query = $query->where('materials.period_id', $period->id);
+            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+                ->where('periods.id', $period->id)
+                ->whereNull('periods.deleted_at');
         }
         return $query->get();
     }
