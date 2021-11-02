@@ -20,7 +20,10 @@ class CreateProductsTable extends Migration
             $table->string('code');
             $table->string('description');
             $table->string('uom');
-            $table->integer('quantity');
+            $table->string('mtyp');
+            $table->string('crcy');
+            $table->integer('price');
+            $table->integer('per');
             $table->softDeletes();
             $table->timestamps();
         });

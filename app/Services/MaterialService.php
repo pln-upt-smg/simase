@@ -170,7 +170,6 @@ class MaterialService
      * @param Request $request
      * @param Material $material
      * @throws Throwable
-     * @throws ValidationException
      */
     public function update(Request $request, Material $material): void
     {
@@ -266,7 +265,7 @@ class MaterialService
      */
     public function collection(?Area $area, ?Period $period): Collection
     {
-        $query = Material::whereNull('deleted_at');
+        $query = Material::whereNull('materials.deleted_at');
         if (!is_null($area)) {
             $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
                 ->where('areas.id', $area->id)
@@ -277,7 +276,7 @@ class MaterialService
                 ->where('periods.id', $period->id)
                 ->whereNull('periods.deleted_at');
         }
-        return $query->orderBy('code')->get();
+        return $query->orderBy('materials.code')->get();
     }
 
     public function resolveMaterialCode(Request $request, bool $strict = true): ?Material

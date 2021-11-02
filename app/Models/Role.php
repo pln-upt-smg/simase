@@ -18,17 +18,17 @@ class Role extends Model
     public Collection $users;
 
     protected $fillable = [
-        'name',
+        'name'
     ];
 
     public static function administrator(): ?self
     {
-        return self::find(1);
+        return self::whereNull('deleted_at')->find(1);
     }
 
     public static function operator(): ?self
     {
-        return self::find(2);
+        return self::whereNull('deleted_at')->find(2);
     }
 
     public function isAdministrator(): bool

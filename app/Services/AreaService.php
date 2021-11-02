@@ -71,7 +71,6 @@ class AreaService
      * @param Request $request
      * @param Area $area
      * @throws Throwable
-     * @throws ValidationException
      */
     public function update(Request $request, Area $area): void
     {

@@ -23,8 +23,8 @@ class Product extends Model
     #[HasMany(ProductMaterials::class)]
     public Collection $materials;
 
-    public string $code, $description, $uom;
-    public int $quantity;
+    public string $code, $description, $uom, $mtyp, $crcy;
+    public int $price, $per;
 
     protected $fillable = [
         'area_id',
@@ -32,6 +32,9 @@ class Product extends Model
         'code',
         'description',
         'uom',
-        'quantity'
+        'mtyp',
+        'crcy',
+        'price',
+        'per'
     ];
 }

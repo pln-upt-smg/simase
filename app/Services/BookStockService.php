@@ -183,7 +183,6 @@ class BookStockService
      * @param Request $request
      * @param BookStock $book
      * @throws Throwable
-     * @throws ValidationException
      */
     public function update(Request $request, BookStock $book): void
     {

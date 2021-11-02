@@ -67,7 +67,6 @@ class PeriodService
      * @param Request $request
      * @param Period $period
      * @throws Throwable
-     * @throws ValidationException
      */
     public function update(Request $request, Period $period): void
     {

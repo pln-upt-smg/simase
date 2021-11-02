@@ -199,7 +199,6 @@ class ActualStockService
      * @param Request $request
      * @param ActualStock $actual
      * @throws Throwable
-     * @throws ValidationException
      */
     public function update(Request $request, ActualStock $actual): void
     {

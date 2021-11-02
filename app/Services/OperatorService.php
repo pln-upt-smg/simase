@@ -110,7 +110,6 @@ class OperatorService
      * @param Request $request
      * @param User $operator
      * @throws Throwable
-     * @throws ValidationException
      */
     public function update(Request $request, User $operator): void
     {

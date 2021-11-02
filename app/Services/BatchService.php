@@ -79,7 +79,6 @@ class BatchService
      * @param Request $request
      * @param Batch $batch
      * @throws Throwable
-     * @throws ValidationException
      */
     public function update(Request $request, Batch $batch): void
     {

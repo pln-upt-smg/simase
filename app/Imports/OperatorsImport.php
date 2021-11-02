@@ -9,17 +9,24 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Events\BeforeSheet;
 
 class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet, RegistersEventListeners;
+    use HasValidationException, HasDefaultSheet;
+
+    private ?Role $role;
+
+    public function __construct()
+    {
+        $this->role = Role::operator();
+    }
 
     public function rules(): array
     {
@@ -42,7 +49,7 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     public function model(array $row): User|null
     {
         return new User([
-            'role_id' => Role::operator()?->id ?? 2,
+            'role_id' => $this->role?->id ?? 2,
             'name' => Str::title(trim($row['name'])),
             'phone' => trim($row['phone']),
             'nip' => trim($row['nip']),
@@ -50,8 +57,16 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
         ]);
     }
 
-    public static function beforeSheet(): void
+    public function registerEvents(): array
     {
-        User::whereRoleId(Role::operator()?->id ?? 2)->whereNull('deleted_at')->delete();
+        $role = $this->role;
+        return [
+            BeforeSheet::class => static function () use ($role) {
+                User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
+                    ->where('roles.id', $role?->id ?? 2)
+                    ->whereNull(['users.deleted_at', 'roles.deleted_at'])
+                    ->delete();
+            }
+        ];
     }
 }
