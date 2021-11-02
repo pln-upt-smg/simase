@@ -11,8 +11,8 @@ trait HasValidator
     /**
      * @throws ValidationException
      */
-    public function validate(Request $request, array $rules): void
+    public function validate(Request $request, array $rules, array $messages = [], array $attributes = []): void
     {
-        Validator::make($request->all(), $rules)->validate();
+        Validator::make($request->all(), $rules, $messages, $attributes)->validate();
     }
 }

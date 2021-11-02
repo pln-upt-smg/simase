@@ -120,8 +120,7 @@ class FinalSummaryService
             ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
             ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                ->where('areas.id', $area->id);
+            $query = $query->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
             $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')

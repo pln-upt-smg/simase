@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -144,6 +143,15 @@ class MaterialService
             'mtyp' => ['required', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:0'],
             'per' => ['required', 'integer', 'min:0']
+        ], attributes: [
+            'area' => 'Area',
+            'period' => 'Periode',
+            'code' => 'Kode Material',
+            'description' => 'Deskripsi Material',
+            'uom' => 'UoM',
+            'mtyp' => 'MType',
+            'price' => 'Harga',
+            'per' => 'Per'
         ]);
         Material::create([
             'area_id' => (int)$request->area,
@@ -175,6 +183,15 @@ class MaterialService
             'mtyp' => ['required', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:0'],
             'per' => ['required', 'integer', 'min:0']
+        ], attributes: [
+            'area' => 'Area',
+            'period' => 'Periode',
+            'code' => 'Kode Material',
+            'description' => 'Deskripsi Material',
+            'uom' => 'UoM',
+            'mtyp' => 'MType',
+            'price' => 'Harga',
+            'per' => 'Per'
         ]);
         $material->updateOrFail([
             'area_id' => (int)$request->area,
@@ -205,11 +222,15 @@ class MaterialService
      */
     public function import(Request $request): void
     {
-        Validator::make($request->all(), [
+        $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
-        ])->validate();
+        ], attributes: [
+            'area' => 'Area',
+            'period' => 'Periode',
+            'file' => 'File'
+        ]);
         Excel::import(new MaterialsImport(
             Area::whereId((int)$request->area)->first(),
             Period::whereId((int)$request->period)->first()

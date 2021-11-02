@@ -14,7 +14,6 @@ use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -153,6 +152,12 @@ class ActualStockService
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch_code' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'integer', 'min:0']
+        ], attributes: [
+            'area' => 'Area',
+            'period' => 'Periode',
+            'material_code' => 'Kode Material',
+            'batch_code' => 'Kode Batch',
+            'quantity' => 'Kuantitas'
         ]);
         ActualStock::create([
             'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
@@ -174,8 +179,14 @@ class ActualStockService
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
-            'batch' => ['required', 'string', 'max:255'],
+            'batch_code' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'integer', 'min:0']
+        ], attributes: [
+            'area' => 'Area',
+            'period' => 'Periode',
+            'product_code' => 'Kode SKU',
+            'batch_code' => 'Kode Batch',
+            'quantity' => 'Kuantitas'
         ]);
     }
 
@@ -191,8 +202,14 @@ class ActualStockService
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
-            'batch' => ['required', 'string', 'max:255'],
+            'batch_code' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'integer', 'min:0']
+        ], attributes: [
+            'area' => 'Area',
+            'period' => 'Periode',
+            'material_code' => 'Kode Material',
+            'batch_code' => 'Kode Batch',
+            'quantity' => 'Kuantitas'
         ]);
         $actual->updateOrFail([
             'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
@@ -217,11 +234,15 @@ class ActualStockService
      */
     public function import(Request $request): void
     {
-        Validator::make($request->all(), [
+        $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
-        ])->validate();
+        ], attributes: [
+            'area' => 'Area',
+            'period' => 'Periode',
+            'file' => 'File'
+        ]);
         Excel::import(new ActualStocksImport(
             Area::whereId((int)$request->area)->first(),
             Period::whereId((int)$request->period)->first()

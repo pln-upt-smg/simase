@@ -55,6 +55,8 @@ class PeriodService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255', Rule::unique('periods')->whereNull('deleted_at')]
+        ], attributes: [
+            'name' => 'Nama Periode'
         ]);
         Period::create([
             'name' => Str::title($request->name)
@@ -71,6 +73,8 @@ class PeriodService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255', Rule::unique('periods')->ignore($period->id)->whereNull('deleted_at')]
+        ], attributes: [
+            'name' => 'Nama Periode'
         ]);
         $period->updateOrFail([
             'name' => Str::title($request->name)

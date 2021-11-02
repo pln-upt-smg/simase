@@ -65,6 +65,9 @@ class BatchService
         $this->validate($request, [
             'batch_code' => ['required', 'string', 'max:255'],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')]
+        ], attributes: [
+            'batch_code' => 'Kode Batch',
+            'material_code' => 'Kode Material'
         ]);
         Batch::create([
             'material_id' => Material::whereCode($request->material_code)->first()?->id ?? 0,
@@ -83,6 +86,9 @@ class BatchService
         $this->validate($request, [
             'batch_code' => ['required', 'string', 'max:255'],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')]
+        ], attributes: [
+            'batch_code' => 'Kode Batch',
+            'material_code' => 'Kode Material'
         ]);
         $batch->updateOrFail([
             'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,

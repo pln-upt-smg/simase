@@ -90,6 +90,11 @@ class OperatorService
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->whereNull('deleted_at')],
             'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
+        ], attributes: [
+            'name' => 'Nama Pegawai',
+            'phone' => 'Nomor Telepon',
+            'nip' => 'Nomor Induk Pegawai',
+            'password' => 'Kata Sandi'
         ]);
         User::create([
             'role_id' => Role::operator()?->id ?? 2,
@@ -113,6 +118,11 @@ class OperatorService
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($operator->id)->whereNull('deleted_at')],
             'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users', 'nip')->ignore($operator->id)->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
+        ], attributes: [
+            'name' => 'Nama Pegawai',
+            'phone' => 'Nomor Telepon',
+            'nip' => 'Nomor Induk Pegawai',
+            'password' => 'Kata Sandi'
         ]);
         $operator->updateOrFail([
             'role_id' => Role::operator()?->id ?? 2,
