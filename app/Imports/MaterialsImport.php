@@ -50,7 +50,7 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
         ];
     }
 
-    public function model(array $row): Material|null
+    public function model(array $row): ?Material
     {
         return new Material([
             'area_id' => $this->area?->id ?? 0,

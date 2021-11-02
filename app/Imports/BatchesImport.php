@@ -28,7 +28,7 @@ class BatchesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVali
         ];
     }
 
-    public function model(array $row): Batch|null
+    public function model(array $row): ?Batch
     {
         return new Batch([
             'material_id' => $this->resolveMaterialId($row['material']),

@@ -20,7 +20,7 @@ class Product extends Model
     #[BelongsTo]
     public Period $period;
 
-    #[HasMany(ProductMaterials::class)]
+    #[HasMany(ProductMaterial::class)]
     public Collection $materials;
 
     public string $code, $description, $uom, $mtyp, $crcy;

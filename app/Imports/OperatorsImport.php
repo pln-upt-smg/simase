@@ -46,7 +46,7 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
         ];
     }
 
-    public function model(array $row): User|null
+    public function model(array $row): ?User
     {
         return new User([
             'role_id' => $this->role?->id ?? 2,
@@ -64,7 +64,7 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
             BeforeSheet::class => static function () use ($role) {
                 User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
                     ->where('roles.id', $role?->id ?? 2)
-                    ->whereNull(['users.deleted_at', 'roles.deleted_at'])
+                    ->whereNull('users.deleted_at')
                     ->delete();
             }
         ];

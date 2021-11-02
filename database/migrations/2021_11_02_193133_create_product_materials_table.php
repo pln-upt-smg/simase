@@ -17,8 +17,9 @@ class CreateProductMaterialsTable extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained();
             $table->foreignId('material_id')->constrained();
-            $table->string('uom');
-            $table->integer('quantity');
+            $table->string('material_uom');
+            $table->integer('material_quantity');
+            $table->integer('product_quantity');
             $table->softDeletes();
             $table->timestamps();
         });

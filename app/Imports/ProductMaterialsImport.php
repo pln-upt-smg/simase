@@ -4,11 +4,11 @@ namespace App\Imports;
 
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasMaterialResolver;
+use App\Imports\Helper\HasProductResolver;
 use App\Imports\Helper\HasValidationException;
-use App\Models\ActualStock;
 use App\Models\Area;
 use App\Models\Period;
-use App\Models\User;
+use App\Models\ProductMaterial;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
@@ -19,49 +19,41 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Events\BeforeSheet;
 
-class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
+class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet, HasMaterialResolver;
+    use HasValidationException, HasDefaultSheet, HasProductResolver, HasMaterialResolver;
 
     private ?Area $area;
 
     private ?Period $period;
 
-    private ?User $creator;
-
     public function __construct(?Area $area, ?Period $period)
     {
         $this->area = $area;
         $this->period = $period;
-        $this->creator = auth()->user();
     }
 
     public function rules(): array
     {
         return [
+            'product' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
+            'productdescription' => ['nullable', 'string', 'max:255'],
+            'productqty' => ['required', 'integer', 'min:0'],
             'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
-            'batch' => ['required', 'string', 'max:255'],
             'materialdescription' => ['nullable', 'string', 'max:255'],
-            'quantity' => ['required', 'integer', 'min:0'],
-            'uom' => ['nullable', 'string', 'max:255'],
-            'mtyp' => ['nullable', 'string', 'max:255']
+            'uom' => ['required', 'string', 'max:255'],
+            'qty' => ['required', 'integer', 'min:0']
         ];
     }
 
-    public function uniqueBy(): string|array
+    public function model(array $row): ?ProductMaterial
     {
-        return [
-            'material'
-        ];
-    }
-
-    public function model(array $row): ?ActualStock
-    {
-        return new ActualStock([
-            'user_id' => $this->creator?->id ?? 0,
+        return new ProductMaterial([
+            'product_id' => $this->resolveProductId($row['product']),
             'material_id' => $this->resolveMaterialId($row['material']),
-            'batch' => Str::upper(trim($row['batch'])),
-            'quantity' => (int)$row['quantity']
+            'material_uom' => Str::upper(trim($row['uom'])),
+            'material_quantity' => (int)$row['qty'],
+            'product_quantity' => (int)$row['productqty']
         ]);
     }
 
@@ -71,10 +63,13 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
         $period = $this->period;
         return [
             BeforeSheet::class => static function () use ($area, $period) {
-                ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
+                ProductMaterial::leftJoin('products', 'products.id', '=', 'product_materials.product_id')
+                    ->leftJoin('materials', 'materials.id', '=', 'product_materials.material_id')
+                    ->where('products.area_id', $area?->id ?? 0)
+                    ->where('products.period_id', $period?->id ?? 0)
                     ->where('materials.area_id', $area?->id ?? 0)
                     ->where('materials.period_id', $period?->id ?? 0)
-                    ->whereNull('actual_stocks.deleted_at')
+                    ->whereNull('product_materials.deleted_at')
                     ->delete();
             }
         ];

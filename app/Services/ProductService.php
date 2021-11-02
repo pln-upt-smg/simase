@@ -255,7 +255,7 @@ class ProductService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/195BdCWN1KWWKSoImWSHFg-9vq67s-O7IsaMV7pAI-Mg/edit?usp=sharing';
+        return 'https://docs.google.com/spreadsheets/d/1sG-gvu4fANyxE_g05BC4WU4navY8w0rp95crvXZf6Cw/edit?usp=sharing';
     }
 
     /**

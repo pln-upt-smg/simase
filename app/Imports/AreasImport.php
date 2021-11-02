@@ -34,7 +34,7 @@ class AreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValida
         ];
     }
 
-    public function model(array $row): Area|null
+    public function model(array $row): ?Area
     {
         return new Area([
             'name' => Str::title(trim($row['areadescription']))

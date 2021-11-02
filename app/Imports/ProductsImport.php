@@ -34,7 +34,7 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVal
     {
         return [
             'product' => ['required', 'string', 'max:255'],
-            'productdescription' => ['required', 'string', 'max:255'],
+            'productdescription' => ['nullable', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
             'crcy' => ['required', 'string', 'max:255'],

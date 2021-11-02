@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductMaterials extends Model
+class ProductMaterial extends Model
 {
     use Fluent, HasFactory, SoftDeletes;
 
@@ -18,13 +18,14 @@ class ProductMaterials extends Model
     #[BelongsTo]
     public Material $material;
 
-    public string $code, $description, $uom;
-    public int $quantity;
+    public string $code, $description, $materialUom;
+    public int $materialQuantity, $productQuantity;
 
     protected $fillable = [
         'product_id',
         'material_id',
-        'uom',
-        'quantity'
+        'material_uom',
+        'material_quantity',
+        'product_quantity'
     ];
 }
