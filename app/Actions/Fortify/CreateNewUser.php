@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use App\Rules\IsValidPhone;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -24,9 +25,14 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->whereNull('deleted_at')],
-            'nip' => ['required', 'alpha_num', 'min:6', 'max:255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
+            'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->whereNull('deleted_at'), new IsValidPhone],
+            'nip' => ['required', 'numeric', 'digit_between:6,255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
             'password' => $this->passwordRules()
+        ], customAttributes: [
+            'name' => 'Nama Pegawai',
+            'phone' => 'Nomor Telepon',
+            'nip' => 'Nomor Induk Pegawai',
+            'password' => 'Kata Sandi'
         ])->validate();
         return User::create([
             'name' => $input['name'],
