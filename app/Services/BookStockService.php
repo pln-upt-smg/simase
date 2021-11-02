@@ -81,18 +81,6 @@ class BookStockService
                 ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('materials.code')
-            ->allowedSorts([
-                'book_stocks.batch',
-                'book_stocks.quantity',
-                'book_stocks.plnt',
-                'book_stocks.sloc',
-                'book_stocks.qualinsp',
-                'book_stocks.unrestricted',
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'book_stocks.batch',
                 'book_stocks.quantity',
@@ -105,6 +93,18 @@ class BookStockService
                 'materials.uom',
                 'materials.mtyp'
             ]))
+            ->allowedSorts([
+                'batch_code',
+                'quantity',
+                'plnt',
+                'sloc',
+                'qualinsp',
+                'unrestricted',
+                'material_code',
+                'material_description',
+                'uom',
+                'mtyp'
+            ])
             ->paginate()
             ->withQueryString();
     }
@@ -169,7 +169,7 @@ class BookStockService
             'quantity' => 'Kuantitas'
         ]);
         BookStock::create([
-            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
@@ -208,7 +208,7 @@ class BookStockService
             'quantity' => 'Kuantitas'
         ]);
         $book->updateOrFail([
-            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,

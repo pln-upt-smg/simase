@@ -38,8 +38,14 @@ class BatchService
             ->leftJoin('materials', 'materials.id', '=', 'batches.material_id')
             ->whereNull(['batches.deleted_at', 'materials.deleted_at'])
             ->defaultSort('batches.code')
-            ->allowedSorts(['batches.code', 'materials.code'])
-            ->allowedFilters(InertiaHelper::filterBy(['batches.code', 'materials.code']))
+            ->allowedFilters(InertiaHelper::filterBy([
+                'batches.code',
+                'materials.code'
+            ]))
+            ->allowedSorts([
+                'batch_code',
+                'material_code'
+            ])
             ->paginate()
             ->withQueryString();
     }
@@ -90,7 +96,7 @@ class BatchService
             'material_code' => 'Kode Material'
         ]);
         $batch->updateOrFail([
-            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
             'code' => Str::upper($request->batch_code)
         ]);
         $batch->save();

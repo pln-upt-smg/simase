@@ -8,6 +8,8 @@ use Based\Fluent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Ramsey\Collection\Collection;
 
 class Product extends Model
@@ -21,7 +23,7 @@ class Product extends Model
     public Period $period;
 
     #[HasMany(ProductMaterial::class)]
-    public Collection $materials;
+    public Collection $productMaterials;
 
     public string $code, $description, $uom, $mtyp, $crcy;
     public int $price, $per;
@@ -37,4 +39,19 @@ class Product extends Model
         'price',
         'per'
     ];
+
+    public function convertAsActualStock(Request $request): void
+    {
+        $quantity = (int)$request->quantity;
+        for($i = 0; $i < $quantity; $i++) {
+            foreach ($this->productMaterials as $productMaterial) {
+                ActualStock::create([
+                    'material_id' => $productMaterial->material->id,
+                    'user_id' => auth()->user()?->id ?? 0,
+                    'batch' => Str::upper($request->batch_code),
+                    'quantity' => (int)$productMaterial->material_quantity
+                ]);
+            }
+        }
+    }
 }

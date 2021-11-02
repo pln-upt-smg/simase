@@ -31,8 +31,8 @@ class PeriodService
             ])
             ->whereNull('periods.deleted_at')
             ->defaultSort('periods.name')
-            ->allowedSorts(['periods.name'])
             ->allowedFilters(InertiaHelper::filterBy(['periods.name']))
+            ->allowedSorts(['name'])
             ->paginate()
             ->withQueryString();
     }

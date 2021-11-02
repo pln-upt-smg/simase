@@ -70,17 +70,6 @@ class FinalSummaryService
                 ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('materials.code')
-            ->allowedSorts([
-                'book_stocks.unrestricted',
-                'book_stocks.qualinsp',
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp',
-                'total_stock',
-                'gap_stock',
-                'gap_value'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'book_stocks.unrestricted',
                 'book_stocks.qualinsp',
@@ -89,6 +78,17 @@ class FinalSummaryService
                 'materials.uom',
                 'materials.mtyp'
             ]))
+            ->allowedSorts([
+                'unrestricted',
+                'qualinsp',
+                'material_code',
+                'material_description',
+                'uom',
+                'mtyp',
+                'total_stock',
+                'gap_stock',
+                'gap_value'
+            ])
             ->paginate()
             ->withQueryString();
     }
@@ -128,17 +128,6 @@ class FinalSummaryService
                 ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('materials.code')
-            ->allowedSorts([
-                'book_stocks.unrestricted',
-                'book_stocks.qualinsp',
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp',
-                'total_stock',
-                'gap_stock',
-                'gap_value'
-            ])
             ->orderBy('gap_value')
             ->limit($limit)
             ->paginate()

@@ -78,16 +78,6 @@ class MaterialService
                 ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('materials.code')
-            ->allowedSorts([
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp',
-                'materials.crcy',
-                'materials.price',
-                'materials.per',
-                'update_date'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'materials.code',
                 'materials.description',
@@ -97,6 +87,16 @@ class MaterialService
                 'materials.price',
                 'materials.per'
             ]))
+            ->allowedSorts([
+                'code',
+                'description',
+                'uom',
+                'mtyp',
+                'crcy',
+                'price',
+                'per',
+                'update_date'
+            ])
             ->paginate()
             ->withQueryString();
     }

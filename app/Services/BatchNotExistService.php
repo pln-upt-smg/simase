@@ -78,18 +78,6 @@ class BatchNotExistService
                 ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('materials.code')
-            ->allowedSorts([
-                'actual_stocks.batch',
-                'actual_stocks.quantity',
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp',
-                'areas.name',
-                'users.name',
-                'creation_date',
-                'batch_status'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'actual_stocks.batch',
                 'actual_stocks.quantity',
@@ -100,6 +88,18 @@ class BatchNotExistService
                 'areas.name',
                 'users.name'
             ]))
+            ->allowedSorts([
+                'batch_code',
+                'quantity',
+                'material_code',
+                'material_description',
+                'uom',
+                'mtyp',
+                'area_name',
+                'creator_name',
+                'batch_status',
+                'creation_date'
+            ])
             ->paginate()
             ->withQueryString();
     }

@@ -81,16 +81,6 @@ class ProductMaterialService
                 ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('products.code')
-            ->allowedSorts([
-                'product_materials.material_uom',
-                'product_materials.material_quantity',
-                'product_materials.product_quantity',
-                'products.code',
-                'products.description',
-                'products.uom',
-                'materials.code',
-                'materials.description'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'product_materials.material_uom',
                 'product_materials.material_quantity',
@@ -101,6 +91,16 @@ class ProductMaterialService
                 'materials.code',
                 'materials.description'
             ]))
+            ->allowedSorts([
+                'material_uom',
+                'material_quantity',
+                'product_quantity',
+                'product_code',
+                'product_description',
+                'product_uom',
+                'material_code',
+                'material_description'
+            ])
             ->paginate()
             ->withQueryString();
     }
@@ -164,8 +164,8 @@ class ProductMaterialService
             'material_uom' => 'UoM Material'
         ]);
         ProductMaterial::create([
-            'product_id' => Product::where('code', $request->product_code)->first()?->id ?? 0,
-            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
+            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
             'material_uom' => Str::upper($request->material_uom),
             'material_quantity' => (int)$request->material_quantity,
             'product_quantity' => (int)$request->product_quantity
@@ -207,8 +207,8 @@ class ProductMaterialService
             'material_uom' => 'UoM Material'
         ]);
         $productMaterial->updateOrFail([
-            'product_id' => Product::where('code', $request->product_code)->first()?->id ?? 0,
-            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
+            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
             'material_uom' => Str::upper($request->material_uom),
             'material_quantity' => (int)$request->material_quantity,
             'product_quantity' => (int)$request->product_quantity

@@ -3,7 +3,7 @@
         Top 10 Gap Value - {{ area ? area.name : 'Semua Area' }}
     </div>
     <div v-if="data" class="font-semibold text-lg">
-        <jet-table :meta="data" :paginate="false">
+        <jet-table :meta="data" :paginate="false" :clickable-header="false">
             <template #head>
                 <th>Kode Material</th>
                 <th>Deskripsi Material</th>

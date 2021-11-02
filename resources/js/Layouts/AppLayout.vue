@@ -37,7 +37,7 @@
                                 <div class="px-4 space-y-2 pt-2">
                                     <span class="text-base text-white font-semibold">Menu</span>
                                     <Link v-for="item in this.menuNavigations" :key="item.name" :href="route(item.href)"
-                                          :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
+                                          :class="[route().current(item.href) || (item.currents && item.currents.includes(route().current())) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
                                         <component :is="item.icon" class="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300"
                                                    aria-hidden="true"/>
                                         {{ item.name }}
@@ -75,7 +75,7 @@
                             <div class="flex-1 px-4 space-y-2 pt-6">
                                 <span class="text-base text-white font-semibold">Menu</span>
                                 <Link v-for="item in menuNavigations" :key="item.name" :href="route(item.href)"
-                                      :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
+                                      :class="[route().current(item.href) || (item.currents && item.currents.includes(route().current())) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
                                     <component :is="item.icon" class="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
                                                aria-hidden="true"/>
                                     {{ item.name }}
@@ -215,7 +215,7 @@ const navigations = {
     },
     operator: {
         menu: [
-            {name: 'Entry Stock', href: 'stocks.create', icon: SaveIcon},
+            {name: 'Entry Stock', href: 'stocks.create', icon: SaveIcon, currents: ['stocks.sku.create']},
             {name: 'Hasil Stock', href: 'stocks.index', icon: DocumentTextIcon}
         ],
         manage: [

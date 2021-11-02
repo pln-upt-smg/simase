@@ -25,8 +25,8 @@
                     Kode Material
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('batch')"
-                    :cell="sortableHeader('batch')">
+                    v-show="showColumn('batch_code')"
+                    :cell="sortableHeader('batch_code')">
                     Kode Batch
                 </jet-table-header>
                 <jet-table-header
@@ -56,7 +56,7 @@
             <template #body>
                 <tr v-for="stock in stocks.data" :key="stock.id">
                     <td v-show="showColumn('material_code')">{{ stock.material_code }}</td>
-                    <td v-show="showColumn('batch')">{{ stock.batch }}</td>
+                    <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>
                     <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
                     <td v-show="showColumn('quantity')">{{ stock.quantity }}</td>
                     <td v-show="showColumn('uom')">{{ stock.uom }}</td>

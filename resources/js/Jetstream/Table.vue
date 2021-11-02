@@ -91,7 +91,7 @@ table :deep(tr:hover td) {
                             <slot name="table">
                                 <table class="min-w-full divide-y divide-gray-200 bg-white mt-4 lg:mt-6 z-0">
                                     <thead class="bg-indigo-100 text-white">
-                                    <tr class="clickable-table-header">
+                                    <tr :class="[clickableHeader ? 'clickable-table-header' : '']">
                                         <slot name="head"/>
                                     </tr>
                                     </thead>
@@ -128,6 +128,10 @@ export default defineComponent({
             default: false
         },
         paginate: {
+            type: Boolean,
+            default: true
+        },
+        clickableHeader: {
             type: Boolean,
             default: true
         }

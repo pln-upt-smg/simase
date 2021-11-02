@@ -78,16 +78,6 @@ class ProductService
                 ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('products.code')
-            ->allowedSorts([
-                'products.code',
-                'products.description',
-                'products.uom',
-                'products.mtyp',
-                'products.crcy',
-                'products.price',
-                'products.per',
-                'update_date'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'products.code',
                 'products.description',
@@ -97,6 +87,16 @@ class ProductService
                 'products.price',
                 'products.per'
             ]))
+            ->allowedSorts([
+                'code',
+                'description',
+                'uom',
+                'mtyp',
+                'crcy',
+                'price',
+                'per',
+                'update_date'
+            ])
             ->paginate()
             ->withQueryString();
     }

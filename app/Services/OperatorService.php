@@ -44,18 +44,18 @@ class OperatorService
             ->where('roles.id', '=', Role::operator()?->id ?? 2)
             ->whereNull(['users.deleted_at', 'roles.deleted_at'])
             ->defaultSort('users.name')
-            ->allowedSorts([
-                'users.name',
-                'users.phone',
-                'users.nip',
-                'roles.name'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'users.name',
                 'users.phone',
                 'users.nip',
                 'roles.name'
             ]))
+            ->allowedSorts([
+                'name',
+                'phone',
+                'nip',
+                'role'
+            ])
             ->paginate()
             ->withQueryString();
     }

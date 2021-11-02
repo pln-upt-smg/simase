@@ -77,18 +77,6 @@ class PidService
                 ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('materials.code')
-            ->allowedSorts([
-                'book_stocks.batch',
-                'book_stocks.unrestricted',
-                'book_stocks.qualinsp',
-                'book_stocks.quantity',
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp',
-                'actual_qty',
-                'gap_qty'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'book_stocks.batch',
                 'book_stocks.unrestricted',
@@ -99,6 +87,18 @@ class PidService
                 'materials.uom',
                 'materials.mtyp'
             ]))
+            ->allowedSorts([
+                'batch_code',
+                'unrestricted',
+                'qualinsp',
+                'book_qty',
+                'material_code',
+                'material_description',
+                'uom',
+                'mtyp',
+                'actual_qty',
+                'gap_qty'
+            ])
             ->paginate()
             ->withQueryString();
     }

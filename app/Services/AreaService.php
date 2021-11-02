@@ -35,8 +35,8 @@ class AreaService
             ])
             ->whereNull('areas.deleted_at')
             ->defaultSort('areas.name')
-            ->allowedSorts(['areas.name'])
             ->allowedFilters(InertiaHelper::filterBy(['areas.name']))
+            ->allowedSorts(['name'])
             ->paginate()
             ->withQueryString();
     }

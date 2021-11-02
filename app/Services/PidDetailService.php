@@ -64,17 +64,17 @@ class PidDetailService
                 ->whereNull('periods.deleted_at');
         }
         return $query->defaultSort('materials.code')
-            ->allowedSorts([
-                'book_stocks.batch',
-                'materials.code',
-                'materials.description',
-                'sum_quantity'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'book_stocks.batch',
                 'materials.code',
                 'materials.description'
             ]))
+            ->allowedSorts([
+                'batch_code',
+                'material_code',
+                'material_description',
+                'sum_quantity'
+            ])
             ->paginate()
             ->withQueryString();
     }

@@ -1,5 +1,6 @@
 <template>
     <app-layout title="Entry Stock">
+        <tabs class="mb-6 lg:mb-8 lg:-mt-3"/>
         <jet-form-section @submitted="store">
             <template #title>
                 Input Material Code
@@ -138,6 +139,7 @@
 import {defineComponent} from 'vue'
 import {useForm} from '@inertiajs/inertia-vue3'
 import AppLayout from '@/Layouts/AppLayout'
+import Tabs from '@/Pages/Operator/Stocks/Input/Tabs'
 import BarcodeScanner from '@/Pages/Operator/Stocks/Input/BarcodeScanner'
 import JetButton from '@/Jetstream/Button'
 import JetSecondaryButton from '@/Jetstream/SecondaryButton'
@@ -155,6 +157,7 @@ import {QrcodeIcon} from '@heroicons/vue/outline'
 export default defineComponent({
     components: {
         AppLayout,
+        Tabs,
         BarcodeScanner,
         JetActionMessage,
         JetButton,
@@ -196,7 +199,6 @@ export default defineComponent({
                 period: null,
                 material_code: null,
                 batch_code: null,
-                product_code: null,
                 quantity: null
             }),
             options: []
@@ -218,7 +220,6 @@ export default defineComponent({
             this.form.clearErrors()
             this.form.material_code = null
             this.form.batch_code = null
-            this.form.product_code = null
             this.form.quantity = null
             this.materialData.description = '-'
             this.materialData.uom = '-'

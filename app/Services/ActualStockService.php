@@ -10,6 +10,7 @@ use App\Models\ActualStock;
 use App\Models\Area;
 use App\Models\Material;
 use App\Models\Period;
+use App\Models\Product;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -83,15 +84,6 @@ class ActualStockService
             $query = $query->where('users.id', auth()->user()?->id ?? 0);
         }
         return $query->defaultSort('materials.code')
-            ->allowedSorts([
-                'actual_stocks.batch',
-                'actual_stocks.quantity',
-                'materials.code',
-                'materials.description',
-                'materials.uom',
-                'materials.mtyp',
-                'users.name'
-            ])
             ->allowedFilters(InertiaHelper::filterBy([
                 'actual_stocks.batch',
                 'actual_stocks.quantity',
@@ -101,6 +93,15 @@ class ActualStockService
                 'materials.mtyp',
                 'users.name'
             ]))
+            ->allowedSorts([
+                'batch_code',
+                'quantity',
+                'material_code',
+                'material_description',
+                'uom',
+                'mtyp',
+                'creator_name'
+            ])
             ->paginate()
             ->withQueryString();
     }
@@ -142,7 +143,7 @@ class ActualStockService
      */
     public function store(Request $request): void
     {
-        is_null($request->product_code) ? $this->storeByMaterialCode($request) : $this->storeBySkuCode($request);
+        $request->sku === true ? $this->storeBySkuCode($request) : $this->storeByMaterialCode($request);
     }
 
     /**
@@ -165,7 +166,7 @@ class ActualStockService
             'quantity' => 'Kuantitas'
         ]);
         ActualStock::create([
-            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
             'user_id' => auth()->user()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'quantity' => (int)$request->quantity
@@ -173,8 +174,6 @@ class ActualStockService
     }
 
     /**
-     * TODO: implement the store process by product code
-     *
      * @param Request $request
      * @throws ValidationException
      */
@@ -193,6 +192,8 @@ class ActualStockService
             'batch_code' => 'Kode Batch',
             'quantity' => 'Kuantitas'
         ]);
+        $product = Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first();
+        $product?->convertAsActualStock($request);
     }
 
     /**
@@ -216,7 +217,7 @@ class ActualStockService
             'quantity' => 'Kuantitas'
         ]);
         $actual->updateOrFail([
-            'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'quantity' => (int)$request->quantity
         ]);

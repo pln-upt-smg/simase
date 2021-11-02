@@ -74,7 +74,20 @@ class ActualStockController extends Controller
      */
     public function create(): Response|ResponseFactory
     {
-        return inertia('Operator/Stocks/Input/Index', [
+        return inertia('Operator/Stocks/Input/MC/Index', [
+            'areas' => $this->areaService->collection()->toArray(),
+            'periods' => $this->periodService->collection()->toArray()
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response|ResponseFactory
+     */
+    public function createSku(): Response|ResponseFactory
+    {
+        return inertia('Operator/Stocks/Input/SKU/Index', [
             'areas' => $this->areaService->collection()->toArray(),
             'periods' => $this->periodService->collection()->toArray()
         ]);
