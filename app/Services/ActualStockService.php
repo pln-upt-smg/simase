@@ -58,7 +58,7 @@ class ActualStockService
         $query = QueryBuilder::for(ActualStock::class)
             ->select([
                 'actual_stocks.id as id',
-                'actual_stocks.batch as batch',
+                'actual_stocks.batch as batch_code',
                 'actual_stocks.quantity as quantity',
                 'materials.code as material_code',
                 'materials.description as material_description',
@@ -122,7 +122,7 @@ class ActualStockService
         ];
         $columns = [
             'material_code' => 'Kode Material',
-            'batch' => 'Kode Batch',
+            'batch_code' => 'Kode Batch',
             'material_description' => 'Deskripsi Material',
             'quantity' => 'Kuantitas',
             'uom' => 'UoM',
@@ -218,7 +218,7 @@ class ActualStockService
         ]);
         $actual->updateOrFail([
             'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
-            'batch' => Str::upper($request->batch),
+            'batch' => Str::upper($request->batch_code),
             'quantity' => (int)$request->quantity
         ]);
         $actual->save();

@@ -29,7 +29,7 @@ class CreateNewUser implements CreatesNewUsers
             'nip' => ['required', 'numeric', 'digit_between:6,255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
             'password' => $this->passwordRules()
         ], customAttributes: [
-            'name' => 'Nama Pegawai',
+            'name' => 'Nama',
             'phone' => 'Nomor Telepon',
             'nip' => 'Nomor Induk Pegawai',
             'password' => 'Kata Sandi'

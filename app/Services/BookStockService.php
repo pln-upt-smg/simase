@@ -57,7 +57,7 @@ class BookStockService
         $query = QueryBuilder::for(BookStock::class)
             ->select([
                 'book_stocks.id as id',
-                'book_stocks.batch as batch',
+                'book_stocks.batch as batch_code',
                 'book_stocks.quantity as quantity',
                 'book_stocks.plnt as plnt',
                 'book_stocks.sloc as sloc',
@@ -131,7 +131,7 @@ class BookStockService
             'material_description' => 'Deskripsi Material',
             'uom' => 'UoM',
             'mtyp' => 'MType',
-            'batch' => 'Kode Batch',
+            'batch_code' => 'Kode Batch',
             'plnt' => 'Plnt',
             'sloc' => 'SLoc',
             'qualinsp' => 'QualInsp',
@@ -170,7 +170,7 @@ class BookStockService
         ]);
         BookStock::create([
             'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
-            'batch' => Str::upper($request->batch),
+            'batch' => Str::upper($request->batch_code),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
             'qualinsp' => (int)$request->qualinsp,
@@ -210,7 +210,7 @@ class BookStockService
         ]);
         $book->updateOrFail([
             'material_id' => Material::where('code', $request->material_code)->first()?->id ?? 0,
-            'batch' => Str::upper($request->batch),
+            'batch' => Str::upper($request->batch_code),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
             'qualinsp' => (int)$request->qualinsp,

@@ -33,8 +33,8 @@
                     Kode Material
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('batch')"
-                    :cell="sortableHeader('batch')">
+                    v-show="showColumn('batch_code')"
+                    :cell="sortableHeader('batch_code')">
                     Kode Batch
                 </jet-table-header>
                 <jet-table-header
@@ -84,7 +84,7 @@
             <template #body>
                 <tr v-for="stock in stocks.data" :key="stock.id">
                     <td v-show="showColumn('material_code')">{{ stock.material_code }}</td>
-                    <td v-show="showColumn('batch')">{{ stock.batch }}</td>
+                    <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>
                     <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
                     <td v-show="showColumn('quantity')">{{ stock.quantity }}</td>
                     <td v-show="showColumn('uom')">{{ stock.uom }}</td>
@@ -126,7 +126,7 @@
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
                                ref="storeMaterialCode" v-model="storeForm.material_code"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Batch"
-                               ref="storeBatch" v-model="storeForm.batch"/>
+                               ref="storeBatch" v-model="storeForm.batch_code"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas"
                                ref="storeQuantity" v-model="storeForm.quantity"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Plnt"
@@ -164,7 +164,7 @@
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
                                ref="updateMaterialCode" v-model="updateForm.material_code"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Batch"
-                               ref="updateBatch" v-model="updateForm.batch"/>
+                               ref="updateBatch" v-model="updateForm.batch_code"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas"
                                ref="updateQuantity" v-model="updateForm.quantity"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Plnt"
@@ -359,7 +359,7 @@ export default defineComponent({
                 area: null,
                 period: null,
                 material_code: null,
-                batch: null,
+                batch_code: null,
                 quantity: null,
                 plnt: null,
                 sloc: null,
@@ -371,7 +371,7 @@ export default defineComponent({
                 area: null,
                 period: null,
                 material_code: null,
-                batch: null,
+                batch_code: null,
                 quantity: null,
                 plnt: null,
                 sloc: null,
@@ -488,7 +488,7 @@ export default defineComponent({
             this.updateForm.area = stock.area_id
             this.updateForm.period = stock.period_id
             this.updateForm.material_code = stock.material_code
-            this.updateForm.batch = stock.batch
+            this.updateForm.batch_code = stock.batch_code
             this.updateForm.quantity = stock.quantity
             this.updateForm.plnt = stock.plnt
             this.updateForm.sloc = stock.sloc
@@ -518,7 +518,7 @@ export default defineComponent({
                 this.storeForm.area = null
                 this.storeForm.period = null
                 this.storeForm.material_code = null
-                this.storeForm.batch = null
+                this.storeForm.batch_code = null
                 this.storeForm.quantity = null
                 this.storeForm.plnt = null
                 this.storeForm.sloc = null
@@ -536,7 +536,7 @@ export default defineComponent({
                 this.updateForm.area = null
                 this.updateForm.period = null
                 this.updateForm.material_code = null
-                this.updateForm.batch = null
+                this.updateForm.batch_code = null
                 this.updateForm.quantity = null
                 this.updateForm.plnt = null
                 this.updateForm.sloc = null

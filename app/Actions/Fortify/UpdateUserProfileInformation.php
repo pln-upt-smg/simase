@@ -25,7 +25,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users')->ignore($user->id), new IsValidPhone],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
         ], customAttributes: [
-            'name' => 'Nama Pegawai',
+            'name' => 'Nama',
             'phone' => 'Nomor Telepon',
             'photo' => 'Foto Profil'
         ])->validateWithBag('updateProfileInformation');
