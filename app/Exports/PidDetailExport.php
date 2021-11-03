@@ -37,7 +37,7 @@ class PidDetailExport implements FromCollection, WithHeadings, WithMapping
             'MaterialDescription',
             'Batch',
             'Total Of SumOfQuantity'
-        ], $this->areaService->collection()->pluck('name')->toArray());
+        ], $this->areaService->collection()->pluck('name')->toArray() ?? []);
     }
 
     public function map($row): array
@@ -47,7 +47,7 @@ class PidDetailExport implements FromCollection, WithHeadings, WithMapping
             Str::title(trim($row->material_description)),
             Str::upper(trim($row->batch_code)),
             Str::upper(trim($row->sum_quantity))
-        ], $this->areaStocks[$row->id]);
+        ], $this->areaStocks[$row->id] ?? []);
     }
 
     public function collection(): Collection
