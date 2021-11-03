@@ -121,7 +121,7 @@ class PidDetailService
         }
 
         // fetch the stock!
-        $stocks = $stocks->get();
+        $stocks = $stocks->get()->load('material');
 
         // loop over the stock list
         foreach ($stocks as $stock) {
@@ -135,7 +135,7 @@ class PidDetailService
                 // each iteration, fetch the quantity of the stock based on the material and area
                 $query = ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
                     ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                    ->where('materials.id', $stock->material_id)
+                    ->where('materials.id', $stock->material->id)
                     ->where('areas.id', $area->id)
                     ->whereNull(['actual_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at']);
 

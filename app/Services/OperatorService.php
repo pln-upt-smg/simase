@@ -93,7 +93,7 @@ class OperatorService
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->whereNull('deleted_at'), new IsValidPhone],
-            'nip' => ['required', 'numeric', 'min:6', 'max:255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
+            'nip' => ['required', 'numeric', 'max:255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ], attributes: [
             'name' => 'Nama Pegawai',
@@ -121,7 +121,7 @@ class OperatorService
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($operator->id)->whereNull('deleted_at'), new IsValidPhone],
-            'nip' => ['required', 'numeric', 'min:6', 'max:255', Rule::unique('users', 'nip')->ignore($operator->id)->whereNull('deleted_at')],
+            'nip' => ['required', 'numeric', 'max:255', Rule::unique('users', 'nip')->ignore($operator->id)->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ], attributes: [
             'name' => 'Nama Pegawai',

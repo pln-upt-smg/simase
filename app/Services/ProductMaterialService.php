@@ -148,10 +148,8 @@ class ProductMaterialService
             'product_quantity' => ['required', 'integer', 'min:0'],
             'material_code' => ['required', 'string', 'max:255',
                 Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at'),
-                Rule::unique('materials', 'code')
-                    ->where('area_id', $request->area)
-                    ->where('period_id', $request->period)
-                    ->where('material_id', Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0)
+                Rule::unique('product_materials', 'material_id')
+                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0)
                     ->whereNull('deleted_at')
             ],
             'material_quantity' => ['required', 'integer', 'min:0'],
@@ -189,12 +187,10 @@ class ProductMaterialService
             'product_quantity' => ['required', 'integer', 'min:0'],
             'material_code' => ['required', 'string', 'max:255',
                 Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at'),
-                Rule::unique('materials', 'code')
-                    ->ignore($productMaterial->id)
-                    ->where('area_id', $request->area)
-                    ->where('period_id', $request->period)
-                    ->where('material_id', Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0)
+                Rule::unique('product_materials', 'material_id')
+                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0)
                     ->whereNull('deleted_at')
+                    ->ignore($productMaterial->id)
             ],
             'material_quantity' => ['required', 'integer', 'min:0'],
             'material_uom' => ['required', 'string', 'max:255']

@@ -2,9 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\ActualStock;
 use App\Models\Area;
+use App\Models\Batch;
+use App\Models\BookStock;
 use App\Models\Material;
 use App\Models\Period;
+use App\Models\Product;
+use App\Models\ProductMaterial;
 use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\Data\AreaSeeder;
@@ -33,11 +38,16 @@ class DatabaseSeeder extends Seeder
     protected function reset(): void
     {
         Schema::disableForeignKeyConstraints();
-        User::truncate();
-        Role::truncate();
-        Period::truncate();
+        ActualStock::truncate();
         Area::truncate();
+        Batch::truncate();
+        BookStock::truncate();
         Material::truncate();
+        Period::truncate();
+        Product::truncate();
+        ProductMaterial::truncate();
+        Role::truncate();
+        User::truncate();
         Schema::enableForeignKeyConstraints();
     }
 

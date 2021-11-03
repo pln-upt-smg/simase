@@ -21,7 +21,7 @@ class DataImported extends Notification implements ShouldQueue
     {
         $name = trim($name);
         $count = is_null($count) ? '' : " sebanyak $count baris";
-        $this->title = "$name berhasil diimpor";
+        $this->title = "$name berhasil di-impor";
         $this->description = "Anda telah berhasil mengimpor data $name$count.";
     }
 
