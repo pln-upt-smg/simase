@@ -117,7 +117,7 @@
                                 <span class="sr-only">Lihat notifikasi</span>
                                 <BellIcon class="h-6 w-6" aria-hidden="true"/>
                             </button>
-                            <div v-if="this.$page.props.unreadNotificationCount > 0" class="icon-badge">{{ this.$page.props.unreadNotificationCount > 8 ? 8 : this.$page.props.unreadNotificationCount }}</div>
+                            <div v-if="unreadNotificationCount > 0" class="icon-badge">{{ unreadNotificationCount > 8 ? '8+' : unreadNotificationCount }}</div>
                         </div>
                         <Menu as="div" class="ml-3 relative">
                             <div>
@@ -275,7 +275,8 @@ export default defineComponent({
         return {
             menuNavigations: this.$page.props.user.role_id === 1 ? navigations.administrator.menu : navigations.operator.menu,
             manageNavigations: this.$page.props.user.role_id === 1 ? navigations.administrator.manage : navigations.operator.manage,
-            showingNotificationPanel: false
+            showingNotificationPanel: false,
+            unreadNotificationCount: this.$page.props.unreadNotificationCount
         }
     },
     methods: {

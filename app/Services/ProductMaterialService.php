@@ -144,10 +144,10 @@ class ProductMaterialService
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->whereNull('deleted_at')],
+            'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'product_quantity' => ['required', 'integer', 'min:0'],
             'material_code' => ['required', 'string', 'max:255',
-                Rule::exists('materials', 'code')->whereNull('deleted_at'),
+                Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at'),
                 Rule::unique('materials', 'code')
                     ->where('area_id', $request->area)
                     ->where('period_id', $request->period)
@@ -185,10 +185,10 @@ class ProductMaterialService
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->whereNull('deleted_at')],
+            'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'product_quantity' => ['required', 'integer', 'min:0'],
             'material_code' => ['required', 'string', 'max:255',
-                Rule::exists('materials', 'code')->whereNull('deleted_at'),
+                Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at'),
                 Rule::unique('materials', 'code')
                     ->ignore($productMaterial->id)
                     ->where('area_id', $request->area)
