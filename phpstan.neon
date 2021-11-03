@@ -14,9 +14,11 @@ parameters:
         - ./.phpstorm.meta.php
         - ./_ide_helper.php
     ignoreErrors:
+        - '#Illuminate\\Support\\Collection#'
+        - '#Illuminate\\Notifications\\DatabaseNotificationCollection#'
         - '#Undefined variable: \$this#'
         - '#of function trim expects string#'
         - '#Call to an undefined method#'
-        - '#Illuminate\\Support\\Collection#'
         - '#supplied for foreach, only iterables are supported#'
+        - '#unreadNotifications#'
     checkMissingIterableValueType: false

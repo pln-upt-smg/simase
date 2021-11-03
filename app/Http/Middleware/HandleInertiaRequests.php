@@ -36,9 +36,10 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $notifications = auth()->user()?->notifications ?? [];
-        if (count($notifications) > 0) {
-            $notifications = $notifications->take(8)->map(function ($item) {
+        $notifications = [];
+        $unreadNotificationCount = 0;
+        if (!is_null(auth()->user())) {
+            $notifications = auth()->user()->notifications->take(8)->map(function ($item) {
                 return [
                     'id' => $item->id,
                     'title' => $item->data['title'] ?? null,
@@ -46,11 +47,12 @@ class HandleInertiaRequests extends Middleware
                     'time' => $item->created_at->diffForHumans(),
                     'created_at' => $item->created_at
                 ];
-            });
+            });;
+            $unreadNotificationCount = auth()->user()->unreadNotifications->count();
         }
         return array_merge(parent::share($request), [
             'notifications' => $notifications,
-            'unreadNotificationCount' => count(auth()->user()->unreadNotifications ?? [])
+            'unreadNotificationCount' => $unreadNotificationCount
         ]);
     }
 }
