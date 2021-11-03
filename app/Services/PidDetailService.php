@@ -139,7 +139,8 @@ class PidDetailService
             foreach ($areas as $area) {
 
                 // each iteration, fetch the quantity of the stock based on the material and area
-                $query = ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
+                $query = ActualStock::select([DB::raw('sum(actual_stocks.quantity) as quantity')])
+                    ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
                     ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
                     ->where('materials.id', $stock->material_id)
                     ->where('areas.id', $area->id)
