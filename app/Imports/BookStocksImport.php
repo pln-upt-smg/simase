@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasMaterialResolver;
+use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
 use App\Models\Area;
 use App\Models\BookStock;
@@ -20,7 +21,7 @@ use Maatwebsite\Excel\Events\BeforeSheet;
 
 class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet, HasMaterialResolver;
+    use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter;
 
     private ?Area $area;
 
@@ -57,6 +58,7 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
 
     public function model(array $row): ?BookStock
     {
+        $this->incrementRowCounter();
         return new BookStock([
             'material_id' => $this->resolveMaterialId($row['material']),
             'batch' => Str::upper(trim($row['batch'])),

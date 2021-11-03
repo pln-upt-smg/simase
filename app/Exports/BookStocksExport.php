@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Area;
 use App\Models\Period;
+use App\Notifications\DataExported;
 use App\Services\BookStockService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -60,6 +61,8 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return $this->bookStockService->collection($this->area, $this->period);
+        $data = $this->bookStockService->collection($this->area, $this->period);
+        auth()->user()?->notify(new DataExported('Book Stock', $data->count()));
+        return $data;
     }
 }

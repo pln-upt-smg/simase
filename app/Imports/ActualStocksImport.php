@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasMaterialResolver;
+use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
 use App\Models\ActualStock;
 use App\Models\Area;
@@ -21,7 +22,7 @@ use Maatwebsite\Excel\Events\BeforeSheet;
 
 class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet, HasMaterialResolver;
+    use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter;
 
     private ?Area $area;
 
@@ -57,6 +58,7 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
 
     public function model(array $row): ?ActualStock
     {
+        $this->incrementRowCounter();
         return new ActualStock([
             'user_id' => $this->creator?->id ?? 0,
             'material_id' => $this->resolveMaterialId($row['material']),

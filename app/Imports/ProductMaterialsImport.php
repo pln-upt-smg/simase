@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasMaterialResolver;
 use App\Imports\Helper\HasProductResolver;
+use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
 use App\Models\Area;
 use App\Models\Period;
@@ -21,7 +22,7 @@ use Maatwebsite\Excel\Events\BeforeSheet;
 
 class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet, HasProductResolver, HasMaterialResolver;
+    use HasValidationException, HasDefaultSheet, HasProductResolver, HasMaterialResolver, HasRowCounter;
 
     private ?Area $area;
 
@@ -48,6 +49,7 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
 
     public function model(array $row): ?ProductMaterial
     {
+        $this->incrementRowCounter();
         return new ProductMaterial([
             'product_id' => $this->resolveProductId($row['product']),
             'material_id' => $this->resolveMaterialId($row['material']),

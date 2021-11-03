@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Area;
+use App\Notifications\DataExported;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -29,6 +30,8 @@ class AreasExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return Area::whereNull('deleted_at')->orderBy('id')->get();
+        $data = Area::whereNull('deleted_at')->orderBy('id')->get();
+        auth()->user()?->notify(new DataExported('Area', $data->count()));
+        return $data;
     }
 }

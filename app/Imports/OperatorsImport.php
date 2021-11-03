@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Imports\Helper\HasDefaultSheet;
+use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
 use App\Models\Role;
 use App\Models\User;
@@ -19,7 +20,7 @@ use Maatwebsite\Excel\Events\BeforeSheet;
 
 class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet;
+    use HasValidationException, HasDefaultSheet, HasRowCounter;
 
     private ?Role $role;
 
@@ -48,6 +49,7 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
 
     public function model(array $row): ?User
     {
+        $this->incrementRowCounter();
         return new User([
             'role_id' => $this->role?->id ?? 2,
             'name' => Str::title(trim($row['name'])),

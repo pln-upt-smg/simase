@@ -7,6 +7,7 @@ use App\Http\Middleware\Authorizable\ByAdministrator;
 use App\Http\Middleware\Authorizable\ByOperator;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\HandleReadedNotification;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
@@ -66,6 +67,7 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             VerifySecureRequest::class,
             SubstituteBindings::class,
+            HandleReadedNotification::class,
             HandleInertiaRequests::class
         ],
         'api' => [

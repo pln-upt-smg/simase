@@ -8,6 +8,10 @@ use App\Http\Helper\MediaHelper;
 use App\Imports\OperatorsImport;
 use App\Models\Role;
 use App\Models\User;
+use App\Notifications\DataDestroyed;
+use App\Notifications\DataImported;
+use App\Notifications\DataStored;
+use App\Notifications\DataUpdated;
 use App\Rules\IsValidPhone;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
@@ -89,7 +93,7 @@ class OperatorService
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->whereNull('deleted_at'), new IsValidPhone],
-            'nip' => ['required', 'numeric', 'digit_between:6,255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
+            'nip' => ['required', 'numeric', 'min:6', 'max:255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ], attributes: [
             'name' => 'Nama Pegawai',
@@ -104,6 +108,7 @@ class OperatorService
             'nip' => $request->nip,
             'password' => Hash::make($request->password)
         ]);
+        auth()->user()?->notify(new DataStored('Pegawai', $request->nip));
     }
 
     /**
@@ -116,7 +121,7 @@ class OperatorService
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($operator->id)->whereNull('deleted_at'), new IsValidPhone],
-            'nip' => ['required', 'numeric', 'digit_between:6,255', Rule::unique('users', 'nip')->ignore($operator->id)->whereNull('deleted_at')],
+            'nip' => ['required', 'numeric', 'min:6', 'max:255', Rule::unique('users', 'nip')->ignore($operator->id)->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ], attributes: [
             'name' => 'Nama Pegawai',
@@ -132,6 +137,7 @@ class OperatorService
             'password' => Hash::make($request->password)
         ]);
         $operator->save();
+        auth()->user()?->notify(new DataUpdated('Pegawai', $request->nip));
     }
 
     /**
@@ -140,7 +146,9 @@ class OperatorService
      */
     public function destroy(User $operator): void
     {
+        $data = $operator->nip;
         $operator->deleteOrFail();
+        auth()->user()?->notify(new DataDestroyed('Pegawai', $data));
     }
 
     /**
@@ -149,7 +157,9 @@ class OperatorService
      */
     public function import(Request $request): void
     {
-        MediaHelper::importSpreadsheet($request, new OperatorsImport);
+        $import = new OperatorsImport;
+        MediaHelper::importSpreadsheet($request, $import);
+        auth()->user()?->notify(new DataImported('Pegawai', $import->getRowCount()));
     }
 
     /**

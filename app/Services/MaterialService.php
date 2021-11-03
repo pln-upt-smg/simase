@@ -9,6 +9,10 @@ use App\Imports\MaterialsImport;
 use App\Models\Area;
 use App\Models\Material;
 use App\Models\Period;
+use App\Notifications\DataDestroyed;
+use App\Notifications\DataImported;
+use App\Notifications\DataStored;
+use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -164,6 +168,7 @@ class MaterialService
             'price' => (int)$request->price,
             'per' => (int)$request->per
         ]);
+        auth()->user()?->notify(new DataStored('Material', Str::upper($request->code)));
     }
 
     /**
@@ -204,6 +209,7 @@ class MaterialService
             'per' => (int)$request->per
         ]);
         $material->save();
+        auth()->user()?->notify(new DataUpdated('Material', Str::upper($request->code)));
     }
 
     /**
@@ -212,7 +218,9 @@ class MaterialService
      */
     public function destroy(Material $material): void
     {
+        $data = $material->code;
         $material->deleteOrFail();
+        auth()->user()?->notify(new DataDestroyed('Material', $data));
     }
 
     /**
@@ -230,10 +238,12 @@ class MaterialService
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        Excel::import(new MaterialsImport(
+        $import  =new MaterialsImport(
             Area::whereId((int)$request->area)->first(),
             Period::whereId((int)$request->period)->first()
-        ), $request->file('file'));
+        );
+        Excel::import($import, $request->file('file'));
+        auth()->user()?->notify(new DataImported('Material', $import->getRowCount()));
     }
 
     /**

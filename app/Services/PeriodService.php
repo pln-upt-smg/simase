@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Http\Helper\InertiaHelper;
 use App\Models\Period;
+use App\Notifications\DataDestroyed;
+use App\Notifications\DataStored;
+use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
@@ -61,6 +64,7 @@ class PeriodService
         Period::create([
             'name' => Str::title($request->name)
         ]);
+        auth()->user()?->notify(new DataStored('Periode', Str::title($request->name)));
     }
 
     /**
@@ -79,6 +83,7 @@ class PeriodService
             'name' => Str::title($request->name)
         ]);
         $period->save();
+        auth()->user()?->notify(new DataUpdated('Periode', Str::title($request->name)));
     }
 
     /**
@@ -87,7 +92,9 @@ class PeriodService
      */
     public function destroy(Period $period): void
     {
+        $data = $period->name;
         $period->deleteOrFail();
+        auth()->user()?->notify(new DataDestroyed('Periode', $data));
     }
 
     /**

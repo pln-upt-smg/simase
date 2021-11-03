@@ -375,7 +375,8 @@ export default defineComponent({
                 this.clearErrors()
                 this.storeForm.clearErrors()
                 this.storeForm.reset()
-                this.storeForm.name = null
+                this.storeForm.batch_code = null
+                this.storeForm.material_code = null
             }, 500)
         },
         closeUpdateModal() {
@@ -385,7 +386,8 @@ export default defineComponent({
                 this.updateForm.clearErrors()
                 this.updateForm.reset()
                 this.updateForm.id = null
-                this.updateForm.name = null
+                this.updateForm.batch_code = null
+                this.updateForm.material_code = null
             }, 500)
         },
         closeDestroyModal() {

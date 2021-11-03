@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasMaterialResolver;
+use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
 use App\Models\Batch;
 use Illuminate\Support\Str;
@@ -18,7 +19,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 
 class BatchesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet, HasMaterialResolver, RegistersEventListeners;
+    use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter, RegistersEventListeners;
 
     public function rules(): array
     {
@@ -30,6 +31,7 @@ class BatchesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVali
 
     public function model(array $row): ?Batch
     {
+        $this->incrementRowCounter();
         return new Batch([
             'material_id' => $this->resolveMaterialId($row['material']),
             'code' => Str::upper(trim($row['batch']))

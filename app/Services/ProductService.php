@@ -9,6 +9,10 @@ use App\Imports\ProductsImport;
 use App\Models\Area;
 use App\Models\Period;
 use App\Models\Product;
+use App\Notifications\DataDestroyed;
+use App\Notifications\DataImported;
+use App\Notifications\DataStored;
+use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -164,6 +168,7 @@ class ProductService
             'price' => (int)$request->price,
             'per' => (int)$request->per
         ]);
+        auth()->user()?->notify(new DataStored('Product', Str::upper($request->code)));
     }
 
     /**
@@ -204,6 +209,7 @@ class ProductService
             'per' => (int)$request->per
         ]);
         $product->save();
+        auth()->user()?->notify(new DataUpdated('Product', Str::upper($request->code)));
     }
 
     /**
@@ -212,7 +218,9 @@ class ProductService
      */
     public function destroy(Product $product): void
     {
+        $data = $product->code;
         $product->deleteOrFail();
+        auth()->user()?->notify(new DataDestroyed('Product', $data));
     }
 
     /**
@@ -230,10 +238,12 @@ class ProductService
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        Excel::import(new ProductsImport(
+        $import = new ProductsImport(
             Area::whereId((int)$request->area)->first(),
             Period::whereId((int)$request->period)->first()
-        ), $request->file('file'));
+        );
+        Excel::import($import, $request->file('file'));
+        auth()->user()?->notify(new DataImported('Product', $import->getRowCount()));
     }
 
     /**

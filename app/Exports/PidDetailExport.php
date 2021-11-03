@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Period;
+use App\Notifications\DataExported;
 use App\Services\AreaService;
 use App\Services\PidDetailService;
 use Illuminate\Support\Collection;
@@ -51,6 +52,8 @@ class PidDetailExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return $this->pidDetailService->collection($this->period);
+        $data = $this->pidDetailService->collection($this->period);
+        auth()->user()?->notify(new DataExported('PID Detail', $data->count()));
+        return $data;
     }
 }

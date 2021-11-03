@@ -24,7 +24,7 @@
                                             <button
                                                 class="bg-indigo-700 rounded-md text-indigo-200 hover:text-white focus:outline-none"
                                                 @click="close">
-                                                <span class="sr-only">Tutup panel</span>
+                                                <span class="sr-only">Tutup</span>
                                                 <x-icon class="h-6 w-6" aria-hidden="true"/>
                                             </button>
                                         </div>
@@ -55,10 +55,10 @@
                                 </div>
                                 <div class="relative flex-1 py-6 px-4 sm:px-6">
                                     <div class="absolute inset-0 py-6 px-4 sm:px-6">
-                                        <div class="border-2 border-dashed border-gray-200" aria-hidden="true">
-                                            <stream-barcode-reader ref="scanner" class="min-h-[18.5rem]" @decode="onDecode" @error="onError"/>
+                                        <div class="border-2 border-dashed border-gray-200 min-h-[18.5rem]" aria-hidden="true">
+                                            <stream-barcode-reader ref="scanner" @decode="onDecode" @error="onError"/>
                                         </div>
-                                        <div class="mt-6 rounded-md bg-blue-50 p-4">
+                                        <div class="mt-6 rounded-md bg-blue-50 p-4 hidden lg:block">
                                             <div class="flex">
                                                 <div class="flex-shrink-0">
                                                     <information-circle-icon class="h-5 w-5 text-blue-400"
@@ -87,6 +87,25 @@
                                                         </ul>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-6 rounded-md bg-blue-50 p-4 visible lg:hidden">
+                                            <div class="flex text-sm text-blue-700">
+                                                <ul class="list-disc pl-5 space-y-1">
+                                                    <li>
+                                                        Arahkan barcode ke kursor pointer merah saat melakukan
+                                                        proses pemindaian
+                                                    </li>
+                                                    <li>
+                                                        Pastikkan pencerahan pada ruangan memadai
+                                                    </li>
+                                                    <li>
+                                                        Gunakan latar belakang putih pada barcode
+                                                    </li>
+                                                    <li>
+                                                        Pemindaian Inverted-color Barcode tidak didukung!
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
@@ -140,10 +159,10 @@ export default defineComponent({
     },
     methods: {
         close() {
-            this.$emit('close')
             setTimeout(() => {
                 this.$refs.scanner.codeReader.reset()
-            }, 500)
+            }, 400)
+            this.$emit('close')
         },
         onDecode(code) {
             this.close()

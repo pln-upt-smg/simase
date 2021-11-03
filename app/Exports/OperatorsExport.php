@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Notifications\DataExported;
 use App\Services\OperatorService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -40,6 +41,8 @@ class OperatorsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return $this->operatorService->collection();
+        $data = $this->operatorService->collection();
+        auth()->user()?->notify(new DataExported('Pegawai', $data->count()));
+        return $data;
     }
 }

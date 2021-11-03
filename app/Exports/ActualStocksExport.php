@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Area;
 use App\Models\Period;
+use App\Notifications\DataExported;
 use App\Services\ActualStockService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -52,6 +53,8 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return $this->actualStockService->collection($this->area, $this->period);
+        $data = $this->actualStockService->collection($this->area, $this->period);
+        auth()->user()?->notify(new DataExported('Actual Stock', $data->count()));
+        return $data;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Area;
 use App\Models\Period;
+use App\Notifications\DataExported;
 use App\Services\MaterialService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -56,6 +57,8 @@ class MaterialsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return $this->materialService->collection($this->area, $this->period);
+        $data = $this->materialService->collection($this->area, $this->period);
+        auth()->user()?->notify(new DataExported('Material', $data->count()));
+        return $data;
     }
 }

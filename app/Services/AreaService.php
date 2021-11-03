@@ -7,6 +7,10 @@ use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\MediaHelper;
 use App\Imports\AreasImport;
 use App\Models\Area;
+use App\Notifications\DataDestroyed;
+use App\Notifications\DataImported;
+use App\Notifications\DataStored;
+use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
@@ -65,6 +69,7 @@ class AreaService
         Area::create([
             'name' => Str::title($request->name)
         ]);
+        auth()->user()?->notify(new DataStored('Area', Str::title($request->name)));
     }
 
     /**
@@ -83,6 +88,7 @@ class AreaService
             'name' => Str::title($request->name)
         ]);
         $area->save();
+        auth()->user()?->notify(new DataUpdated('Area', Str::title($request->name)));
     }
 
     /**
@@ -91,7 +97,9 @@ class AreaService
      */
     public function destroy(Area $area): void
     {
+        $data = $area->name;
         $area->deleteOrFail();
+        auth()->user()?->notify(new DataDestroyed('Area', Str::title($data)));
     }
 
     /**
@@ -100,7 +108,9 @@ class AreaService
      */
     public function import(Request $request): void
     {
-        MediaHelper::importSpreadsheet($request, new AreasImport);
+        $import = new AreasImport;
+        MediaHelper::importSpreadsheet($request, $import);
+        auth()->user()?->notify(new DataImported('Area', $import->getRowCount()));
     }
 
     /**

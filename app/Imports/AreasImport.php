@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Imports\Helper\HasDefaultSheet;
+use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
 use App\Models\Area;
 use Illuminate\Support\Str;
@@ -16,7 +17,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 
 class AreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet, RegistersEventListeners;
+    use HasValidationException, HasDefaultSheet, HasRowCounter, RegistersEventListeners;
 
     public function rules(): array
     {
@@ -36,6 +37,7 @@ class AreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValida
 
     public function model(array $row): ?Area
     {
+        $this->incrementRowCounter();
         return new Area([
             'name' => Str::title(trim($row['areadescription']))
         ]);

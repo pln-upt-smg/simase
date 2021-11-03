@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Notifications\DataExported;
 use App\Services\BatchService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -36,6 +37,8 @@ class BatchesExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return $this->batchService->collection();
+        $data = $this->batchService->collection();
+        auth()->user()?->notify(new DataExported('Batch', $data->count()));
+        return $data;
     }
 }

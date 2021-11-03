@@ -110,11 +110,15 @@
                         </h1>
                     </div>
                     <div class="ml-4 flex items-center md:ml-6 mr-0 lg:mr-8">
-                        <button
-                            class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-4">
-                            <span class="sr-only">Lihat notifikasi</span>
-                            <BellIcon class="h-6 w-6" aria-hidden="true"/>
-                        </button>
+                        <div class="icon-badge-container">
+                            <button
+                                @click="showNotificationPanel"
+                                class="bg-white p-1 icon-badge-icon rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-4">
+                                <span class="sr-only">Lihat notifikasi</span>
+                                <BellIcon class="h-6 w-6" aria-hidden="true"/>
+                            </button>
+                            <div v-if="this.$page.props.unreadNotificationCount > 0" class="icon-badge">{{ this.$page.props.unreadNotificationCount > 8 ? 8 : this.$page.props.unreadNotificationCount }}</div>
+                        </div>
                         <Menu as="div" class="ml-3 relative">
                             <div>
                                 <MenuButton
@@ -163,6 +167,7 @@
             </main>
         </div>
     </div>
+    <notification-panel :show="showingNotificationPanel" @close="closeNotificationPanel"/>
 </template>
 
 <script>
@@ -190,6 +195,7 @@ import {
     CubeIcon,
     CubeTransparentIcon
 } from '@heroicons/vue/outline'
+import NotificationPanel from '@/Layouts/NotificationPanel'
 
 const navigations = {
     administrator: {
@@ -229,6 +235,7 @@ export default defineComponent({
         title: String
     },
     components: {
+        NotificationPanel,
         Head,
         Link,
         Dialog,
@@ -268,7 +275,7 @@ export default defineComponent({
         return {
             menuNavigations: this.$page.props.user.role_id === 1 ? navigations.administrator.menu : navigations.operator.menu,
             manageNavigations: this.$page.props.user.role_id === 1 ? navigations.administrator.manage : navigations.operator.manage,
-            showingNavigationDropdown: false
+            showingNotificationPanel: false
         }
     },
     methods: {
@@ -278,6 +285,12 @@ export default defineComponent({
                 preserveState: false,
                 preserveScroll: false
             })
+        },
+        showNotificationPanel() {
+            this.showingNotificationPanel = true
+        },
+        closeNotificationPanel() {
+            this.showingNotificationPanel = false
         }
     }
 })

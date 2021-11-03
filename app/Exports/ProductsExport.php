@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Area;
 use App\Models\Period;
+use App\Notifications\DataExported;
 use App\Services\ProductService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -56,6 +57,8 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return $this->productService->collection($this->area, $this->period);
+        $data = $this->productService->collection($this->area, $this->period);
+        auth()->user()?->notify(new DataExported('Product', $data->count()));
+        return $data;
     }
 }

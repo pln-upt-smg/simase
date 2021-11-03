@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Area;
 use App\Models\Period;
+use App\Notifications\DataExported;
 use App\Services\BatchNotExistService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -60,6 +61,8 @@ class BatchNotExistsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return $this->batchNotExistService->collection($this->area, $this->period);
+        $data = $this->batchNotExistService->collection($this->area, $this->period);
+        auth()->user()?->notify(new DataExported('Batch Not Exist', $data->count()));
+        return $data;
     }
 }

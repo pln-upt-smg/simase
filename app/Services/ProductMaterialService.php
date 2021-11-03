@@ -11,6 +11,10 @@ use App\Models\Material;
 use App\Models\Period;
 use App\Models\Product;
 use App\Models\ProductMaterial;
+use App\Notifications\DataDestroyed;
+use App\Notifications\DataImported;
+use App\Notifications\DataStored;
+use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -147,10 +151,8 @@ class ProductMaterialService
                 Rule::unique('materials', 'code')
                     ->where('area_id', $request->area)
                     ->where('period_id', $request->period)
+                    ->where('material_id', Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0)
                     ->whereNull('deleted_at')
-                    ->whereHas('material', static function ($query) use ($request) {
-                        $query->whereRaw('lower(materials.code) = lower(?)', $request->material_code);
-                    })
             ],
             'material_quantity' => ['required', 'integer', 'min:0'],
             'material_uom' => ['required', 'string', 'max:255']
@@ -170,6 +172,7 @@ class ProductMaterialService
             'material_quantity' => (int)$request->material_quantity,
             'product_quantity' => (int)$request->product_quantity
         ]);
+        auth()->user()?->notify(new DataStored('Product Material', Str::upper($request->product_code)));
     }
 
     /**
@@ -190,10 +193,8 @@ class ProductMaterialService
                     ->ignore($productMaterial->id)
                     ->where('area_id', $request->area)
                     ->where('period_id', $request->period)
+                    ->where('material_id', Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0)
                     ->whereNull('deleted_at')
-                    ->whereHas('material', static function ($query) use ($request) {
-                        $query->whereRaw('lower(materials.code) = lower(?)', $request->material_code);
-                    })
             ],
             'material_quantity' => ['required', 'integer', 'min:0'],
             'material_uom' => ['required', 'string', 'max:255']
@@ -214,6 +215,7 @@ class ProductMaterialService
             'product_quantity' => (int)$request->product_quantity
         ]);
         $productMaterial->save();
+        auth()->user()?->notify(new DataUpdated('Product Material', Str::upper($request->product_code)));
     }
 
     /**
@@ -222,7 +224,10 @@ class ProductMaterialService
      */
     public function destroy(ProductMaterial $productMaterial): void
     {
+        $productMaterial->load('product');
+        $data = $productMaterial->product->code;
         $productMaterial->deleteOrFail();
+        auth()->user()?->notify(new DataDestroyed('Product Material', $data));
     }
 
     /**
@@ -240,10 +245,12 @@ class ProductMaterialService
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        Excel::import(new ProductMaterialsImport(
+        $import = new ProductMaterialsImport(
             Area::whereId((int)$request->area)->first(),
             Period::whereId((int)$request->period)->first()
-        ), $request->file('file'));
+        );
+        Excel::import($import, $request->file('file'));
+        auth()->user()?->notify(new DataImported('Product Material', $import->getRowCount()));
     }
 
     /**

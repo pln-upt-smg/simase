@@ -11,6 +11,10 @@ use App\Models\Area;
 use App\Models\Material;
 use App\Models\Period;
 use App\Models\Product;
+use App\Notifications\DataDestroyed;
+use App\Notifications\DataImported;
+use App\Notifications\DataStored;
+use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -171,6 +175,7 @@ class ActualStockService
             'batch' => Str::upper($request->batch_code),
             'quantity' => (int)$request->quantity
         ]);
+        auth()->user()?->notify(new DataStored('Actual Stock', Str::upper($request->material_code)));
     }
 
     /**
@@ -194,6 +199,7 @@ class ActualStockService
         ]);
         $product = Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first();
         $product?->convertAsActualStock($request);
+        auth()->user()?->notify(new DataStored('Actual Stock', Str::upper($request->material_code)));
     }
 
     /**
@@ -222,6 +228,7 @@ class ActualStockService
             'quantity' => (int)$request->quantity
         ]);
         $actual->save();
+        auth()->user()?->notify(new DataUpdated('Actual Stock', Str::upper($request->material_code)));
     }
 
     /**
@@ -230,7 +237,10 @@ class ActualStockService
      */
     public function destroy(ActualStock $actual): void
     {
+        $actual->load('material');
+        $data = $actual->material->code;
         $actual->deleteOrFail();
+        auth()->user()?->notify(new DataDestroyed('Actual Stock', $data));
     }
 
     /**
@@ -248,10 +258,12 @@ class ActualStockService
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        Excel::import(new ActualStocksImport(
-            Area::whereId((int)$request->area)->first(),
-            Period::whereId((int)$request->period)->first()
-        ), $request->file('file'));
+        $import = new ActualStocksImport(
+            Area::where('id', (int)$request->area)->first(),
+            Period::where('id', (int)$request->period)->first()
+        );
+        Excel::import($import, $request->file('file'));
+        auth()->user()?->notify(new DataImported('Actual Stock', $import->getRowCount()));
     }
 
     /**

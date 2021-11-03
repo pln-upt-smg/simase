@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Period;
+use App\Notifications\DataExported;
 use App\Services\FinalSummaryService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -54,6 +55,8 @@ class FinalSummaryExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        return $this->finalSummaryService->collection($this->period);
+        $data = $this->finalSummaryService->collection($this->period);
+        auth()->user()?->notify(new DataExported('Final Summary', $data->count()));
+        return $data;
     }
 }

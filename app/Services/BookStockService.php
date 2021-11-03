@@ -10,6 +10,10 @@ use App\Models\Area;
 use App\Models\BookStock;
 use App\Models\Material;
 use App\Models\Period;
+use App\Notifications\DataDestroyed;
+use App\Notifications\DataImported;
+use App\Notifications\DataStored;
+use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -177,6 +181,7 @@ class BookStockService
             'unrestricted' => (float)$request->unrestricted,
             'quantity' => (int)$request->quantity
         ]);
+        auth()->user()?->notify(new DataStored('Book Stock', Str::upper($request->material_code)));
     }
 
     /**
@@ -217,6 +222,7 @@ class BookStockService
             'quantity' => (int)$request->quantity
         ]);
         $book->save();
+        auth()->user()?->notify(new DataUpdated('Book Stock', Str::upper($request->material_code)));
     }
 
     /**
@@ -225,7 +231,10 @@ class BookStockService
      */
     public function destroy(BookStock $book): void
     {
+        $book->load('material');
+        $data = $book->material->code;
         $book->deleteOrFail();
+        auth()->user()?->notify(new DataDestroyed('Book Stock', $data));
     }
 
     /**
@@ -243,10 +252,12 @@ class BookStockService
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        Excel::import(new BookStocksImport(
+        $import = new BookStocksImport(
             Area::whereId((int)$request->area)->first(),
             Period::whereId((int)$request->period)->first()
-        ), $request->file('file'));
+        );
+        Excel::import($import, $request->file('file'));
+        auth()->user()?->notify(new DataImported('Book Stock', $import->getRowCount()));
     }
 
     /**

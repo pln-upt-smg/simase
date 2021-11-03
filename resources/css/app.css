@@ -67,3 +67,28 @@ input {
 .vue-select .vs__open-indicator {
     display: none;
 }
+
+/**
+ * https://stackoverflow.com/questions/60186557/how-to-put-notification-badges-on-icons
+ */
+.icon-badge-container {
+    position: relative;
+}
+
+.icon-badge-icon {
+    position: relative;
+}
+
+.icon-badge {
+    background-color: #dc2626;
+    font-size: 12px;
+    padding-top: 1px;
+    color: white;
+    text-align: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 40%;
+    position: absolute;
+    top: -5px;
+    left: 18px;
+}

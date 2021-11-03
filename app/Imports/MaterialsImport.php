@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Imports\Helper\HasDefaultSheet;
+use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
 use App\Models\Area;
 use App\Models\Material;
@@ -18,7 +19,7 @@ use Maatwebsite\Excel\Events\BeforeSheet;
 
 class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
 {
-    use HasValidationException, HasDefaultSheet;
+    use HasValidationException, HasDefaultSheet, HasRowCounter;
 
     private ?Area $area;
 
@@ -52,6 +53,7 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
 
     public function model(array $row): ?Material
     {
+        $this->incrementRowCounter();
         return new Material([
             'area_id' => $this->area?->id ?? 0,
             'period_id' => $this->period?->id ?? 0,

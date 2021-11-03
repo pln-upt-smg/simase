@@ -8,6 +8,10 @@ use App\Http\Helper\MediaHelper;
 use App\Imports\BatchesImport;
 use App\Models\Batch;
 use App\Models\Material;
+use App\Notifications\DataDestroyed;
+use App\Notifications\DataImported;
+use App\Notifications\DataStored;
+use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
@@ -79,6 +83,7 @@ class BatchService
             'material_id' => Material::whereCode($request->material_code)->first()?->id ?? 0,
             'code' => Str::upper($request->batch_code)
         ]);
+        auth()->user()?->notify(new DataStored('Batch', Str::upper($request->batch_code)));
     }
 
     /**
@@ -100,6 +105,7 @@ class BatchService
             'code' => Str::upper($request->batch_code)
         ]);
         $batch->save();
+        auth()->user()?->notify(new DataUpdated('Batch', Str::upper($request->batch_code)));
     }
 
     /**
@@ -108,7 +114,9 @@ class BatchService
      */
     public function destroy(Batch $batch): void
     {
+        $data = $batch->code;
         $batch->deleteOrFail();
+        auth()->user()?->notify(new DataDestroyed('Batch', $data));
     }
 
     /**
@@ -117,7 +125,9 @@ class BatchService
      */
     public function import(Request $request): void
     {
-        MediaHelper::importSpreadsheet($request, new BatchesImport);
+        $import = new BatchesImport;
+        MediaHelper::importSpreadsheet($request, $import);
+        auth()->user()?->notify(new DataImported('Batch', $import->getRowCount()));
     }
 
     /**
