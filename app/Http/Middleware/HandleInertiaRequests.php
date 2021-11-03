@@ -47,7 +47,7 @@ class HandleInertiaRequests extends Middleware
                     'time' => $item->created_at->diffForHumans(),
                     'created_at' => $item->created_at
                 ];
-            });;
+            });
             $unreadNotificationCount = auth()->user()->unreadNotifications->count();
         }
         return array_merge(parent::share($request), [
