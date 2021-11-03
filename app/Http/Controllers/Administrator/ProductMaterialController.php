@@ -85,26 +85,26 @@ class ProductMaterialController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param ProductMaterial $productMaterial
+     * @param ProductMaterial $material
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, ProductMaterial $productMaterial): RedirectResponse
+    public function update(Request $request, ProductMaterial $material): RedirectResponse
     {
-        $this->productMaterialService->update($request, $productMaterial);
+        $this->productMaterialService->update($request, $material);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param ProductMaterial $productMaterial
+     * @param ProductMaterial $material
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(ProductMaterial $productMaterial): RedirectResponse
+    public function destroy(ProductMaterial $material): RedirectResponse
     {
-        $this->productMaterialService->destroy($productMaterial);
+        $this->productMaterialService->destroy($material);
         return back();
     }
 

@@ -177,10 +177,10 @@ class ProductMaterialService
 
     /**
      * @param Request $request
-     * @param ProductMaterial $productMaterial
+     * @param ProductMaterial $material
      * @throws Throwable
      */
-    public function update(Request $request, ProductMaterial $productMaterial): void
+    public function update(Request $request, ProductMaterial $material): void
     {
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
@@ -192,7 +192,7 @@ class ProductMaterialService
                 Rule::unique('product_materials', 'material_id')
                     ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0)
                     ->whereNull('deleted_at')
-                    ->ignore($productMaterial->id)
+                    ->ignore($material->id)
             ],
             'material_quantity' => ['required', 'integer', 'min:0'],
             'material_uom' => ['required', 'string', 'max:255']
@@ -205,25 +205,25 @@ class ProductMaterialService
             'material_quantity' => 'Kuantitas Material',
             'material_uom' => 'UoM Material'
         ]);
-        $productMaterial->updateOrFail([
+        $material->updateOrFail([
             'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0,
             'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
             'material_uom' => Str::upper($request->material_uom),
             'material_quantity' => (int)$request->material_quantity,
             'product_quantity' => (int)$request->product_quantity
         ]);
-        $productMaterial->save();
+        $material->save();
         auth()->user()?->notify(new DataUpdated('Product Material', Str::upper($request->product_code)));
     }
 
     /**
-     * @param ProductMaterial $productMaterial
+     * @param ProductMaterial $material
      * @throws Throwable
      */
-    public function destroy(ProductMaterial $productMaterial): void
+    public function destroy(ProductMaterial $material): void
     {
-        $data = $productMaterial->load('product')->product->code;
-        $productMaterial->deleteOrFail();
+        $data = $material->load('product')->product->code;
+        $material->deleteOrFail();
         auth()->user()?->notify(new DataDestroyed('Product Material', $data));
     }
 

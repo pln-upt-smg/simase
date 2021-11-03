@@ -73,6 +73,7 @@ export default defineComponent({
     },
     methods: {
         close() {
+            this.$emit('close')
             this.$page.props.unreadNotificationCount = 0
             this.$inertia.reload({
                 replace: true,
@@ -80,7 +81,6 @@ export default defineComponent({
                 preserveState: true,
                 headers: {'Readed-Notification': 1}
             })
-            this.$emit('close')
         }
     }
 })
