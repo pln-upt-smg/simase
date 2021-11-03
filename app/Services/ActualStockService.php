@@ -65,6 +65,8 @@ class ActualStockService
                 'actual_stocks.id as id',
                 'actual_stocks.batch as batch_code',
                 'actual_stocks.quantity as quantity',
+                'materials.area_id as area_id',
+                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
@@ -161,7 +163,7 @@ class ActualStockService
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch_code' => ['required', 'string', 'max:255'],
-            'quantity' => ['required', 'integer', 'min:0']
+            'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
             'area' => 'Area',
             'period' => 'Periode',
@@ -189,7 +191,7 @@ class ActualStockService
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch_code' => ['required', 'string', 'max:255'],
-            'quantity' => ['required', 'integer', 'min:0']
+            'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
             'area' => 'Area',
             'period' => 'Periode',
@@ -214,7 +216,7 @@ class ActualStockService
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch_code' => ['required', 'string', 'max:255'],
-            'quantity' => ['required', 'integer', 'min:0']
+            'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
             'area' => 'Area',
             'period' => 'Periode',
@@ -237,8 +239,7 @@ class ActualStockService
      */
     public function destroy(ActualStock $actual): void
     {
-        $actual->load('material');
-        $data = $actual->material->code;
+        $data = $actual->load('material')->material->code;
         $actual->deleteOrFail();
         auth()->user()?->notify(new DataDestroyed('Actual Stock', $data));
     }

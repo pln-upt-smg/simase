@@ -54,6 +54,8 @@ class FinalSummaryService
                 'book_stocks.unrestricted as unrestricted',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.material_id as material_id',
+                'materials.area_id as area_id',
+                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',

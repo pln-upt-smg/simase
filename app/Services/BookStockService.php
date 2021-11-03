@@ -67,6 +67,8 @@ class BookStockService
                 'book_stocks.sloc as sloc',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.unrestricted as unrestricted',
+                'materials.area_id as area_id',
+                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
@@ -160,7 +162,7 @@ class BookStockService
             'sloc' => ['required', 'integer', 'min:0'],
             'qualinsp' => ['required', 'integer', 'min:0'],
             'unrestricted' => ['required', 'numeric'],
-            'quantity' => ['required', 'integer', 'min:0']
+            'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
             'area' => 'Area',
             'period' => 'Periode',
@@ -200,7 +202,7 @@ class BookStockService
             'sloc' => ['required', 'integer', 'min:0'],
             'qualinsp' => ['required', 'integer', 'min:0'],
             'unrestricted' => ['required', 'numeric'],
-            'quantity' => ['required', 'integer', 'min:0']
+            'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
             'area' => 'Area',
             'period' => 'Periode',
@@ -231,8 +233,7 @@ class BookStockService
      */
     public function destroy(BookStock $book): void
     {
-        $book->load('material');
-        $data = $book->material->code;
+        $data = $book->load('material')->material->code;
         $book->deleteOrFail();
         auth()->user()?->notify(new DataDestroyed('Book Stock', $data));
     }

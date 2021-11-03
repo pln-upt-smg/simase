@@ -52,6 +52,8 @@ class PidDetailService
             ->select([
                 'book_stocks.id as id',
                 'book_stocks.batch as batch_code',
+                'materials.area_id as area_id',
+                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 DB::raw('coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id), 0) as sum_quantity')

@@ -457,12 +457,11 @@ export default defineComponent({
             this.updateForm.id = productMaterial.id
             this.updateForm.area = productMaterial.area_id
             this.updateForm.period = productMaterial.period_id
-            this.updateForm.code = productMaterial.code
-            this.updateForm.description = productMaterial.description
-            this.updateForm.uom = productMaterial.uom
-            this.updateForm.mtyp = productMaterial.mtyp
-            this.updateForm.price = productMaterial.price
-            this.updateForm.per = productMaterial.per
+            this.updateForm.product_code = productMaterial.product_code
+            this.updateForm.product_quantity = productMaterial.product_quantity
+            this.updateForm.material_code = productMaterial.material_code
+            this.updateForm.material_quantity = productMaterial.material_quantity
+            this.updateForm.material_uom = productMaterial.material_uom
             setTimeout(() => this.confirmingUpdate = true, 150)
             setTimeout(() => this.$refs.updateArea.focus(), 300)
         },

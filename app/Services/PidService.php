@@ -56,6 +56,8 @@ class PidService
                 'book_stocks.unrestricted as unrestricted',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.quantity as book_qty',
+                'materials.area_id as area_id',
+                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',

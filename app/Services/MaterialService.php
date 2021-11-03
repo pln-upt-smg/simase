@@ -61,6 +61,8 @@ class MaterialService
         $query = QueryBuilder::for(Material::class)
             ->select([
                 'materials.id as id',
+                'materials.area_id as area_id',
+                'materials.period_id as period_id',
                 'materials.code as code',
                 'materials.description as description',
                 'materials.uom as uom',

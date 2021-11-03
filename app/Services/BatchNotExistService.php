@@ -55,6 +55,8 @@ class BatchNotExistService
                 'actual_stocks.id as id',
                 'actual_stocks.batch as batch_code',
                 'actual_stocks.quantity as quantity',
+                'materials.area_id as area_id',
+                'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',

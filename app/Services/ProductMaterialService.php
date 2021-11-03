@@ -65,6 +65,8 @@ class ProductMaterialService
                 'product_materials.material_uom as material_uom',
                 'product_materials.material_quantity as material_quantity',
                 'product_materials.product_quantity as product_quantity',
+                'products.area_id as area_id',
+                'products.period_id as period_id',
                 'products.code as product_code',
                 'products.description as product_description',
                 'products.uom as product_uom',
@@ -220,8 +222,7 @@ class ProductMaterialService
      */
     public function destroy(ProductMaterial $productMaterial): void
     {
-        $productMaterial->load('product');
-        $data = $productMaterial->product->code;
+        $data = $productMaterial->load('product')->product->code;
         $productMaterial->deleteOrFail();
         auth()->user()?->notify(new DataDestroyed('Product Material', $data));
     }

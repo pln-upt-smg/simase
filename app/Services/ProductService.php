@@ -61,6 +61,8 @@ class ProductService
         $query = QueryBuilder::for(Product::class)
             ->select([
                 'products.id as id',
+                'products.area_id as area_id',
+                'products.period_id as period_id',
                 'products.code as code',
                 'products.description as description',
                 'products.uom as uom',
