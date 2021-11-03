@@ -73,8 +73,8 @@ export default defineComponent({
     },
     methods: {
         close() {
-            this.$emit('close')
             this.$page.props.unreadNotificationCount = 0
+            this.$emit('close')
             this.$inertia.reload({
                 replace: true,
                 preserveScroll: true,

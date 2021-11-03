@@ -80,7 +80,7 @@ class BatchService
             'material_code' => 'Kode Material'
         ]);
         Batch::create([
-            'material_id' => Material::whereCode($request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'code' => Str::upper($request->batch_code)
         ]);
         auth()->user()?->notify(new DataStored('Batch', Str::upper($request->batch_code)));
@@ -101,7 +101,7 @@ class BatchService
             'material_code' => 'Kode Material'
         ]);
         $batch->updateOrFail([
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'code' => Str::upper($request->batch_code)
         ]);
         $batch->save();

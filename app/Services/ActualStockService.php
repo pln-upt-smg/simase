@@ -172,7 +172,7 @@ class ActualStockService
             'quantity' => 'Kuantitas'
         ]);
         ActualStock::create([
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'user_id' => auth()->user()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'quantity' => (int)$request->quantity
@@ -199,7 +199,7 @@ class ActualStockService
             'batch_code' => 'Kode Batch',
             'quantity' => 'Kuantitas'
         ]);
-        $product = Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first();
+        $product = Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first();
         $product?->convertAsActualStock($request);
         auth()->user()?->notify(new DataStored('Actual Stock', Str::upper($request->material_code)));
     }
@@ -225,7 +225,7 @@ class ActualStockService
             'quantity' => 'Kuantitas'
         ]);
         $actual->updateOrFail([
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'quantity' => (int)$request->quantity
         ]);

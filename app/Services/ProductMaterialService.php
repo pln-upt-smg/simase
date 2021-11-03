@@ -151,7 +151,7 @@ class ProductMaterialService
             'material_code' => ['required', 'string', 'max:255',
                 Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at'),
                 Rule::unique('product_materials', 'material_id')
-                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0)
+                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0)
                     ->whereNull('deleted_at')
             ],
             'material_quantity' => ['required', 'integer', 'min:0'],
@@ -166,8 +166,8 @@ class ProductMaterialService
             'material_uom' => 'UoM Material'
         ]);
         ProductMaterial::create([
-            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0,
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
+            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'material_uom' => Str::upper($request->material_uom),
             'material_quantity' => (int)$request->material_quantity,
             'product_quantity' => (int)$request->product_quantity
@@ -190,7 +190,7 @@ class ProductMaterialService
             'material_code' => ['required', 'string', 'max:255',
                 Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at'),
                 Rule::unique('product_materials', 'material_id')
-                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0)
+                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0)
                     ->whereNull('deleted_at')
                     ->ignore($material->id)
             ],
@@ -206,8 +206,8 @@ class ProductMaterialService
             'material_uom' => 'UoM Material'
         ]);
         $material->updateOrFail([
-            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->first()?->id ?? 0,
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
+            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'material_uom' => Str::upper($request->material_uom),
             'material_quantity' => (int)$request->material_quantity,
             'product_quantity' => (int)$request->product_quantity
@@ -243,8 +243,8 @@ class ProductMaterialService
             'file' => 'File'
         ]);
         $import = new ProductMaterialsImport(
-            Area::whereId((int)$request->area)->first(),
-            Period::whereId((int)$request->period)->first()
+            Area::where('id', (int)$request->area)->first(),
+            Period::where('id', (int)$request->period)->first()
         );
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Product Material', $import->getRowCount()));

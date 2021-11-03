@@ -241,8 +241,8 @@ class ProductService
             'file' => 'File'
         ]);
         $import = new ProductsImport(
-            Area::whereId((int)$request->area)->first(),
-            Period::whereId((int)$request->period)->first()
+            Area::where('id', (int)$request->area)->first(),
+            Period::where('id', (int)$request->period)->first()
         );
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Product', $import->getRowCount()));

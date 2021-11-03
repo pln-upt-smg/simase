@@ -175,7 +175,7 @@ class BookStockService
             'quantity' => 'Kuantitas'
         ]);
         BookStock::create([
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
@@ -215,7 +215,7 @@ class BookStockService
             'quantity' => 'Kuantitas'
         ]);
         $book->updateOrFail([
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
@@ -254,8 +254,8 @@ class BookStockService
             'file' => 'File'
         ]);
         $import = new BookStocksImport(
-            Area::whereId((int)$request->area)->first(),
-            Period::whereId((int)$request->period)->first()
+            Area::where('id', (int)$request->area)->first(),
+            Period::where('id', (int)$request->period)->first()
         );
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Book Stock', $import->getRowCount()));
