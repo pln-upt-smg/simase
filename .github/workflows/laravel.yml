@@ -44,9 +44,8 @@ jobs:
 
       - name: 🚨 Set Application Directory Permissions
         run: |
-          sudo chmod -R g+w storage/logs
           sudo chmod -R ug+rwx storage bootstrap/cache
-          sudo chown -R $(whoami) storage bootstrap/cache
+          sudo chmod -R g+w storage/logs
 
       - name: 📦 Install Composer Dependencies
         uses: ramsey/composer-install@v1

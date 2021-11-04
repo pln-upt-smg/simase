@@ -21,12 +21,13 @@ jobs:
           script: |
             cd /var/www/stocktake/web
             php artisan down
+            git branch --set-upstream-to=origin/main
             git fetch --all
             git reset --hard origin/main
-            git pull origin/main
-            sudo chmod -R g+w storage/logs
+            git pull
+            sudo chgrp -R www-data storage bootstrap/cache
             sudo chmod -R ug+rwx storage bootstrap/cache
-            sudo chown -R $(whoami) storage bootstrap/cache
+            sudo chmod -R g+w storage/logs
             composer i -o -n --no-dev
             php artisan migrate:fresh --seed --force
             php artisan env

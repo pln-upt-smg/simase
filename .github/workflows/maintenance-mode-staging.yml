@@ -20,7 +20,7 @@ jobs:
           port: 22
           script: |
             cd /var/www/stocktake/web
-            sudo chmod -R g+w storage/logs
+            sudo chgrp -R www-data storage bootstrap/cache
             sudo chmod -R ug+rwx storage bootstrap/cache
-            sudo chown -R $(whoami) storage bootstrap/cache
+            sudo chmod -R g+w storage/logs
             php artisan down

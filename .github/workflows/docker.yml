@@ -61,8 +61,8 @@ jobs:
 
       - name: 🚨 Set Application Directory Permissions
         run: |
-          docker exec -t stocktake-web-app-1 chmod -R g+w storage/logs
           docker exec -t stocktake-web-app-1 chmod -R ug+rwx storage bootstrap/cache
+          docker exec -t stocktake-web-app-1 chmod -R g+w storage/logs
 
       - name: 📦 Install NPM Dependencies
         run: docker exec -t stocktake-web-app-1 npm i
