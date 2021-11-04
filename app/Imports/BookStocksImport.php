@@ -43,7 +43,7 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
             'unrestricted' => ['required', 'numeric'],
             'qualinsp' => ['required', 'integer', 'min:0'],
             'materialdescription' => ['nullable', 'string', 'max:255'],
-            'quantity' => ['required', 'integer', 'min:0'],
+            'quantity' => ['required', 'numeric', 'min:0'],
             'uom' => ['nullable', 'string', 'max:255'],
             'mtyp' => ['nullable', 'string', 'max:255']
         ];

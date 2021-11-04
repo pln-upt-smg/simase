@@ -43,7 +43,7 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
             'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
             'batch' => ['required', 'string', 'max:255'],
             'materialdescription' => ['nullable', 'string', 'max:255'],
-            'quantity' => ['required', 'integer', 'min:0'],
+            'quantity' => ['required', 'numeric', 'min:0'],
             'uom' => ['nullable', 'string', 'max:255'],
             'mtyp' => ['nullable', 'string', 'max:255']
         ];

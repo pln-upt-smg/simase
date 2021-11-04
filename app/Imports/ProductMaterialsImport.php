@@ -39,11 +39,11 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
         return [
             'product' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
             'productdescription' => ['nullable', 'string', 'max:255'],
-            'productqty' => ['required', 'integer', 'min:0'],
+            'productqty' => ['required', 'numeric', 'min:0'],
             'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
             'materialdescription' => ['nullable', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
-            'qty' => ['required', 'integer', 'min:0']
+            'qty' => ['required', 'numeric', 'min:0']
         ];
     }
 
