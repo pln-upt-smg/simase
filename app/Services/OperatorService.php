@@ -12,6 +12,7 @@ use App\Notifications\DataDestroyed;
 use App\Notifications\DataImported;
 use App\Notifications\DataStored;
 use App\Notifications\DataUpdated;
+use App\Rules\IsValidDigit;
 use App\Rules\IsValidPhone;
 use App\Services\Helper\HasValidator;
 use Illuminate\Http\Request;
@@ -93,7 +94,7 @@ class OperatorService
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->whereNull('deleted_at'), new IsValidPhone],
-            'nip' => ['required', 'numeric', 'max:255', Rule::unique('users', 'nip')->whereNull('deleted_at')],
+            'nip' => ['required', 'numeric', new IsValidDigit(6), Rule::unique('users', 'nip')->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ], attributes: [
             'name' => 'Nama Pegawai',
@@ -121,7 +122,7 @@ class OperatorService
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($operator->id)->whereNull('deleted_at'), new IsValidPhone],
-            'nip' => ['required', 'numeric', 'max:255', Rule::unique('users', 'nip')->ignore($operator->id)->whereNull('deleted_at')],
+            'nip' => ['required', 'numeric', new IsValidDigit(6), Rule::unique('users', 'nip')->ignore($operator->id)->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
         ], attributes: [
             'name' => 'Nama Pegawai',

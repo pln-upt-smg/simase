@@ -5,8 +5,20 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Str;
 
-class IsValidPhone implements Rule
+class IsValidDigit implements Rule
 {
+    private int $minDigit;
+
+    /**
+     * Create a new rule instance.
+     *
+     * @return void
+     */
+    public function __construct(int $minDigit)
+    {
+        $this->minDigit = $minDigit;
+    }
+
     /**
      * Determine if the validation rule passes.
      *
@@ -16,11 +28,7 @@ class IsValidPhone implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        if (empty($value)) {
-            return true;
-        }
-        $value = Str::replace("'", '', $value);
-        return preg_match('%^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-. \\\/]?)?((?:\(?\d+\)?[\-. \\\/]?)*)(?:[\-. \\\/]?(?:#|ext\.?|extension|x)[\-. \\\/]?(\d+))?$%i', $value) === 1;
+        return Str::length((string)$value) >= $this->minDigit;
     }
 
     /**
@@ -30,6 +38,6 @@ class IsValidPhone implements Rule
      */
     public function message(): string
     {
-        return ':attribute tidak valid.';
+        return ':attribute minimal berisi ' . $this->minDigit . ' digit.';
     }
 }
