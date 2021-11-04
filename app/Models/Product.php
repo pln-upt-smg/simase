@@ -43,8 +43,9 @@ class Product extends Model
     public function convertAsActualStock(Request $request): void
     {
         $quantity = (int)$request->quantity;
+        $productMaterials = $this->load('productMaterials')->productMaterials;
         for($i = 0; $i < $quantity; $i++) {
-            foreach ($this->productMaterials as $productMaterial) {
+            foreach ($productMaterials as $productMaterial) {
                 ActualStock::create([
                     'material_id' => $productMaterial->material->id,
                     'user_id' => auth()->user()?->id ?? 0,
