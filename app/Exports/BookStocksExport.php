@@ -30,6 +30,7 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
+            'Area',
             'Material',
             'Plnt',
             'SLoc',
@@ -46,6 +47,7 @@ class BookStocksExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
+            Str::title(trim($row->material->area->name)),
             Str::upper(trim($row->material->code)),
             (string)$row->plnt,
             (string)$row->sloc,

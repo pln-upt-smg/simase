@@ -30,6 +30,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
+            'Area',
             'Product',
             'ProductDescription',
             'UOM',
@@ -44,6 +45,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
+            Str::title(trim($row->area->name)),
             Str::upper(trim($row->code)),
             Str::title(trim($row->description)),
             Str::upper(trim($row->uom)),

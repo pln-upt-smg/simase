@@ -30,6 +30,7 @@ class ProductMaterialsExport implements FromCollection, WithHeadings, WithMappin
     public function headings(): array
     {
         return [
+            'Area',
             'Product',
             'ProductDescription',
             'ProductQty',
@@ -43,6 +44,7 @@ class ProductMaterialsExport implements FromCollection, WithHeadings, WithMappin
     public function map($row): array
     {
         return [
+            Str::title(trim($row->product->area->name)),
             Str::upper(trim($row->product->code)),
             Str::title(trim($row->product->description)),
             (string)$row->product_quantity,

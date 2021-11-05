@@ -245,18 +245,13 @@ class BookStockService
     public function import(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
         ], attributes: [
-            'area' => 'Area',
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        $import = new BookStocksImport(
-            Area::where('id', (int)$request->area)->first(),
-            Period::where('id', (int)$request->period)->first()
-        );
+        $import = new BookStocksImport(Period::where('id', (int)$request->period)->first());
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Book Stock', $import->getRowCount()));
     }
@@ -302,6 +297,6 @@ class BookStockService
                 ->where('periods.id', $period->id)
                 ->whereNull('periods.deleted_at');
         }
-        return $query->orderBy('materials.code')->get()->load('material');
+        return $query->orderBy('materials.code')->get()->load(['material', 'material.area']);
     }
 }

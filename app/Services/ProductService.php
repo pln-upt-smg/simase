@@ -232,18 +232,13 @@ class ProductService
     public function import(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
         ], attributes: [
-            'area' => 'Area',
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        $import = new ProductsImport(
-            Area::where('id', (int)$request->area)->first(),
-            Period::where('id', (int)$request->period)->first()
-        );
+        $import = new ProductsImport(Period::where('id', (int)$request->period)->first());
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Product', $import->getRowCount()));
     }
@@ -288,7 +283,7 @@ class ProductService
                 ->where('periods.id', $period->id)
                 ->whereNull('periods.deleted_at');
         }
-        return $query->orderBy('products.code')->get();
+        return $query->orderBy('products.code')->get()->load('area');
     }
 
     public function resolveProductCode(Request $request, bool $strict = true): ?Product
