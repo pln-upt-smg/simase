@@ -65,10 +65,10 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
         return new BookStock([
             'material_id' => $this->resolveMaterialId($code),
             'batch' => Str::upper(trim($row['batch'])),
-            'quantity' => (int)$row['quantity'],
+            'quantity' => $row['quantity'],
             'plnt' => (int)$row['plnt'],
             'sloc' => (int)$row['sloc'],
-            'unrestricted' => (float)$row['unrestricted'],
+            'unrestricted' => $row['unrestricted'],
             'qualinsp' => (int)$row['qualinsp']
         ]);
     }

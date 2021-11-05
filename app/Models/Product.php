@@ -50,7 +50,7 @@ class Product extends Model
                     'material_id' => $productMaterial->load('material')->material->id,
                     'user_id' => auth()->user()?->id ?? 0,
                     'batch' => Str::upper($request->batch_code),
-                    'quantity' => (int)$productMaterial->material_quantity
+                    'quantity' => $productMaterial->material_quantity
                 ]);
             }
         }

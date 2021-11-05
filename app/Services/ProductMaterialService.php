@@ -169,8 +169,8 @@ class ProductMaterialService
             'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'material_uom' => Str::upper($request->material_uom),
-            'material_quantity' => (int)$request->material_quantity,
-            'product_quantity' => (int)$request->product_quantity
+            'material_quantity' => $request->material_quantity,
+            'product_quantity' => $request->product_quantity
         ]);
         auth()->user()?->notify(new DataStored('Product Material', Str::upper($request->product_code)));
     }
@@ -209,8 +209,8 @@ class ProductMaterialService
             'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'material_uom' => Str::upper($request->material_uom),
-            'material_quantity' => (int)$request->material_quantity,
-            'product_quantity' => (int)$request->product_quantity
+            'material_quantity' => $request->material_quantity,
+            'product_quantity' => $request->product_quantity
         ]);
         $material->save();
         auth()->user()?->notify(new DataUpdated('Product Material', Str::upper($request->product_code)));

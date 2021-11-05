@@ -66,7 +66,7 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
             'user_id' => $this->creator?->id ?? 0,
             'material_id' => $this->resolveMaterialId($code),
             'batch' => Str::upper(trim($row['batch'])),
-            'quantity' => (int)$row['quantity']
+            'quantity' => $row['quantity']
         ]);
     }
 

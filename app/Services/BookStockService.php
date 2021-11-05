@@ -180,8 +180,8 @@ class BookStockService
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
             'qualinsp' => (int)$request->qualinsp,
-            'unrestricted' => (float)$request->unrestricted,
-            'quantity' => (int)$request->quantity
+            'unrestricted' => $request->unrestricted,
+            'quantity' => $request->quantity
         ]);
         auth()->user()?->notify(new DataStored('Book Stock', Str::upper($request->material_code)));
     }
@@ -220,8 +220,8 @@ class BookStockService
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
             'qualinsp' => (int)$request->qualinsp,
-            'unrestricted' => (float)$request->unrestricted,
-            'quantity' => (int)$request->quantity
+            'unrestricted' => $request->unrestricted,
+            'quantity' => $request->quantity
         ]);
         $book->save();
         auth()->user()?->notify(new DataUpdated('Book Stock', Str::upper($request->material_code)));
