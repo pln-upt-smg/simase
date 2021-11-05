@@ -65,6 +65,7 @@ Item Stock Management System for Unilever Indonesia.
 24. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
 25. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
 26. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
+27. [pnpm](https://pnpm.io) <sup><i>optional</i></sup>
 
 <br/>
 

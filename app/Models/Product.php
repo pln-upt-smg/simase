@@ -47,7 +47,7 @@ class Product extends Model
         for($i = 0; $i < $quantity; $i++) {
             foreach ($productMaterials as $productMaterial) {
                 ActualStock::create([
-                    'material_id' => $productMaterial->material->id,
+                    'material_id' => $productMaterial->load('material')->material->id,
                     'user_id' => auth()->user()?->id ?? 0,
                     'batch' => Str::upper($request->batch_code),
                     'quantity' => (int)$productMaterial->material_quantity
