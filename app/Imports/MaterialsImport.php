@@ -55,15 +55,7 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     public function model(array $row): ?Material
     {
         $this->incrementRowCounter();
-        $newAreaId = $this->resolveAreaId($row['area']);
-        if ($this->currentAreaId !== $newAreaId) {
-            $this->currentAreaId = $newAreaId;
-            Material::where('area_id', $this->currentAreaId)
-                ->where('period_id', $period?->id ?? 0)
-                ->whereNotIn('code', $this->whitelistedMaterialCodes)
-                ->whereNull('deleted_at')
-                ->delete();
-        }
+        $this->lookupArea($row);
         $code = Str::upper(trim($row['material']));
         $this->whitelistedMaterialCodes[] = $code;
         return new Material([
@@ -77,5 +69,18 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
             'price' => (int)$row['price'],
             'per' => (int)$row['per']
         ]);
+    }
+
+    private function lookupArea(array $row): void
+    {
+        $newAreaId = $this->resolveAreaId($row['area']);
+        if ($this->currentAreaId !== $newAreaId) {
+            $this->currentAreaId = $newAreaId;
+            Material::where('area_id', $this->currentAreaId)
+                ->where('period_id', $period?->id ?? 0)
+                ->whereNotIn('code', $this->whitelistedMaterialCodes)
+                ->whereNull('deleted_at')
+                ->delete();
+        }
     }
 }
