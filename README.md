@@ -10,8 +10,8 @@
 <a href="https://nodejs.org/en/download">
     <img alt="Node Version" src="https://img.shields.io/badge/node-%3E%3D%2016-brightgreen">
 </a>
-<a href="https://nodejs.org/en/download">
-    <img alt="NPM Version" src="https://img.shields.io/badge/npm-%3E%3D%207-red">
+<a href="https://pnpm.io">
+    <img alt="PNPM Version" src="https://img.shields.io/badge/pnpm-%3E%3D%206-red">
 </a>
 <a href="https://www.php.net/releases">
     <img alt="PHP Version" src="https://img.shields.io/badge/php-%3E%3D%208.0-blue">
@@ -112,7 +112,7 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 2. Composer `v2`
 3. MySQL Server `v5.7`
 4. NodeJS `v16`
-5. npm `v7`
+5. pnpm `v6`
 6. [Laragon](https://laragon.org/) / [Laravel Valet](https://laravel.com/docs/8.x/valet) <sup><i>optional</i></sup>
 
 #### 🖥️ Installation
@@ -161,7 +161,7 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 2. Composer `v2`
 3. MySQL Server `v5.7`
 4. NodeJS `v16`
-5. npm `v7`
+5. pnpm `v6`
 6. [Nginx](https://nginx.org/en/download.html) / [Apache2](https://httpd.apache.org/download.cgi)
    / [LiteSpeed](https://openlitespeed.org/Downloads/)
 7. [Supercronic](https://github.com/aptible/supercronic)
