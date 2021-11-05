@@ -209,10 +209,8 @@
                 </p>
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-select ref="importArea" placeholder="Pilih Area" v-model="importForm.area"
-                                :data="areas" class="block w-full"/>
                     <jet-select ref="importPeriod" placeholder="Pilih Periode" v-model="importForm.period"
-                                :data="periods" class="mt-4 block w-full"/>
+                                :data="periods" class="block w-full"/>
                     <div
                         @click="this.$refs.importInput.click()"
                         class="mt-4 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer">
@@ -372,7 +370,6 @@ export default defineComponent({
                 id: null
             }),
             importForm: useForm({
-                area: null,
                 period: null,
                 file: null
             }),
@@ -492,7 +489,7 @@ export default defineComponent({
         },
         confirmImport() {
             setTimeout(() => this.confirmingImport = true, 150)
-            setTimeout(() => this.$refs.importArea.focus(), 300)
+            setTimeout(() => this.$refs.importPeriod.focus(), 300)
         },
         confirmExport() {
             setTimeout(() => this.confirmingExport = true, 150)
@@ -546,7 +543,6 @@ export default defineComponent({
                 this.clearErrors()
                 this.importForm.clearErrors()
                 this.importForm.reset()
-                this.importForm.area = null
                 this.importForm.period = null
                 this.importForm.file = null
             }, 500)
