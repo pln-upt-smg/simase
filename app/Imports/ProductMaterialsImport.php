@@ -59,7 +59,7 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
             'product_quantity' => (int)$row['productqty']
         ]);
         $productMaterial->save();
-        $this->whitelistedProductMaterialIds[] = $productMaterial->fresh()->id;
+        $this->whitelistedProductMaterialIds[] = $productMaterial->fresh()?->id ?? 0;
         return $productMaterial;
     }
 
