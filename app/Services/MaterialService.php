@@ -239,7 +239,6 @@ class MaterialService
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        SystemHelper::allowLongerExecutionTimeLimit();
         $import = new MaterialsImport(Period::where('id', (int)$request->period)->first());
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Material', $import->getRowCount()));

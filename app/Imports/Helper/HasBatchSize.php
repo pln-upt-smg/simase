@@ -6,6 +6,6 @@ trait HasBatchSize
 {
     public function batchSize(): int
     {
-        return 1000;
+        return 500;
     }
 }
