@@ -20,9 +20,9 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVal
 {
     use HasValidationException, HasDefaultSheet, HasRowCounter, HasAreaResolver;
 
-    private int $currentAreaId;
+    private int $currentAreaId = 0;
 
-    private array $whitelistedProductCodes;
+    private array $whitelistedProductCodes = [];
 
     private ?Period $period;
 
@@ -74,7 +74,7 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVal
     private function lookupArea(array $row): void
     {
         $newAreaId = $this->resolveAreaId($row['area']);
-        if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
+        if ($this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             Product::where('area_id', $this->currentAreaId)
                 ->where('period_id', $this->period?->id ?? 0)

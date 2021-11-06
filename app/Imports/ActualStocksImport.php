@@ -22,9 +22,9 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
 {
     use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter, HasAreaResolver;
 
-    private int $currentAreaId;
+    private int $currentAreaId = 0;
 
-    private array $whitelistedMaterialCodes;
+    private array $whitelistedMaterialCodes = [];
 
     private ?Period $period;
 
@@ -73,7 +73,7 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
     private function lookupArea(array $row): void
     {
         $newAreaId = $this->resolveAreaId($row['area']);
-        if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
+        if ($this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
                 ->where('materials.area_id', $this->currentAreaId)

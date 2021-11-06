@@ -22,9 +22,9 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
 {
     use HasValidationException, HasDefaultSheet, HasProductResolver, HasMaterialResolver, HasRowCounter, HasAreaResolver;
 
-    private int $currentAreaId;
+    private int $currentAreaId = 0;
 
-    private array $whitelistedProductMaterialIds;
+    private array $whitelistedProductMaterialIds = [];
 
     private ?Period $period;
 
@@ -66,7 +66,7 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
     private function lookupArea(array $row): void
     {
         $newAreaId = $this->resolveAreaId($row['area']);
-        if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
+        if ($this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             ProductMaterial::leftJoin('products', 'products.id', '=', 'product_materials.product_id')
                 ->leftJoin('materials', 'materials.id', '=', 'product_materials.material_id')

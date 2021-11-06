@@ -20,9 +20,9 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
 {
     use HasValidationException, HasDefaultSheet, HasRowCounter, HasAreaResolver;
 
-    private int $currentAreaId;
+    private int $currentAreaId = 0;
 
-    private array $whitelistedMaterialCodes;
+    private array $whitelistedMaterialCodes = [];
 
     private ?Period $period;
 
@@ -74,10 +74,10 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     private function lookupArea(array $row): void
     {
         $newAreaId = $this->resolveAreaId($row['area']);
-        if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
+        if ($this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             Material::where('area_id', $this->currentAreaId)
-                ->where('period_id', $this->period?->id ?? 0)
+                ->where('period_id', $period?->id ?? 0)
                 ->whereNotIn('code', $this->whitelistedMaterialCodes)
                 ->whereNull('deleted_at')
                 ->delete();

@@ -21,9 +21,9 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
 {
     use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter, HasAreaResolver;
 
-    private int $currentAreaId;
+    private int $currentAreaId = 0;
 
-    private array $whitelistedMaterialCodes;
+    private array $whitelistedMaterialCodes = [];
 
     private ?Period $period;
 
@@ -76,7 +76,7 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
     private function lookupArea(array $row): void
     {
         $newAreaId = $this->resolveAreaId($row['area']);
-        if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
+        if ($this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             BookStock::leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
                 ->where('materials.area_id', $this->currentAreaId)
