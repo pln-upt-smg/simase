@@ -66,7 +66,7 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
     private function lookupArea(array $row): void
     {
         $newAreaId = $this->resolveAreaId($row['area']);
-        if ($this->currentAreaId !== $newAreaId) {
+        if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             ProductMaterial::leftJoin('products', 'products.id', '=', 'product_materials.product_id')
                 ->leftJoin('materials', 'materials.id', '=', 'product_materials.material_id')

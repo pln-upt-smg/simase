@@ -73,7 +73,7 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
     private function lookupArea(array $row): void
     {
         $newAreaId = $this->resolveAreaId($row['area']);
-        if ($this->currentAreaId !== $newAreaId) {
+        if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
                 ->where('materials.area_id', $this->currentAreaId)

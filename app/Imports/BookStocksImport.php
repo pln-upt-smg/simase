@@ -76,7 +76,7 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
     private function lookupArea(array $row): void
     {
         $newAreaId = $this->resolveAreaId($row['area']);
-        if ($this->currentAreaId !== $newAreaId) {
+        if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             BookStock::leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
                 ->where('materials.area_id', $this->currentAreaId)

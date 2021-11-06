@@ -74,7 +74,7 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVal
     private function lookupArea(array $row): void
     {
         $newAreaId = $this->resolveAreaId($row['area']);
-        if ($this->currentAreaId !== $newAreaId) {
+        if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             Product::where('area_id', $this->currentAreaId)
                 ->where('period_id', $period?->id ?? 0)
