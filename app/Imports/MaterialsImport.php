@@ -15,9 +15,10 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets, WithBatchInserts
+class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets, WithBatchInserts, WithUpserts
 {
     use HasValidationException, HasDefaultSheet, HasRowCounter, HasAreaResolver;
 
@@ -35,12 +36,12 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     public function rules(): array
     {
         return [
-            'area' => ['required', 'string', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
-            'material' => ['required', 'string', 'max:255'],
-            'materialdescription' => ['required', 'string', 'max:255'],
-            'uom' => ['required', 'string', 'max:255'],
-            'mtyp' => ['required', 'string', 'max:255'],
-            'crcy' => ['required', 'string', 'max:255'],
+            'area' => ['required', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
+            'material' => ['required', 'max:255'],
+            'materialdescription' => ['required', 'max:255'],
+            'uom' => ['required', 'max:255'],
+            'mtyp' => ['required', 'max:255'],
+            'crcy' => ['required', 'max:255'],
             'price' => ['required', 'integer', 'min:0'],
             'per' => ['required', 'integer', 'min:0']
         ];
