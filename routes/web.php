@@ -17,15 +17,6 @@ Route::get('/', static function () {
     return redirect()->route('login');
 });
 
-if (app()->isLocal() || config('app.env_staging')) {
-
-    Route::get('phpinfo', static function () {
-        /** @noinspection ForgottenDebugOutputInspection */
-        return phpinfo();
-    });
-
-}
-
 /**
  * Role-specific web routes
  */

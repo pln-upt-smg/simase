@@ -50,6 +50,7 @@ jobs:
             sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_05
             sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_06
             sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_07
+            sudo php artisan octane:stop
             sudo php artisan octane:reload
             sudo rm -rf /var/cache/ngx_pagespeed/*
             php artisan env
