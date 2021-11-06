@@ -77,7 +77,7 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVal
         if (empty($this->currentAreaId) || $this->currentAreaId !== $newAreaId) {
             $this->currentAreaId = $newAreaId;
             Product::where('area_id', $this->currentAreaId)
-                ->where('period_id', $period?->id ?? 0)
+                ->where('period_id', $this->period?->id ?? 0)
                 ->whereNotIn('code', $this->whitelistedProductCodes)
                 ->whereNull('deleted_at')
                 ->delete();

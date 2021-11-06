@@ -71,9 +71,9 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
             ProductMaterial::leftJoin('products', 'products.id', '=', 'product_materials.product_id')
                 ->leftJoin('materials', 'materials.id', '=', 'product_materials.material_id')
                 ->where('products.area_id', $this->currentAreaId)
-                ->where('products.period_id', $period?->id ?? 0)
+                ->where('products.period_id', $this->period?->id ?? 0)
                 ->where('materials.area_id', $this->currentAreaId)
-                ->where('materials.period_id', $period?->id ?? 0)
+                ->where('materials.period_id', $this->period?->id ?? 0)
                 ->whereNotIn('product_materials.id', $this->whitelistedProductMaterialIds)
                 ->whereNull('product_materials.deleted_at')
                 ->delete();

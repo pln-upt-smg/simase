@@ -77,7 +77,7 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
             $this->currentAreaId = $newAreaId;
             ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
                 ->where('materials.area_id', $this->currentAreaId)
-                ->where('materials.period_id', $period?->id ?? 0)
+                ->where('materials.period_id', $this->period?->id ?? 0)
                 ->whereNotIn('materials.code', $this->whitelistedMaterialCodes)
                 ->whereNull('actual_stocks.deleted_at')
                 ->delete();

@@ -80,7 +80,7 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithV
             $this->currentAreaId = $newAreaId;
             BookStock::leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
                 ->where('materials.area_id', $this->currentAreaId)
-                ->where('materials.period_id', $period?->id ?? 0)
+                ->where('materials.period_id', $this->period?->id ?? 0)
                 ->whereNotIn('materials.code', $this->whitelistedMaterialCodes)
                 ->whereNull('book_stocks.deleted_at')
                 ->delete();
