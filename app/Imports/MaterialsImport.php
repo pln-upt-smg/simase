@@ -2,7 +2,6 @@
 
 namespace App\Imports;
 
-use App\Http\Helper\SystemHelper;
 use App\Imports\Helper\HasAreaResolver;
 use App\Imports\Helper\HasBatchSize;
 use App\Imports\Helper\HasChunkSize;
@@ -34,7 +33,6 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
 
     public function __construct(?Period $period)
     {
-        SystemHelper::allowLongerExecutionTimeLimit(0);
         $this->period = $period;
     }
 
