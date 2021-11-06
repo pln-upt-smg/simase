@@ -12,11 +12,12 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets
+class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets, WithBatchInserts
 {
     use HasValidationException, HasDefaultSheet, HasRowCounter, HasAreaResolver;
 
@@ -82,5 +83,10 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
                 ->whereNull('deleted_at')
                 ->delete();
         }
+    }
+
+    public function batchSize(): int
+    {
+        return 500;
     }
 }
