@@ -34,7 +34,7 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
 
     public function __construct(?Period $period)
     {
-        SystemHelper::allowLongerExecutionTimeLimit();
+        SystemHelper::allowLongerExecutionTimeLimit(0);
         $this->period = $period;
     }
 
