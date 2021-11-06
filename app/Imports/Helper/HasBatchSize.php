@@ -2,10 +2,10 @@
 
 namespace App\Imports\Helper;
 
-trait HasBatchInserts
+trait HasBatchSize
 {
     public function batchSize(): int
     {
-        return 500;
+        return 1000;
     }
 }

@@ -3,7 +3,8 @@
 namespace App\Imports;
 
 use App\Imports\Helper\HasAreaResolver;
-use App\Imports\Helper\HasBatchInserts;
+use App\Imports\Helper\HasBatchSize;
+use App\Imports\Helper\HasChunkSize;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasMaterialResolver;
 use App\Imports\Helper\HasRowCounter;
@@ -15,14 +16,15 @@ use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets, WithBatchInserts, WithUpserts
+class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets, WithBatchInserts, WithChunkReading, WithUpserts
 {
-    use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter, HasAreaResolver, HasBatchInserts;
+    use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter, HasAreaResolver, HasBatchSize, HasChunkSize;
 
     private int $currentAreaId = 0;
 

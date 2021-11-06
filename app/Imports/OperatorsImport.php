@@ -2,7 +2,8 @@
 
 namespace App\Imports;
 
-use App\Imports\Helper\HasBatchInserts;
+use App\Imports\Helper\HasBatchSize;
+use App\Imports\Helper\HasChunkSize;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
@@ -16,6 +17,7 @@ use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
@@ -23,9 +25,9 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Events\BeforeSheet;
 
-class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets, WithBatchInserts, WithUpserts
+class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets, WithBatchInserts, WithChunkReading, WithUpserts
 {
-    use HasValidationException, HasDefaultSheet, HasRowCounter, HasBatchInserts;
+    use HasValidationException, HasDefaultSheet, HasRowCounter, HasBatchSize, HasChunkSize;
 
     private ?Role $role;
 
