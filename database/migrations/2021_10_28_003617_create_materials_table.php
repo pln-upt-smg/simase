@@ -22,8 +22,8 @@ class CreateMaterialsTable extends Migration
             $table->string('uom');
             $table->string('mtyp');
             $table->string('crcy');
-            $table->integer('price');
-            $table->integer('per');
+            $table->bigInteger('price');
+            $table->bigInteger('per');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -2,26 +2,30 @@
 
 namespace App\Imports;
 
+use App\Imports\Helper\HasBatchInserts;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
 use App\Models\Role;
 use App\Models\User;
 use App\Rules\IsValidDigit;
+use App\Rules\IsValidPhone;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Events\BeforeSheet;
 
-class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
+class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets, WithBatchInserts, WithUpserts
 {
-    use HasValidationException, HasDefaultSheet, HasRowCounter;
+    use HasValidationException, HasDefaultSheet, HasRowCounter, HasBatchInserts;
 
     private ?Role $role;
 
@@ -33,10 +37,10 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'name' => ['required', 'max:255'],
+            'phone' => ['nullable', 'max:20', new IsValidPhone],
             'nip' => ['required', 'numeric', new IsValidDigit(6)],
-            'role' => ['required', 'string', 'max:255', Rule::exists('roles', 'name')->whereNull('deleted_at')]
+            'role' => ['required', 'max:255', Rule::exists('roles', 'name')->whereNull('deleted_at')]
         ];
     }
 

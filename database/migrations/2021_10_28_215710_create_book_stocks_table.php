@@ -17,11 +17,11 @@ class CreateBookStocksTable extends Migration
             $table->id();
             $table->foreignId('material_id')->constrained();
             $table->string('batch');
-            $table->integer('quantity');
-            $table->integer('plnt');
-            $table->integer('sloc');
+            $table->bigInteger('quantity');
+            $table->bigInteger('plnt');
+            $table->bigInteger('sloc');
             $table->float('unrestricted');
-            $table->integer('qualinsp');
+            $table->bigInteger('qualinsp');
             $table->timestamps();
             $table->softDeletes();
         });

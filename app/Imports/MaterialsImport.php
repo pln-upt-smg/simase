@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Imports\Helper\HasAreaResolver;
+use App\Imports\Helper\HasBatchInserts;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasRowCounter;
 use App\Imports\Helper\HasValidationException;
@@ -20,7 +21,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 
 class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets, WithBatchInserts, WithUpserts
 {
-    use HasValidationException, HasDefaultSheet, HasRowCounter, HasAreaResolver;
+    use HasValidationException, HasDefaultSheet, HasRowCounter, HasAreaResolver, HasBatchInserts;
 
     private int $currentAreaId = 0;
 
@@ -84,10 +85,5 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
                 ->whereNull('deleted_at')
                 ->delete();
         }
-    }
-
-    public function batchSize(): int
-    {
-        return 500;
     }
 }

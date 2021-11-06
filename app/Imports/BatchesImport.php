@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Imports\Helper\HasBatchInserts;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasMaterialResolver;
 use App\Imports\Helper\HasRowCounter;
@@ -12,20 +13,21 @@ use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class BatchesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets
+class BatchesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets, WithBatchInserts
 {
-    use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter, RegistersEventListeners;
+    use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter, RegistersEventListeners, HasBatchInserts;
 
     public function rules(): array
     {
         return [
-            'batch' => ['required', 'string', 'max:255'],
-            'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')]
+            'batch' => ['required', 'max:255'],
+            'material' => ['required', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')]
         ];
     }
 

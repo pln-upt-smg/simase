@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Imports\Helper\HasAreaResolver;
+use App\Imports\Helper\HasBatchInserts;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasMaterialResolver;
 use App\Imports\Helper\HasRowCounter;
@@ -14,13 +15,15 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets
+class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets, WithBatchInserts, WithUpserts
 {
-    use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter, HasAreaResolver;
+    use HasValidationException, HasDefaultSheet, HasMaterialResolver, HasRowCounter, HasAreaResolver, HasBatchInserts;
 
     private int $currentAreaId = 0;
 
@@ -39,13 +42,13 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
     public function rules(): array
     {
         return [
-            'area' => ['required', 'string', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
-            'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
-            'batch' => ['required', 'string', 'max:255'],
-            'materialdescription' => ['nullable', 'string', 'max:255'],
+            'area' => ['required', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
+            'material' => ['required', 'max:255', Rule::exists('materials', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
+            'batch' => ['required', 'max:255'],
+            'materialdescription' => ['nullable', 'max:255'],
             'quantity' => ['required', 'numeric', 'min:0'],
-            'uom' => ['nullable', 'string', 'max:255'],
-            'mtyp' => ['nullable', 'string', 'max:255']
+            'uom' => ['nullable', 'max:255'],
+            'mtyp' => ['nullable', 'max:255']
         ];
     }
 

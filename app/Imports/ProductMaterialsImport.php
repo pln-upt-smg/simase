@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Imports\Helper\HasAreaResolver;
+use App\Imports\Helper\HasBatchInserts;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasMaterialResolver;
 use App\Imports\Helper\HasProductResolver;
@@ -14,13 +15,14 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets
+class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets, WithBatchInserts
 {
-    use HasValidationException, HasDefaultSheet, HasProductResolver, HasMaterialResolver, HasRowCounter, HasAreaResolver;
+    use HasValidationException, HasDefaultSheet, HasProductResolver, HasMaterialResolver, HasRowCounter, HasAreaResolver, HasBatchInserts;
 
     private int $currentAreaId = 0;
 
@@ -36,13 +38,13 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
     public function rules(): array
     {
         return [
-            'area' => ['required', 'string', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
-            'product' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
-            'productdescription' => ['nullable', 'string', 'max:255'],
+            'area' => ['required', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
+            'product' => ['required', 'max:255', Rule::exists('products', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
+            'productdescription' => ['nullable', 'max:255'],
             'productqty' => ['required', 'numeric', 'min:0'],
-            'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
-            'materialdescription' => ['nullable', 'string', 'max:255'],
-            'uom' => ['required', 'string', 'max:255'],
+            'material' => ['required', 'max:255', Rule::exists('materials', 'code')->where('area_id', $this->area?->id ?? 0)->where('period_id', $this->period?->id ?? 0)->whereNull('deleted_at')],
+            'materialdescription' => ['nullable', 'max:255'],
+            'uom' => ['required', 'max:255'],
             'qty' => ['required', 'numeric', 'min:0']
         ];
     }
