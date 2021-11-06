@@ -239,7 +239,6 @@ class ProductService
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        SystemHelper::allowLongerExecutionTimeLimit();
         $import = new ProductsImport(Period::where('id', (int)$request->period)->first());
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Product', $import->getRowCount()));

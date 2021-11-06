@@ -258,7 +258,6 @@ class ActualStockService
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        SystemHelper::allowLongerExecutionTimeLimit();
         $import = new ActualStocksImport(Period::where('id', (int)$request->period)->first());
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Actual Stock', $import->getRowCount()));

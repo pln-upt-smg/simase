@@ -252,7 +252,6 @@ class BookStockService
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        SystemHelper::allowLongerExecutionTimeLimit();
         $import = new BookStocksImport(Period::where('id', (int)$request->period)->first());
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Book Stock', $import->getRowCount()));
