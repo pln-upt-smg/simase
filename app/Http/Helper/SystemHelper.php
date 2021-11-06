@@ -18,13 +18,4 @@ abstract class SystemHelper
     {
         set_time_limit($time ?? self::MAX_EXECUTION_TIME_LIMIT);
     }
-
-    /**
-     * Reset the script max execution time limit back to the default
-     * PHP Execution Time Limit value (30 seconds).
-     */
-    public static function resetExecutionTimeLimit(): void
-    {
-        set_time_limit(self::DEFAULT_EXECUTION_TIME_LIMIT);
-    }
 }
