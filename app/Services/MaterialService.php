@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exports\MaterialsExport;
 use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\MediaHelper;
+use App\Http\Helper\SystemHelper;
 use App\Imports\MaterialsImport;
 use App\Models\Area;
 use App\Models\Material;
@@ -238,6 +239,7 @@ class MaterialService
             'period' => 'Periode',
             'file' => 'File'
         ]);
+        SystemHelper::allowLongerExecutionTimeLimit();
         $import = new MaterialsImport(Period::where('id', (int)$request->period)->first());
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Material', $import->getRowCount()));

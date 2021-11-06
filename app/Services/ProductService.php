@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exports\ProductsExport;
 use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\MediaHelper;
+use App\Http\Helper\SystemHelper;
 use App\Imports\ProductsImport;
 use App\Models\Area;
 use App\Models\Period;
@@ -238,6 +239,7 @@ class ProductService
             'period' => 'Periode',
             'file' => 'File'
         ]);
+        SystemHelper::allowLongerExecutionTimeLimit();
         $import = new ProductsImport(Period::where('id', (int)$request->period)->first());
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Product', $import->getRowCount()));

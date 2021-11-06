@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exports\BookStocksExport;
 use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\MediaHelper;
+use App\Http\Helper\SystemHelper;
 use App\Imports\BookStocksImport;
 use App\Models\Area;
 use App\Models\BookStock;
@@ -251,6 +252,7 @@ class BookStockService
             'period' => 'Periode',
             'file' => 'File'
         ]);
+        SystemHelper::allowLongerExecutionTimeLimit();
         $import = new BookStocksImport(Period::where('id', (int)$request->period)->first());
         Excel::import($import, $request->file('file'));
         auth()->user()?->notify(new DataImported('Book Stock', $import->getRowCount()));
