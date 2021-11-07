@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exports\ActualStocksExport;
 use App\Http\Helper\InertiaHelper;
+use App\Http\Helper\JobHelper;
 use App\Http\Helper\MediaHelper;
 use App\Imports\ActualStocksImport;
 use App\Models\ActualStock;
@@ -12,7 +13,6 @@ use App\Models\Material;
 use App\Models\Period;
 use App\Models\Product;
 use App\Notifications\DataDestroyed;
-use App\Notifications\DataImported;
 use App\Notifications\DataStored;
 use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
@@ -252,14 +252,16 @@ class ActualStockService
     {
         $this->validate($request, [
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
+            'file' => ['required', 'mimes:xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
         ], attributes: [
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        $import = new ActualStocksImport(Period::where('id', (int)$request->period)->first());
-        Excel::import($import, $request->file('file'));
-        auth()->user()?->notify(new DataImported('Actual Stock', $import->getRowCount()));
+        JobHelper::limitOnce();
+        Excel::import(new ActualStocksImport(
+            Period::where('id', (int)$request->period)->first(),
+            auth()->user()
+        ), $request->file('file'));
     }
 
     /**

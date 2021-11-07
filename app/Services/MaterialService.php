@@ -4,13 +4,13 @@ namespace App\Services;
 
 use App\Exports\MaterialsExport;
 use App\Http\Helper\InertiaHelper;
+use App\Http\Helper\JobHelper;
 use App\Http\Helper\MediaHelper;
 use App\Imports\MaterialsImport;
 use App\Models\Area;
 use App\Models\Material;
 use App\Models\Period;
 use App\Notifications\DataDestroyed;
-use App\Notifications\DataImported;
 use App\Notifications\DataStored;
 use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
@@ -72,16 +72,14 @@ class MaterialService
                 'materials.per as per',
                 DB::raw('date_format(materials.updated_at, "%d %b %Y") as update_date')
             ])
-            ->whereNull('materials.deleted_at');
+            ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['materials.deleted_at', 'areas.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                ->where('areas.id', $area->id)
-                ->whereNull('areas.deleted_at');
+            $query = $query->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->defaultSort('materials.code')
             ->allowedFilters(InertiaHelper::filterBy([
@@ -227,20 +225,22 @@ class MaterialService
 
     /**
      * @param Request $request
-     * @throws Throwable
+     * @throws ValidationException
      */
     public function import(Request $request): void
     {
         $this->validate($request, [
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
+            'file' => ['required', 'mimes:xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
         ], attributes: [
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        $import = new MaterialsImport(Period::where('id', (int)$request->period)->first());
-        Excel::import($import, $request->file('file'));
-        auth()->user()?->notify(new DataImported('Material', $import->getRowCount()));
+        JobHelper::limitOnce();
+        Excel::import(new MaterialsImport(
+            Period::where('id', (int)$request->period)->first(),
+            auth()->user()
+        ), $request->file('file'));
     }
 
     /**

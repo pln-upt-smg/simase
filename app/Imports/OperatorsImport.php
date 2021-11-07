@@ -2,15 +2,18 @@
 
 namespace App\Imports;
 
+use App\Imports\Contract\WithDefaultEvents;
 use App\Imports\Helper\HasBatchSize;
 use App\Imports\Helper\HasChunkSize;
+use App\Imports\Helper\HasDefaultEvents;
 use App\Imports\Helper\HasDefaultSheet;
-use App\Imports\Helper\HasRowCounter;
-use App\Imports\Helper\HasValidationException;
+use App\Imports\Helper\HasImporter;
 use App\Models\Role;
 use App\Models\User;
 use App\Rules\IsValidDigit;
 use App\Rules\IsValidPhone;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -22,18 +25,17 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithUpserts;
-use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Events\BeforeSheet;
 
-class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithEvents, WithMultipleSheets, WithBatchInserts, WithChunkReading, WithUpserts
+class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
 {
-    use HasValidationException, HasDefaultSheet, HasRowCounter, HasBatchSize, HasChunkSize;
+    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize;
 
-    private ?Role $role;
+    private int $roleId;
 
-    public function __construct()
+    public function __construct(?User $user)
     {
-        $this->role = Role::operator();
+        $this->roleId = Role::operator()?->id ?? 2;
+        $this->userId = $user?->id ?? 0;
     }
 
     public function rules(): array
@@ -56,7 +58,6 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
 
     public function model(array $row): ?User
     {
-        $this->incrementRowCounter();
         return new User([
             'role_id' => $this->role?->id ?? 2,
             'name' => Str::title(trim($row['name'])),
@@ -66,16 +67,16 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVa
         ]);
     }
 
-    public function registerEvents(): array
+    public function name(): string
     {
-        $role = $this->role;
-        return [
-            BeforeSheet::class => static function () use ($role) {
-                User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
-                    ->where('roles.id', $role?->id ?? 2)
-                    ->whereNull('users.deleted_at')
-                    ->delete();
-            }
-        ];
+        return 'Pegawai';
+    }
+
+    public function overwrite(): void
+    {
+        User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
+            ->where('roles.id', $this->roleId)
+            ->whereNull('users.deleted_at')
+            ->delete();
     }
 }

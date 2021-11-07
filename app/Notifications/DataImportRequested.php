@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class DataExported extends Notification implements ShouldQueue
+class DataImportRequested extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -17,12 +17,10 @@ class DataExported extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(string $name, ?int $count = null)
+    public function __construct(string $name)
     {
-        $name = trim($name);
-        $count = is_null($count) ? '' : " sebanyak $count baris";
-        $this->title = "$name berhasil di-ekspor";
-        $this->description = "Anda telah berhasil mengekspor data $name$count.";
+        $this->title = "Permintaan impor $name dijadwalkan";
+        $this->description = "Sistem telah menerima permintaan impor data $name, mohon tunggu selama proses impor berjalan di latar belakang.";
     }
 
     /**

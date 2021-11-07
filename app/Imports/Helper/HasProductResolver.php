@@ -6,7 +6,11 @@ use App\Models\Product;
 
 trait HasProductResolver
 {
-    protected function resolveProductId(string $productCode): int
+    /**
+     * @param string $productCode
+     * @return int
+     */
+    public function resolveProductId(string $productCode): int
     {
         return Product::whereRaw('lower(code) = lower(?)', trim($productCode))->whereNull('deleted_at')->first()?->id ?? 0;
     }

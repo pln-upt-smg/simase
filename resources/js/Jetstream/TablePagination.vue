@@ -7,13 +7,13 @@
             <component
                 :is="previousPageUrl ? 'inertia-link' : 'div'"
                 :href="previousPageUrl"
-                class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500">
+                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500">
                 {{ translations.previous }}
             </component>
             <component
                 :is="nextPageUrl ? 'inertia-link' : 'div'"
                 :href="nextPageUrl"
-                class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500">
+                class="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500">
                 {{ translations.next }}
             </component>
         </div>
@@ -32,13 +32,13 @@
             </div>
             <div>
                 <nav
-                    class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                    class="z-0 inline-flex rounded-md shadow-sm -space-x-px"
                     aria-label="Pagination">
                     <component
                         :is="previousPageUrl ? 'inertia-link' : 'div'"
                         :href="previousPageUrl"
                         :class="{'hover:bg-gray-100': previousPageUrl, 'cursor-not-allowed bg-gray-100': !previousPageUrl}"
-                        class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500">
+                        class="inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500">
                         <span class="sr-only">{{ translations.previous }}</span>
                         <chevron-left-icon class="h-5 w-5" aria-hidden="true"/>
                     </component>
@@ -48,7 +48,7 @@
                                 v-if="!isNaN(link.label) || link.label === '...'"
                                 :is="link.url ? 'inertia-link' : 'div'"
                                 :href="link.url"
-                                class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
                                 :class="{'hover:bg-gray-100': link.url, 'bg-indigo-100': link.active}"
                             >{{ link.label }}
                             </component>
@@ -58,7 +58,7 @@
                         :is="nextPageUrl ? 'inertia-link' : 'div'"
                         :href="nextPageUrl"
                         :class="{'hover:bg-gray-100': nextPageUrl, 'cursor-not-allowed bg-gray-100': !nextPageUrl}"
-                        class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500">
+                        class="inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500">
                         <span class="sr-only">{{ translations.next }}</span>
                         <chevron-right-icon class="h-5 w-5" aria-hidden="true"/>
                     </component>

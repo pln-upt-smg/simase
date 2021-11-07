@@ -8,7 +8,6 @@ use App\Http\Helper\MediaHelper;
 use App\Imports\AreasImport;
 use App\Models\Area;
 use App\Notifications\DataDestroyed;
-use App\Notifications\DataImported;
 use App\Notifications\DataStored;
 use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
@@ -108,9 +107,7 @@ class AreaService
      */
     public function import(Request $request): void
     {
-        $import = new AreasImport;
-        MediaHelper::importSpreadsheet($request, $import);
-        auth()->user()?->notify(new DataImported('Area', $import->getRowCount()));
+        MediaHelper::importSpreadsheet($request, new AreasImport(auth()->user()));
     }
 
     /**

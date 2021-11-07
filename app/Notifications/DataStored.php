@@ -10,7 +10,7 @@ class DataStored extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private string $title, $description, $time;
+    private string $title, $description;
 
     /**
      * Create a new notification instance.

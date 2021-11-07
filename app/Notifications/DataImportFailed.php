@@ -5,8 +5,9 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use Maatwebsite\Excel\Events\ImportFailed;
 
-class DataExported extends Notification implements ShouldQueue
+class DataImportFailed extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -17,12 +18,11 @@ class DataExported extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(string $name, ?int $count = null)
+    public function __construct(string $name, ImportFailed $event)
     {
-        $name = trim($name);
-        $count = is_null($count) ? '' : " sebanyak $count baris";
-        $this->title = "$name berhasil di-ekspor";
-        $this->description = "Anda telah berhasil mengekspor data $name$count.";
+        report($event->getException());
+        $this->title = "$name gagal di-impor";
+        $this->description = "Terjadi kesalahan saat mengimpor data $name, mohon periksa ulang format data.";
     }
 
     /**

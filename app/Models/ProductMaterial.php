@@ -19,7 +19,7 @@ class ProductMaterial extends Model
     public Material $material;
 
     public string $code, $description, $materialUom;
-    public int $materialQuantity, $productQuantity;
+    public float $materialQuantity, $productQuantity;
 
     protected $fillable = [
         'product_id',

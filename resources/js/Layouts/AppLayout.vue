@@ -117,7 +117,7 @@
                                 <span class="sr-only">Lihat notifikasi</span>
                                 <BellIcon class="h-6 w-6" aria-hidden="true"/>
                             </button>
-                            <div v-if="this.$page.props.unreadNotificationCount > 0" class="icon-badge">{{ this.$page.props.unreadNotificationCount > 8 ? '8+' : this.$page.props.unreadNotificationCount }}</div>
+                            <div v-if="this.$page.props.unreadNotificationCount > 0" class="icon-badge">{{ this.$page.props.unreadNotificationCount > 7 ? '7+' : this.$page.props.unreadNotificationCount }}</div>
                         </div>
                         <Menu as="div" class="ml-3 relative">
                             <div>
@@ -160,7 +160,7 @@
                 </div>
             </div>
             <main
-                class="flex-1 relative overflow-y-auto focus:outline-none scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
+                class="flex-1 relative overflow-x-hidden overflow-y-auto focus:outline-none scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
                 <div class="max-w-7xl mx-auto py-8 px-6 lg:px-8">
                     <slot></slot>
                 </div>

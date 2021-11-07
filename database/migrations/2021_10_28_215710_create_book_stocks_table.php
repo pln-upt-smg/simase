@@ -17,7 +17,7 @@ class CreateBookStocksTable extends Migration
             $table->id();
             $table->foreignId('material_id')->constrained();
             $table->string('batch');
-            $table->bigInteger('quantity');
+            $table->float('quantity');
             $table->bigInteger('plnt');
             $table->bigInteger('sloc');
             $table->float('unrestricted');

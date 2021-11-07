@@ -4,8 +4,11 @@ namespace App\Imports\Helper;
 
 trait HasBatchSize
 {
+    /**
+     * @return int
+     */
     public function batchSize(): int
     {
-        return 500;
+        return 100;
     }
 }

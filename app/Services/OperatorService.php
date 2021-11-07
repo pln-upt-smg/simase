@@ -9,7 +9,6 @@ use App\Imports\OperatorsImport;
 use App\Models\Role;
 use App\Models\User;
 use App\Notifications\DataDestroyed;
-use App\Notifications\DataImported;
 use App\Notifications\DataStored;
 use App\Notifications\DataUpdated;
 use App\Rules\IsValidDigit;
@@ -158,9 +157,7 @@ class OperatorService
      */
     public function import(Request $request): void
     {
-        $import = new OperatorsImport;
-        MediaHelper::importSpreadsheet($request, $import);
-        auth()->user()?->notify(new DataImported('Pegawai', $import->getRowCount()));
+        MediaHelper::importSpreadsheet($request, new OperatorsImport(auth()->user()));
     }
 
     /**

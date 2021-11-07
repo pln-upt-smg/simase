@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exports\ProductMaterialsExport;
 use App\Http\Helper\InertiaHelper;
+use App\Http\Helper\JobHelper;
 use App\Http\Helper\MediaHelper;
 use App\Imports\ProductMaterialsImport;
 use App\Models\Area;
@@ -12,7 +13,6 @@ use App\Models\Period;
 use App\Models\Product;
 use App\Models\ProductMaterial;
 use App\Notifications\DataDestroyed;
-use App\Notifications\DataImported;
 use App\Notifications\DataStored;
 use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
@@ -235,14 +235,16 @@ class ProductMaterialService
     {
         $this->validate($request, [
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'file' => ['required', 'mimes:xls,xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
+            'file' => ['required', 'mimes:xlsx,csv', 'max:' . MediaHelper::SPREADSHEET_MAX_SIZE]
         ], attributes: [
             'period' => 'Periode',
             'file' => 'File'
         ]);
-        $import = new ProductMaterialsImport(Period::where('id', (int)$request->period)->first());
-        Excel::import($import, $request->file('file'));
-        auth()->user()?->notify(new DataImported('Product Material', $import->getRowCount()));
+        JobHelper::limitOnce();
+        Excel::import(new ProductMaterialsImport(
+            Period::where('id', (int)$request->period)->first(),
+            auth()->user()
+        ), $request->file('file'));
     }
 
     /**

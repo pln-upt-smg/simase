@@ -199,12 +199,12 @@
                                     {{ importForm.file === null ? 'Unggah file dokumen' : importForm.file.name }}
                                 </span>
                                     <input for="import-file" ref="importInput" type="file" class="sr-only"
-                                           accept=".xls, .xlsx, .csv"
+                                           accept=".xlsx, .csv"
                                            @input="importForm.file = $event.target.files[0]"/>
                                 </label>
                             </div>
                             <p class="text-xs text-gray-500">
-                                XLS, XLSX, CSV hingga 50MB
+                                XLSX, CSV hingga 50MB
                             </p>
                         </div>
                     </div>
@@ -422,9 +422,9 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeImportModal()
-                    this.showSuccessNotification('Data actual stock berhasil di-impor', 'Sistem telah berhasil mengimpor data actual stock')
+                    this.showSuccessNotification('Permintaan impor data telah dijadwalkan', 'Sistem berhasil menjadwalkan permintaan impor data actual stock di latar belakang')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data actual stock, mohon gunakan template yang sudah ditentukan')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data actual stock, mohon periksa kesalahan yang telah dideteksi')
             })
         },
         exportFile() {

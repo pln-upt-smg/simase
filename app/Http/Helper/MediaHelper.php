@@ -20,10 +20,11 @@ abstract class MediaHelper
     public static function importSpreadsheet(Request $request, mixed $importable = null, string $attr = 'file', bool $required = true): void
     {
         $attr = trim($attr);
-        Validator::make($request->all(), [
-            $attr => [$required ? 'required' : 'nullable', 'mimes:xls,xlsx,csv', 'max:' . self::SPREADSHEET_MAX_SIZE]
-        ])->validate();
+        Validator::validate($request->all(), [
+            $attr => [$required ? 'required' : 'nullable', 'mimes:xlsx,csv', 'max:' . self::SPREADSHEET_MAX_SIZE]
+        ]);
         if (!is_null($importable)) {
+            JobHelper::limitOnce();
             Excel::import($importable, $request->file($attr));
         }
     }
@@ -39,7 +40,6 @@ abstract class MediaHelper
         $filename = trim($filename);
         $format = Str::lower(trim($format));
         $contentType = match ($format) {
-            'xls' => 'application/vnd.ms-excel',
             'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'csv' => 'text/csv',
             default => null

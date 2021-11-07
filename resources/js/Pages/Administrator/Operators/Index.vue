@@ -174,12 +174,12 @@
                                     {{ importForm.file === null ? 'Unggah file dokumen' : importForm.file.name }}
                                 </span>
                                 <input for="import-file" ref="importInput" type="file" class="sr-only"
-                                       accept=".xls, .xlsx, .csv"
+                                       accept=".xlsx, .csv"
                                        @input="importForm.file = $event.target.files[0]"/>
                             </label>
                         </div>
                         <p class="text-xs text-gray-500">
-                            XLS, XLSX, CSV hingga 50MB
+                            XLSX, CSV hingga 50MB
                         </p>
                     </div>
                 </div>

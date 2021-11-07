@@ -2,38 +2,39 @@
 
 namespace App\Imports;
 
-use App\Imports\Helper\HasAreaResolver;
+use App\Imports\Contract\WithDefaultEvents;
 use App\Imports\Helper\HasBatchSize;
 use App\Imports\Helper\HasChunkSize;
+use App\Imports\Helper\HasDefaultEvents;
 use App\Imports\Helper\HasDefaultSheet;
-use App\Imports\Helper\HasRowCounter;
-use App\Imports\Helper\HasValidationException;
+use App\Imports\Helper\HasImporter;
+use App\Imports\Helper\HasMultipleArea;
 use App\Models\Period;
 use App\Models\Product;
+use App\Models\User;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithUpserts;
-use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithValidation, WithMultipleSheets, WithBatchInserts, WithChunkReading, WithUpserts
+class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
 {
-    use HasValidationException, HasDefaultSheet, HasRowCounter, HasAreaResolver, HasBatchSize, HasChunkSize;
+    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleArea;
 
-    private int $currentAreaId = 0;
+    private int $periodId;
 
-    private array $whitelistedProductCodes = [];
-
-    private ?Period $period;
-
-    public function __construct(?Period $period)
+    public function __construct(?Period $period, ?User $user)
     {
-        $this->period = $period;
+        $this->periodId = $period?->id ?? 0;
+        $this->userId = $user?->id ?? 0;
     }
 
     public function rules(): array
@@ -59,14 +60,11 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVal
 
     public function model(array $row): ?Product
     {
-        $this->incrementRowCounter();
         $this->lookupArea($row);
-        $code = Str::upper(trim($row['product']));
-        $this->whitelistedProductCodes[] = $code;
         return new Product([
             'area_id' => $this->currentAreaId,
-            'period_id' => $this->period?->id ?? 0,
-            'code' => $code,
+            'period_id' => $this->periodId,
+            'code' => Str::upper(trim($row['product'])),
             'description' => Str::title(trim($row['productdescription'])),
             'uom' => Str::upper(trim($row['uom'])),
             'mtyp' => Str::upper(trim($row['mtyp'])),
@@ -76,16 +74,13 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithVal
         ]);
     }
 
-    private function lookupArea(array $row): void
+    public function name(): string
     {
-        $newAreaId = $this->resolveAreaId($row['area']);
-        if ($this->currentAreaId !== $newAreaId) {
-            $this->currentAreaId = $newAreaId;
-            Product::where('area_id', $this->currentAreaId)
-                ->where('period_id', $this->period?->id ?? 0)
-                ->whereNotIn('code', $this->whitelistedProductCodes)
-                ->whereNull('deleted_at')
-                ->delete();
-        }
+        return 'Product';
+    }
+
+    public function overwrite(): void
+    {
+        Product::where('period_id', $this->periodId)->whereNull('deleted_at')->delete();
     }
 }

@@ -10,19 +10,18 @@ class DataImported extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private string $title, $description, $time;
+    private string $title, $description;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(string $name, ?int $count = null)
+    public function __construct(string $name)
     {
         $name = trim($name);
-        $count = is_null($count) ? '' : " sebanyak $count baris";
         $this->title = "$name berhasil di-impor";
-        $this->description = "Anda telah berhasil mengimpor data $name$count.";
+        $this->description = "Sistem telah berhasil mengimpor data $name.";
     }
 
     /**

@@ -9,7 +9,6 @@ use App\Imports\BatchesImport;
 use App\Models\Batch;
 use App\Models\Material;
 use App\Notifications\DataDestroyed;
-use App\Notifications\DataImported;
 use App\Notifications\DataStored;
 use App\Notifications\DataUpdated;
 use App\Services\Helper\HasValidator;
@@ -125,9 +124,7 @@ class BatchService
      */
     public function import(Request $request): void
     {
-        $import = new BatchesImport;
-        MediaHelper::importSpreadsheet($request, $import);
-        auth()->user()?->notify(new DataImported('Batch', $import->getRowCount()));
+        MediaHelper::importSpreadsheet($request, new BatchesImport(auth()->user()));
     }
 
     /**
