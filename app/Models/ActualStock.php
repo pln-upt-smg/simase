@@ -19,7 +19,7 @@ class ActualStock extends Model
     public User $creator;
 
     public string $batch;
-    public int $quantity;
+    public float $quantity;
 
     protected $fillable = [
         'material_id',
