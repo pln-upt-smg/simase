@@ -30,6 +30,7 @@ class PidExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
+            'Area',
             'Material',
             'MaterialDescription',
             'UOM',
@@ -46,6 +47,7 @@ class PidExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
+            Str::title(trim($row->area_name)),
             Str::upper(trim($row->material_code)),
             Str::title(trim($row->material_description)),
             Str::upper(trim($row->uom)),

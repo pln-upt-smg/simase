@@ -30,7 +30,7 @@ class BatchNotExistsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            'AreaDescription',
+            'Area',
             'Material',
             'MaterialDescription',
             'Batch',

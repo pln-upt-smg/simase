@@ -51,10 +51,10 @@ class FinalSummaryService
         $query = QueryBuilder::for(BookStock::class)
             ->select([
                 'book_stocks.id as id',
+                'book_stocks.area_id as area_id',
                 'book_stocks.unrestricted as unrestricted',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.material_id as material_id',
-                'materials.area_id as area_id',
                 'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
@@ -65,11 +65,10 @@ class FinalSummaryService
                 DB::raw('((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) * materials.price) as gap_value')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
-            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->defaultSort('materials.code')
             ->allowedFilters(InertiaHelper::filterBy([
@@ -118,16 +117,15 @@ class FinalSummaryService
                 DB::raw('(coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) as gap_stock'),
                 DB::raw('((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) * materials.price) as gap_value')
             ])
+            ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
-            ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at']);
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['book_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->defaultSort('materials.code')
             ->orderBy('gap_value')
@@ -196,11 +194,10 @@ class FinalSummaryService
                 DB::raw('((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) * materials.price) as gap_value')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
-            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->get();
     }
@@ -217,14 +214,13 @@ class FinalSummaryService
             $query = BookStock::select([
                 DB::raw('sum(((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) * materials.price)) as gap_value')
             ])
+                ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
                 ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
-                ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
+                ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
                 ->where('areas.id', $area->id)
-                ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at']);
+                ->whereNull(['book_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
             if (!is_null($period)) {
-                $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                    ->where('periods.id', $period->id)
-                    ->whereNull('periods.deleted_at');
+                $query = $query->where('periods.id', $period->id);
             }
             $result[] = $query->first()?->gap_value ?: 0;
         }

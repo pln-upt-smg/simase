@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Area;
 use App\Models\Period;
 use App\Notifications\DataExported;
 use App\Services\MaterialService;
@@ -14,15 +13,12 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class MaterialsExport implements FromCollection, WithHeadings, WithMapping
 {
-    private ?Area $area;
-
     private ?Period $period;
 
     private MaterialService $materialService;
 
-    public function __construct(?Area $area, ?Period $period, MaterialService $materialService)
+    public function __construct(?Period $period, MaterialService $materialService)
     {
-        $this->area = $area;
         $this->period = $period;
         $this->materialService = $materialService;
     }
@@ -30,7 +26,6 @@ class MaterialsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            'Area',
             'Material',
             'MaterialDescription',
             'UOM',
@@ -45,7 +40,6 @@ class MaterialsExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
-            Str::title(trim($row->area->name)),
             Str::upper(trim($row->code)),
             Str::title(trim($row->description)),
             Str::upper(trim($row->uom)),
@@ -59,8 +53,8 @@ class MaterialsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        $data = $this->materialService->collection($this->area, $this->period);
-        auth()->user()?->notify(new DataExported('Material', $data->count()));
+        $data = $this->materialService->collection($this->period);
+        auth()->user()?->notify(new DataExported('Material Master', $data->count()));
         return $data;
     }
 }

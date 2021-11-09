@@ -1,8 +1,7 @@
 <template>
-    <app-layout title="Material">
+    <app-layout title="Material Master">
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6 mb-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 mb-4 lg:mb-0">
-                <jet-area-dropdown :selected="area" :areas="areas" partial="materials" class="mb-4 lg:mb-0"/>
                 <jet-period-dropdown :selected="period" :periods="periods" partial="materials" class="mb-2 lg:mb-0"/>
             </div>
             <div class="lg:text-right">
@@ -102,15 +101,13 @@
                 </tr>
             </template>
         </jet-table>
-        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah material">
+        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah material master">
             <template #content>
-                Silakan masukkan data material yang ingin ditambahkan.
+                Silakan masukkan data material master yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-select ref="storeArea" placeholder="Pilih Area" v-model="storeForm.area"
-                                :data="areas" class="block w-full"/>
                     <jet-select ref="storePeriod" placeholder="Pilih Periode" v-model="storeForm.period"
-                                :data="periods" class="mt-4 block w-full"/>
+                                :data="periods" class="block w-full"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
                                ref="storeCode" v-model="storeForm.code"/>
                     <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Deskripsi Material"
@@ -141,15 +138,13 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit material">
+        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit material master">
             <template #content>
-                Silakan masukkan data material yang ingin diubah.
+                Silakan masukkan data material master yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-select ref="updateArea" placeholder="Pilih Area" v-model="updateForm.area"
-                                :data="areas" class="block w-full"/>
                     <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
-                                :data="periods" class="mt-4 block w-full"/>
+                                :data="periods" class="block w-full"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
                                ref="updateCode" v-model="updateForm.code"/>
                     <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Deskripsi Material"
@@ -180,9 +175,9 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus material">
+        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus material master">
             <template #content>
-                Apakah Anda yakin ingin menghapus material ini? Setelah material dihapus, semua sumber daya
+                Apakah Anda yakin ingin menghapus material master ini? Setelah material master dihapus, semua sumber daya
                 dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
@@ -198,10 +193,10 @@
                 </jet-secondary-button>
             </template>
         </jet-alert-modal>
-        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data material">
+        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data material master">
             <template #content>
                 <p>
-                    Silakan unggah file data material yang ingin di-impor. Pastikan Anda sudah menggunakan template
+                    Silakan unggah file data material master yang ingin di-impor. Pastikan Anda sudah menggunakan template
                     spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
                 </p>
                 <p class="mt-2">
@@ -254,24 +249,22 @@
                 </jet-secondary-button>
             </template>
         </jet-import-modal>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data material">
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data material master">
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data material? Proses ekspor dapat memakan waktu lama,
+                    Apakah Anda yakin ingin mengekspor semua data material master? Proses ekspor dapat memakan waktu lama,
                     tergantung dari banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
                     Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
                 </p>
                 <p class="mt-2">
-                    Anda dapat menyaring data material berdasarkan area dan periodenya dengan menyesuaikan kolom
+                    Anda dapat menyaring data material master berdasarkan periodenya dengan menyesuaikan kolom
                     pilihan dibawah ini.
                 </p>
                 <div class="mt-4">
-                    <jet-select ref="exportArea" placeholder="Semua Area" v-model="exportForm.area"
-                                :data="areas" class="block w-full"/>
                     <jet-select ref="exportPeriod" placeholder="Semua Periode" v-model="exportForm.period"
-                                :data="periods" class="mt-4 block w-full"/>
+                                :data="periods" class="block w-full"/>
                 </div>
             </template>
             <template #buttons>
@@ -319,11 +312,10 @@ import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
 import JetTableHeader from '@/Jetstream/TableHeader'
-import JetAreaDropdown from '@/Jetstream/AreaDropdown'
 import JetPeriodDropdown from '@/Jetstream/PeriodDropdown'
 import JetSelect from '@/Jetstream/Select'
 
-JetTableEngine.respectParams(['area', 'period'])
+JetTableEngine.respectParams(['period'])
 
 export default defineComponent({
     data() {
@@ -344,7 +336,6 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
-                area: null,
                 period: null,
                 code: null,
                 description: null,
@@ -355,7 +346,6 @@ export default defineComponent({
                 per: null
             }),
             updateForm: useForm({
-                area: null,
                 period: null,
                 id: null,
                 code: null,
@@ -374,15 +364,12 @@ export default defineComponent({
                 file: null
             }),
             exportForm: useForm({
-                area: null,
                 period: null
             })
         }
     },
     mixins: [JetTableEngine],
     props: {
-        area: Object,
-        areas: Object,
         period: Object,
         periods: Object,
         materials: Object
@@ -403,7 +390,6 @@ export default defineComponent({
         JetSuccessNotification,
         JetDangerNotification,
         JetValidationErrors,
-        JetAreaDropdown,
         JetPeriodDropdown,
         JetSelect,
         MenuItem,
@@ -421,9 +407,9 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeStoreModal()
-                    this.showSuccessNotification('Material berhasil ditambahkan', 'Sistem telah berhasil menyimpan data material baru')
+                    this.showSuccessNotification('Material master berhasil ditambahkan', 'Sistem telah berhasil menyimpan data material master baru')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data material, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data material master, mohon periksa ulang form')
             })
         },
         update() {
@@ -432,9 +418,9 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeUpdateModal()
-                    this.showSuccessNotification('Material berhasil diedit', 'Sistem telah berhasil mengedit data material')
+                    this.showSuccessNotification('Material master berhasil diedit', 'Sistem telah berhasil mengedit data material master')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data material, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data material master, mohon periksa ulang form')
             })
         },
         destroy() {
@@ -443,9 +429,9 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeDestroyModal()
-                    this.showSuccessNotification('Material berhasil dihapus', 'Sistem telah berhasil menghapus data material')
+                    this.showSuccessNotification('Material master berhasil dihapus', 'Sistem telah berhasil menghapus data material master')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data material')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data material master')
             })
         },
         importFile() {
@@ -461,18 +447,16 @@ export default defineComponent({
         },
         exportFile() {
             window.open(route('materials.export', {
-                area: this.exportForm.area,
                 period: this.exportForm.period
             }))
             this.closeExportModal()
         },
         confirmStore() {
             setTimeout(() => this.confirmingStore = true, 150)
-            setTimeout(() => this.$refs.storeArea.focus(), 300)
+            setTimeout(() => this.$refs.storePeriod.focus(), 300)
         },
         confirmUpdate(material) {
             this.updateForm.id = material.id
-            this.updateForm.area = material.area_id
             this.updateForm.period = material.period_id
             this.updateForm.code = material.code
             this.updateForm.description = material.description
@@ -481,7 +465,7 @@ export default defineComponent({
             this.updateForm.price = material.price
             this.updateForm.per = material.per
             setTimeout(() => this.confirmingUpdate = true, 150)
-            setTimeout(() => this.$refs.updateArea.focus(), 300)
+            setTimeout(() => this.$refs.updatePeriod.focus(), 300)
         },
         confirmDestroy(material) {
             this.destroyForm.id = material.id
@@ -493,7 +477,7 @@ export default defineComponent({
         },
         confirmExport() {
             setTimeout(() => this.confirmingExport = true, 150)
-            setTimeout(() => this.$refs.exportArea.focus(), 300)
+            setTimeout(() => this.$refs.exportPeriod.focus(), 300)
         },
         closeStoreModal() {
             this.confirmingStore = false
@@ -501,7 +485,6 @@ export default defineComponent({
                 this.clearErrors()
                 this.storeForm.clearErrors()
                 this.storeForm.reset()
-                this.storeForm.area = null
                 this.storeForm.period = null
                 this.storeForm.code = null
                 this.storeForm.description = null
@@ -518,7 +501,6 @@ export default defineComponent({
                 this.updateForm.clearErrors()
                 this.updateForm.reset()
                 this.updateForm.id = null
-                this.updateForm.area = null
                 this.updateForm.period = null
                 this.updateForm.code = null
                 this.updateForm.description = null
@@ -551,7 +533,6 @@ export default defineComponent({
             this.confirmingExport = false
             setTimeout(() => {
                 this.exportForm.reset()
-                this.exportForm.area = null
                 this.exportForm.period = null
             }, 500)
         },

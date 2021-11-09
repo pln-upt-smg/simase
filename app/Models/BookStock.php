@@ -13,14 +13,19 @@ class BookStock extends Model
     use Fluent, HasFactory, SoftDeletes;
 
     #[BelongsTo]
+    public Area $area;
+
+    #[BelongsTo]
     public Material $material;
 
-    public string $batch;
-    public int $plnt, $sloc, $qualinsp;
+    public string $sloc, $batch;
+    public int $plnt, $qualinsp;
     public float $quantity, $unrestricted;
 
     protected $fillable = [
+        'area_id',
         'material_id',
+        'sloc',
         'batch',
         'quantity',
         'plnt',

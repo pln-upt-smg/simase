@@ -15,6 +15,7 @@ use App\Models\User;
 use Database\Seeders\Data\AreaSeeder;
 use Database\Seeders\Data\MaterialSeeder;
 use Database\Seeders\Data\PeriodSeeder;
+use Database\Seeders\Data\ProductSeeder;
 use Database\Seeders\Data\RoleSeeder;
 use Database\Seeders\Data\UserSeeder;
 use Illuminate\Database\Seeder;
@@ -58,5 +59,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PeriodSeeder::class);
         $this->call(AreaSeeder::class);
         $this->call(MaterialSeeder::class);
+        $this->call(ProductSeeder::class);
     }
 }

@@ -61,30 +61,28 @@ class BookStockService
         $query = QueryBuilder::for(BookStock::class)
             ->select([
                 'book_stocks.id as id',
+                'book_stocks.area_id as area_id',
                 'book_stocks.batch as batch_code',
                 'book_stocks.quantity as quantity',
                 'book_stocks.plnt as plnt',
                 'book_stocks.sloc as sloc',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.unrestricted as unrestricted',
-                'materials.area_id as area_id',
                 'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp'
             ])
+            ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
-            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['book_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                ->where('areas.id', $area->id)
-                ->whereNull('areas.deleted_at');
+            $query = $query->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->defaultSort('materials.code')
             ->allowedFilters(InertiaHelper::filterBy([
@@ -156,7 +154,7 @@ class BookStockService
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
+            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch_code' => ['required', 'string', 'max:255'],
             'plnt' => ['required', 'integer', 'min:0'],
             'sloc' => ['required', 'integer', 'min:0'],
@@ -175,7 +173,8 @@ class BookStockService
             'quantity' => 'Kuantitas'
         ]);
         BookStock::create([
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
+            'area_id' => (int)$request->area,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
@@ -196,7 +195,7 @@ class BookStockService
         $this->validate($request, [
             'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
+            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch_code' => ['required', 'string', 'max:255'],
             'plnt' => ['required', 'integer', 'min:0'],
             'sloc' => ['required', 'integer', 'min:0'],
@@ -215,7 +214,8 @@ class BookStockService
             'quantity' => 'Kuantitas'
         ]);
         $book->updateOrFail([
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
+            'area_id' => (int)$request->area,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'plnt' => (int)$request->plnt,
             'sloc' => (int)$request->sloc,
@@ -287,18 +287,16 @@ class BookStockService
      */
     public function collection(?Area $area, ?Period $period): Collection
     {
-        $query = BookStock::leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
-            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
+        $query = BookStock::leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
+            ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['book_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                ->where('areas.id', $area->id)
-                ->whereNull('areas.deleted_at');
+            $query = $query->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
-        return $query->orderBy('materials.code')->get()->load(['material', 'material.area']);
+        return $query->orderBy('materials.code')->get()->load(['material', 'book_stocks.area']);
     }
 }

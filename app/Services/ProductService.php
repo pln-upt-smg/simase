@@ -7,7 +7,6 @@ use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\JobHelper;
 use App\Http\Helper\MediaHelper;
 use App\Imports\ProductsImport;
-use App\Models\Area;
 use App\Models\Period;
 use App\Models\Product;
 use App\Notifications\DataDestroyed;
@@ -32,36 +31,27 @@ class ProductService
     use HasValidator;
 
     /**
-     * @var AreaService
-     */
-    private AreaService $areaService;
-
-    /**
      * @var PeriodService
      */
     private PeriodService $periodService;
 
     /**
-     * @param AreaService $areaService
      * @param PeriodService $periodService
      */
-    public function __construct(AreaService $areaService, PeriodService $periodService)
+    public function __construct(PeriodService $periodService)
     {
-        $this->areaService = $areaService;
         $this->periodService = $periodService;
     }
 
     /**
-     * @param Area|null $area
      * @param Period|null $period
      * @return LengthAwarePaginator
      */
-    public function tableData(?Area $area, ?Period $period): LengthAwarePaginator
+    public function tableData(?Period $period): LengthAwarePaginator
     {
         $query = QueryBuilder::for(Product::class)
             ->select([
                 'products.id as id',
-                'products.area_id as area_id',
                 'products.period_id as period_id',
                 'products.code as code',
                 'products.description as description',
@@ -72,16 +62,10 @@ class ProductService
                 'products.per as per',
                 DB::raw('date_format(products.updated_at, "%d %b %Y") as update_date')
             ])
-            ->whereNull('products.deleted_at');
-        if (!is_null($area)) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'products.area_id')
-                ->where('areas.id', $area->id)
-                ->whereNull('areas.deleted_at');
-        }
+            ->leftJoin('periods', 'periods.id', '=', 'products.period_id')
+            ->whereNull(['products.deleted_at', 'periods.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'products.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->defaultSort('products.code')
             ->allowedFilters(InertiaHelper::filterBy([
@@ -141,16 +125,14 @@ class ProductService
     public function store(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::unique('products', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::unique('products', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:0'],
             'per' => ['required', 'integer', 'min:0']
         ], attributes: [
-            'area' => 'Area',
             'period' => 'Periode',
             'code' => 'Kode SKU',
             'description' => 'Deskripsi Produk',
@@ -160,7 +142,6 @@ class ProductService
             'per' => 'Per'
         ]);
         Product::create([
-            'area_id' => (int)$request->area,
             'period_id' => (int)$request->period,
             'code' => Str::upper($request->code),
             'description' => Str::title($request->description),
@@ -181,16 +162,14 @@ class ProductService
     public function update(Request $request, Product $product): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::unique('products', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->ignore($product->id)->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::unique('products', 'code')->where('period_id', $request->period)->ignore($product->id)->whereNull('deleted_at')],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:0'],
             'per' => ['required', 'integer', 'min:0']
         ], attributes: [
-            'area' => 'Area',
             'period' => 'Periode',
             'code' => 'Kode SKU',
             'description' => 'Deskripsi Produk',
@@ -200,7 +179,6 @@ class ProductService
             'per' => 'Per'
         ]);
         $product->updateOrFail([
-            'area_id' => (int)$request->area,
             'period_id' => (int)$request->period,
             'code' => Str::upper($request->code),
             'description' => Str::title($request->description),
@@ -253,7 +231,6 @@ class ProductService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new ProductsExport(
-            $this->areaService->resolve($request),
             $this->periodService->resolve($request),
             $this
         ), new Product);
@@ -268,56 +245,35 @@ class ProductService
     }
 
     /**
-     * @param Area|null $area
      * @param Period|null $period
      * @return Collection
      */
-    public function collection(?Area $area, ?Period $period): Collection
+    public function collection(?Period $period): Collection
     {
-        $query = Product::whereNull('products.deleted_at');
-        if (!is_null($area)) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'products.area_id')
-                ->where('areas.id', $area->id)
-                ->whereNull('areas.deleted_at');
-        }
+        $query = Product::leftJoin('periods', 'periods.id', '=', 'products.period_id')
+            ->whereNull(['products.deleted_at', 'periods.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'products.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
-        return $query->orderBy('products.code')->get()->load('area');
+        return $query->orderBy('products.code')->get();
     }
 
     public function resolveProductCode(Request $request, bool $strict = true): ?Product
     {
-        $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
-        $query = Product::whereRaw('lower(products.code) = ?', Str::lower(trim($request->query('q') ?? '')))
-            ->whereNull('products.deleted_at');
+        $query = Product::leftJoin('periods', 'periods.id', '=', 'products.period_id')
+            ->whereRaw('lower(products.code) = ?', Str::lower(trim($request->query('q') ?? '')))
+            ->whereNull(['products.deleted_at', 'periods.deleted_at']);
         if ($strict) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'products.area_id')
-                ->leftJoin('periods', 'periods.id', '=', 'products.period_id')
-                ->where('areas.id', $area?->id ?? 0)
-                ->where('periods.id', $period?->id ?? 0)
-                ->whereNull(['areas.deleted_at', 'periods.deleted_at']);
-        } else {
-            if (!is_null($area)) {
-                $query = $query->leftJoin('areas', 'areas.id', '=', 'products.area_id')
-                    ->where('areas.id', $area->id)
-                    ->whereNull('areas.deleted_at');
-            }
-            if (!is_null($period)) {
-                $query = $query->leftJoin('periods', 'periods.id', '=', 'products.period_id')
-                    ->where('periods.id', $period->id)
-                    ->whereNull('periods.deleted_at');
-            }
+            $query = $query->where('periods.id', $period?->id ?? 0);
+        } else if (!is_null($period)) {
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->first();
     }
 
     public function productCodeJsonCollection(Request $request, bool $strict = true): Collection
     {
-        $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
         $query = Product::distinct()
             ->select([
@@ -326,25 +282,13 @@ class ProductService
                 'products.uom as uom'
             ])
             ->orderBy('products.code')
-            ->whereNull('products.deleted_at')
-            ->whereRaw('lower(products.code) like ?', '%' . Str::lower(trim($request->query('q') ?? '')) . '%');
+            ->leftJoin('periods', 'periods.id', '=', 'products.period_id')
+            ->whereRaw('lower(products.code) like ?', '%' . Str::lower(trim($request->query('q') ?? '')) . '%')
+            ->whereNull(['products.deleted_at', 'periods.deleted_at']);
         if ($strict) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'products.area_id')
-                ->leftJoin('periods', 'periods.id', '=', 'products.period_id')
-                ->where('areas.id', $area?->id ?? 0)
-                ->where('periods.id', $period?->id ?? 0)
-                ->whereNull(['areas.deleted_at', 'periods.deleted_at']);
-        } else {
-            if (!is_null($area)) {
-                $query = $query->leftJoin('areas', 'areas.id', '=', 'products.area_id')
-                    ->where('areas.id', $area->id)
-                    ->whereNull('areas.deleted_at');
-            }
-            if (!is_null($period)) {
-                $query = $query->leftJoin('periods', 'periods.id', '=', 'products.period_id')
-                    ->where('periods.id', $period->id)
-                    ->whereNull('periods.deleted_at');
-            }
+            $query = $query->where('periods.id', $period?->id ?? 0);
+        } else if (!is_null($period)) {
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->get();
     }

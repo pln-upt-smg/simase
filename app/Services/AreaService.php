@@ -34,12 +34,22 @@ class AreaService
         return QueryBuilder::for(Area::class)
             ->select([
                 'areas.id as id',
-                'areas.name as name'
+                'areas.name as name',
+                'areas.sloc as sloc',
+                'areas.group as area_group'
             ])
             ->whereNull('areas.deleted_at')
             ->defaultSort('areas.name')
-            ->allowedFilters(InertiaHelper::filterBy(['areas.name']))
-            ->allowedSorts(['name'])
+            ->allowedFilters(InertiaHelper::filterBy([
+                'areas.name',
+                'areas.sloc',
+                'areas.group'
+            ]))
+            ->allowedSorts([
+                'name',
+                'sloc',
+                'area_group'
+            ])
             ->paginate()
             ->withQueryString();
     }
@@ -47,9 +57,13 @@ class AreaService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
-            'areas.name' => 'Nama Area'
+            'areas.name' => 'Nama Area',
+            'areas.sloc' => 'SLoc',
+            'areas.group' => 'Group'
         ])->addColumns([
             'name' => 'Nama Area',
+            'sloc' => 'SLoc',
+            'area_group' => 'Group',
             'action' => 'Aksi'
         ]);
     }
@@ -61,12 +75,18 @@ class AreaService
     public function store(Request $request): void
     {
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->whereNull('deleted_at')]
+            'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->whereNull('deleted_at')],
+            'sloc' => ['required', 'string', 'max:255', Rule::unique('areas', 'sloc')->whereNull('deleted_at')],
+            'area_group' => ['required', 'string', 'max:255']
         ], attributes: [
-            'name' => 'Nama Area'
+            'name' => 'Nama Area',
+            'sloc' => 'SLoc',
+            'area_group' => 'Group'
         ]);
         Area::create([
-            'name' => Str::title($request->name)
+            'name' => Str::title($request->name),
+            'sloc' => $request->sloc,
+            'group' => Str::title($request->area_group)
         ]);
         auth()->user()?->notify(new DataStored('Area', Str::title($request->name)));
     }
@@ -79,12 +99,18 @@ class AreaService
     public function update(Request $request, Area $area): void
     {
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->ignore($area->id)->whereNull('deleted_at')]
+            'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->ignore($area->id)->whereNull('deleted_at')],
+            'sloc' => ['required', 'string', 'max:255', Rule::unique('areas', 'sloc')->ignore($area->id)->whereNull('deleted_at')],
+            'area_group' => ['required', 'string', 'max:255']
         ], attributes: [
-            'name' => 'Nama Area'
+            'name' => 'Nama Area',
+            'sloc' => 'SLoc',
+            'area_group' => 'Group'
         ]);
         $area->updateOrFail([
-            'name' => Str::title($request->name)
+            'name' => Str::title($request->name),
+            'sloc' => $request->sloc,
+            'group' => Str::title($request->area_group)
         ]);
         $area->save();
         auth()->user()?->notify(new DataUpdated('Area', Str::title($request->name)));

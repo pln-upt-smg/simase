@@ -16,15 +16,17 @@ class AreasExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'AreaID',
-            'AreaDescription'
+            'SLoc',
+            'Group'
         ];
     }
 
     public function map($row): array
     {
         return [
-            (string)$row->id,
-            Str::title(trim($row->name))
+            Str::title(trim($row->name)),
+            trim($row->sloc),
+            Str::title(trim($row->group))
         ];
     }
 

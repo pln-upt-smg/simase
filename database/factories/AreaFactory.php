@@ -22,7 +22,9 @@ class AreaFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique->colorName()
+            'sloc' => $this->faker->numberBetween(1111, 9999),
+            'name' => $this->faker->unique->colorName(),
+            'group' => 'Area Group 1'
         ];
     }
 }

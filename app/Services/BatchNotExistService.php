@@ -53,9 +53,9 @@ class BatchNotExistService
         $query = QueryBuilder::for(ActualStock::class)
             ->select([
                 'actual_stocks.id as id',
+                'actual_stocks.area_id as area_id',
                 'actual_stocks.batch as batch_code',
                 'actual_stocks.quantity as quantity',
-                'materials.area_id as area_id',
                 'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
@@ -67,17 +67,16 @@ class BatchNotExistService
                 DB::raw('date_format(actual_stocks.created_at, "%d/%m/%Y %H:%i") as creation_date')
             ])
             ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
+            ->leftJoin('areas', 'areas.id', '=', 'actual_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
-            ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
             ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
-            ->whereNull(['batches.code', 'actual_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at', 'users.deleted_at']);
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['batches.code', 'areas.deleted_at', 'actual_stocks.deleted_at', 'materials.deleted_at', 'users.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->defaultSort('materials.code')
             ->allowedFilters(InertiaHelper::filterBy([
@@ -170,18 +169,17 @@ class BatchNotExistService
             DB::raw('date_format(actual_stocks.created_at, "%d/%m/%Y %H:%i") as creation_date')
         ])
             ->leftJoin('batches', 'batches.code', '=', 'actual_stocks.batch')
+            ->leftJoin('areas', 'areas.id', '=', 'actual_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
-            ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
             ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
             ->orderBy('materials.code')
-            ->whereNull(['batches.code', 'actual_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at', 'users.deleted_at']);
+            ->whereNull(['batches.code', 'areas.deleted_at', 'actual_stocks.deleted_at', 'materials.deleted_at', 'users.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->get();
     }

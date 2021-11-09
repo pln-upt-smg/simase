@@ -8,14 +8,12 @@ use App\Imports\Helper\HasChunkSize;
 use App\Imports\Helper\HasDefaultEvents;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasImporter;
-use App\Imports\Helper\HasMultipleArea;
 use App\Models\Period;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
@@ -27,7 +25,7 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 
 class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
 {
-    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleArea;
+    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize;
 
     private int $periodId;
 
@@ -40,7 +38,6 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMul
     public function rules(): array
     {
         return [
-            'area' => ['required', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
             'product' => ['required', 'max:255'],
             'productdescription' => ['nullable', 'max:255'],
             'uom' => ['required', 'max:255'],
@@ -60,9 +57,7 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMul
 
     public function model(array $row): ?Product
     {
-        $this->lookupArea($row);
         return new Product([
-            'area_id' => $this->currentAreaId,
             'period_id' => $this->periodId,
             'code' => Str::upper(trim($row['product'])),
             'description' => Str::title(trim($row['productdescription'])),
@@ -76,7 +71,7 @@ class ProductsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMul
 
     public function name(): string
     {
-        return 'Product';
+        return 'FG Master';
     }
 
     public function overwrite(): void

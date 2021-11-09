@@ -9,7 +9,6 @@ use App\Imports\Helper\HasDefaultEvents;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasImporter;
 use App\Imports\Helper\HasMaterialResolver;
-use App\Imports\Helper\HasMultipleArea;
 use App\Imports\Helper\HasProductResolver;
 use App\Models\Period;
 use App\Models\ProductMaterial;
@@ -30,7 +29,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
 {
-    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleArea, HasProductResolver, HasMaterialResolver;
+    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasProductResolver, HasMaterialResolver;
 
     private int $periodId;
 
@@ -43,7 +42,6 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
     public function rules(): array
     {
         return [
-            'area' => ['required', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
             'product' => ['required', 'max:255'],
             'productdescription' => ['nullable', 'max:255'],
             'productqty' => ['required', 'numeric', 'min:0'],
@@ -61,10 +59,9 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
      */
     public function model(array $row): ?ProductMaterial
     {
-        $this->lookupArea($row);
         Validator::validate($row, [
-            'product' => [Rule::exists('products', 'code')->where('area_id', $this->currentAreaId)->where('period_id', $this->periodId)->whereNull('deleted_at')],
-            'material' => [Rule::exists('materials', 'code')->where('area_id', $this->currentAreaId)->where('period_id', $this->periodId)->whereNull('deleted_at')]
+            'product' => [Rule::exists('products', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
+            'material' => [Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')]
         ]);
         return new ProductMaterial([
             'product_id' => $this->resolveProductId($row['product']),
@@ -77,7 +74,7 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
 
     public function name(): string
     {
-        return 'Product Material';
+        return 'FG to Material';
     }
 
     public function overwrite(): void

@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Material;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-class MaterialFactory extends Factory
+class ProductFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Material::class;
+    protected $model = Product::class;
 
     /**
      * Define the model's default state.
@@ -24,8 +24,8 @@ class MaterialFactory extends Factory
     {
         return [
             'period_id' => 1,
-            'code' => 'M' . Str::upper(Str::random(5)),
-            'description' => 'Material ' . $this->faker->unique->colorName(),
+            'code' => 'P' . Str::upper(Str::random(5)),
+            'description' => 'Product ' . $this->faker->unique->colorName(),
             'uom' => 'KG',
             'mtyp' => 'ROH',
             'crcy' => 'IDR',

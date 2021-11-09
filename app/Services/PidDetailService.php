@@ -51,19 +51,19 @@ class PidDetailService
         $query = QueryBuilder::for(BookStock::class)
             ->select([
                 'book_stocks.id as id',
+                'book_stocks.area_id as area_id',
                 'book_stocks.batch as batch_code',
-                'materials.area_id as area_id',
                 'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 DB::raw('coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = book_stocks.material_id), 0) as sum_quantity')
             ])
+            ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
-            ->whereNull(['book_stocks.deleted_at', 'materials.deleted_at']);
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['book_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->defaultSort('materials.code')
             ->allowedFilters(InertiaHelper::filterBy([
@@ -140,11 +140,11 @@ class PidDetailService
 
                 // each iteration, fetch the quantity of the stock based on the material and area
                 $query = ActualStock::select([DB::raw('sum(actual_stocks.quantity) as quantity')])
+                    ->leftJoin('areas', 'areas.id', '=', 'actual_stocks.area_id')
                     ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
-                    ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
                     ->where('materials.id', $stock->material_id)
                     ->where('areas.id', $area->id)
-                    ->whereNull(['actual_stocks.deleted_at', 'materials.deleted_at', 'areas.deleted_at']);
+                    ->whereNull(['actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at']);
 
                 // dont forget to apply the period query!
                 if (!is_null($period)) {

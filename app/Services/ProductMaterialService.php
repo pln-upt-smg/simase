@@ -7,7 +7,6 @@ use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\JobHelper;
 use App\Http\Helper\MediaHelper;
 use App\Imports\ProductMaterialsImport;
-use App\Models\Area;
 use App\Models\Material;
 use App\Models\Period;
 use App\Models\Product;
@@ -33,31 +32,23 @@ class ProductMaterialService
     use HasValidator;
 
     /**
-     * @var AreaService
-     */
-    private AreaService $areaService;
-
-    /**
      * @var PeriodService
      */
     private PeriodService $periodService;
 
     /**
-     * @param AreaService $areaService
      * @param PeriodService $periodService
      */
-    public function __construct(AreaService $areaService, PeriodService $periodService)
+    public function __construct(PeriodService $periodService)
     {
-        $this->areaService = $areaService;
         $this->periodService = $periodService;
     }
 
     /**
-     * @param Area|null $area
      * @param Period|null $period
      * @return LengthAwarePaginator
      */
-    public function tableData(?Area $area, ?Period $period): LengthAwarePaginator
+    public function tableData(?Period $period): LengthAwarePaginator
     {
         $query = QueryBuilder::for(ProductMaterial::class)
             ->select([
@@ -65,7 +56,6 @@ class ProductMaterialService
                 'product_materials.material_uom as material_uom',
                 'product_materials.material_quantity as material_quantity',
                 'product_materials.product_quantity as product_quantity',
-                'products.area_id as area_id',
                 'products.period_id as period_id',
                 'products.code as product_code',
                 'products.description as product_description',
@@ -75,16 +65,10 @@ class ProductMaterialService
             ])
             ->leftJoin('products', 'products.id', '=', 'product_materials.product_id')
             ->leftJoin('materials', 'materials.id', '=', 'product_materials.material_id')
-            ->whereNull(['product_materials.deleted_at', 'products.deleted_at', 'materials.deleted_at']);
-        if (!is_null($area)) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'products.area_id')
-                ->where('areas.id', $area->id)
-                ->whereNull('areas.deleted_at');
-        }
+            ->leftJoin('periods', 'periods.id', '=', 'products.period_id')
+            ->whereNull(['product_materials.deleted_at', 'products.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'products.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->defaultSort('products.code')
             ->allowedFilters(InertiaHelper::filterBy([
@@ -144,20 +128,18 @@ class ProductMaterialService
     public function store(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
+            'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
             'product_quantity' => ['required', 'integer', 'min:0'],
             'material_code' => ['required', 'string', 'max:255',
-                Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at'),
+                Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at'),
                 Rule::unique('product_materials', 'material_id')
-                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0)
+                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0)
                     ->whereNull('deleted_at')
             ],
             'material_quantity' => ['required', 'integer', 'min:0'],
             'material_uom' => ['required', 'string', 'max:255']
         ], attributes: [
-            'area' => 'Area',
             'period' => 'Periode',
             'product_code' => 'Kode SKU',
             'product_quantity' => 'Kuantitas Produk',
@@ -166,8 +148,8 @@ class ProductMaterialService
             'material_uom' => 'UoM Material'
         ]);
         ProductMaterial::create([
-            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
+            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'material_uom' => Str::upper($request->material_uom),
             'material_quantity' => $request->material_quantity,
             'product_quantity' => $request->product_quantity
@@ -183,21 +165,19 @@ class ProductMaterialService
     public function update(Request $request, ProductMaterial $material): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
+            'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
             'product_quantity' => ['required', 'integer', 'min:0'],
             'material_code' => ['required', 'string', 'max:255',
-                Rule::exists('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at'),
+                Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at'),
                 Rule::unique('product_materials', 'material_id')
-                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0)
+                    ->where('product_id', Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0)
                     ->whereNull('deleted_at')
                     ->ignore($material->id)
             ],
             'material_quantity' => ['required', 'integer', 'min:0'],
             'material_uom' => ['required', 'string', 'max:255']
         ], attributes: [
-            'area' => 'Area',
             'period' => 'Periode',
             'product_code' => 'Kode SKU',
             'product_quantity' => 'Kuantitas Produk',
@@ -206,8 +186,8 @@ class ProductMaterialService
             'material_uom' => 'UoM Material'
         ]);
         $material->updateOrFail([
-            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
-            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
+            'product_id' => Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
+            'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'material_uom' => Str::upper($request->material_uom),
             'material_quantity' => $request->material_quantity,
             'product_quantity' => $request->product_quantity
@@ -255,7 +235,6 @@ class ProductMaterialService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new ProductMaterialsExport(
-            $this->areaService->resolve($request),
             $this->periodService->resolve($request),
             $this
         ), new ProductMaterial);
@@ -270,25 +249,18 @@ class ProductMaterialService
     }
 
     /**
-     * @param Area|null $area
      * @param Period|null $period
      * @return Collection
      */
-    public function collection(?Area $area, ?Period $period): Collection
+    public function collection(?Period $period): Collection
     {
         $query = ProductMaterial::leftJoin('products', 'products.id', '=', 'product_materials.product_id')
             ->leftJoin('materials', 'materials.id', '=', 'product_materials.material_id')
-            ->whereNull(['product_materials.deleted_at', 'products.deleted_at', 'materials.deleted_at']);
-        if (!is_null($area)) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'products.area_id')
-                ->where('areas.id', $area->id)
-                ->whereNull('areas.deleted_at');
-        }
+            ->leftJoin('periods', 'periods.id', '=', 'products.period_id')
+            ->whereNull(['product_materials.deleted_at', 'products.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'products.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
-        return $query->orderBy('products.code')->get()->load(['product', 'product.area', 'material']);
+        return $query->orderBy('products.code')->get()->load(['product', 'material']);
     }
 }

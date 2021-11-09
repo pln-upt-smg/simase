@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#4338CA"/>
     <meta name="keywords" content="Stocktake">
-    <meta name="description" content="📦 Item Stock Management System for Unilever Indonesia.">
+    <meta name="description" content="Item Stock Management System for Unilever Indonesia.">
     <title inertia>{{ config('app.name', 'Stocktake') }}</title>
     <link rel="preconnect" href="{{ config('app.url') }}">
     <link rel="manifest" href="/manifest.json">

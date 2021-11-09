@@ -14,9 +14,6 @@ class Material extends Model
     use Fluent, HasFactory, SoftDeletes;
 
     #[BelongsTo]
-    public Area $area;
-
-    #[BelongsTo]
     public Period $period;
 
     #[HasOne]
@@ -26,7 +23,6 @@ class Material extends Model
     public int $price, $per;
 
     protected $fillable = [
-        'area_id',
         'period_id',
         'code',
         'description',

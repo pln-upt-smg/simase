@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Services\AreaService;
 use App\Services\PeriodService;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
@@ -24,11 +23,6 @@ class ProductController extends Controller
     private ProductService $productService;
 
     /**
-     * @var AreaService
-     */
-    private AreaService $areaService;
-
-    /**
      * @var PeriodService
      */
     private PeriodService $periodService;
@@ -37,13 +31,11 @@ class ProductController extends Controller
      * Create a new Controller instance.
      *
      * @param ProductService $productService
-     * @param AreaService $areaService
      * @param PeriodService $periodService
      */
-    public function __construct(ProductService $productService, AreaService $areaService, PeriodService $periodService)
+    public function __construct(ProductService $productService, PeriodService $periodService)
     {
         $this->productService = $productService;
-        $this->areaService = $areaService;
         $this->periodService = $periodService;
     }
 
@@ -55,14 +47,11 @@ class ProductController extends Controller
      */
     public function index(Request $request): Response|ResponseFactory
     {
-        $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
         return inertia('Administrator/Products/Index', [
-            'area' => $area,
             'period' => $period,
-            'areas' => $this->areaService->collection()->toArray(),
             'periods' => $this->periodService->collection()->toArray(),
-            'products' => $this->productService->tableData($area, $period),
+            'products' => $this->productService->tableData($period),
             'template' => $this->productService->template()
         ])->table(function (InertiaTable $table) {
             $this->productService->tableMeta($table);

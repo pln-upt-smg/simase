@@ -15,12 +15,12 @@ class CreateBookStocksTable extends Migration
     {
         Schema::create('book_stocks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('area_id')->constrained();
             $table->foreignId('material_id')->constrained();
             $table->string('batch');
             $table->float('quantity');
-            $table->bigInteger('plnt');
-            $table->bigInteger('sloc');
             $table->float('unrestricted');
+            $table->bigInteger('plnt');
             $table->bigInteger('qualinsp');
             $table->timestamps();
             $table->softDeletes();

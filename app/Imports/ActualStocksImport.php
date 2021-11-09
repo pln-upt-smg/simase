@@ -69,11 +69,12 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
     {
         $this->lookupArea($row);
         Validator::validate($row, [
-            'material' => [Rule::exists('materials', 'code')->where('area_id', $this->currentAreaId)->where('period_id', $this->periodId)->whereNull('deleted_at')]
+            'material' => [Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')]
         ]);
         return new ActualStock([
-            'user_id' => $this->userId,
+            'area_id' => $this->currentAreaId,
             'material_id' => $this->resolveMaterialId($row['material']),
+            'user_id' => $this->userId,
             'batch' => Str::upper(trim($row['batch'])),
             'quantity' => $row['quantity']
         ]);

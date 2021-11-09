@@ -43,7 +43,7 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
-            Str::title(trim($row->material->area->name)),
+            Str::title(trim($row->area->name)),
             Str::upper(trim($row->material->code)),
             Str::upper(trim($row->batch)),
             Str::title(trim($row->material->description)),

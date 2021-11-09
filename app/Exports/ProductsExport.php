@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Area;
 use App\Models\Period;
 use App\Notifications\DataExported;
 use App\Services\ProductService;
@@ -14,15 +13,12 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class ProductsExport implements FromCollection, WithHeadings, WithMapping
 {
-    private ?Area $area;
-
     private ?Period $period;
 
     private ProductService $productService;
 
-    public function __construct(?Area $area, ?Period $period, ProductService $productService)
+    public function __construct(?Period $period, ProductService $productService)
     {
-        $this->area = $area;
         $this->period = $period;
         $this->productService = $productService;
     }
@@ -30,7 +26,6 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            'Area',
             'Product',
             'ProductDescription',
             'UOM',
@@ -45,7 +40,6 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
-            Str::title(trim($row->area->name)),
             Str::upper(trim($row->code)),
             Str::title(trim($row->description)),
             Str::upper(trim($row->uom)),
@@ -59,8 +53,8 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        $data = $this->productService->collection($this->area, $this->period);
-        auth()->user()?->notify(new DataExported('Product', $data->count()));
+        $data = $this->productService->collection($this->period);
+        auth()->user()?->notify(new DataExported('FG Master', $data->count()));
         return $data;
     }
 }

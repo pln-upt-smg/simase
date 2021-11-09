@@ -7,7 +7,6 @@ use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\JobHelper;
 use App\Http\Helper\MediaHelper;
 use App\Imports\MaterialsImport;
-use App\Models\Area;
 use App\Models\Material;
 use App\Models\Period;
 use App\Notifications\DataDestroyed;
@@ -32,36 +31,27 @@ class MaterialService
     use HasValidator;
 
     /**
-     * @var AreaService
-     */
-    private AreaService $areaService;
-
-    /**
      * @var PeriodService
      */
     private PeriodService $periodService;
 
     /**
-     * @param AreaService $areaService
      * @param PeriodService $periodService
      */
-    public function __construct(AreaService $areaService, PeriodService $periodService)
+    public function __construct(PeriodService $periodService)
     {
-        $this->areaService = $areaService;
         $this->periodService = $periodService;
     }
 
     /**
-     * @param Area|null $area
      * @param Period|null $period
      * @return LengthAwarePaginator
      */
-    public function tableData(?Area $area, ?Period $period): LengthAwarePaginator
+    public function tableData(?Period $period): LengthAwarePaginator
     {
         $query = QueryBuilder::for(Material::class)
             ->select([
                 'materials.id as id',
-                'materials.area_id as area_id',
                 'materials.period_id as period_id',
                 'materials.code as code',
                 'materials.description as description',
@@ -72,12 +62,8 @@ class MaterialService
                 'materials.per as per',
                 DB::raw('date_format(materials.updated_at, "%d %b %Y") as update_date')
             ])
-            ->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-            ->whereNull(['materials.deleted_at', 'areas.deleted_at', 'periods.deleted_at']);
-        if (!is_null($area)) {
-            $query = $query->where('areas.id', $area->id);
-        }
+            ->whereNull(['materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($period)) {
             $query = $query->where('periods.id', $period->id);
         }
@@ -139,16 +125,14 @@ class MaterialService
     public function store(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:0'],
             'per' => ['required', 'integer', 'min:0']
         ], attributes: [
-            'area' => 'Area',
             'period' => 'Periode',
             'code' => 'Kode Material',
             'description' => 'Deskripsi Material',
@@ -158,7 +142,6 @@ class MaterialService
             'per' => 'Per'
         ]);
         Material::create([
-            'area_id' => (int)$request->area,
             'period_id' => (int)$request->period,
             'code' => Str::upper($request->code),
             'description' => Str::title($request->description),
@@ -179,16 +162,14 @@ class MaterialService
     public function update(Request $request, Material $material): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
-            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->where('area_id', $request->area)->where('period_id', $request->period)->ignore($material->id)->whereNull('deleted_at')],
+            'code' => ['required', 'string', 'max:255', Rule::unique('materials', 'code')->where('period_id', $request->period)->ignore($material->id)->whereNull('deleted_at')],
             'description' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'mtyp' => ['required', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:0'],
             'per' => ['required', 'integer', 'min:0']
         ], attributes: [
-            'area' => 'Area',
             'period' => 'Periode',
             'code' => 'Kode Material',
             'description' => 'Deskripsi Material',
@@ -198,7 +179,6 @@ class MaterialService
             'per' => 'Per'
         ]);
         $material->updateOrFail([
-            'area_id' => (int)$request->area,
             'period_id' => (int)$request->period,
             'code' => Str::upper($request->code),
             'description' => Str::title($request->description),
@@ -251,10 +231,9 @@ class MaterialService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new MaterialsExport(
-            $this->areaService->resolve($request),
             $this->periodService->resolve($request),
             $this
-        ), new Material);
+        ), 'material_masters');
     }
 
     /**
@@ -266,56 +245,35 @@ class MaterialService
     }
 
     /**
-     * @param Area|null $area
      * @param Period|null $period
      * @return Collection
      */
-    public function collection(?Area $area, ?Period $period): Collection
+    public function collection(?Period $period): Collection
     {
-        $query = Material::whereNull('materials.deleted_at');
-        if (!is_null($area)) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                ->where('areas.id', $area->id)
-                ->whereNull('areas.deleted_at');
-        }
+        $query = Material::leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($period)) {
-            $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('periods.id', $period->id)
-                ->whereNull('periods.deleted_at');
+            $query = $query->where('periods.id', $period->id);
         }
-        return $query->orderBy('materials.code')->get()->load('area');
+        return $query->orderBy('materials.code')->get();
     }
 
     public function resolveMaterialCode(Request $request, bool $strict = true): ?Material
     {
-        $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
-        $query = Material::whereRaw('lower(materials.code) = ?', Str::lower(trim($request->query('q') ?? '')))
-            ->whereNull('materials.deleted_at');
+        $query = Material::leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereRaw('lower(materials.code) = ?', Str::lower(trim($request->query('q') ?? '')))
+            ->whereNull(['materials.deleted_at', 'periods.deleted_at']);
         if ($strict) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('areas.id', $area?->id ?? 0)
-                ->where('periods.id', $period?->id ?? 0)
-                ->whereNull(['areas.deleted_at', 'periods.deleted_at']);
-        } else {
-            if (!is_null($area)) {
-                $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                    ->where('areas.id', $area->id)
-                    ->whereNull('areas.deleted_at');
-            }
-            if (!is_null($period)) {
-                $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                    ->where('periods.id', $period->id)
-                    ->whereNull('periods.deleted_at');
-            }
+            $query = $query->where('periods.id', $period?->id ?? 0);
+        } else if (!is_null($period)) {
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->first();
     }
 
     public function materialCodeCollection(Request $request, bool $strict = true): Collection
     {
-        $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
         $query = Material::distinct()
             ->select([
@@ -324,25 +282,13 @@ class MaterialService
                 'materials.uom as uom'
             ])
             ->orderBy('materials.code')
-            ->whereNull('materials.deleted_at')
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->whereNull(['materials.deleted_at', 'periods.deleted_at'])
             ->whereRaw('lower(materials.code) like ?', '%' . Str::lower(trim($request->query('q') ?? '')) . '%');
         if ($strict) {
-            $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                ->where('areas.id', $area?->id ?? 0)
-                ->where('periods.id', $period?->id ?? 0)
-                ->whereNull(['areas.deleted_at', 'periods.deleted_at']);
-        } else {
-            if (!is_null($area)) {
-                $query = $query->leftJoin('areas', 'areas.id', '=', 'materials.area_id')
-                    ->where('areas.id', $area->id)
-                    ->whereNull('areas.deleted_at');
-            }
-            if (!is_null($period)) {
-                $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-                    ->where('periods.id', $period->id)
-                    ->whereNull('periods.deleted_at');
-            }
+            $query = $query->where('periods.id', $period?->id ?? 0);
+        } else if (!is_null($period)) {
+            $query = $query->where('periods.id', $period->id);
         }
         return $query->get();
     }

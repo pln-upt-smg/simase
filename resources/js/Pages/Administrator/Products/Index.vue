@@ -1,8 +1,7 @@
 <template>
-    <app-layout title="Product">
+    <app-layout title="FG Master">
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6 mb-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 mb-4 lg:mb-0">
-                <jet-area-dropdown :selected="area" :areas="areas" partial="products" class="mb-4 lg:mb-0"/>
                 <jet-period-dropdown :selected="period" :periods="periods" partial="products" class="mb-2 lg:mb-0"/>
             </div>
             <div class="lg:text-right">
@@ -107,10 +106,8 @@
                 Silakan masukkan data product yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-select ref="storeArea" placeholder="Pilih Area" v-model="storeForm.area"
-                                :data="areas" class="block w-full"/>
                     <jet-select ref="storePeriod" placeholder="Pilih Periode" v-model="storeForm.period"
-                                :data="periods" class="mt-4 block w-full"/>
+                                :data="periods" class="block w-full"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode SKU"
                                ref="storeCode" v-model="storeForm.code"/>
                     <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Deskripsi Produk"
@@ -146,10 +143,8 @@
                 Silakan masukkan data product yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-select ref="updateArea" placeholder="Pilih Area" v-model="updateForm.area"
-                                :data="areas" class="block w-full"/>
                     <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
-                                :data="periods" class="mt-4 block w-full"/>
+                                :data="periods" class="block w-full"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode SKU"
                                ref="updateCode" v-model="updateForm.code"/>
                     <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Deskripsi Produk"
@@ -264,14 +259,12 @@
                     Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
                 </p>
                 <p class="mt-2">
-                    Anda dapat menyaring data product berdasarkan area dan periodenya dengan menyesuaikan kolom
+                    Anda dapat menyaring data product berdasarkan periodenya dengan menyesuaikan kolom
                     pilihan dibawah ini.
                 </p>
                 <div class="mt-4">
-                    <jet-select ref="exportArea" placeholder="Semua Area" v-model="exportForm.area"
-                                :data="areas" class="block w-full"/>
                     <jet-select ref="exportPeriod" placeholder="Semua Periode" v-model="exportForm.period"
-                                :data="periods" class="mt-4 block w-full"/>
+                                :data="periods" class="block w-full"/>
                 </div>
             </template>
             <template #buttons>
@@ -319,11 +312,10 @@ import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
 import JetTableHeader from '@/Jetstream/TableHeader'
-import JetAreaDropdown from '@/Jetstream/AreaDropdown'
 import JetPeriodDropdown from '@/Jetstream/PeriodDropdown'
 import JetSelect from '@/Jetstream/Select'
 
-JetTableEngine.respectParams(['area', 'period'])
+JetTableEngine.respectParams(['period'])
 
 export default defineComponent({
     data() {
@@ -344,7 +336,6 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
-                area: null,
                 period: null,
                 code: null,
                 description: null,
@@ -355,7 +346,6 @@ export default defineComponent({
                 per: null
             }),
             updateForm: useForm({
-                area: null,
                 period: null,
                 id: null,
                 code: null,
@@ -374,15 +364,12 @@ export default defineComponent({
                 file: null
             }),
             exportForm: useForm({
-                area: null,
                 period: null
             })
         }
     },
     mixins: [JetTableEngine],
     props: {
-        area: Object,
-        areas: Object,
         period: Object,
         periods: Object,
         products: Object
@@ -403,7 +390,6 @@ export default defineComponent({
         JetSuccessNotification,
         JetDangerNotification,
         JetValidationErrors,
-        JetAreaDropdown,
         JetPeriodDropdown,
         JetSelect,
         MenuItem,
@@ -421,7 +407,7 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeStoreModal()
-                    this.showSuccessNotification('Product berhasil ditambahkan', 'Sistem telah berhasil menyimpan data product baru')
+                    this.showSuccessNotification('FG Master berhasil ditambahkan', 'Sistem telah berhasil menyimpan data product baru')
                 },
                 onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data product, mohon periksa ulang form')
             })
@@ -432,7 +418,7 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeUpdateModal()
-                    this.showSuccessNotification('Product berhasil diedit', 'Sistem telah berhasil mengedit data product')
+                    this.showSuccessNotification('FG Master berhasil diedit', 'Sistem telah berhasil mengedit data product')
                 },
                 onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data product, mohon periksa ulang form')
             })
@@ -443,7 +429,7 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeDestroyModal()
-                    this.showSuccessNotification('Product berhasil dihapus', 'Sistem telah berhasil menghapus data product')
+                    this.showSuccessNotification('FG Master berhasil dihapus', 'Sistem telah berhasil menghapus data product')
                 },
                 onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data product')
             })
@@ -461,18 +447,16 @@ export default defineComponent({
         },
         exportFile() {
             window.open(route('products.export', {
-                area: this.exportForm.area,
                 period: this.exportForm.period
             }))
             this.closeExportModal()
         },
         confirmStore() {
             setTimeout(() => this.confirmingStore = true, 150)
-            setTimeout(() => this.$refs.storeArea.focus(), 300)
+            setTimeout(() => this.$refs.storePeriod.focus(), 300)
         },
         confirmUpdate(product) {
             this.updateForm.id = product.id
-            this.updateForm.area = product.area_id
             this.updateForm.period = product.period_id
             this.updateForm.code = product.code
             this.updateForm.description = product.description
@@ -481,7 +465,7 @@ export default defineComponent({
             this.updateForm.price = product.price
             this.updateForm.per = product.per
             setTimeout(() => this.confirmingUpdate = true, 150)
-            setTimeout(() => this.$refs.updateArea.focus(), 300)
+            setTimeout(() => this.$refs.updatePeriod.focus(), 300)
         },
         confirmDestroy(product) {
             this.destroyForm.id = product.id
@@ -493,7 +477,7 @@ export default defineComponent({
         },
         confirmExport() {
             setTimeout(() => this.confirmingExport = true, 150)
-            setTimeout(() => this.$refs.exportArea.focus(), 300)
+            setTimeout(() => this.$refs.exportPeriod.focus(), 300)
         },
         closeStoreModal() {
             this.confirmingStore = false
@@ -501,7 +485,6 @@ export default defineComponent({
                 this.clearErrors()
                 this.storeForm.clearErrors()
                 this.storeForm.reset()
-                this.storeForm.area = null
                 this.storeForm.period = null
                 this.storeForm.code = null
                 this.storeForm.description = null
@@ -518,7 +501,6 @@ export default defineComponent({
                 this.updateForm.clearErrors()
                 this.updateForm.reset()
                 this.updateForm.id = null
-                this.updateForm.area = null
                 this.updateForm.period = null
                 this.updateForm.code = null
                 this.updateForm.description = null
@@ -551,7 +533,6 @@ export default defineComponent({
             this.confirmingExport = false
             setTimeout(() => {
                 this.exportForm.reset()
-                this.exportForm.area = null
                 this.exportForm.period = null
             }, 500)
         },

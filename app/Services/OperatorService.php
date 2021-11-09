@@ -45,7 +45,7 @@ class OperatorService
                 'roles.name as role'
             ])
             ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->where('roles.id', '=', Role::operator()?->id ?? 2)
+            ->where('users.id', '<>', auth()->user()?->id ?? 0)
             ->whereNull(['users.deleted_at', 'roles.deleted_at'])
             ->defaultSort('users.name')
             ->allowedFilters(InertiaHelper::filterBy([
@@ -94,15 +94,17 @@ class OperatorService
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->whereNull('deleted_at'), new IsValidPhone],
             'nip' => ['required', 'numeric', new IsValidDigit(6), Rule::unique('users', 'nip')->whereNull('deleted_at')],
-            'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
+            'password' => ['required', 'string', (new Password)->length(6), 'confirmed'],
+            'role' => ['required', 'integer', Rule::exists('roles', 'id')->whereNull('deleted_at')]
         ], attributes: [
             'name' => 'Nama Pegawai',
             'phone' => 'Nomor Telepon',
             'nip' => 'Nomor Induk Pegawai',
-            'password' => 'Kata Sandi'
+            'password' => 'Kata Sandi',
+            'role' => 'Peran'
         ]);
         User::create([
-            'role_id' => Role::operator()?->id ?? 2,
+            'role_id' => (int)$request->role,
             'name' => Str::title($request->name),
             'phone' => $request->phone,
             'nip' => $request->nip,
@@ -122,15 +124,17 @@ class OperatorService
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($operator->id)->whereNull('deleted_at'), new IsValidPhone],
             'nip' => ['required', 'numeric', new IsValidDigit(6), Rule::unique('users', 'nip')->ignore($operator->id)->whereNull('deleted_at')],
-            'password' => ['required', 'string', (new Password)->length(6), 'confirmed']
+            'password' => ['required', 'string', (new Password)->length(6), 'confirmed'],
+            'role' => ['required', 'integer', Rule::exists('roles', 'id')->whereNull('deleted_at')]
         ], attributes: [
             'name' => 'Nama Pegawai',
             'phone' => 'Nomor Telepon',
             'nip' => 'Nomor Induk Pegawai',
-            'password' => 'Kata Sandi'
+            'password' => 'Kata Sandi',
+            'role' => 'Peran'
         ]);
         $operator->updateOrFail([
-            'role_id' => Role::operator()?->id ?? 2,
+            'role_id' => (int)$request->role,
             'name' => Str::title($request->name),
             'phone' => $request->phone,
             'nip' => $request->nip,
@@ -166,7 +170,7 @@ class OperatorService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new OperatorsExport($this), 'operators');
+        return MediaHelper::exportSpreadsheet(new OperatorsExport($this), 'pegawai');
     }
 
     /**

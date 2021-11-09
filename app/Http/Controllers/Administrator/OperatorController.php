@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administrator;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\OperatorService;
+use App\Services\RoleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -21,13 +22,20 @@ class OperatorController extends Controller
     private OperatorService $operatorService;
 
     /**
+     * @var RoleService
+     */
+    private RoleService $roleService;
+
+    /**
      * Create a new Controller instance.
      *
      * @param OperatorService $operatorService
+     * @param RoleService $roleService
      */
-    public function __construct(OperatorService $operatorService)
+    public function __construct(OperatorService $operatorService, RoleService $roleService)
     {
         $this->operatorService = $operatorService;
+        $this->roleService = $roleService;
     }
 
     /**
@@ -38,6 +46,7 @@ class OperatorController extends Controller
     public function index(): Response|ResponseFactory
     {
         return inertia('Administrator/Operators/Index', [
+            'roles' => $this->roleService->collection()->toArray(),
             'operators' => $this->operatorService->tableData(),
             'template' => $this->operatorService->template()
         ])->table(function (InertiaTable $table) {

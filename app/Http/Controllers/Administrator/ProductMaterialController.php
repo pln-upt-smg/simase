@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProductMaterial;
-use App\Services\AreaService;
 use App\Services\PeriodService;
 use App\Services\ProductMaterialService;
 use Illuminate\Http\RedirectResponse;
@@ -23,26 +22,14 @@ class ProductMaterialController extends Controller
     private ProductMaterialService $productMaterialService;
 
     /**
-     * @var AreaService
-     */
-    private AreaService $areaService;
-
-    /**
-     * @var PeriodService
-     */
-    private PeriodService $periodService;
-
-    /**
      * Create a new Controller instance.
      *
      * @param ProductMaterialService $productMaterialService
-     * @param AreaService $areaService
      * @param PeriodService $periodService
      */
-    public function __construct(ProductMaterialService $productMaterialService, AreaService $areaService, PeriodService $periodService)
+    public function __construct(ProductMaterialService $productMaterialService, PeriodService $periodService)
     {
         $this->productMaterialService = $productMaterialService;
-        $this->areaService = $areaService;
         $this->periodService = $periodService;
     }
 
@@ -54,14 +41,11 @@ class ProductMaterialController extends Controller
      */
     public function index(Request $request): Response|ResponseFactory
     {
-        $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
         return inertia('Administrator/Products/Materials/Index', [
-            'area' => $area,
             'period' => $period,
-            'areas' => $this->areaService->collection()->toArray(),
             'periods' => $this->periodService->collection()->toArray(),
-            'productMaterials' => $this->productMaterialService->tableData($area, $period),
+            'productMaterials' => $this->productMaterialService->tableData($period),
             'template' => $this->productMaterialService->template()
         ])->table(function (InertiaTable $table) {
             $this->productMaterialService->tableMeta($table);

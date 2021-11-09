@@ -85,8 +85,9 @@
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
                                ref="storePassword" v-model="storeForm.password"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
-                               ref="storePasswordConfirmation" v-model="storeForm.password_confirmation"
-                               @keyup.enter="store"/>
+                               ref="storePasswordConfirmation" v-model="storeForm.password_confirmation"/>
+                    <jet-select ref="storeRole" placeholder="Pilih Peran" v-model="storeForm.role"
+                                :data="roles" class="mt-4 block w-full" @keyup.enter="store"/>
                 </div>
             </template>
             <template #buttons>
@@ -116,8 +117,9 @@
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Kata Sandi Akun"
                                ref="updatePassword" v-model="updateForm.password"/>
                     <jet-input type="password" class="mt-4 block w-full" placeholder="Konfirmasi Kata Sandi Akun"
-                               ref="updatePasswordConfirmation" @keyup.enter="update"
-                               v-model="updateForm.password_confirmation"/>
+                               ref="updatePasswordConfirmation" v-model="updateForm.password_confirmation"/>
+                    <jet-select ref="updateRole" placeholder="Pilih Peran" v-model="updateForm.role"
+                                :data="roles" class="mt-4 block w-full" @keyup.enter="update"/>
                 </div>
             </template>
             <template #buttons>
@@ -259,6 +261,7 @@ import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
 import JetTableHeader from '@/Jetstream/TableHeader'
+import JetSelect from '@/Jetstream/Select'
 
 export default defineComponent({
     data() {
@@ -283,7 +286,8 @@ export default defineComponent({
                 phone: null,
                 nip: null,
                 password: null,
-                password_confirmation: null
+                password_confirmation: null,
+                role: null
             }),
             updateForm: useForm({
                 id: null,
@@ -291,7 +295,8 @@ export default defineComponent({
                 phone: null,
                 nip: null,
                 password: null,
-                password_confirmation: null
+                password_confirmation: null,
+                role: null
             }),
             destroyForm: useForm({
                 id: null
@@ -303,6 +308,7 @@ export default defineComponent({
     },
     mixins: [JetTableEngine],
     props: {
+        roles: Object,
         operators: Object
     },
     components: {
@@ -321,6 +327,7 @@ export default defineComponent({
         JetSuccessNotification,
         JetDangerNotification,
         JetValidationErrors,
+        JetSelect,
         MenuItem,
         PlusIcon,
         UploadIcon,

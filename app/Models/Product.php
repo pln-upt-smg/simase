@@ -17,9 +17,6 @@ class Product extends Model
     use Fluent, HasFactory, SoftDeletes;
 
     #[BelongsTo]
-    public Area $area;
-
-    #[BelongsTo]
     public Period $period;
 
     #[HasMany(ProductMaterial::class)]
@@ -29,7 +26,6 @@ class Product extends Model
     public int $price, $per;
 
     protected $fillable = [
-        'area_id',
         'period_id',
         'code',
         'description',
@@ -42,11 +38,11 @@ class Product extends Model
 
     public function convertAsActualStock(Request $request): void
     {
-        $quantity = (int)$request->quantity;
         $productMaterials = $this->load('productMaterials')->productMaterials;
-        for($i = 0; $i < $quantity; $i++) {
-            foreach ($productMaterials as $productMaterial) {
+        foreach ($productMaterials as $productMaterial) {
+            for($i = 0; $i < (int)$request->quantity; $i++) {
                 ActualStock::create([
+                    'area_id' => (int)$request->area,
                     'material_id' => $productMaterial->load('material')->material->id,
                     'user_id' => auth()->user()?->id ?? 0,
                     'batch' => Str::upper($request->batch_code),

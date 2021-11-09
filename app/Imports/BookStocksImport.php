@@ -43,10 +43,9 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithM
     public function rules(): array
     {
         return [
-            'area' => ['required', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
             'material' => ['required', 'max:255'],
             'plnt' => ['required', 'integer', 'min:0'],
-            'sloc' => ['required', 'integer', 'min:0'],
+            'sloc' => ['required', 'numeric', Rule::exists('areas', 'sloc')->whereNull('deleted_at')],
             'batch' => ['required', 'max:255'],
             'unrestricted' => ['required', 'numeric'],
             'qualinsp' => ['required', 'integer', 'min:0'],
@@ -71,16 +70,16 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithM
      */
     public function model(array $row): ?BookStock
     {
-        $this->lookupArea($row);
+        $this->lookupArea($row, true);
         Validator::validate($row, [
-            'material' => [Rule::exists('materials', 'code')->where('area_id', $this->currentAreaId)->where('period_id', $this->periodId)->whereNull('deleted_at')]
+            'material' => [Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')]
         ]);
         return new BookStock([
+            'area_id' => $this->currentAreaId,
             'material_id' => $this->resolveMaterialId($row['material']),
             'batch' => Str::upper(trim($row['batch'])),
             'quantity' => $row['quantity'],
             'plnt' => (int)$row['plnt'],
-            'sloc' => (int)$row['sloc'],
             'unrestricted' => $row['unrestricted'],
             'qualinsp' => (int)$row['qualinsp']
         ]);

@@ -8,7 +8,7 @@ use App\Imports\Helper\HasChunkSize;
 use App\Imports\Helper\HasDefaultEvents;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasImporter;
-use App\Models\Role;
+use App\Imports\Helper\HasRoleResolver;
 use App\Models\User;
 use App\Rules\IsValidDigit;
 use App\Rules\IsValidPhone;
@@ -28,13 +28,10 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 
 class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
 {
-    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize;
-
-    private int $roleId;
+    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasRoleResolver;
 
     public function __construct(?User $user)
     {
-        $this->roleId = Role::operator()?->id ?? 2;
         $this->userId = $user?->id ?? 0;
     }
 
@@ -59,7 +56,7 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMu
     public function model(array $row): ?User
     {
         return new User([
-            'role_id' => $this->role?->id ?? 2,
+            'role_id' => $this->resolveRoleId($row['role']),
             'name' => Str::title(trim($row['name'])),
             'phone' => trim($row['phone']),
             'nip' => trim($row['nip']),
@@ -75,7 +72,7 @@ class OperatorsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMu
     public function overwrite(): void
     {
         User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->where('roles.id', $this->roleId)
+            ->where('users.id', '<>', $this->userId)
             ->whereNull('users.deleted_at')
             ->delete();
     }

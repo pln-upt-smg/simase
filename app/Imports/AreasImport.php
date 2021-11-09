@@ -34,23 +34,25 @@ class AreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultip
     public function rules(): array
     {
         return [
-            'areaid' => ['nullable', 'integer', 'min:1'],
-            'areadescription' => ['required', 'max:255']
+            'areaid' => ['required', 'max:255'],
+            'sloc' => ['required', 'numeric'],
+            'group' => ['required', 'max:255']
         ];
     }
 
     public function uniqueBy(): string|array
     {
         return [
-            'areaid',
-            'areadescription'
+            'sloc'
         ];
     }
 
     public function model(array $row): ?Area
     {
         return new Area([
-            'name' => Str::title(trim($row['areadescription']))
+            'name' => Str::title(trim($row['areaid'])),
+            'sloc' => trim($row['sloc']),
+            'group' => Str::title(trim($row['group']))
         ]);
     }
 
