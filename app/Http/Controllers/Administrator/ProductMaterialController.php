@@ -22,6 +22,11 @@ class ProductMaterialController extends Controller
     private ProductMaterialService $productMaterialService;
 
     /**
+     * @var PeriodService
+     */
+    private PeriodService $periodService;
+
+    /**
      * Create a new Controller instance.
      *
      * @param ProductMaterialService $productMaterialService
