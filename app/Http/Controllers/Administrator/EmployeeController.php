@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\OperatorService;
+use App\Services\EmployeeService;
 use App\Services\RoleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,12 +14,12 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class OperatorController extends Controller
+class EmployeeController extends Controller
 {
     /**
-     * @var OperatorService
+     * @var EmployeeService
      */
-    private OperatorService $operatorService;
+    private EmployeeService $employeeService;
 
     /**
      * @var RoleService
@@ -29,12 +29,12 @@ class OperatorController extends Controller
     /**
      * Create a new Controller instance.
      *
-     * @param OperatorService $operatorService
+     * @param EmployeeService $employeeService
      * @param RoleService $roleService
      */
-    public function __construct(OperatorService $operatorService, RoleService $roleService)
+    public function __construct(EmployeeService $employeeService, RoleService $roleService)
     {
-        $this->operatorService = $operatorService;
+        $this->employeeService = $employeeService;
         $this->roleService = $roleService;
     }
 
@@ -45,12 +45,12 @@ class OperatorController extends Controller
      */
     public function index(): Response|ResponseFactory
     {
-        return inertia('Administrator/Operators/Index', [
+        return inertia('Administrator/Employees/Index', [
             'roles' => $this->roleService->collection()->toArray(),
-            'operators' => $this->operatorService->tableData(),
-            'template' => $this->operatorService->template()
+            'employees' => $this->employeeService->tableData(),
+            'template' => $this->employeeService->template()
         ])->table(function (InertiaTable $table) {
-            $this->operatorService->tableMeta($table);
+            $this->employeeService->tableMeta($table);
         });
     }
 
@@ -63,7 +63,7 @@ class OperatorController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $this->operatorService->store($request);
+        $this->employeeService->store($request);
         return back();
     }
 
@@ -71,26 +71,26 @@ class OperatorController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param User $operator
+     * @param User $employee
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, User $operator): RedirectResponse
+    public function update(Request $request, User $employee): RedirectResponse
     {
-        $this->operatorService->update($request, $operator);
+        $this->employeeService->update($request, $employee);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param User $operator
+     * @param User $employee
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(User $operator): RedirectResponse
+    public function destroy(User $employee): RedirectResponse
     {
-        $this->operatorService->destroy($operator);
+        $this->employeeService->destroy($employee);
         return back();
     }
 
@@ -103,7 +103,7 @@ class OperatorController extends Controller
      */
     public function import(Request $request): RedirectResponse
     {
-        $this->operatorService->import($request);
+        $this->employeeService->import($request);
         return back();
     }
 
@@ -115,6 +115,6 @@ class OperatorController extends Controller
      */
     public function export(): BinaryFileResponse
     {
-        return $this->operatorService->export();
+        return $this->employeeService->export();
     }
 }

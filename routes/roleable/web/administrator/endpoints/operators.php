@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\Administrator\OperatorController;
+use App\Http\Controllers\Administrator\EmployeeController;
 
-Route::resource('operators', OperatorController::class)->except(['create', 'show', 'edit']);
+Route::resource('employees', EmployeeController::class)->except(['create', 'show', 'edit']);
 
 Route::group([
-    'prefix' => 'operators',
-    'as' => 'operators.'
+    'prefix' => 'employees',
+    'as' => 'employees.'
 ], static function () {
 
-    Route::post('import', [OperatorController::class, 'import'])->name('import');
+    Route::post('import', [EmployeeController::class, 'import'])->name('import');
 
-    Route::get('export', [OperatorController::class, 'export'])->name('export');
+    Route::get('export', [EmployeeController::class, 'export'])->name('export');
 
 });

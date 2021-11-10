@@ -15,7 +15,7 @@
             leave-from-class="transform opacity-100 scale-100"
             leave-to-class="transform opacity-0 scale-95">
             <MenuItems
-                class="origin-top-right absolute right-0 mt-2 w-48 py-1 rounded-md shadow-lg bg-white divide-y divide-gray-100 z-10">
+                class="origin-top-right absolute mt-2 w-48 py-1 rounded-md shadow-lg bg-white divide-y divide-gray-100 z-10">
                 <slot></slot>
             </MenuItems>
         </transition>

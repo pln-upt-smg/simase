@@ -215,7 +215,7 @@ const navigations = {
             {name: 'Batch Not Exist', href: 'batch-not-exists.index', icon: ExclamationIcon}
         ],
         manage: [
-            {name: 'Pegawai', href: 'operators.index', icon: UsersIcon},
+            {name: 'Pegawai', href: 'employees.index', icon: UsersIcon},
             {name: 'Pengaturan', href: 'profile.show', icon: CogIcon}
         ]
     },

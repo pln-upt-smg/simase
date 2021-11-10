@@ -26,24 +26,12 @@
                     Nama Area
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('sloc')"
-                    :cell="sortableHeader('sloc')">
-                    SLoc
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('area_group')"
-                    :cell="sortableHeader('area_group')">
-                    Group
-                </jet-table-header>
-                <jet-table-header
                     v-show="showColumn('action')"
                     :cell="staticHeader('action')"/>
             </template>
             <template #body>
                 <tr v-for="area in areas.data" :key="area.id">
                     <td v-show="showColumn('name')">{{ area.name }}</td>
-                    <td v-show="showColumn('sloc')">{{ area.sloc }}</td>
-                    <td v-show="showColumn('group')">{{ area.area_group }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
@@ -71,12 +59,7 @@
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
                     <jet-input type="text" class="block w-full capitalize" placeholder="Nama Area"
-                               ref="storeName" v-model="storeForm.name"/>
-                    <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="SLoc"
-                               ref="storeSloc" v-model="storeForm.sloc"/>
-                    <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Group"
-                               ref="storeGroyp" v-model="storeForm.area_group"
-                               @keyup.enter="store"/>
+                               ref="storeName" v-model="storeForm.name" @keyup.enter="store"/>
                 </div>
             </template>
             <template #buttons>
@@ -98,12 +81,7 @@
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
                     <jet-input type="text" class="block w-full capitalize" placeholder="Nama Area"
-                               ref="updateName" v-model="updateForm.name"/>
-                    <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="SLoc"
-                               ref="updateSloc" v-model="updateForm.sloc"/>
-                    <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Group"
-                               ref="updateGroup" v-model="updateForm.area_group"
-                               @keyup.enter="update"/>
+                               ref="updateName" v-model="updateForm.name" @keyup.enter="update"/>
                 </div>
             </template>
             <template #buttons>
@@ -293,15 +271,11 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
-                name: null,
-                sloc: null,
-                area_group: null
+                name: null
             }),
             updateForm: useForm({
                 id: null,
-                name: null,
-                sloc: null,
-                area_group: null
+                name: null
             }),
             destroyForm: useForm({
                 id: null

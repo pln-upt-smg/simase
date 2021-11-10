@@ -17,7 +17,7 @@
         <jet-table
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="operators"
+            :meta="employees"
             ref="table">
             <template #head>
                 <jet-table-header
@@ -45,22 +45,22 @@
                     :cell="staticHeader('action')"/>
             </template>
             <template #body>
-                <tr v-for="operator in operators.data" :key="operator.id">
-                    <td v-show="showColumn('name')">{{ operator.name }}</td>
-                    <td v-show="showColumn('phone')">{{ operator.phone }}</td>
-                    <td v-show="showColumn('nip')">{{ operator.nip }}</td>
-                    <td v-show="showColumn('role')">{{ operator.role }}</td>
+                <tr v-for="employee in employees.data" :key="employee.id">
+                    <td v-show="showColumn('name')">{{ employee.name }}</td>
+                    <td v-show="showColumn('phone')">{{ employee.phone }}</td>
+                    <td v-show="showColumn('nip')">{{ employee.nip }}</td>
+                    <td v-show="showColumn('role')">{{ employee.role }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
-                                <button @click="confirmUpdate(operator)"
+                                <button @click="confirmUpdate(employee)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <pencil-alt-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Edit
                                 </button>
                             </menu-item>
                             <menu-item>
-                                <button @click="confirmDestroy(operator)"
+                                <button @click="confirmDestroy(employee)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <trash-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Hapus
@@ -309,7 +309,7 @@ export default defineComponent({
     mixins: [JetTableEngine],
     props: {
         roles: Object,
-        operators: Object
+        employees: Object
     },
     components: {
         AppLayout,
@@ -338,7 +338,7 @@ export default defineComponent({
     },
     methods: {
         store() {
-            this.storeForm.post(route('operators.store'), {
+            this.storeForm.post(route('employees.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
@@ -349,7 +349,7 @@ export default defineComponent({
             })
         },
         update() {
-            this.updateForm.put(route('operators.update', this.updateForm.id), {
+            this.updateForm.put(route('employees.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
@@ -360,7 +360,7 @@ export default defineComponent({
             })
         },
         destroy() {
-            this.destroyForm.delete(route('operators.destroy', this.destroyForm.id), {
+            this.destroyForm.delete(route('employees.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
@@ -371,7 +371,7 @@ export default defineComponent({
             })
         },
         importFile() {
-            this.importForm.post(route('operators.import'), {
+            this.importForm.post(route('employees.import'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
@@ -382,24 +382,24 @@ export default defineComponent({
             })
         },
         exportFile() {
-            window.open(route('operators.export'))
+            window.open(route('employees.export'))
             this.closeExportModal()
         },
         confirmStore() {
             setTimeout(() => this.confirmingStore = true, 150)
             setTimeout(() => this.$refs.storeName.focus(), 300)
         },
-        confirmUpdate(operator) {
-            this.updateForm.id = operator.id
-            this.updateForm.name = operator.name
-            this.updateForm.phone = operator.phone
-            this.updateForm.nip = operator.nip
-            this.updateForm.role = operator.role_id
+        confirmUpdate(employee) {
+            this.updateForm.id = employee.id
+            this.updateForm.name = employee.name
+            this.updateForm.phone = employee.phone
+            this.updateForm.nip = employee.nip
+            this.updateForm.role = employee.role_id
             setTimeout(() => this.confirmingUpdate = true, 150)
             setTimeout(() => this.$refs.updateName.focus(), 300)
         },
-        confirmDestroy(operator) {
-            this.destroyForm.id = operator.id
+        confirmDestroy(employee) {
+            this.destroyForm.id = employee.id
             setTimeout(() => this.confirmingDestroy = true, 150)
         },
         confirmImport() {
@@ -484,7 +484,7 @@ export default defineComponent({
             this.$page.props.errors = []
         },
         reloadData() {
-            this.$refs.table.reload('operators')
+            this.$refs.table.reload('employees')
         }
     }
 })

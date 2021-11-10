@@ -3,20 +3,20 @@
 namespace App\Exports;
 
 use App\Notifications\DataExported;
-use App\Services\OperatorService;
+use App\Services\EmployeeService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class OperatorsExport implements FromCollection, WithHeadings, WithMapping
+class EmployeesExport implements FromCollection, WithHeadings, WithMapping
 {
-    private OperatorService $operatorService;
+    private EmployeeService $employeeService;
 
-    public function __construct(OperatorService $operatorService)
+    public function __construct(EmployeeService $employeeService)
     {
-        $this->operatorService = $operatorService;
+        $this->employeeService = $employeeService;
     }
 
     public function headings(): array
@@ -41,7 +41,7 @@ class OperatorsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        $data = $this->operatorService->collection();
+        $data = $this->employeeService->collection();
         auth()->user()?->notify(new DataExported('Pegawai', $data->count()));
         return $data;
     }

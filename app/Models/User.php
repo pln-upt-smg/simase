@@ -20,7 +20,8 @@ class User extends Authenticatable
     #[BelongsTo]
     public Role $role;
 
-    public string $name, $phone, $nip, $password;
+    public string $name, $nip, $password;
+    public ?string $phone;
 
     protected $fillable = [
         'role_id',

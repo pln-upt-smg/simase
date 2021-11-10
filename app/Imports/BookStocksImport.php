@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Imports\Contract\WithDefaultEvents;
+use App\Imports\Contract\WithQueuedValidation;
 use App\Imports\Helper\HasBatchSize;
 use App\Imports\Helper\HasChunkSize;
 use App\Imports\Helper\HasDefaultEvents;
@@ -10,12 +11,12 @@ use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasImporter;
 use App\Imports\Helper\HasMaterialResolver;
 use App\Imports\Helper\HasMultipleArea;
+use App\Imports\Helper\HasValidator;
 use App\Models\BookStock;
 use App\Models\Period;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -28,9 +29,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 
-class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
+class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, WithQueuedValidation, ShouldQueue, ShouldBeUnique
 {
-    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleArea, HasMaterialResolver;
+    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasValidator, HasMultipleArea, HasMaterialResolver;
 
     private int $periodId;
 
@@ -40,19 +41,19 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithM
         $this->userId = $user?->id ?? 0;
     }
 
-    public function rules(): array
+    public function validation(): array
     {
         return [
-            'material' => ['required', 'max:255'],
+            'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
             'plnt' => ['required', 'integer', 'min:0'],
-            'sloc' => ['required', 'numeric', Rule::exists('areas', 'sloc')->whereNull('deleted_at')],
-            'batch' => ['required', 'max:255'],
+            'sloc' => ['required', 'string', 'max:255', Rule::exists('areas', 'sloc')->whereNull('deleted_at')],
+            'batch' => ['required', 'string', 'max:255'],
             'unrestricted' => ['required', 'numeric'],
             'qualinsp' => ['required', 'integer', 'min:0'],
-            'materialdescription' => ['nullable', 'max:255'],
+            'materialdescription' => ['nullable', 'string', 'max:255'],
             'quantity' => ['required', 'numeric', 'min:0'],
-            'uom' => ['nullable', 'max:255'],
-            'mtyp' => ['nullable', 'max:255']
+            'uom' => ['nullable', 'string', 'max:255'],
+            'mtyp' => ['nullable', 'string', 'max:255']
         ];
     }
 
@@ -70,10 +71,8 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithM
      */
     public function model(array $row): ?BookStock
     {
+        $this->validate($row);
         $this->lookupArea($row, true);
-        Validator::validate($row, [
-            'material' => [Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')]
-        ]);
         return new BookStock([
             'area_id' => $this->currentAreaId,
             'material_id' => $this->resolveMaterialId($row['material']),

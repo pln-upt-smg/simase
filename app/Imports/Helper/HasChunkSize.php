@@ -9,6 +9,6 @@ trait HasChunkSize
      */
     public function chunkSize(): int
     {
-        return 500;
+        return 200;
     }
 }

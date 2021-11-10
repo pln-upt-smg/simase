@@ -2,11 +2,10 @@
 
 namespace App\Services;
 
-use App\Exports\OperatorsExport;
+use App\Exports\EmployeesExport;
 use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\MediaHelper;
-use App\Imports\OperatorsImport;
-use App\Models\Role;
+use App\Imports\EmployeesImport;
 use App\Models\User;
 use App\Notifications\DataDestroyed;
 use App\Notifications\DataStored;
@@ -27,7 +26,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class OperatorService
+class EmployeeService
 {
     use HasValidator;
 
@@ -93,7 +92,7 @@ class OperatorService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->whereNull('deleted_at'), new IsValidPhone],
+            'phone' => ['nullable', 'string', 'max:20', new IsValidPhone, Rule::unique('users', 'phone')->whereNull('deleted_at')],
             'nip' => ['required', 'numeric', new IsValidDigit(6), Rule::unique('users', 'nip')->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed'],
             'role' => ['required', 'integer', Rule::exists('roles', 'id')->whereNull('deleted_at')]
@@ -116,15 +115,15 @@ class OperatorService
 
     /**
      * @param Request $request
-     * @param User $operator
+     * @param User $employee
      * @throws Throwable
      */
-    public function update(Request $request, User $operator): void
+    public function update(Request $request, User $employee): void
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($operator->id)->whereNull('deleted_at'), new IsValidPhone],
-            'nip' => ['required', 'numeric', new IsValidDigit(6), Rule::unique('users', 'nip')->ignore($operator->id)->whereNull('deleted_at')],
+            'phone' => ['nullable', 'string', 'max:20', new IsValidPhone, Rule::unique('users', 'phone')->ignore($employee->id)->whereNull('deleted_at')],
+            'nip' => ['required', 'numeric', new IsValidDigit(6), Rule::unique('users', 'nip')->ignore($employee->id)->whereNull('deleted_at')],
             'password' => ['required', 'string', (new Password)->length(6), 'confirmed'],
             'role' => ['required', 'integer', Rule::exists('roles', 'id')->whereNull('deleted_at')]
         ], attributes: [
@@ -134,25 +133,25 @@ class OperatorService
             'password' => 'Kata Sandi',
             'role' => 'Peran'
         ]);
-        $operator->updateOrFail([
+        $employee->updateOrFail([
             'role_id' => (int)$request->role,
             'name' => Str::title($request->name),
             'phone' => $request->phone,
             'nip' => $request->nip,
             'password' => Hash::make($request->password)
         ]);
-        $operator->save();
+        $employee->save();
         auth()->user()?->notify(new DataUpdated('Pegawai', $request->nip));
     }
 
     /**
-     * @param User $operator
+     * @param User $employee
      * @throws Throwable
      */
-    public function destroy(User $operator): void
+    public function destroy(User $employee): void
     {
-        $data = $operator->nip;
-        $operator->deleteOrFail();
+        $data = $employee->nip;
+        $employee->deleteOrFail();
         auth()->user()?->notify(new DataDestroyed('Pegawai', $data));
     }
 
@@ -162,7 +161,7 @@ class OperatorService
      */
     public function import(Request $request): void
     {
-        MediaHelper::importSpreadsheet($request, new OperatorsImport(auth()->user()));
+        MediaHelper::importSpreadsheet($request, new EmployeesImport(auth()->user()));
     }
 
     /**
@@ -171,7 +170,7 @@ class OperatorService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new OperatorsExport($this), 'pegawai');
+        return MediaHelper::exportSpreadsheet(new EmployeesExport($this), 'employees');
     }
 
     /**
@@ -188,7 +187,7 @@ class OperatorService
     public function collection(): Collection
     {
         return User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->where('roles.id', Role::operator()?->id ?? 2)
+            ->where('users.id', '<>', auth()->user()?->id ?? 0)
             ->whereNull(['users.deleted_at', 'roles.deleted_at'])
             ->orderBy('users.name')
             ->get()
