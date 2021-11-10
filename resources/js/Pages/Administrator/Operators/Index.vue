@@ -394,6 +394,7 @@ export default defineComponent({
             this.updateForm.name = operator.name
             this.updateForm.phone = operator.phone
             this.updateForm.nip = operator.nip
+            this.updateForm.role = operator.role_id
             setTimeout(() => this.confirmingUpdate = true, 150)
             setTimeout(() => this.$refs.updateName.focus(), 300)
         },
@@ -418,6 +419,7 @@ export default defineComponent({
                 this.storeForm.nip = null
                 this.storeForm.password = null
                 this.storeForm.password_confirmation = null
+                this.storeForm.role = null
             }, 500)
         },
         closeUpdateModal() {
@@ -432,6 +434,7 @@ export default defineComponent({
                 this.updateForm.nip = null
                 this.updateForm.password = null
                 this.updateForm.password_confirmation = null
+                this.updateForm.role = null
             }, 500)
         },
         closeDestroyModal() {

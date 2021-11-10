@@ -42,6 +42,7 @@ class OperatorService
                 'users.name as name',
                 'users.phone as phone',
                 'users.nip as nip',
+                'roles.id as role_id',
                 'roles.name as role'
             ])
             ->leftJoin('roles', 'roles.id', '=', 'users.role_id')

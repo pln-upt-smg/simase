@@ -33,14 +33,12 @@ jobs:
             sudo chmod -R ug+rwx storage bootstrap/cache
             sudo chmod -R g+w storage/logs
             php artisan optimize:clear
-            php artisan view:clear
             pnpm i --silent
             composer i -o -n --no-dev
             php artisan cloudflare:reload
             php artisan optimize
             php artisan view:cache
             pnpm run prod --silent
-            sudo service redis-server restart
             sudo supervisorctl restart stocktake-web-cron:stocktake-web-cron_00
             sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_00
             sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_01
@@ -50,7 +48,6 @@ jobs:
             sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_05
             sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_06
             sudo supervisorctl restart stocktake-web-worker:stocktake-web-worker_07
-            sudo php artisan octane:stop
             sudo php artisan octane:reload
             sudo rm -rf /var/cache/ngx_pagespeed/*
             php artisan env
