@@ -168,8 +168,8 @@ class FinalSummaryService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new FinalSummaryExport(
-            $this->periodService->resolve($request),
-            $this
+            $this,
+            $this->periodService->resolve($request)
         ), 'final_summaries');
     }
 

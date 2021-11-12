@@ -23,7 +23,8 @@ class BatchesExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'Batch',
-            'Material'
+            'Material',
+            'SLoc'
         ];
     }
 
@@ -31,7 +32,8 @@ class BatchesExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             Str::upper(trim($row->code)),
-            Str::upper(trim($row->material->code))
+            Str::upper(trim($row->material->code)),
+            trim($row->area->sloc)
         ];
     }
 

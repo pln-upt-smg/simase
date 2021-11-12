@@ -235,9 +235,9 @@ class ProductMaterialService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new ProductMaterialsExport(
-            $this->periodService->resolve($request),
-            $this
-        ), new ProductMaterial);
+            $this,
+            $this->periodService->resolve($request)
+        ), 'fg_to_materials');
     }
 
     /**

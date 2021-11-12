@@ -13,14 +13,14 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class ProductsExport implements FromCollection, WithHeadings, WithMapping
 {
-    private ?Period $period;
-
     private ProductService $productService;
 
-    public function __construct(?Period $period, ProductService $productService)
+    private ?Period $period;
+
+    public function __construct(ProductService $productService, ?Period $period)
     {
-        $this->period = $period;
         $this->productService = $productService;
+        $this->period = $period;
     }
 
     public function headings(): array
@@ -53,7 +53,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        $data = $this->productService->collection($this->period);
+        $data = $this->productService->collection(period: $this->period);
         auth()->user()?->notify(new DataExported('FG Master', $data->count()));
         return $data;
     }

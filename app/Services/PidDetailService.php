@@ -140,8 +140,9 @@ class PidDetailService
 
                 // each iteration, fetch the quantity of the stock based on the material and area
                 $query = ActualStock::select([DB::raw('sum(actual_stocks.quantity) as quantity')])
-                    ->leftJoin('areas', 'areas.id', '=', 'actual_stocks.area_id')
+                    ->leftJoin('sub_areas', 'sub_areas.id', '=', 'actual_stocks.sub_area_id')
                     ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
+                    ->leftJoin('areas', 'areas.id', '=', 'sub_areas.area_id')
                     ->where('materials.id', $stock->material_id)
                     ->where('areas.id', $area->id)
                     ->whereNull(['actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at']);
@@ -173,9 +174,9 @@ class PidDetailService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new PidDetailExport(
-            $this->periodService->resolve($request),
+            $this,
             $this->areaService,
-            $this
+            $this->periodService->resolve($request)
         ), 'pid_details');
     }
 

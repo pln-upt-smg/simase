@@ -129,10 +129,9 @@ class ProductController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function productJson(Request $request): JsonResponse
+    public function json(Request $request): JsonResponse
     {
-        $product = $this->productService->resolveProductCode($request);
-        return response()->json($product?->toJson());
+        return response()->json($this->productService->single($request)?->toJson());
     }
 
     /**
@@ -141,12 +140,12 @@ class ProductController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function productCodeJsonCollection(Request $request): JsonResponse
+    public function jsonCollection(Request $request): JsonResponse
     {
-        $codes = $this->productService->productCodeJsonCollection($request);
+        $data = $this->productService->collection($request);
         return response()->json([
-            'items' => $codes->toArray(),
-            'total_count' => $codes->count()
+            'items' => $data->toArray(),
+            'total_count' => $data->count()
         ]);
     }
 }

@@ -20,9 +20,9 @@
             ref="table">
             <template #head>
                 <jet-table-header
-                    v-show="showColumn('area_name')"
-                    :cell="sortableHeader('area_name')">
-                    Area
+                    v-show="showColumn('sub_area_name')"
+                    :cell="sortableHeader('sub_area_name')">
+                    Sub Area
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('material_code')"
@@ -72,7 +72,7 @@
             </template>
             <template #body>
                 <tr v-for="stock in stocks.data" :key="stock.id">
-                    <td v-show="showColumn('area_name')">{{ stock.area_name }}</td>
+                    <td v-show="showColumn('sub_area_name')">{{ stock.sub_area_name }}</td>
                     <td v-show="showColumn('material_code')">{{ stock.material_code }}</td>
                     <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
                     <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>

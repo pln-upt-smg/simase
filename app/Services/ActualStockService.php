@@ -63,7 +63,6 @@ class ActualStockService
         $query = QueryBuilder::for(ActualStock::class)
             ->select([
                 'actual_stocks.id as id',
-                'actual_stocks.area_id as area_id',
                 'actual_stocks.batch as batch_code',
                 'actual_stocks.quantity as quantity',
                 'materials.period_id as period_id',
@@ -71,13 +70,18 @@ class ActualStockService
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
-                'users.name as creator_name'
+                'users.name as creator_name',
+                'sub_areas.id as sub_area_id',
+                'sub_areas.name as sub_area_name',
+                'areas.name as area_name',
+                'areas.sloc as sloc'
             ])
-            ->leftJoin('areas', 'areas.id', '=', 'actual_stocks.area_id')
+            ->leftJoin('sub_areas', 'sub_areas.id', '=', 'actual_stocks.sub_area_id')
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
             ->leftJoin('users', 'users.id', '=', 'actual_stocks.user_id')
+            ->leftJoin('areas', 'areas.id', '=', 'sub_areas.area_id')
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-            ->whereNull(['actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'users.deleted_at', 'periods.deleted_at']);
+            ->whereNull(['actual_stocks.deleted_at', 'sub_areas.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'users.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('areas.id', $area->id);
         }
@@ -95,7 +99,8 @@ class ActualStockService
                 'materials.description',
                 'materials.uom',
                 'materials.mtyp',
-                'users.name'
+                'users.name',
+                'sub_areas.name'
             ]))
             ->allowedSorts([
                 'batch_code',
@@ -104,7 +109,8 @@ class ActualStockService
                 'material_description',
                 'uom',
                 'mtyp',
-                'creator_name'
+                'creator_name',
+                'sub_area_name'
             ])
             ->paginate()
             ->withQueryString();
@@ -123,7 +129,8 @@ class ActualStockService
             'materials.description' => 'Deskripsi Material',
             'actual_stocks.quantity' => 'Kuantitas',
             'materials.uom' => 'UoM',
-            'materials.mtyp' => 'MType'
+            'materials.mtyp' => 'MType',
+            'sub_areas.name' => 'Sub Area'
         ];
         $columns = [
             'material_code' => 'Kode Material',
@@ -132,6 +139,7 @@ class ActualStockService
             'quantity' => 'Kuantitas',
             'uom' => 'UoM',
             'mtyp' => 'MType',
+            'sub_area_name' => 'Sub Area',
             'action' => 'Aksi'
         ];
         if (!$ownedByCurrentUser) {
@@ -157,20 +165,20 @@ class ActualStockService
     private function storeByMaterialCode(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'sub_area.id' => ['required', 'integer', Rule::exists('sub_areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch_code' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
-            'area' => 'Area',
+            'sub_area.id' => 'Sub Area',
             'period' => 'Periode',
             'material_code' => 'Kode Material',
             'batch_code' => 'Kode Batch',
             'quantity' => 'Kuantitas'
         ]);
         ActualStock::create([
-            'area_id' => (int)$request->area,
+            'sub_area_id' => (int)$request['sub_area.id'],
             'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'user_id' => auth()->user()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
@@ -186,13 +194,13 @@ class ActualStockService
     private function storeBySkuCode(Request $request): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'sub_area.id' => ['required', 'integer', Rule::exists('sub_areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch_code' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'integer', 'min:0']
         ], attributes: [
-            'area' => 'Area',
+            'sub_area.id' => 'Sub Area',
             'period' => 'Periode',
             'product_code' => 'Kode SKU',
             'batch_code' => 'Kode Batch',
@@ -211,20 +219,20 @@ class ActualStockService
     public function update(Request $request, ActualStock $actual): void
     {
         $this->validate($request, [
-            'area' => ['required', 'integer', Rule::exists('areas', 'id')->whereNull('deleted_at')],
+            'sub_area.id' => ['required', 'integer', Rule::exists('sub_areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
             'batch_code' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
-            'area' => 'Area',
+            'sub_area.id' => 'Sub Area',
             'period' => 'Periode',
             'material_code' => 'Kode Material',
             'batch_code' => 'Kode Batch',
             'quantity' => 'Kuantitas'
         ]);
         $actual->updateOrFail([
-            'area_id' => (int)$request->area,
+            'sub_area_id' => (int)$request['sub_area.id'],
             'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
             'batch' => Str::upper($request->batch_code),
             'quantity' => $request->quantity
@@ -272,9 +280,9 @@ class ActualStockService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new ActualStocksExport(
+            $this,
             $this->areaService->resolve($request),
-            $this->periodService->resolve($request),
-            $this
+            $this->periodService->resolve($request)
         ), new ActualStock);
     }
 
@@ -288,16 +296,17 @@ class ActualStockService
 
     public function collection(?Area $area, ?Period $period): Collection
     {
-        $query = ActualStock::leftJoin('areas', 'areas.id', '=', 'actual_stocks.area_id')
+        $query = ActualStock::leftJoin('sub_areas', 'sub_areas.id', '=', 'actual_stocks.sub_area_id')
             ->leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
+            ->leftJoin('areas', 'areas.id', '=', 'sub_areas.area_id')
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-            ->whereNull(['actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
+            ->whereNull(['actual_stocks.deleted_at', 'sub_areas.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('areas.id', $area->id);
         }
         if (!is_null($period)) {
             $query = $query->where('periods.id', $period->id);
         }
-        return $query->orderBy('materials.code')->get()->load(['material', 'actual_stocks.area']);
+        return $query->orderBy('materials.code')->get()->load(['subArea', 'material']);
     }
 }

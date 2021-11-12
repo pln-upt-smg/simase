@@ -39,7 +39,7 @@ class HandleInertiaRequests extends Middleware
         $notifications = [];
         $unreadNotificationCount = 0;
         if (!is_null(auth()->user())) {
-            $notifications = auth()->user()->notifications->take(7)->map(function ($item) {
+            $notifications = auth()->user()->notifications->take(6)->map(function ($item) {
                 return [
                     'id' => $item->id,
                     'title' => $item->data['title'] ?? null,

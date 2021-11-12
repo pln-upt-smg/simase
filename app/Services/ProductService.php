@@ -231,9 +231,9 @@ class ProductService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new ProductsExport(
-            $this->periodService->resolve($request),
-            $this
-        ), new Product);
+            $this,
+            $this->periodService->resolve($request)
+        ), 'fg_masters');
     }
 
     /**
@@ -245,48 +245,27 @@ class ProductService
     }
 
     /**
+     * @param Request $request
+     * @return Product|null
+     */
+    public function single(Request $request): ?Product
+    {
+        return $this->collection($request)->first();
+    }
+
+    /**
+     * @param Request|null $request
      * @param Period|null $period
      * @return Collection
      */
-    public function collection(?Period $period): Collection
+    public function collection(?Request $request = null, ?Period $period = null): Collection
     {
         $query = Product::leftJoin('periods', 'periods.id', '=', 'products.period_id')
-            ->whereNull(['products.deleted_at', 'periods.deleted_at']);
-        if (!is_null($period)) {
-            $query = $query->where('periods.id', $period->id);
-        }
-        return $query->orderBy('products.code')->get();
-    }
-
-    public function resolveProductCode(Request $request, bool $strict = true): ?Product
-    {
-        $period = $this->periodService->resolve($request);
-        $query = Product::leftJoin('periods', 'periods.id', '=', 'products.period_id')
-            ->whereRaw('lower(products.code) = ?', Str::lower(trim($request->query('q') ?? '')))
-            ->whereNull(['products.deleted_at', 'periods.deleted_at']);
-        if ($strict) {
-            $query = $query->where('periods.id', $period?->id ?? 0);
-        } else if (!is_null($period)) {
-            $query = $query->where('periods.id', $period->id);
-        }
-        return $query->first();
-    }
-
-    public function productCodeJsonCollection(Request $request, bool $strict = true): Collection
-    {
-        $period = $this->periodService->resolve($request);
-        $query = Product::distinct()
-            ->select([
-                'products.code as code',
-                'products.description as description',
-                'products.uom as uom'
-            ])
             ->orderBy('products.code')
-            ->leftJoin('periods', 'periods.id', '=', 'products.period_id')
-            ->whereRaw('lower(products.code) like ?', '%' . Str::lower(trim($request->query('q') ?? '')) . '%')
             ->whereNull(['products.deleted_at', 'periods.deleted_at']);
-        if ($strict) {
-            $query = $query->where('periods.id', $period?->id ?? 0);
+        if (!is_null($request)) {
+            $query = $query->where('periods.id', $this->periodService->resolve($request)?->id ?? 0)
+                ->whereRaw('lower(products.code) like ?', '%' . Str::lower($request->query('q') ?? '') . '%');
         } else if (!is_null($period)) {
             $query = $query->where('periods.id', $period->id);
         }

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Imports\Contract\WithDefaultEvents;
 use App\Imports\Contract\WithQueuedValidation;
+use App\Imports\Helper\HasAreaResolver;
 use App\Imports\Helper\HasBatchSize;
 use App\Imports\Helper\HasChunkSize;
 use App\Imports\Helper\HasDefaultEvents;
@@ -29,7 +30,7 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 
 class BatchesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, WithQueuedValidation, ShouldQueue, ShouldBeUnique
 {
-    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasValidator, HasMaterialResolver;
+    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasValidator, HasAreaResolver, HasMaterialResolver;
 
     public function __construct(?User $user)
     {
@@ -40,7 +41,8 @@ class BatchesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMult
     {
         return [
             'batch' => ['required', 'string', 'max:255'],
-            'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')]
+            'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
+            'sloc' => ['required', 'numeric', Rule::exists('areas', 'sloc')->whereNull('deleted_at')]
         ];
     }
 
@@ -60,6 +62,7 @@ class BatchesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMult
     {
         $this->validate($row);
         return new Batch([
+            'area_id' => $this->resolveAreaId($row['sloc'], true),
             'material_id' => $this->resolveMaterialId($row['material']),
             'code' => Str::upper(trim($row['batch']))
         ]);

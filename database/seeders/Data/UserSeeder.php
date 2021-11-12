@@ -72,8 +72,8 @@ class UserSeeder extends Seeder
             'role' => Role::administrator(),
             'name' => 'Administrator',
             'phone' => $this->faker->phoneNumber(),
-            'nip' => '251781',
-            'password' => Hash::make('251781')
+            'nip' => '000000',
+            'password' => Hash::make('000000')
         ]);
     }
 }

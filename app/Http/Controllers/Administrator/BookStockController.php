@@ -56,7 +56,7 @@ class BookStockController extends Controller
     {
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
-        return inertia('Administrator/Stocks/Book/Index', [
+        return inertia('Administrator/Stocks/Books/Index', [
             'area' => $area,
             'period' => $period,
             'areas' => $this->areaService->collection()->toArray(),

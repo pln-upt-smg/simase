@@ -2,13 +2,6 @@
 
 use App\Http\Controllers\Administrator\MaterialController;
 
-Route::group([
-    'prefix' => 'materials',
-    'as' => 'api.materials.'
-], static function () {
+Route::get('material', [MaterialController::class, 'json'])->name('material');
 
-    Route::get('code', [MaterialController::class, 'materialJson'])->name('code');
-
-    Route::get('codes', [MaterialController::class, 'materialCodeJsonCollection'])->name('codes');
-
-});
+Route::get('materials', [MaterialController::class, 'jsonCollection'])->name('materials');

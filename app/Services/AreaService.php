@@ -35,20 +35,17 @@ class AreaService
             ->select([
                 'areas.id as id',
                 'areas.name as name',
-                'areas.sloc as sloc',
-                'areas.group as area_group'
+                'areas.sloc as sloc'
             ])
             ->whereNull('areas.deleted_at')
             ->defaultSort('areas.name')
             ->allowedFilters(InertiaHelper::filterBy([
                 'areas.name',
-                'areas.sloc',
-                'areas.group'
+                'areas.sloc'
             ]))
             ->allowedSorts([
                 'name',
-                'sloc',
-                'area_group'
+                'sloc'
             ])
             ->paginate()
             ->withQueryString();
@@ -58,12 +55,10 @@ class AreaService
     {
         return $table->addSearchRows([
             'areas.name' => 'Nama Area',
-            'areas.sloc' => 'SLoc',
-            'areas.group' => 'Group'
+            'areas.sloc' => 'SLoc'
         ])->addColumns([
             'name' => 'Nama Area',
             'sloc' => 'SLoc',
-            'area_group' => 'Group',
             'action' => 'Aksi'
         ]);
     }
@@ -76,17 +71,14 @@ class AreaService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->whereNull('deleted_at')],
-            'sloc' => ['required', 'string', 'max:255', Rule::unique('areas', 'sloc')->whereNull('deleted_at')],
-            'area_group' => ['required', 'string', 'max:255']
+            'sloc' => ['required', 'numeric', Rule::unique('areas', 'sloc')->whereNull('deleted_at')]
         ], attributes: [
             'name' => 'Nama Area',
-            'sloc' => 'SLoc',
-            'area_group' => 'Group'
+            'sloc' => 'SLoc'
         ]);
         Area::create([
             'name' => Str::title($request->name),
-            'sloc' => $request->sloc,
-            'group' => Str::title($request->area_group)
+            'sloc' => $request->sloc
         ]);
         auth()->user()?->notify(new DataStored('Area', Str::title($request->name)));
     }
@@ -100,17 +92,14 @@ class AreaService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->ignore($area->id)->whereNull('deleted_at')],
-            'sloc' => ['required', 'string', 'max:255', Rule::unique('areas', 'sloc')->ignore($area->id)->whereNull('deleted_at')],
-            'area_group' => ['required', 'string', 'max:255']
+            'sloc' => ['required', 'numeric', Rule::unique('areas', 'sloc')->ignore($area->id)->whereNull('deleted_at')]
         ], attributes: [
             'name' => 'Nama Area',
-            'sloc' => 'SLoc',
-            'area_group' => 'Group'
+            'sloc' => 'SLoc'
         ]);
         $area->updateOrFail([
             'name' => Str::title($request->name),
-            'sloc' => $request->sloc,
-            'group' => Str::title($request->area_group)
+            'sloc' => $request->sloc
         ]);
         $area->save();
         auth()->user()?->notify(new DataUpdated('Area', Str::title($request->name)));
@@ -142,7 +131,7 @@ class AreaService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new AreasExport, new Area);
+        return MediaHelper::exportSpreadsheet(new AreasExport($this), new Area);
     }
 
     /**
@@ -168,10 +157,25 @@ class AreaService
     }
 
     /**
+     * @param Request $request
+     * @return Area|null
+     */
+    public function single(Request $request): ?Area
+    {
+        return $this->collection($request)->first();
+    }
+
+    /**
+     * @param Request|null $request
      * @return Collection
      */
-    public function collection(): Collection
+    public function collection(?Request $request = null): Collection
     {
-        return Area::orderBy('name')->whereNull('deleted_at')->get();
+        $query = Area::orderBy('name')->whereNull('deleted_at');
+        if (!is_null($request)) {
+            $query = $query->whereRaw('lower(name) like "%?%"', Str::lower(trim($request->query('q') ?? '')))
+                ->orWhereRaw('lower(sloc) like "%?%"', Str::lower(trim($request->query('q') ?? '')));
+        }
+        return $query->get();
     }
 }

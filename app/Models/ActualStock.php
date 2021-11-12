@@ -13,19 +13,19 @@ class ActualStock extends Model
     use Fluent, HasFactory, SoftDeletes;
 
     #[BelongsTo]
-    public Area $area;
+    public SubArea $subArea;
 
     #[BelongsTo]
     public Material $material;
 
     #[BelongsTo]
-    public User $creator;
+    public User $user;
 
     public string $batch;
     public float $quantity;
 
     protected $fillable = [
-        'area_id',
+        'sub_area_id',
         'material_id',
         'user_id',
         'batch',

@@ -13,14 +13,14 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class FinalSummaryExport implements FromCollection, WithHeadings, WithMapping
 {
-    private ?Period $period;
-
     private FinalSummaryService $finalSummaryService;
 
-    public function __construct(?Period $period, FinalSummaryService $finalSummaryService)
+    private ?Period $period;
+
+    public function __construct(FinalSummaryService $finalSummaryService, ?Period $period)
     {
-        $this->period = $period;
         $this->finalSummaryService = $finalSummaryService;
+        $this->period = $period;
     }
 
     public function headings(): array

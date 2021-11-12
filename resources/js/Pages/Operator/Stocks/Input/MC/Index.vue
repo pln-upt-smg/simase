@@ -10,10 +10,29 @@
             </template>
             <template #form ref="form">
                 <div class="col-span-6 sm:col-span-4">
-                    <jet-label for="area" value="Area"/>
-                    <jet-select id="area" placeholder="Pilih Area" v-model="form.area"
-                                :data="areas" class="mt-2 block w-full normal-case text-base lg:text-lg"/>
-                    <jet-input-error :message="form.errors.area" class="mt-2"/>
+                    <jet-label for="sub_area" value="Sub Area"/>
+                    <div class="flex mt-2">
+                        <v-select
+                            id="sub_area"
+                            placeholder="Cari Sub Area"
+                            class="vue-select rounded-md block w-full"
+                            v-model="form.sub_area"
+                            :filterable="false"
+                            :clearable="false"
+                            :options="subAreaOptions"
+                            @search="onSubAreaSearch">
+                            <template slot="no-options">
+                                Tidak ada hasil tersedia.
+                            </template>
+                            <template v-slot:no-options="{ search, searching }">
+                                <template v-if="searching">
+                                    Tidak ada hasil untuk <em>{{ search }}</em>.
+                                </template>
+                                <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari sub area.</em>
+                            </template>
+                        </v-select>
+                    </div>
+                    <jet-input-error :message="form.errors.sub_area" class="mt-2"/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="period" value="Periode"/>
@@ -24,40 +43,28 @@
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="material_code" value="Kode Material"/>
                     <div class="flex mt-2">
-                        <div class="w-full">
-                            <v-select
-                                id="material_code"
-                                label="code"
-                                placeholder="Masukkan Kode Material"
-                                class="vue-select rounded-md"
-                                v-model="form.material_code"
-                                v-on:option:selected="onSelected"
-                                :filterable="false"
-                                :clearable="false"
-                                :options="options"
-                                :reduce="option => option.code"
-                                @search="onSearch">
-                                <template slot="no-options">
-                                    Tidak ada hasil tersedia.
+                        <v-select
+                            if="material_code"
+                            placeholder="Masukkan Kode Material"
+                            class="vue-select rounded-md block w-full"
+                            label="code"
+                            v-model="form.material_code"
+                            v-on:option:selected="onSelected"
+                            :filterable="false"
+                            :clearable="false"
+                            :options="materialCodeOptions"
+                            :reduce="option => option.code"
+                            @search="onMaterialCodeSearch">
+                            <template slot="no-options">
+                                Tidak ada hasil tersedia.
+                            </template>
+                            <template v-slot:no-options="{ search, searching }">
+                                <template v-if="searching">
+                                    Tidak ada hasil untuk <em>{{ search }}</em>.
                                 </template>
-                                <template v-slot:no-options="{ search, searching }">
-                                    <template v-if="searching">
-                                        Tidak ada hasil untuk <em>{{ search }}</em>.
-                                    </template>
-                                    <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari kode material.</em>
-                                </template>
-                                <template slot="option" slot-scope="option">
-                                    <div class="d-center">
-                                        {{ option.code }}
-                                    </div>
-                                </template>
-                                <template slot="selected-option" slot-scope="option">
-                                    <div class="selected d-center">
-                                        {{ option.code }}
-                                    </div>
-                                </template>
-                            </v-select>
-                        </div>
+                                <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari kode material.</em>
+                            </template>
+                        </v-select>
                         <div class="ml-2">
                             <jet-secondary-button type="button" @click="confirmScanMaterialBarcode" class="h-full">
                                 <qrcode-icon class="h-5 w-5 text-gray-800" aria-hidden="true"/>
@@ -195,13 +202,14 @@ export default defineComponent({
                 uom: '-'
             },
             form: useForm({
-                area: null,
+                sub_area: null,
                 period: null,
                 material_code: null,
                 batch_code: null,
                 quantity: null
             }),
-            options: []
+            materialCodeOptions: [],
+            subAreaOptions: []
         }
     },
     methods: {
@@ -265,29 +273,53 @@ export default defineComponent({
             this.materialData.description = material.description
             this.materialData.uom = material.uom
         },
-        onSearch(search, loading) {
+        onMaterialCodeSearch(search, loading) {
             if (search.length) {
                 loading(true)
-                this.search(loading, search, this, this.showDangerNotification, {
+                this.materialCodeSearch(loading, search, this, this.showDangerNotification, {
                     q: escape(search),
                     area: this.form.area ?? 0,
                     period: this.form.period ?? 0
                 })
             }
         },
-        search: _.debounce((loading, search, vm, errorCallback, params) => {
-            axios.get(route('api.materials.codes'), {
+        materialCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+            axios.get(route('api.materials'), {
                 params: params
             }).then(res => {
-                vm.options = res.data.items
+                vm.materialCodeOptions = res.data.items
             }).catch(() => {
                 errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode material, mohon coba lagi nanti')
             }).finally(() => {
                 loading(false)
             })
         }, 300),
+        onSubAreaSearch(search, loading) {
+            if (search.length) {
+                loading(true)
+                this.subAreaSearch(loading, search, this, this.showDangerNotification, {
+                    q: escape(search)
+                })
+            }
+        },
+        subAreaSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+            axios.get(route('api.subareas'), {
+                params: params
+            }).then(res => {
+                vm.subAreaOptions = res.data.items.map((item) => {
+                    return {
+                        id: item.id,
+                        label: `${item.area_name} - ${item.name} - ${item.sloc}`
+                    }
+                })
+            }).catch(() => {
+                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data sub area, mohon coba lagi nanti')
+            }).finally(() => {
+                loading(false)
+            })
+        }, 300),
         resolveMaterialData() {
-            axios.get(route('api.materials.code'), {
+            axios.get(route('api.material'), {
                 params: {
                     q: escape(this.form.material_code),
                     area: this.form.area ?? 0,

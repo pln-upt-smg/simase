@@ -68,6 +68,10 @@ input {
     display: none;
 }
 
+.vs__search {
+    text-transform: none;
+}
+
 /**
  * https://stackoverflow.com/questions/60186557/how-to-put-notification-badges-on-icons
  */

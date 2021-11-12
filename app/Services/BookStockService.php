@@ -266,9 +266,9 @@ class BookStockService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new BookStocksExport(
+            $this,
             $this->areaService->resolve($request),
-            $this->periodService->resolve($request),
-            $this
+            $this->periodService->resolve($request)
         ), new BookStock);
     }
 

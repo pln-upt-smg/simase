@@ -31,6 +31,11 @@
                     Kode Material
                 </jet-table-header>
                 <jet-table-header
+                    v-show="showColumn('sloc')"
+                    :cell="sortableHeader('sloc')">
+                    SLoc
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('action')"
                     :cell="staticHeader('action')"/>
             </template>
@@ -38,6 +43,7 @@
                 <tr v-for="batch in batches.data" :key="batch.id">
                     <td v-show="showColumn('batch_code')">{{ batch.batch_code }}</td>
                     <td v-show="showColumn('material_code')">{{ batch.material_code }}</td>
+                    <td v-show="showColumn('sloc')">{{ batch.sloc }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
@@ -67,7 +73,9 @@
                     <jet-input type="text" class="block w-full uppercase" placeholder="Kode Batch"
                                ref="storeBatchCode" v-model="storeForm.batch_code"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
-                               ref="storeMaterialCode" v-model="storeForm.material_code"
+                               ref="storeMaterialCode" v-model="storeForm.material_code"/>
+                    <jet-input type="number" class="mt-4 block w-full" placeholder="SLoc"
+                               ref="storeSloc" v-model="storeForm.sloc"
                                @keyup.enter="store"/>
                 </div>
             </template>
@@ -92,7 +100,9 @@
                     <jet-input type="text" class="block w-full uppercase" placeholder="Kode Batch"
                                ref="updateBatchCode" v-model="updateForm.batch_code"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
-                               ref="updateMaterialCode" v-model="updateForm.material_code"
+                               ref="updateMaterialCode" v-model="updateForm.material_code"/>
+                    <jet-input type="number" class="mt-4 block w-full" placeholder="SLoc"
+                               ref="updateSloc" v-model="updateForm.sloc"
                                @keyup.enter="update"/>
                 </div>
             </template>
@@ -284,12 +294,14 @@ export default defineComponent({
             showingDangerNotification: false,
             storeForm: useForm({
                 batch_code: null,
-                material_code: null
+                material_code: null,
+                sloc: null
             }),
             updateForm: useForm({
                 id: null,
                 batch_code: null,
-                material_code: null
+                material_code: null,
+                sloc: null
             }),
             destroyForm: useForm({
                 id: null
@@ -356,6 +368,7 @@ export default defineComponent({
             this.updateForm.id = batch.id
             this.updateForm.batch_code = batch.batch_code
             this.updateForm.material_code = batch.material_code
+            this.updateForm.sloc = batch.sloc
             setTimeout(() => this.confirmingUpdate = true, 150)
             setTimeout(() => this.$refs.updateName.focus(), 300)
         },
@@ -377,6 +390,7 @@ export default defineComponent({
                 this.storeForm.reset()
                 this.storeForm.batch_code = null
                 this.storeForm.material_code = null
+                this.storeForm.sloc = null
             }, 500)
         },
         closeUpdateModal() {
@@ -388,6 +402,7 @@ export default defineComponent({
                 this.updateForm.id = null
                 this.updateForm.batch_code = null
                 this.updateForm.material_code = null
+                this.updateForm.sloc = null
             }, 500)
         },
         closeDestroyModal() {

@@ -11,7 +11,13 @@
 |
 */
 
-/**
- * Role-specific api routes
- */
-include "roleable/api/api.php";
+Route::group([
+    'as' => 'api.'
+], static function() {
+
+    /**
+     * Role-specific api routes
+     */
+    include "roleable/api/api.php";
+
+});

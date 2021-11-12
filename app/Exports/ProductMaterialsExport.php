@@ -13,14 +13,14 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class ProductMaterialsExport implements FromCollection, WithHeadings, WithMapping
 {
-    private ?Period $period;
-
     private ProductMaterialService $productMaterialService;
 
-    public function __construct(?Period $period, ProductMaterialService $productMaterialService)
+    private ?Period $period;
+
+    public function __construct(ProductMaterialService $productMaterialService, ?Period $period)
     {
-        $this->period = $period;
         $this->productMaterialService = $productMaterialService;
+        $this->period = $period;
     }
 
     public function headings(): array

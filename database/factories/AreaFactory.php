@@ -23,8 +23,7 @@ class AreaFactory extends Factory
     {
         return [
             'sloc' => $this->faker->numberBetween(1111, 9999),
-            'name' => $this->faker->unique->colorName(),
-            'group' => 'Area Group 1'
+            'name' => $this->faker->unique->colorName()
         ];
     }
 }

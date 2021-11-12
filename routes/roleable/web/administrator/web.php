@@ -6,6 +6,11 @@
 include 'endpoints/areas.php';
 
 /**
+ * SubAreas endpoints
+ */
+include 'endpoints/subareas.php';
+
+/**
  * Periods endpoints
  */
 include 'endpoints/periods.php';

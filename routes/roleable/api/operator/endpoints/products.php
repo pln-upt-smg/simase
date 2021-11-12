@@ -2,13 +2,6 @@
 
 use App\Http\Controllers\Administrator\ProductController;
 
-Route::group([
-    'prefix' => 'products',
-    'as' => 'api.products.'
-], static function () {
+Route::get('product', [ProductController::class, 'json'])->name('product');
 
-    Route::get('code', [ProductController::class, 'productJson'])->name('code');
-
-    Route::get('codes', [ProductController::class, 'productCodeJsonCollection'])->name('codes');
-
-});
+Route::get('products', [ProductController::class, 'jsonCollection'])->name('products');

@@ -10,7 +10,7 @@ use App\Imports\Helper\HasDefaultEvents;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasImporter;
 use App\Imports\Helper\HasMaterialResolver;
-use App\Imports\Helper\HasMultipleArea;
+use App\Imports\Helper\HasMultipleSubArea;
 use App\Imports\Helper\HasValidator;
 use App\Models\ActualStock;
 use App\Models\Period;
@@ -31,7 +31,7 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 
 class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, WithQueuedValidation, ShouldQueue, ShouldBeUnique
 {
-    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasValidator, HasMultipleArea, HasMaterialResolver;
+    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasValidator, HasMultipleSubArea, HasMaterialResolver;
 
     private int $periodId;
 
@@ -44,7 +44,7 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
     public function validation(): array
     {
         return [
-            'area' => ['required', 'string', 'max:255', Rule::exists('areas', 'name')->whereNull('deleted_at')],
+            'subarea' => ['required', 'string', 'max:255', Rule::exists('sub_areas', 'name')->whereNull('deleted_at')],
             'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
             'batch' => ['required', 'string', 'max:255'],
             'materialdescription' => ['nullable', 'string', 'max:255'],
@@ -69,9 +69,9 @@ class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, Wit
     public function model(array $row): ?ActualStock
     {
         $this->validate($row);
-        $this->lookupArea($row);
+        $this->lookupSubArea($row);
         return new ActualStock([
-            'area_id' => $this->currentAreaId,
+            'sub_area_id' => $this->currentSubAreaId,
             'material_id' => $this->resolveMaterialId($row['material']),
             'user_id' => $this->userId,
             'batch' => Str::upper(trim($row['batch'])),

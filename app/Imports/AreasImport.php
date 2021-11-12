@@ -37,15 +37,15 @@ class AreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultip
     public function validation(): array
     {
         return [
-            'areaid' => ['required', 'string', 'max:255'],
-            'sloc' => ['required', 'string', 'max:255'],
-            'group' => ['required', 'string', 'max:255']
+            'area' => ['required', 'string', 'max:255'],
+            'sloc' => ['required', 'numeric']
         ];
     }
 
     public function uniqueBy(): string|array
     {
         return [
+            'area',
             'sloc'
         ];
     }
@@ -59,9 +59,8 @@ class AreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultip
     {
         $this->validate($row);
         return new Area([
-            'name' => Str::title(trim($row['areaid'])),
-            'sloc' => trim($row['sloc']),
-            'group' => Str::title(trim($row['group']))
+            'name' => Str::title(trim($row['area'])),
+            'sloc' => trim($row['sloc'])
         ]);
     }
 

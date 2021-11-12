@@ -15,7 +15,7 @@ class CreateActualStocksTable extends Migration
     {
         Schema::create('actual_stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('area_id')->constrained();
+            $table->foreignId('sub_area_id')->constrained();
             $table->foreignId('material_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->string('batch');

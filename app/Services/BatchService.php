@@ -6,6 +6,7 @@ use App\Exports\BatchesExport;
 use App\Http\Helper\InertiaHelper;
 use App\Http\Helper\MediaHelper;
 use App\Imports\BatchesImport;
+use App\Models\Area;
 use App\Models\Batch;
 use App\Models\Material;
 use App\Notifications\DataDestroyed;
@@ -36,18 +37,22 @@ class BatchService
             ->select([
                 'batches.id as id',
                 'batches.code as batch_code',
-                'materials.code as material_code'
+                'materials.code as material_code',
+                'areas.sloc as sloc'
             ])
+            ->leftJoin('areas', 'areas.id', '=', 'batches.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'batches.material_id')
-            ->whereNull(['batches.deleted_at', 'materials.deleted_at'])
+            ->whereNull(['batches.deleted_at', 'areas.deleted_at', 'materials.deleted_at'])
             ->defaultSort('batches.code')
             ->allowedFilters(InertiaHelper::filterBy([
                 'batches.code',
-                'materials.code'
+                'materials.code',
+                'areas.sloc'
             ]))
             ->allowedSorts([
                 'batch_code',
-                'material_code'
+                'material_code',
+                'sloc'
             ])
             ->paginate()
             ->withQueryString();
@@ -57,10 +62,12 @@ class BatchService
     {
         return $table->addSearchRows([
             'batches.code' => 'Kode Batch',
-            'materials.code' => 'Kode Material'
+            'materials.code' => 'Kode Material',
+            'areas.sloc' => 'SLoc'
         ])->addColumns([
             'batch_code' => 'Kode Batch',
             'material_code' => 'Kode Material',
+            'sloc' => 'SLoc',
             'action' => 'Aksi'
         ]);
     }
@@ -73,12 +80,15 @@ class BatchService
     {
         $this->validate($request, [
             'batch_code' => ['required', 'string', 'max:255'],
-            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')]
+            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
+            'sloc' => ['required', 'numeric', Rule::exists('areas', 'sloc')->whereNull('deleted_at')]
         ], attributes: [
             'batch_code' => 'Kode Batch',
-            'material_code' => 'Kode Material'
+            'material_code' => 'Kode Material',
+            'sloc' => 'SLoc'
         ]);
         Batch::create([
+            'area_id' => Area::whereRaw('lower(sloc) = lower(?)', $request->sloc)->first()?->id ?? 0,
             'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->whereNull('deleted_at')->first()?->id ?? 0,
             'code' => Str::upper($request->batch_code)
         ]);
@@ -94,12 +104,15 @@ class BatchService
     {
         $this->validate($request, [
             'batch_code' => ['required', 'string', 'max:255'],
-            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')]
+            'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->whereNull('deleted_at')],
+            'sloc' => ['required', 'numeric', Rule::exists('areas', 'sloc')->whereNull('deleted_at')]
         ], attributes: [
             'batch_code' => 'Kode Batch',
-            'material_code' => 'Kode Material'
+            'material_code' => 'Kode Material',
+            'sloc' => 'SLoc'
         ]);
         $batch->updateOrFail([
+            'area_id' => Area::whereRaw('lower(sloc) = lower(?)', $request->sloc)->first()?->id ?? 0,
             'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->whereNull('deleted_at')->first()?->id ?? 0,
             'code' => Str::upper($request->batch_code)
         ]);
@@ -149,6 +162,6 @@ class BatchService
      */
     public function collection(): Collection
     {
-        return Batch::orderBy('code')->whereNull('deleted_at')->get()->load('material');
+        return Batch::orderBy('code')->whereNull('deleted_at')->get()->load(['area', 'material']);
     }
 }

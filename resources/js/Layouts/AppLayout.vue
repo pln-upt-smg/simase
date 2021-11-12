@@ -117,7 +117,10 @@
                                 <span class="sr-only">Lihat notifikasi</span>
                                 <BellIcon class="h-6 w-6" aria-hidden="true"/>
                             </button>
-                            <div v-if="this.$page.props.unreadNotificationCount > 0" class="icon-badge">{{ this.$page.props.unreadNotificationCount > 7 ? '7+' : this.$page.props.unreadNotificationCount }}</div>
+                            <div v-if="this.$page.props.unreadNotificationCount > 0" class="icon-badge">{{
+                                    this.$page.props.unreadNotificationCount > 6 ? '6+' : this.$page.props.unreadNotificationCount
+                                }}
+                            </div>
                         </div>
                         <Menu as="div" class="ml-3 relative">
                             <div>
@@ -183,7 +186,6 @@ import {
     DocumentReportIcon,
     DocumentSearchIcon,
     DocumentTextIcon,
-    ExclamationIcon,
     HomeIcon,
     LocationMarkerIcon,
     MenuAlt2Icon,
@@ -193,7 +195,8 @@ import {
     UsersIcon,
     XIcon,
     CubeIcon,
-    CubeTransparentIcon
+    CubeTransparentIcon,
+    OfficeBuildingIcon
 } from '@heroicons/vue/outline'
 import NotificationPanel from '@/Layouts/NotificationPanel'
 
@@ -202,6 +205,7 @@ const navigations = {
         menu: [
             {name: 'Dashboard', href: 'dashboard', icon: HomeIcon},
             {name: 'Area', href: 'areas.index', icon: LocationMarkerIcon},
+            {name: 'Sub Area', href: 'subareas.index', icon: OfficeBuildingIcon},
             {name: 'Periode', href: 'periods.index', icon: CalendarIcon},
             {name: 'Batch', href: 'batches.index', icon: TicketIcon},
             {name: 'Material Master', href: 'materials.index', icon: ArchiveIcon},
@@ -211,8 +215,7 @@ const navigations = {
             {name: 'Book Stock', href: 'stocks.books.index', icon: CollectionIcon},
             {name: 'PID', href: 'pids.index', icon: DocumentTextIcon},
             {name: 'PID Detail', href: 'pids.details.index', icon: DocumentSearchIcon},
-            {name: 'Final Summary', href: 'summaries.index', icon: DocumentReportIcon},
-            {name: 'Batch Not Exist', href: 'batch-not-exists.index', icon: ExclamationIcon}
+            {name: 'Final Summary', href: 'summaries.index', icon: DocumentReportIcon}
         ],
         manage: [
             {name: 'Pegawai', href: 'employees.index', icon: UsersIcon},
@@ -254,7 +257,6 @@ export default defineComponent({
         CollectionIcon,
         DocumentTextIcon,
         DocumentReportIcon,
-        ExclamationIcon,
         UsersIcon,
         CogIcon,
         LocationMarkerIcon,
@@ -263,7 +265,8 @@ export default defineComponent({
         TicketIcon,
         SaveIcon,
         CubeIcon,
-        CubeTransparentIcon
+        CubeTransparentIcon,
+        OfficeBuildingIcon
     },
     setup() {
         const sidebarOpen = ref(false)

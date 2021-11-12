@@ -56,7 +56,7 @@ class ActualStockController extends Controller
     {
         $area = $this->areaService->resolve($request);
         $period = $this->periodService->resolve($request);
-        return inertia('Administrator/Stocks/Actual/Index', [
+        return inertia('Administrator/Stocks/Actuals/Index', [
             'area' => $area,
             'period' => $period,
             'areas' => $this->areaService->collection()->toArray(),

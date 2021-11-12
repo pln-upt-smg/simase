@@ -231,8 +231,8 @@ class MaterialService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new MaterialsExport(
-            $this->periodService->resolve($request),
-            $this
+            $this,
+            $this->periodService->resolve($request)
         ), 'material_masters');
     }
 
@@ -245,48 +245,27 @@ class MaterialService
     }
 
     /**
+     * @param Request $request
+     * @return Material|null
+     */
+    public function single(Request $request): ?Material
+    {
+        return $this->collection($request)->first();
+    }
+
+    /**
+     * @param Request|null $request
      * @param Period|null $period
      * @return Collection
      */
-    public function collection(?Period $period): Collection
+    public function collection(?Request $request = null, ?Period $period = null): Collection
     {
         $query = Material::leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-            ->whereNull(['materials.deleted_at', 'periods.deleted_at']);
-        if (!is_null($period)) {
-            $query = $query->where('periods.id', $period->id);
-        }
-        return $query->orderBy('materials.code')->get();
-    }
-
-    public function resolveMaterialCode(Request $request, bool $strict = true): ?Material
-    {
-        $period = $this->periodService->resolve($request);
-        $query = Material::leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-            ->whereRaw('lower(materials.code) = ?', Str::lower(trim($request->query('q') ?? '')))
-            ->whereNull(['materials.deleted_at', 'periods.deleted_at']);
-        if ($strict) {
-            $query = $query->where('periods.id', $period?->id ?? 0);
-        } else if (!is_null($period)) {
-            $query = $query->where('periods.id', $period->id);
-        }
-        return $query->first();
-    }
-
-    public function materialCodeCollection(Request $request, bool $strict = true): Collection
-    {
-        $period = $this->periodService->resolve($request);
-        $query = Material::distinct()
-            ->select([
-                'materials.code as code',
-                'materials.description as description',
-                'materials.uom as uom'
-            ])
             ->orderBy('materials.code')
-            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-            ->whereNull(['materials.deleted_at', 'periods.deleted_at'])
-            ->whereRaw('lower(materials.code) like ?', '%' . Str::lower(trim($request->query('q') ?? '')) . '%');
-        if ($strict) {
-            $query = $query->where('periods.id', $period?->id ?? 0);
+            ->whereNull(['materials.deleted_at', 'periods.deleted_at']);
+        if (!is_null($request)) {
+            $query = $query->where('periods.id', $this->periodService->resolve($request)?->id ?? 0)
+                ->whereRaw('lower(materials.code) like ?', '%' . Str::lower($request->query('q') ?? '') . '%');
         } else if (!is_null($period)) {
             $query = $query->where('periods.id', $period->id);
         }

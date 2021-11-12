@@ -14,23 +14,23 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class BatchNotExistsExport implements FromCollection, WithHeadings, WithMapping
 {
+    private BatchNotExistService $batchNotExistService;
+
     private ?Area $area;
 
     private ?Period $period;
 
-    private BatchNotExistService $batchNotExistService;
-
-    public function __construct(?Area $area, ?Period $period, BatchNotExistService $batchNotExistService)
+    public function __construct(BatchNotExistService $batchNotExistService, ?Area $area, ?Period $period)
     {
+        $this->batchNotExistService = $batchNotExistService;
         $this->area = $area;
         $this->period = $period;
-        $this->batchNotExistService = $batchNotExistService;
     }
 
     public function headings(): array
     {
         return [
-            'Area',
+            'SubArea',
             'Material',
             'MaterialDescription',
             'Batch',
@@ -46,16 +46,16 @@ class BatchNotExistsExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
-            Str::title(trim($row->area_name)),
-            Str::upper(trim($row->material_code)),
-            Str::title(trim($row->material_description)),
-            Str::upper(trim($row->batch_code)),
+            Str::title(trim($row->subArea->name)),
+            Str::upper(trim($row->material->code)),
+            Str::title(trim($row->material->description)),
+            Str::upper(trim($row->batch)),
             (string)$row->quantity,
-            Str::upper(trim($row->uom)),
+            Str::upper(trim($row->material->uom)),
             (string)$row->batch_status,
-            Str::upper(trim($row->creator_nip)),
+            Str::upper(trim($row->user->nip)),
             (string)$row->creation_date,
-            Str::upper(trim($row->mtyp))
+            Str::upper(trim($row->material->mtyp))
         ];
     }
 

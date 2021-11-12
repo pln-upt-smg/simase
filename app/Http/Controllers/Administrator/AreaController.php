@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administrator;
 use App\Http\Controllers\Controller;
 use App\Models\Area;
 use App\Services\AreaService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -107,5 +108,31 @@ class AreaController extends Controller
     public function export(): BinaryFileResponse
     {
         return $this->areaService->export();
+    }
+
+    /**
+     * Generate the JSON-formatted resource data.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function json(Request $request): JsonResponse
+    {
+        return response()->json($this->areaService->single($request)?->toJson());
+    }
+
+    /**
+     * Generate the JSON-formatted resource collection data.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function jsonCollection(Request $request): JsonResponse
+    {
+        $data = $this->areaService->collection($request);
+        return response()->json([
+            'items' => $data->toArray(),
+            'total_count' => $data->count()
+        ]);
     }
 }

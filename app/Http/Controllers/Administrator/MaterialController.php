@@ -129,10 +129,9 @@ class MaterialController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function materialJson(Request $request): JsonResponse
+    public function json(Request $request): JsonResponse
     {
-        $material = $this->materialService->resolveMaterialCode($request);
-        return response()->json($material?->toJson());
+        return response()->json($this->materialService->single($request)?->toJson());
     }
 
     /**
@@ -141,12 +140,12 @@ class MaterialController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function materialCodeJsonCollection(Request $request): JsonResponse
+    public function jsonCollection(Request $request): JsonResponse
     {
-        $codes = $this->materialService->materialCodeCollection($request);
+        $data = $this->materialService->collection($request);
         return response()->json([
-            'items' => $codes->toArray(),
-            'total_count' => $codes->count()
+            'items' => $data->toArray(),
+            'total_count' => $data->count()
         ]);
     }
 }

@@ -17,7 +17,6 @@ class CreateAreasTable extends Migration
             $table->id();
             $table->string('sloc')->unique();
             $table->string('name')->unique();
-            $table->string('group');
             $table->timestamps();
             $table->softDeletes();
         });

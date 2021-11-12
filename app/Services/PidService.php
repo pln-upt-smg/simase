@@ -68,7 +68,9 @@ class PidService
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
+            ->leftJoin('sub_areas', 'sub_areas.id', '=', 'actual_stocks.sub_area_id')
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->where('sub_areas.area_id', '=', 'areas.id')
             ->whereNull(['book_stocks.deleted_at', 'actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('areas.id', $area->id);
@@ -140,9 +142,9 @@ class PidService
     public function export(Request $request): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(new PidExport(
+            $this,
             $this->areaService->resolve($request),
-            $this->periodService->resolve($request),
-            $this
+            $this->periodService->resolve($request)
         ), 'pids');
     }
 
@@ -171,7 +173,9 @@ class PidService
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
+            ->leftJoin('sub_areas', 'sub_areas.id', '=', 'actual_stocks.sub_area_id')
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+            ->where('sub_areas.area_id', '=', 'areas.id')
             ->whereNull(['book_stocks.deleted_at', 'actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($area)) {
             $query = $query->where('areas.id', $area->id);

@@ -2,8 +2,8 @@
 
 namespace App\Exports;
 
-use App\Models\Area;
 use App\Notifications\DataExported;
+use App\Services\AreaService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -12,12 +12,18 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class AreasExport implements FromCollection, WithHeadings, WithMapping
 {
+    private AreaService $areaService;
+
+    public function __construct(AreaService $areaService)
+    {
+        $this->areaService = $areaService;
+    }
+
     public function headings(): array
     {
         return [
-            'AreaID',
-            'SLoc',
-            'Group'
+            'Area',
+            'SLoc'
         ];
     }
 
@@ -25,14 +31,13 @@ class AreasExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             Str::title(trim($row->name)),
-            trim($row->sloc),
-            Str::title(trim($row->group))
+            trim($row->sloc)
         ];
     }
 
     public function collection(): Collection
     {
-        $data = Area::whereNull('deleted_at')->orderBy('id')->get();
+        $data = $this->areaService->collection();
         auth()->user()?->notify(new DataExported('Area', $data->count()));
         return $data;
     }

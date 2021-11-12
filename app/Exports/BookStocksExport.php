@@ -14,17 +14,17 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class BookStocksExport implements FromCollection, WithHeadings, WithMapping
 {
+    private BookStockService $bookStockService;
+
     private ?Area $area;
 
     private ?Period $period;
 
-    private BookStockService $bookStockService;
-
-    public function __construct(?Area $area, ?Period $period, BookStockService $bookStockService)
+    public function __construct(BookStockService $bookStockService, ?Area $area, ?Period $period)
     {
+        $this->bookStockService = $bookStockService;
         $this->area = $area;
         $this->period = $period;
-        $this->bookStockService = $bookStockService;
     }
 
     public function headings(): array

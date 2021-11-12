@@ -11,12 +11,14 @@ use App\Models\Period;
 use App\Models\Product;
 use App\Models\ProductMaterial;
 use App\Models\Role;
+use App\Models\SubArea;
 use App\Models\User;
 use Database\Seeders\Data\AreaSeeder;
 use Database\Seeders\Data\MaterialSeeder;
 use Database\Seeders\Data\PeriodSeeder;
 use Database\Seeders\Data\ProductSeeder;
 use Database\Seeders\Data\RoleSeeder;
+use Database\Seeders\Data\SubAreaSeeder;
 use Database\Seeders\Data\UserSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
@@ -48,6 +50,7 @@ class DatabaseSeeder extends Seeder
         Product::truncate();
         ProductMaterial::truncate();
         Role::truncate();
+        SubArea::truncate();
         User::truncate();
         Schema::enableForeignKeyConstraints();
     }
@@ -58,6 +61,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(PeriodSeeder::class);
         $this->call(AreaSeeder::class);
+        $this->call(SubAreaSeeder::class);
         $this->call(MaterialSeeder::class);
         $this->call(ProductSeeder::class);
     }

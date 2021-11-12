@@ -18,18 +18,16 @@ class BookStock extends Model
     #[BelongsTo]
     public Material $material;
 
-    public string $sloc, $batch;
+    public string $batch;
     public int $plnt, $qualinsp;
     public float $quantity, $unrestricted;
 
     protected $fillable = [
         'area_id',
         'material_id',
-        'sloc',
         'batch',
         'quantity',
         'plnt',
-        'sloc',
         'qualinsp',
         'unrestricted'
     ];

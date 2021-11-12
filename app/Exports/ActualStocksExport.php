@@ -14,23 +14,23 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
 {
+    private ActualStockService $actualStockService;
+
     private ?Area $area;
 
     private ?Period $period;
 
-    private ActualStockService $actualStockService;
-
-    public function __construct(?Area $area, ?Period $period, ActualStockService $actualStockService)
+    public function __construct(ActualStockService $actualStockService, ?Area $area, ?Period $period)
     {
+        $this->actualStockService = $actualStockService;
         $this->area = $area;
         $this->period = $period;
-        $this->actualStockService = $actualStockService;
     }
 
     public function headings(): array
     {
         return [
-            'Area',
+            'SubArea',
             'Material',
             'Batch',
             'MaterialDescription',
@@ -43,7 +43,7 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
-            Str::title(trim($row->area->name)),
+            Str::title(trim($row->subArea->name)),
             Str::upper(trim($row->material->code)),
             Str::upper(trim($row->batch)),
             Str::title(trim($row->material->description)),

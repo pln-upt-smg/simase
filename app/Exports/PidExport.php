@@ -14,17 +14,17 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class PidExport implements FromCollection, WithHeadings, WithMapping
 {
+    private PidService $pidService;
+
     private ?Area $area;
 
     private ?Period $period;
 
-    private PidService $pidService;
-
-    public function __construct(?Area $area, ?Period $period, PidService $pidService)
+    public function __construct(PidService $pidService, ?Area $area, ?Period $period)
     {
+        $this->pidService = $pidService;
         $this->area = $area;
         $this->period = $period;
-        $this->pidService = $pidService;
     }
 
     public function headings(): array
