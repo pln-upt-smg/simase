@@ -20,6 +20,11 @@
             ref="table">
             <template #head>
                 <jet-table-header
+                    v-show="showColumn('sub_area_name')"
+                    :cell="sortableHeader('sub_area_name')">
+                    Sub Area
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('material_code')"
                     :cell="sortableHeader('material_code')">
                     Kode Material
@@ -55,6 +60,7 @@
             </template>
             <template #body>
                 <tr v-for="stock in stocks.data" :key="stock.id">
+                    <td v-show="showColumn('sub_area_name')">{{ stock.sub_area_name }}</td>
                     <td v-show="showColumn('material_code')">{{ stock.material_code }}</td>
                     <td v-show="showColumn('batch_code')">{{ stock.batch_code }}</td>
                     <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
@@ -87,8 +93,24 @@
                 Silakan masukkan data hasil stock yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
-                    <jet-select ref="updateArea" placeholder="Pilih Area" v-model="updateForm.area"
-                                :data="areas" class="block w-full"/>
+                    <v-select
+                        placeholder="Cari Sub Area"
+                        class="vue-select rounded-md block w-full"
+                        v-model="updateForm.sub_area"
+                        :filterable="false"
+                        :clearable="false"
+                        :options="subAreaOptions"
+                        @search="onSubAreaSearch">
+                        <template slot="no-options">
+                            Tidak ada hasil tersedia.
+                        </template>
+                        <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Tidak ada hasil untuk <em>{{ search }}</em>.
+                            </template>
+                            <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari sub area.</em>
+                        </template>
+                    </v-select>
                     <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
                                 :data="periods" class="mt-4 block w-full"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
@@ -166,6 +188,7 @@ import JetTableHeader from '@/Jetstream/TableHeader'
 import JetAreaDropdown from '@/Jetstream/AreaDropdown'
 import JetPeriodDropdown from '@/Jetstream/PeriodDropdown'
 import JetSelect from '@/Jetstream/Select'
+import vSelect from 'vue-select'
 
 JetTableEngine.respectParams(['area', 'period'])
 
@@ -186,7 +209,7 @@ export default defineComponent({
             showingDangerNotification: false,
             updateForm: useForm({
                 id: null,
-                area: null,
+                sub_area: null,
                 period: null,
                 material_code: null,
                 batch: null,
@@ -194,7 +217,8 @@ export default defineComponent({
             }),
             destroyForm: useForm({
                 id: null
-            })
+            }),
+            subAreaOptions: []
         }
     },
     mixins: [JetTableEngine],
@@ -226,7 +250,8 @@ export default defineComponent({
         MenuItem,
         PlusIcon,
         PencilAltIcon,
-        TrashIcon
+        TrashIcon,
+        vSelect
     },
     methods: {
         update() {
@@ -260,7 +285,10 @@ export default defineComponent({
         },
         confirmUpdate(stock) {
             this.updateForm.id = stock.id
-            this.updateForm.area = stock.area_id
+            this.updateForm.sub_area = {
+                id: stock.sub_area_id,
+                label: `${stock.area_name} - ${stock.sub_area_name} - ${stock.sloc}`
+            }
             this.updateForm.period = stock.period_id
             this.updateForm.material_code = stock.material_code
             this.updateForm.batch = stock.batch
@@ -279,7 +307,7 @@ export default defineComponent({
                 this.updateForm.clearErrors()
                 this.updateForm.reset()
                 this.updateForm.id = null
-                this.updateForm.area = null
+                this.updateForm.sub_area = null
                 this.updateForm.period = null
                 this.updateForm.material_code = null
                 this.updateForm.batch = null
@@ -318,7 +346,31 @@ export default defineComponent({
         },
         reloadData() {
             this.$refs.table.reload('stocks')
-        }
+        },
+        onSubAreaSearch(search, loading) {
+            if (search.length) {
+                loading(true)
+                this.subAreaSearch(loading, search, this, this.showDangerNotification, {
+                    q: escape(search)
+                })
+            }
+        },
+        subAreaSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+            axios.get(route('api.subareas'), {
+                params: params
+            }).then(res => {
+                vm.subAreaOptions = res.data.items.map((item) => {
+                    return {
+                        id: item.id,
+                        label: `${item.area_name} - ${item.name} - ${item.sloc}`
+                    }
+                })
+            }).catch(() => {
+                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data sub area, mohon coba lagi nanti')
+            }).finally(() => {
+                loading(false)
+            })
+        }, 300)
     }
 })
 </script>
