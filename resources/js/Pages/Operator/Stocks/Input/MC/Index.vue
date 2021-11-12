@@ -44,12 +44,12 @@
                     <jet-label for="material_code" value="Kode Material"/>
                     <div class="flex mt-2">
                         <v-select
-                            if="material_code"
+                            id="material_code"
                             placeholder="Masukkan Kode Material"
                             class="vue-select rounded-md block w-full"
                             label="code"
                             v-model="form.material_code"
-                            v-on:option:selected="onSelected"
+                            v-on:option:selected="onMaterialCodeSelected"
                             :filterable="false"
                             :clearable="false"
                             :options="materialCodeOptions"
@@ -83,11 +83,27 @@
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="batch_code" value="Kode Batch"/>
                     <div class="flex mt-2">
-                        <div class="w-full">
-                            <jet-input id="batch_code" type="text" class="block w-full uppercase"
-                                       v-model="form.batch_code" placeholder="Masukkan Kode Batch"
-                                       autocomplete="batch_code"/>
-                        </div>
+                        <v-select
+                            id="batch_code"
+                            placeholder="Masukkan Kode Batch"
+                            class="vue-select rounded-md block w-full"
+                            label="code"
+                            v-model="form.batch_code"
+                            :filterable="false"
+                            :clearable="false"
+                            :options="batchCodeOptions"
+                            :reduce="option => option.code"
+                            @search="onBatchCodeSearch">
+                            <template slot="no-options">
+                                Tidak ada hasil tersedia.
+                            </template>
+                            <template v-slot:no-options="{ search, searching }">
+                                <template v-if="searching">
+                                    Tidak ada hasil untuk <em>{{ search }}</em>.
+                                </template>
+                                <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari kode batch.</em>
+                            </template>
+                        </v-select>
                         <div class="ml-2">
                             <jet-secondary-button type="button" @click="confirmScanBatchBarcode" class="h-full">
                                 <qrcode-icon class="h-5 w-5 text-gray-800" aria-hidden="true"/>
@@ -198,6 +214,7 @@ export default defineComponent({
                 description: null
             },
             materialData: {
+                id: null,
                 description: '-',
                 uom: '-'
             },
@@ -208,8 +225,9 @@ export default defineComponent({
                 batch_code: null,
                 quantity: null
             }),
+            subAreaOptions: [],
             materialCodeOptions: [],
-            subAreaOptions: []
+            batchCodeOptions: []
         }
     },
     methods: {
@@ -229,6 +247,7 @@ export default defineComponent({
             this.form.material_code = null
             this.form.batch_code = null
             this.form.quantity = null
+            this.materialData.id = null
             this.materialData.description = '-'
             this.materialData.uom = '-'
         },
@@ -269,31 +288,6 @@ export default defineComponent({
         onBatchBarcodeDecoded(code) {
             this.form.batch_code = code
         },
-        onSelected(material) {
-            this.materialData.description = material.description
-            this.materialData.uom = material.uom
-        },
-        onMaterialCodeSearch(search, loading) {
-            if (search.length) {
-                loading(true)
-                this.materialCodeSearch(loading, search, this, this.showDangerNotification, {
-                    q: escape(search),
-                    area: this.form.area ?? 0,
-                    period: this.form.period ?? 0
-                })
-            }
-        },
-        materialCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
-            axios.get(route('api.materials'), {
-                params: params
-            }).then(res => {
-                vm.materialCodeOptions = res.data.items
-            }).catch(() => {
-                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode material, mohon coba lagi nanti')
-            }).finally(() => {
-                loading(false)
-            })
-        }, 300),
         onSubAreaSearch(search, loading) {
             if (search.length) {
                 loading(true)
@@ -318,6 +312,53 @@ export default defineComponent({
                 loading(false)
             })
         }, 300),
+        onMaterialCodeSearch(search, loading) {
+            if (search.length) {
+                loading(true)
+                this.materialCodeSearch(loading, search, this, this.showDangerNotification, {
+                    q: escape(search),
+                    area: this.form.area ?? 0,
+                    period: this.form.period ?? 0
+                })
+            }
+        },
+        materialCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+            axios.get(route('api.materials'), {
+                params: params
+            }).then(res => {
+                vm.materialCodeOptions = res.data.items
+            }).catch(() => {
+                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode material, mohon coba lagi nanti')
+            }).finally(() => {
+                loading(false)
+            })
+        }, 300),
+        onBatchCodeSearch(search, loading) {
+            if (search.length) {
+                loading(true)
+                this.batchCodeSearch(loading, search, this, this.showDangerNotification, {
+                    q: escape(search),
+                    subarea: this.form.sub_area?.id ?? 0,
+                    material: this.materialData.id ?? 0
+                })
+            }
+        },
+        batchCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+            axios.get(route('api.batches'), {
+                params: params
+            }).then(res => {
+                vm.batchCodeOptions = res.data.items
+            }).catch(() => {
+                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode batch, mohon coba lagi nanti')
+            }).finally(() => {
+                loading(false)
+            })
+        }, 300),
+        onMaterialCodeSelected(material) {
+            this.materialData.id = material.id
+            this.materialData.description = material.description
+            this.materialData.uom = material.uom
+        },
         resolveMaterialData() {
             axios.get(route('api.material'), {
                 params: {

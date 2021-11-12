@@ -248,6 +248,21 @@ class MaterialService
      * @param Request $request
      * @return Material|null
      */
+    public function resolve(Request $request): ?Material
+    {
+        if ($request->query('material') === '0' || $request->query('material') === 0) {
+            return null;
+        }
+        return Material::where('id', $request->query('material') ? (int)$request->query('material') : 0)
+            ->whereNull('deleted_at')
+            ->first()
+            ->load('period');
+    }
+
+    /**
+     * @param Request $request
+     * @return Material|null
+     */
     public function single(Request $request): ?Material
     {
         return $this->collection($request)->first();

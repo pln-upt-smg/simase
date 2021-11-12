@@ -48,7 +48,7 @@
                             class="vue-select rounded-md block w-full"
                             label="code"
                             v-model="form.product_code"
-                            v-on:option:selected="onSelected"
+                            v-on:option:selected="onProductCodeSelected"
                             :filterable="false"
                             :clearable="false"
                             :options="productCodeOptions"
@@ -82,11 +82,27 @@
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="batch_code" value="Kode Batch"/>
                     <div class="flex mt-2">
-                        <div class="w-full">
-                            <jet-input id="batch_code" type="text" class="block w-full uppercase"
-                                       v-model="form.batch_code" placeholder="Masukkan Kode Batch"
-                                       autocomplete="batch_code"/>
-                        </div>
+                        <v-select
+                            id="batch_code"
+                            placeholder="Masukkan Kode Batch"
+                            class="vue-select rounded-md block w-full"
+                            label="code"
+                            v-model="form.batch_code"
+                            :filterable="false"
+                            :clearable="false"
+                            :options="batchCodeOptions"
+                            :reduce="option => option.code"
+                            @search="onBatchCodeSearch">
+                            <template slot="no-options">
+                                Tidak ada hasil tersedia.
+                            </template>
+                            <template v-slot:no-options="{ search, searching }">
+                                <template v-if="searching">
+                                    Tidak ada hasil untuk <em>{{ search }}</em>.
+                                </template>
+                                <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari kode batch.</em>
+                            </template>
+                        </v-select>
                         <div class="ml-2">
                             <jet-secondary-button type="button" @click="confirmScanBatchBarcode" class="h-full">
                                 <qrcode-icon class="h-5 w-5 text-gray-800" aria-hidden="true"/>
@@ -208,8 +224,9 @@ export default defineComponent({
                 batch_code: null,
                 quantity: null
             }),
+            subAreaOptions: [],
             productCodeOptions: [],
-            subAreaOptions: []
+            batchCodeOptions: []
         }
     },
     methods: {
@@ -269,31 +286,6 @@ export default defineComponent({
         onBatchBarcodeDecoded(code) {
             this.form.batch_code = code
         },
-        onSelected(product) {
-            this.productData.description = product.description
-            this.productData.uom = product.uom
-        },
-        onProductCodeSearch(search, loading) {
-            if (search.length) {
-                loading(true)
-                this.productCodeSearch(loading, search, this, this.showDangerNotification, {
-                    q: escape(search),
-                    area: this.form.area ?? 0,
-                    period: this.form.period ?? 0
-                })
-            }
-        },
-        productCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
-            axios.get(route('api.products'), {
-                params: params
-            }).then(res => {
-                vm.productCodeOptions = res.data.items
-            }).catch(() => {
-                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode SKU, mohon coba lagi nanti')
-            }).finally(() => {
-                loading(false)
-            })
-        }, 300),
         onSubAreaSearch(search, loading) {
             if (search.length) {
                 loading(true)
@@ -318,6 +310,52 @@ export default defineComponent({
                 loading(false)
             })
         }, 300),
+        onProductCodeSearch(search, loading) {
+            if (search.length) {
+                loading(true)
+                this.productCodeSearch(loading, search, this, this.showDangerNotification, {
+                    q: escape(search),
+                    area: this.form.area ?? 0,
+                    period: this.form.period ?? 0
+                })
+            }
+        },
+        productCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+            axios.get(route('api.products'), {
+                params: params
+            }).then(res => {
+                vm.productCodeOptions = res.data.items
+            }).catch(() => {
+                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode SKU, mohon coba lagi nanti')
+            }).finally(() => {
+                loading(false)
+            })
+        }, 300),
+        onBatchCodeSearch(search, loading) {
+            if (search.length) {
+                loading(true)
+                this.batchCodeSearch(loading, search, this, this.showDangerNotification, {
+                    q: escape(search),
+                    subarea: this.form.sub_area?.id ?? 0,
+                    material: this.materialData.id ?? 0
+                })
+            }
+        },
+        batchCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+            axios.get(route('api.batches'), {
+                params: params
+            }).then(res => {
+                vm.batchCodeOptions = res.data.items
+            }).catch(() => {
+                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode batch, mohon coba lagi nanti')
+            }).finally(() => {
+                loading(false)
+            })
+        }, 300),
+        onProductCodeSelected(product) {
+            this.productData.description = product.description
+            this.productData.uom = product.uom
+        },
         resolveProductData() {
             axios.get(route('api.product'), {
                 params: {

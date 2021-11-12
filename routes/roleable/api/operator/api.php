@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Batches endpoints
+ */
+include 'endpoints/batches.php';
+
+/**
  * Materials endpoints
  */
 include 'endpoints/materials.php';

@@ -376,9 +376,9 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeImportModal()
-                    this.showSuccessNotification('Data pegawai berhasil di-impor', 'Sistem telah berhasil mengimpor data pegawai')
+                    this.showSuccessNotification('Permintaan impor data telah dijadwalkan', 'Sistem berhasil menjadwalkan permintaan impor data pegawai di latar belakang')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data pegawai, mohon gunakan template yang sudah ditentukan')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data pegawai, mohon periksa kesalahan yang telah dideteksi')
             })
         },
         exportFile() {

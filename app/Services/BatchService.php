@@ -29,6 +29,26 @@ class BatchService
     use HasValidator;
 
     /**
+     * @var SubAreaService
+     */
+    private SubAreaService $subAreaService;
+
+    /**
+     * @var MaterialService $materialService
+     */
+    private MaterialService $materialService;
+
+    /**
+     * @param SubAreaService $subAreaService
+     * @param MaterialService $materialService
+     */
+    public function __construct(SubAreaService $subAreaService, MaterialService $materialService)
+    {
+        $this->subAreaService = $subAreaService;
+        $this->materialService = $materialService;
+    }
+
+    /**
      * @return LengthAwarePaginator
      */
     public function tableData(): LengthAwarePaginator
@@ -158,10 +178,36 @@ class BatchService
     }
 
     /**
+     * @param Request|null $request
+     * @return Batch|null
+     */
+    public function single(?Request $request = null): ?Batch
+    {
+        return $this->collection($request)->first();
+    }
+
+    /**
+     * @param Request|null $request
      * @return Collection
      */
-    public function collection(): Collection
+    public function collection(?Request $request = null): Collection
     {
-        return Batch::orderBy('code')->whereNull('deleted_at')->get()->load(['area', 'material']);
+        $query = Batch::select([
+            'batches.id as id',
+            'batches.code as code',
+            'materials.code as material_code',
+            'areas.sloc as sloc'
+        ])
+            ->leftJoin('areas', 'areas.id', 'batches.area_id')
+            ->leftJoin('sub_areas', 'sub_areas.id', '=', 'sub_areas.area_id')
+            ->leftJoin('materials', 'sub_areas.id', '=', 'sub_areas.area_id')
+            ->orderBy('batches.code')
+            ->whereNull(['batches.deleted_at', 'areas.deleted_at', 'sub_areas.deleted_at', 'materials.deleted_at']);
+        if (!is_null($request)) {
+            $query = $query->where('sub_areas.id', $this->subAreaService->resolve($request)?->id ?? 0)
+                ->where('batches.material_id', $this->materialService->resolve($request)?->id ?? 0)
+                ->whereRaw('lower(batches.code) like ?', Str::lower($request->query('q') ?? '') . '%');
+        }
+        return $query->get();
     }
 }
