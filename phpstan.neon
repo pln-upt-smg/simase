@@ -15,10 +15,12 @@ parameters:
         - ./_ide_helper.php
     ignoreErrors:
         - '#Illuminate\\Support\\Collection#'
+        - '#Illuminate\\Http\\Request#'
         - '#Illuminate\\Notifications\\DatabaseNotificationCollection#'
         - '#Undefined variable: \$this#'
         - '#of function trim expects string#'
         - '#Call to an undefined method#'
         - '#supplied for foreach, only iterables are supported#'
         - '#unreadNotifications#'
+        - '#Cannot call method load()#'
     checkMissingIterableValueType: false
