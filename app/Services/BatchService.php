@@ -199,8 +199,8 @@ class BatchService
             'areas.sloc as sloc'
         ])
             ->leftJoin('areas', 'areas.id', 'batches.area_id')
-            ->leftJoin('sub_areas', 'sub_areas.id', '=', 'sub_areas.area_id')
-            ->leftJoin('materials', 'sub_areas.id', '=', 'sub_areas.area_id')
+            ->leftJoin('sub_areas', 'sub_areas.area_id', '=', 'areas.id')
+            ->leftJoin('materials', 'materials.id', '=', 'batches.material_id')
             ->orderBy('batches.code')
             ->whereNull(['batches.deleted_at', 'areas.deleted_at', 'sub_areas.deleted_at', 'materials.deleted_at']);
         if (!is_null($request)) {
