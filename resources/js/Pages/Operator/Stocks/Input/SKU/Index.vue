@@ -285,6 +285,7 @@ export default defineComponent({
         },
         onBatchBarcodeDecoded(code) {
             this.form.batch_code = code
+            this.resolveBatchData()
         },
         onSubAreaSearch(search, loading) {
             if (search.length) {
@@ -369,6 +370,21 @@ export default defineComponent({
                 this.productData.uom = res.data.uom ?? '-'
             }).catch(() => {
                 this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data SKU, mohon coba lagi nanti')
+            })
+        },
+        resolveBatchData() {
+            axios.get(route('api.batch'), {
+                params: {
+                    q: escape(this.form.batch_code),
+                    subarea: this.form.sub_area?.id ?? 0,
+                    material: this.materialData.id ?? 0
+                }
+            }).then(res => {
+                if (_.isEmpty(res.data)) this.showDangerNotification('Kode batch tidak valid!', 'Sistem tidak dapat mengenali kode batch yang diberikan, mohon periksa kembali')
+                this.materialData.description = res.data.description ?? '-'
+                this.materialData.uom = res.data.uom ?? '-'
+            }).catch(() => {
+                this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data batch, mohon coba lagi nanti')
             })
         }
     }
