@@ -260,7 +260,17 @@ class ProductService
      */
     public function collection(?Request $request = null, ?Period $period = null): Collection
     {
-        $query = Product::leftJoin('periods', 'periods.id', '=', 'products.period_id')
+        $query = Product::select([
+            'products.id as id',
+            'products.code as code',
+            'products.description as description',
+            'products.uom as uom',
+            'products.mtyp as mtyp',
+            'products.crcy as crcy',
+            'products.price as price',
+            'products.per as per'
+        ])
+            ->leftJoin('periods', 'periods.id', '=', 'products.period_id')
             ->orderBy('products.code')
             ->whereNull(['products.deleted_at', 'periods.deleted_at']);
         if (!is_null($request)) {

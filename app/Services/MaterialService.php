@@ -275,7 +275,17 @@ class MaterialService
      */
     public function collection(?Request $request = null, ?Period $period = null): Collection
     {
-        $query = Material::leftJoin('periods', 'periods.id', '=', 'materials.period_id')
+        $query = Material::select([
+            'materials.id as id',
+            'materials.code as code',
+            'materials.description as description',
+            'materials.uom as uom',
+            'materials.mtyp as mtyp',
+            'materials.crcy as crcy',
+            'materials.price as price',
+            'materials.per as per'
+        ])
+            ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
             ->orderBy('materials.code')
             ->whereNull(['materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($request)) {

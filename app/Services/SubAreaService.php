@@ -182,9 +182,11 @@ class SubAreaService
         ])
             ->leftJoin('areas', 'areas.id', '=', 'sub_areas.area_id')
             ->orderBy('sub_areas.name')
-            ->whereNull(['areas.deleted_at', 'sub_areas.deleted_at']);
+            ->whereNull(['sub_areas.deleted_at', 'areas.deleted_at']);
         if (!is_null($request)) {
-            $query = $query->whereRaw('lower(sub_areas.name) like ?', '%' . Str::lower($request->query('q') ?? '') . '%')
+            $query = $query
+                ->whereRaw('lower(areas.name) like ?', '%' . Str::lower($request->query('q') ?? '') . '%')
+                ->whereRaw('lower(sub_areas.name) like ?', '%' . Str::lower($request->query('q') ?? '') . '%')
                 ->orWhereRaw('lower(areas.sloc) like ?', '%' . Str::lower($request->query('q') ?? '') . '%');
         }
         return $query->get();

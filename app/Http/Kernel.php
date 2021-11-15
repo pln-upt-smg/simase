@@ -5,6 +5,7 @@ namespace App\Http;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authorizable\ByAdministrator;
 use App\Http\Middleware\Authorizable\ByOperator;
+use App\Http\Middleware\DecodeUrls;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HandleReadedNotification;
@@ -48,6 +49,7 @@ class Kernel extends HttpKernel
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
+        DecodeUrls::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class
     ];
