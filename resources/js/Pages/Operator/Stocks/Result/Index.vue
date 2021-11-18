@@ -370,7 +370,7 @@ export default defineComponent({
             }).finally(() => {
                 loading(false)
             })
-        }, 300)
+        }, 1000)
     }
 })
 </script>

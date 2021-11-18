@@ -312,7 +312,7 @@ export default defineComponent({
             }).finally(() => {
                 loading(false)
             })
-        }, 300),
+        }, 1000),
         onMaterialCodeSearch(search, loading) {
             if (search.length) {
                 loading(true)
@@ -333,7 +333,7 @@ export default defineComponent({
             }).finally(() => {
                 loading(false)
             })
-        }, 300),
+        }, 1000),
         onBatchCodeSearch(search, loading) {
             if (search.length) {
                 loading(true)
@@ -354,7 +354,7 @@ export default defineComponent({
             }).finally(() => {
                 loading(false)
             })
-        }, 300),
+        }, 1000),
         onMaterialCodeSelected(material) {
             this.materialData.id = material.id
             this.materialData.description = material.description

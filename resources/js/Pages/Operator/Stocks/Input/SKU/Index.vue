@@ -310,7 +310,7 @@ export default defineComponent({
             }).finally(() => {
                 loading(false)
             })
-        }, 300),
+        }, 1000),
         onProductCodeSearch(search, loading) {
             if (search.length) {
                 loading(true)
@@ -331,7 +331,7 @@ export default defineComponent({
             }).finally(() => {
                 loading(false)
             })
-        }, 300),
+        }, 1000),
         onBatchCodeSearch(search, loading) {
             if (search.length) {
                 loading(true)
@@ -352,7 +352,7 @@ export default defineComponent({
             }).finally(() => {
                 loading(false)
             })
-        }, 300),
+        }, 1000),
         onProductCodeSelected(product) {
             this.productData.description = product.description
             this.productData.uom = product.uom
