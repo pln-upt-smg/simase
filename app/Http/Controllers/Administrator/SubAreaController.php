@@ -63,26 +63,26 @@ class SubAreaController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param SubArea $subArea
+     * @param SubArea $subarea
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, SubArea $subArea): RedirectResponse
+    public function update(Request $request, SubArea $subarea): RedirectResponse
     {
-        $this->subAreaService->update($request, $subArea);
+        $this->subAreaService->update($request, $subarea);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param SubArea $subArea
+     * @param SubArea $subarea
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(SubArea $subArea): RedirectResponse
+    public function destroy(SubArea $subarea): RedirectResponse
     {
-        $this->subAreaService->destroy($subArea);
+        $this->subAreaService->destroy($subarea);
         return back();
     }
 
