@@ -34,8 +34,7 @@
         "nunomaduro/collision": "^5.10",
         "nunomaduro/larastan": "^0.7.13",
         "phpstan/phpstan": "^0.12.99",
-        "phpunit/phpunit": "^9.5.8",
-        "roave/security-advisories": "dev-latest"
+        "phpunit/phpunit": "^9.5.8"
     },
     "autoload": {
         "psr-4": {
