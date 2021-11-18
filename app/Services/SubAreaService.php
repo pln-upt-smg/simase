@@ -186,7 +186,7 @@ class SubAreaService
         if (!is_null($request)) {
             $query = $query
                 ->whereRaw('lower(areas.name) like ?', '%' . Str::lower($request->query('q') ?? '') . '%')
-                ->whereRaw('lower(sub_areas.name) like ?', '%' . Str::lower($request->query('q') ?? '') . '%')
+                ->orWhereRaw('lower(sub_areas.name) like ?', '%' . Str::lower($request->query('q') ?? '') . '%')
                 ->orWhereRaw('lower(areas.sloc) like ?', '%' . Str::lower($request->query('q') ?? '') . '%');
         }
         return $query->get();
