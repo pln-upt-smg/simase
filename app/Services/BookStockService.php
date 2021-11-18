@@ -65,14 +65,14 @@ class BookStockService
                 'book_stocks.batch as batch_code',
                 'book_stocks.quantity as quantity',
                 'book_stocks.plnt as plnt',
-                'book_stocks.sloc as sloc',
                 'book_stocks.qualinsp as qualinsp',
                 'book_stocks.unrestricted as unrestricted',
                 'materials.period_id as period_id',
                 'materials.code as material_code',
                 'materials.description as material_description',
                 'materials.uom as uom',
-                'materials.mtyp as mtyp'
+                'materials.mtyp as mtyp',
+                'areas.sloc as sloc'
             ])
             ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
@@ -89,13 +89,13 @@ class BookStockService
                 'book_stocks.batch',
                 'book_stocks.quantity',
                 'book_stocks.plnt',
-                'book_stocks.sloc',
                 'book_stocks.qualinsp',
                 'book_stocks.unrestricted',
                 'materials.code',
                 'materials.description',
                 'materials.uom',
-                'materials.mtyp'
+                'materials.mtyp',
+                'areas.sloc'
             ]))
             ->allowedSorts([
                 'batch_code',
@@ -126,7 +126,7 @@ class BookStockService
             'materials.mtyp' => 'MType',
             'book_stocks.batch' => 'Kode Batch',
             'book_stocks.plnt' => 'Plnt',
-            'book_stocks.sloc' => 'SLoc',
+            'areas.sloc' => 'SLoc',
             'book_stocks.qualinsp' => 'QualInsp',
             'book_stocks.unrestricted' => 'Unrestricted',
             'book_stocks.quantity' => 'Kuantitas'
