@@ -67,7 +67,7 @@ class SubAreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMul
 
     public function name(): string
     {
-        return 'SubArea';
+        return 'Sub Area';
     }
 
     public function overwrite(): void

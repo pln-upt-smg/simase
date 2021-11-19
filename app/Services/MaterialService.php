@@ -283,7 +283,8 @@ class MaterialService
             'materials.mtyp as mtyp',
             'materials.crcy as crcy',
             'materials.price as price',
-            'materials.per as per'
+            'materials.per as per',
+            DB::raw('date_format(materials.updated_at, "%d-%b-%Y") as update_date')
         ])
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
             ->orderBy('materials.code')

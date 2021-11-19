@@ -47,7 +47,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithMapping
             Str::upper(trim($row->crcy)),
             (string)$row->price,
             (string)$row->per,
-            (string)$row->updated_at->format('d-M-y')
+            (string)$row->updated_at
         ];
     }
 

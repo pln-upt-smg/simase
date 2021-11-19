@@ -297,6 +297,6 @@ class BookStockService
         if (!is_null($period)) {
             $query = $query->where('periods.id', $period->id);
         }
-        return $query->orderBy('materials.code')->get()->load(['material', 'book_stocks.area']);
+        return $query->orderBy('materials.code')->get()->load(['material', 'area']);
     }
 }

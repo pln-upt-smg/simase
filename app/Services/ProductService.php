@@ -268,7 +268,8 @@ class ProductService
             'products.mtyp as mtyp',
             'products.crcy as crcy',
             'products.price as price',
-            'products.per as per'
+            'products.per as per',
+            DB::raw('date_format(products.updated_at, "%d-%b-%Y") as update_date')
         ])
             ->leftJoin('periods', 'periods.id', '=', 'products.period_id')
             ->orderBy('products.code')

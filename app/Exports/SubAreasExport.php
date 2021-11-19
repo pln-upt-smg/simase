@@ -38,7 +38,7 @@ class SubAreasExport implements FromCollection, WithHeadings, WithMapping
     public function collection(): Collection
     {
         $data = $this->subAreaService->collection();
-        auth()->user()?->notify(new DataExported('SubArea', $data->count()));
+        auth()->user()?->notify(new DataExported('Sub Area', $data->count()));
         return $data;
     }
 }
