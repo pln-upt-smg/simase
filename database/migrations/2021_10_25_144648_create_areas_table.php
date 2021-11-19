@@ -15,8 +15,8 @@ class CreateAreasTable extends Migration
     {
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
-            $table->string('sloc')->unique();
-            $table->string('name')->unique();
+            $table->string('sloc');
+            $table->string('name');
             $table->timestamps();
             $table->softDeletes();
         });
