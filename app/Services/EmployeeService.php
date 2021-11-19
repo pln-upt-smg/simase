@@ -170,7 +170,7 @@ class EmployeeService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new EmployeesExport($this), 'employees');
+        return MediaHelper::exportSpreadsheet(new EmployeesExport, 'employees');
     }
 
     /**

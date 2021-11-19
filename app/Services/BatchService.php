@@ -166,7 +166,7 @@ class BatchService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new BatchesExport($this), new Batch);
+        return MediaHelper::exportSpreadsheet(new BatchesExport, new Batch);
     }
 
     /**
