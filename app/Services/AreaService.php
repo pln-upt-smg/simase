@@ -131,7 +131,7 @@ class AreaService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new AreasExport, new Area);
+        return MediaHelper::exportSpreadsheet(new AreasExport($this), new Area);
     }
 
     /**

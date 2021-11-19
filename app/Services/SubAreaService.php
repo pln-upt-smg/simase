@@ -133,7 +133,7 @@ class SubAreaService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new SubAreasExport, new SubArea);
+        return MediaHelper::exportSpreadsheet(new SubAreasExport($this), new SubArea);
     }
 
     /**
