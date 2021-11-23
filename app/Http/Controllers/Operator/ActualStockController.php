@@ -16,120 +16,118 @@ use Throwable;
 
 class ActualStockController extends Controller
 {
-    /**
-     * @var ActualStockService
-     */
-    private ActualStockService $actualStockService;
+	/**
+	 * @var ActualStockService
+	 */
+	private ActualStockService $actualStockService;
 
-    /**
-     * @var AreaService
-     */
-    private AreaService $areaService;
+	/**
+	 * @var AreaService
+	 */
+	private AreaService $areaService;
 
-    /**
-     * @var PeriodService
-     */
-    private PeriodService $periodService;
+	/**
+	 * @var PeriodService
+	 */
+	private PeriodService $periodService;
 
-    /**
-     * Create a new Controller instance.
-     *
-     * @param ActualStockService $actualStockService
-     * @param AreaService $areaService
-     * @param PeriodService $periodService
-     */
-    public function __construct(ActualStockService $actualStockService, AreaService $areaService, PeriodService $periodService)
-    {
-        $this->actualStockService = $actualStockService;
-        $this->areaService = $areaService;
-        $this->periodService = $periodService;
-    }
+	/**
+	 * Create a new Controller instance.
+	 *
+	 * @param ActualStockService $actualStockService
+	 * @param AreaService $areaService
+	 * @param PeriodService $periodService
+	 */
+	public function __construct(ActualStockService $actualStockService, AreaService $areaService, PeriodService $periodService)
+	{
+		$this->actualStockService = $actualStockService;
+		$this->areaService = $areaService;
+		$this->periodService = $periodService;
+	}
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return Response|ResponseFactory
-     */
-    public function index(Request $request): Response|ResponseFactory
-    {
-        $area = $this->areaService->resolve($request);
-        $period = $this->periodService->resolve($request);
-        return inertia('Operator/Stocks/Result/Index', [
-            'area' => $area,
-            'period' => $period,
-            'areas' => $this->areaService->collection()->toArray(),
-            'periods' => $this->periodService->collection()->toArray(),
-            'stocks' => $this->actualStockService->tableData($area, $period, true),
-            'template' => $this->actualStockService->template()
-        ])->table(function (InertiaTable $table) {
-            $this->actualStockService->tableMeta($table, true);
-        });
-    }
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @param Request $request
+	 * @return Response|ResponseFactory
+	 */
+	public function index(Request $request): Response|ResponseFactory
+	{
+		$area = $this->areaService->resolve($request);
+		$period = $this->periodService->resolve($request);
+		return inertia('Operator/Stocks/Result/Index', [
+			'area' => $area,
+			'period' => $period,
+			'areas' => $this->areaService->collection()->toArray(),
+			'periods' => $this->periodService->collection()->toArray(),
+			'stocks' => $this->actualStockService->tableData($area, $period, true),
+			'template' => $this->actualStockService->template()
+		])->table(function (InertiaTable $table) {
+			$this->actualStockService->tableMeta($table, true);
+		});
+	}
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response|ResponseFactory
-     */
-    public function create(): Response|ResponseFactory
-    {
-        return inertia('Operator/Stocks/Input/MC/Index', [
-            'areas' => $this->areaService->collection()->toArray(),
-            'periods' => $this->periodService->collection()->toArray()
-        ]);
-    }
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return Response|ResponseFactory
+	 */
+	public function create(): Response|ResponseFactory
+	{
+		return inertia('Operator/Stocks/Input/MC/Index', [
+			'periods' => $this->periodService->collection()->toArray()
+		]);
+	}
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response|ResponseFactory
-     */
-    public function createSku(): Response|ResponseFactory
-    {
-        return inertia('Operator/Stocks/Input/SKU/Index', [
-            'areas' => $this->areaService->collection()->toArray(),
-            'periods' => $this->periodService->collection()->toArray()
-        ]);
-    }
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return Response|ResponseFactory
+	 */
+	public function createSku(): Response|ResponseFactory
+	{
+		return inertia('Operator/Stocks/Input/SKU/Index', [
+			'periods' => $this->periodService->collection()->toArray()
+		]);
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     * @throws Throwable
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        $this->actualStockService->store($request);
-        return back();
-    }
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param Request $request
+	 * @return RedirectResponse
+	 * @throws Throwable
+	 */
+	public function store(Request $request): RedirectResponse
+	{
+		$this->actualStockService->store($request);
+		return back();
+	}
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param ActualStock $stock
-     * @return RedirectResponse
-     * @throws Throwable
-     */
-    public function update(Request $request, ActualStock $stock): RedirectResponse
-    {
-        $this->actualStockService->update($request, $stock);
-        return back();
-    }
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param Request $request
+	 * @param ActualStock $stock
+	 * @return RedirectResponse
+	 * @throws Throwable
+	 */
+	public function update(Request $request, ActualStock $stock): RedirectResponse
+	{
+		$this->actualStockService->update($request, $stock);
+		return back();
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param ActualStock $stock
-     * @return RedirectResponse
-     * @throws Throwable
-     */
-    public function destroy(ActualStock $stock): RedirectResponse
-    {
-        $this->actualStockService->destroy($stock);
-        return back();
-    }
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param ActualStock $stock
+	 * @return RedirectResponse
+	 * @throws Throwable
+	 */
+	public function destroy(ActualStock $stock): RedirectResponse
+	{
+		$this->actualStockService->destroy($stock);
+		return back();
+	}
 }

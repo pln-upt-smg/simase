@@ -80,38 +80,6 @@
                                title="Data ini diambil berdasarkan Kode SKU yang diberikan."/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
-                    <jet-label for="batch_code" value="Kode Batch"/>
-                    <div class="flex mt-2">
-                        <v-select
-                            id="batch_code"
-                            placeholder="Masukkan Kode Batch"
-                            class="vue-select rounded-md block w-full"
-                            label="code"
-                            v-model="form.batch_code"
-                            :filterable="false"
-                            :clearable="false"
-                            :options="batchCodeOptions"
-                            :reduce="option => option.code"
-                            @search="onBatchCodeSearch">
-                            <template slot="no-options">
-                                Tidak ada hasil tersedia.
-                            </template>
-                            <template v-slot:no-options="{ search, searching }">
-                                <template v-if="searching">
-                                    Tidak ada hasil untuk <em>{{ search }}</em>.
-                                </template>
-                                <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari kode batch.</em>
-                            </template>
-                        </v-select>
-                        <div class="ml-2">
-                            <jet-secondary-button type="button" @click="confirmScanBatchBarcode" class="h-full">
-                                <qrcode-icon class="h-5 w-5 text-gray-800" aria-hidden="true"/>
-                            </jet-secondary-button>
-                        </div>
-                    </div>
-                    <jet-input-error :message="form.errors.batch_code" class="mt-2"/>
-                </div>
-                <div class="col-span-6 sm:col-span-4">
                     <jet-label for="quantity" value="Kuantitas"/>
                     <jet-input id="quantity" type="number" class="mt-2 block w-full" v-model="form.quantity"
                                autocomplete="quantity" placeholder="Masukkan Kuantitas"/>
@@ -139,11 +107,6 @@
             :show="confirmingProductBarcodeScanning"
             @close="closeProductBarcodeScanner"
             @decode="onProductBarcodeDecoded"/>
-        <barcode-scanner
-            title="Scan Batch Barcode"
-            :show="confirmingBatchBarcodeScanning"
-            @close="closeBatchBarcodeScanner"
-            @decode="onBatchBarcodeDecoded"/>
         <jet-success-notification
             :show="showingSuccessNotification"
             :title="successNotification.title"
@@ -195,13 +158,11 @@ export default defineComponent({
         QrcodeIcon
     },
     props: {
-        areas: Object,
         periods: Object
     },
     data() {
         return {
             confirmingProductBarcodeScanning: false,
-            confirmingBatchBarcodeScanning: false,
             showingSuccessNotification: false,
             showingDangerNotification: false,
             successNotification: {
@@ -221,12 +182,10 @@ export default defineComponent({
                 sub_area: null,
                 period: null,
                 product_code: null,
-                batch_code: null,
                 quantity: null
             }),
             subAreaOptions: [],
-            productCodeOptions: [],
-            batchCodeOptions: []
+            productCodeOptions: []
         }
     },
     methods: {
@@ -244,16 +203,12 @@ export default defineComponent({
         reset() {
             this.form.clearErrors()
             this.form.product_code = null
-            this.form.batch_code = null
             this.form.quantity = null
             this.productData.description = '-'
             this.productData.uom = '-'
         },
         confirmScanProductBarcode() {
             this.confirmingProductBarcodeScanning = true
-        },
-        confirmScanBatchBarcode() {
-            this.confirmingBatchBarcodeScanning = true
         },
         showSuccessNotification(title, description) {
             this.successNotification.title = title
@@ -276,16 +231,9 @@ export default defineComponent({
         closeProductBarcodeScanner() {
             this.confirmingProductBarcodeScanning = false
         },
-        closeBatchBarcodeScanner() {
-            this.confirmingBatchBarcodeScanning = false
-        },
         onProductBarcodeDecoded(code) {
             this.form.product_code = code
             this.resolveProductData()
-        },
-        onBatchBarcodeDecoded(code) {
-            this.form.batch_code = code
-            this.resolveBatchData()
         },
         onSubAreaSearch(search, loading) {
             if (search.length) {
@@ -316,7 +264,7 @@ export default defineComponent({
                 loading(true)
                 this.productCodeSearch(loading, search, this, this.showDangerNotification, {
                     q: escape(search),
-                    area: this.form.area ?? 0,
+                    subarea: this.form.sub_area?.id ?? 0,
                     period: this.form.period ?? 0
                 })
             }
@@ -332,27 +280,6 @@ export default defineComponent({
                 loading(false)
             })
         }, 1000),
-        onBatchCodeSearch(search, loading) {
-            if (search.length) {
-                loading(true)
-                this.batchCodeSearch(loading, search, this, this.showDangerNotification, {
-                    q: escape(search),
-                    subarea: this.form.sub_area?.id ?? 0,
-                    material: this.materialData.id ?? 0
-                })
-            }
-        },
-        batchCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
-            axios.get(route('api.batches'), {
-                params: params
-            }).then(res => {
-                vm.batchCodeOptions = res.data.items
-            }).catch(() => {
-                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode batch, mohon coba lagi nanti')
-            }).finally(() => {
-                loading(false)
-            })
-        }, 1000),
         onProductCodeSelected(product) {
             this.productData.description = product.description
             this.productData.uom = product.uom
@@ -361,7 +288,7 @@ export default defineComponent({
             axios.get(route('api.product'), {
                 params: {
                     q: escape(this.form.product_code),
-                    area: this.form.area ?? 0,
+                    subarea: this.form.sub_area?.id ?? 0,
                     period: this.form.period ?? 0
                 }
             }).then(res => {
@@ -370,21 +297,6 @@ export default defineComponent({
                 this.productData.uom = res.data.uom ?? '-'
             }).catch(() => {
                 this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data SKU, mohon coba lagi nanti')
-            })
-        },
-        resolveBatchData() {
-            axios.get(route('api.batch'), {
-                params: {
-                    q: escape(this.form.batch_code),
-                    subarea: this.form.sub_area?.id ?? 0,
-                    material: this.materialData.id ?? 0
-                }
-            }).then(res => {
-                if (_.isEmpty(res.data)) this.showDangerNotification('Kode batch tidak valid!', 'Sistem tidak dapat mengenali kode batch yang diberikan, mohon periksa kembali')
-                this.materialData.description = res.data.description ?? '-'
-                this.materialData.uom = res.data.uom ?? '-'
-            }).catch(() => {
-                this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data batch, mohon coba lagi nanti')
             })
         }
     }

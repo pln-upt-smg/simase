@@ -197,7 +197,6 @@ export default defineComponent({
         QrcodeIcon
     },
     props: {
-        areas: Object,
         periods: Object
     },
     data() {
@@ -357,13 +356,19 @@ export default defineComponent({
             })
         }, 1000),
         onSubAreaSelected() {
-            if (this.materialData.id) this.resolveBatchData()
+            if (this.materialData.id) this.batchCodeSearch(loading, search, this, this.showDangerNotification, {
+                subarea: this.form.sub_area?.id ?? 0,
+                material: this.materialData.id ?? 0
+            })
         },
         onMaterialCodeSelected(material) {
             this.materialData.id = material.id
             this.materialData.description = material.description
             this.materialData.uom = material.uom
-            if (this.form.sub_area?.id) this.resolveBatchData()
+            if (this.form.sub_area?.id) this.batchCodeSearch(loading, search, this, this.showDangerNotification, {
+                subarea: this.form.sub_area?.id ?? 0,
+                material: this.materialData.id ?? 0
+            })
         },
         resolveMaterialData() {
             axios.get(route('api.material'), {
@@ -388,8 +393,6 @@ export default defineComponent({
                 }
             }).then(res => {
                 if (_.isEmpty(res.data)) this.showDangerNotification('Kode batch tidak valid!', 'Sistem tidak dapat mengenali kode batch yang diberikan, mohon periksa kembali')
-                this.materialData.description = res.data.description ?? '-'
-                this.materialData.uom = res.data.uom ?? '-'
             }).catch(() => {
                 this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data batch, mohon coba lagi nanti')
             })
