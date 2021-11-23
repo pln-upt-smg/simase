@@ -17,6 +17,7 @@
                             placeholder="Cari Sub Area"
                             class="vue-select rounded-md block w-full"
                             v-model="form.sub_area"
+                            v-on:option:selected="onSubAreaSelected"
                             :filterable="false"
                             :clearable="false"
                             :options="subAreaOptions"
@@ -355,10 +356,14 @@ export default defineComponent({
                 loading(false)
             })
         }, 1000),
+        onSubAreaSelected() {
+            if (this.materialData.id) this.resolveBatchData()
+        },
         onMaterialCodeSelected(material) {
             this.materialData.id = material.id
             this.materialData.description = material.description
             this.materialData.uom = material.uom
+            if (this.form.sub_area?.id) this.resolveBatchData()
         },
         resolveMaterialData() {
             axios.get(route('api.material'), {
