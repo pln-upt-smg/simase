@@ -14,7 +14,7 @@ return [
         | Here you can specify how big the chunk should be.
         |
         */
-        'chunk_size' => 50,
+        'chunk_size' => 1000,
 
         /*
         |--------------------------------------------------------------------------
@@ -239,7 +239,7 @@ return [
         |
         */
         'batch' => [
-            'memory_limit' => 512,
+            'memory_limit' => 256,
         ],
 
         /*
