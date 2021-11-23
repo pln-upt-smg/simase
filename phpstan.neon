@@ -22,5 +22,4 @@ parameters:
         - '#Call to an undefined method#'
         - '#supplied for foreach, only iterables are supported#'
         - '#unreadNotifications#'
-        - '#Cannot call method load#'
     checkMissingIterableValueType: false
