@@ -208,7 +208,7 @@ class BatchService
             $query = $query
                 ->where('sub_areas.id', $this->subAreaService->resolve($request)?->id ?? 0)
                 ->where('materials.id', $this->materialService->resolve($request)?->id ?? 0)
-                ->whereRaw('lower(batches.code) like ?', '%' . Str::lower($request->query('q') ?? '') . '%');
+                ->orWhereRaw('lower(batches.code) like ?', Str::lower($request->query('q') ?? '') . '%');
         }
         return $query->get();
     }

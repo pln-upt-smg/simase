@@ -288,7 +288,7 @@ class MaterialService
             ->whereNull(['materials.deleted_at', 'periods.deleted_at']);
         if (!is_null($request)) {
             $query = $query->where('periods.id', $this->periodService->resolve($request)?->id ?? 0)
-                ->whereRaw('lower(materials.code) like ?', '%' . Str::lower($request->query('q') ?? '') . '%');
+                ->whereRaw('lower(materials.code) like ?', Str::lower($request->query('q') ?? '') . '%');
         } else if (!is_null($period)) {
             $query = $query->where('periods.id', $period->id);
         }
