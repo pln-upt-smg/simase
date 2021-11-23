@@ -166,7 +166,7 @@ class BatchService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new BatchesExport, new Batch);
+        return MediaHelper::exportSpreadsheet(new BatchesExport($this), new Batch);
     }
 
     /**
@@ -198,6 +198,7 @@ class BatchService
             'materials.code as material_code',
             'areas.sloc as sloc'
         ])
+	        ->distinct()
             ->leftJoin('areas', 'areas.id', 'batches.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'batches.material_id')
             ->leftJoin('sub_areas', 'sub_areas.area_id', '=', 'areas.id')

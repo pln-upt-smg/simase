@@ -39,11 +39,6 @@ abstract class MediaHelper
 		}
 		$filename = trim($filename);
 		$format = Str::lower(trim($format));
-		$contentType = match ($format) {
-			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-			'csv' => 'text/csv',
-			default => null
-		};
-		return Excel::download($exportable, $filename . ".$format", null, is_null($contentType) ? [] : ["Content-Type: $contentType"]);
+		return Excel::download($exportable, $filename . ".$format");
 	}
 }
