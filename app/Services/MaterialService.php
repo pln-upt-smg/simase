@@ -253,10 +253,7 @@ class MaterialService
         if ($request->query('material') === '0' || $request->query('material') === 0) {
             return null;
         }
-        return Material::where('id', $request->query('material') ? (int)$request->query('material') : 0)
-            ->whereNull('deleted_at')
-            ->first()
-            ->load('period');
+        return Material::where('id', $request->query('material') ? (int)$request->query('material') : 0)->whereNull('deleted_at')->first()?->load('period');
     }
 
     /**

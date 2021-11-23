@@ -12,38 +12,38 @@ use Throwable;
 
 abstract class MediaHelper
 {
-    public const SPREADSHEET_MAX_SIZE = '51200'; // 50MB
+	public const SPREADSHEET_MAX_SIZE = '51200'; // 50MB
 
-    /**
-     * @throws Throwable
-     */
-    public static function importSpreadsheet(Request $request, mixed $importable = null, string $attr = 'file', bool $required = true): void
-    {
-        $attr = trim($attr);
-        Validator::validate($request->all(), [
-            $attr => [$required ? 'required' : 'nullable', 'mimes:xlsx,csv', 'max:' . self::SPREADSHEET_MAX_SIZE]
-        ]);
-        if (!is_null($importable)) {
-            JobHelper::limitOnce();
-            Excel::import($importable, $request->file($attr));
-        }
-    }
+	/**
+	 * @throws Throwable
+	 */
+	public static function importSpreadsheet(Request $request, mixed $importable = null, string $attr = 'file', bool $required = true): void
+	{
+		$attr = trim($attr);
+		Validator::validate($request->all(), [
+			$attr => [$required ? 'required' : 'nullable', 'mimes:xlsx,csv', 'max:' . self::SPREADSHEET_MAX_SIZE]
+		]);
+		if (!is_null($importable)) {
+			JobHelper::limitOnce();
+			Excel::import($importable, $request->file($attr));
+		}
+	}
 
-    /**
-     * @throws Throwable
-     */
-    public static function exportSpreadsheet(mixed $exportable, Model|string $filename, string $format = 'xlsx'): BinaryFileResponse
-    {
-        if ($filename instanceof Model) {
-            $filename = $filename->getTable();
-        }
-        $filename = trim($filename);
-        $format = Str::lower(trim($format));
-        $contentType = match ($format) {
-            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'csv' => 'text/csv',
-            default => null
-        };
-        return Excel::download($exportable, $filename . ".$format", headers: is_null($contentType) ? [] : ["Content-Type: $contentType"]);
-    }
+	/**
+	 * @throws Throwable
+	 */
+	public static function exportSpreadsheet(mixed $exportable, Model|string $filename, string $format = 'xlsx'): BinaryFileResponse
+	{
+		if ($filename instanceof Model) {
+			$filename = $filename->getTable();
+		}
+		$filename = trim($filename);
+		$format = Str::lower(trim($format));
+		$contentType = match ($format) {
+			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			'csv' => 'text/csv',
+			default => null
+		};
+		return Excel::download($exportable, $filename . ".$format", null, is_null($contentType) ? [] : ["Content-Type: $contentType"]);
+	}
 }

@@ -147,7 +147,7 @@ class PidDetailService
                     ->where('areas.id', $area->id)
                     ->whereNull(['actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at']);
 
-                // dont forget to apply the period query!
+                // don't forget to apply the period query!
                 if (!is_null($period)) {
                     $query = $query->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
                         ->where('periods.id', $period->id)

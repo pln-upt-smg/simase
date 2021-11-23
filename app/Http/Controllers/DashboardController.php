@@ -53,7 +53,7 @@ class DashboardController extends Controller
         if (is_null(auth()->user())) {
             return redirect()->route('login');
         }
-        if (auth()->user()->load('role')->role->isOperator()) {
+        if (auth()->user()?->load('role')->role->isOperator()) {
             return redirect()->route('stocks.create');
         }
         $area = $this->areaService->resolve($request);
