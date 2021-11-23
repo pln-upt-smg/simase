@@ -292,12 +292,12 @@ export default defineComponent({
         onSubAreaSearch(search, loading) {
             if (search.length) {
                 loading(true)
-                this.subAreaSearch(loading, search, this, this.showDangerNotification, {
+                this.subAreaSearch(loading, this, this.showDangerNotification, {
                     q: escape(search)
                 })
             }
         },
-        subAreaSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+        subAreaSearch: _.debounce((loading, vm, errorCallback, params) => {
             axios.get(route('api.subareas'), {
                 params: params
             }).then(res => {
@@ -310,20 +310,20 @@ export default defineComponent({
             }).catch(() => {
                 errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data sub area, mohon coba lagi nanti')
             }).finally(() => {
-                loading(false)
+                if (loading) loading(false)
             })
         }, 1000),
         onMaterialCodeSearch(search, loading) {
             if (search.length) {
                 loading(true)
-                this.materialCodeSearch(loading, search, this, this.showDangerNotification, {
+                this.materialCodeSearch(loading, this, this.showDangerNotification, {
                     q: escape(search),
                     area: this.form.area ?? 0,
                     period: this.form.period ?? 0
                 })
             }
         },
-        materialCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+        materialCodeSearch: _.debounce((loading, vm, errorCallback, params) => {
             axios.get(route('api.materials'), {
                 params: params
             }).then(res => {
@@ -331,20 +331,20 @@ export default defineComponent({
             }).catch(() => {
                 errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode material, mohon coba lagi nanti')
             }).finally(() => {
-                loading(false)
+                if (loading) loading(false)
             })
         }, 1000),
         onBatchCodeSearch(search, loading) {
             if (search.length) {
                 loading(true)
-                this.batchCodeSearch(loading, search, this, this.showDangerNotification, {
+                this.batchCodeSearch(loading, this, this.showDangerNotification, {
                     q: escape(search),
                     subarea: this.form.sub_area?.id ?? 0,
                     material: this.materialData.id ?? 0
                 })
             }
         },
-        batchCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+        batchCodeSearch: _.debounce((loading, vm, errorCallback, params) => {
             axios.get(route('api.batches'), {
                 params: params
             }).then(res => {
@@ -352,11 +352,11 @@ export default defineComponent({
             }).catch(() => {
                 errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode batch, mohon coba lagi nanti')
             }).finally(() => {
-                loading(false)
+                if (loading) loading(false)
             })
         }, 1000),
         onSubAreaSelected() {
-            if (this.materialData.id) this.batchCodeSearch(loading, search, this, this.showDangerNotification, {
+            if (this.materialData.id) this.batchCodeSearch(null, this, this.showDangerNotification, {
                 subarea: this.form.sub_area?.id ?? 0,
                 material: this.materialData.id ?? 0
             })
@@ -365,7 +365,7 @@ export default defineComponent({
             this.materialData.id = material.id
             this.materialData.description = material.description
             this.materialData.uom = material.uom
-            if (this.form.sub_area?.id) this.batchCodeSearch(loading, search, this, this.showDangerNotification, {
+            if (this.form.sub_area?.id) this.batchCodeSearch(null, this, this.showDangerNotification, {
                 subarea: this.form.sub_area?.id ?? 0,
                 material: this.materialData.id ?? 0
             })

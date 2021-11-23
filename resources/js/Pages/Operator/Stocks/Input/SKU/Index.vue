@@ -238,12 +238,12 @@ export default defineComponent({
         onSubAreaSearch(search, loading) {
             if (search.length) {
                 loading(true)
-                this.subAreaSearch(loading, search, this, this.showDangerNotification, {
+                this.subAreaSearch(loading, this, this.showDangerNotification, {
                     q: escape(search)
                 })
             }
         },
-        subAreaSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+        subAreaSearch: _.debounce((loading, vm, errorCallback, params) => {
             axios.get(route('api.subareas'), {
                 params: params
             }).then(res => {
@@ -256,20 +256,20 @@ export default defineComponent({
             }).catch(() => {
                 errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data sub area, mohon coba lagi nanti')
             }).finally(() => {
-                loading(false)
+                if (loading) loading(false)
             })
         }, 1000),
         onProductCodeSearch(search, loading) {
             if (search.length) {
                 loading(true)
-                this.productCodeSearch(loading, search, this, this.showDangerNotification, {
+                this.productCodeSearch(loading, this, this.showDangerNotification, {
                     q: escape(search),
                     subarea: this.form.sub_area?.id ?? 0,
                     period: this.form.period ?? 0
                 })
             }
         },
-        productCodeSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+        productCodeSearch: _.debounce((loading, vm, errorCallback, params) => {
             axios.get(route('api.products'), {
                 params: params
             }).then(res => {
@@ -277,7 +277,7 @@ export default defineComponent({
             }).catch(() => {
                 errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data kode SKU, mohon coba lagi nanti')
             }).finally(() => {
-                loading(false)
+                if (loading) loading(false)
             })
         }, 1000),
         onProductCodeSelected(product) {

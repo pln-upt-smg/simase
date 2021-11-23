@@ -350,12 +350,12 @@ export default defineComponent({
         onSubAreaSearch(search, loading) {
             if (search.length) {
                 loading(true)
-                this.subAreaSearch(loading, search, this, this.showDangerNotification, {
+                this.subAreaSearch(loading, this, this.showDangerNotification, {
                     q: escape(search)
                 })
             }
         },
-        subAreaSearch: _.debounce((loading, search, vm, errorCallback, params) => {
+        subAreaSearch: _.debounce((loading, vm, errorCallback, params) => {
             axios.get(route('api.subareas'), {
                 params: params
             }).then(res => {
