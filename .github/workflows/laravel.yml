@@ -61,8 +61,10 @@ jobs:
       - name: 📦 Install Composer Dependencies
         uses: ramsey/composer-install@v1
 
-      - name: 📦 Install PNPM Dependencies
-        run: pnpm install
+      - name: 📦 Install Yarn Dependencies
+        uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: install
 
       - name: 🔑 Generate Application Key
         run: php artisan key:generate
@@ -88,7 +90,9 @@ jobs:
           php artisan view:cache
 
       - name: 🎨 Run Laravel Mix for Production
-        run: pnpm run production
+        uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: run production
 
       - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
         run: composer lint
