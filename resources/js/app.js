@@ -6,7 +6,7 @@ import {InertiaProgress} from '@inertiajs/progress'
 import {Workbox} from 'workbox-window'
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Stocktake'
-const cacheName = 'v1'
+const cacheName = 'v2'
 
 createInertiaApp({
     title: (title) => `${title} | ${appName}`,
