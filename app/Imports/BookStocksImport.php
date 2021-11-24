@@ -73,21 +73,28 @@ class BookStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithM
     {
         $this->validate($row);
         $this->lookupArea($row, true);
-        return new BookStock([
-            'area_id' => $this->currentAreaId,
-            'material_id' => $this->resolveMaterialId($row['material']),
-            'batch' => Str::upper(trim($row['batch'])),
-            'quantity' => $row['quantity'],
-            'plnt' => (int)$row['plnt'],
-            'unrestricted' => $row['unrestricted'],
-            'qualinsp' => (int)$row['qualinsp']
-        ]);
+		$this->replace($row);
+		return null;
     }
 
     public function name(): string
     {
         return 'Book Stock';
     }
+
+	public function replace(array $row): void
+	{
+		BookStock::updateOrCreate([
+			'area_id' => $this->currentAreaId,
+			'material_id' => $this->resolveMaterialId($row['material']),
+		], [
+			'batch' => Str::upper(trim($row['batch'])),
+			'quantity' => $row['quantity'],
+			'plnt' => (int)$row['plnt'],
+			'unrestricted' => $row['unrestricted'],
+			'qualinsp' => (int)$row['qualinsp']
+		]);
+	}
 
     public function overwrite(): void
     {

@@ -66,22 +66,29 @@ class MaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMu
     public function model(array $row): ?Material
     {
         $this->validate($row);
-        return new Material([
-            'period_id' => $this->periodId,
-            'code' => Str::upper(trim($row['material'])),
-            'description' => Str::title(trim($row['materialdescription'])),
-            'uom' => Str::upper(trim($row['uom'])),
-            'mtyp' => Str::upper(trim($row['mtyp'])),
-            'crcy' => Str::upper(trim($row['crcy'])),
-            'price' => (int)$row['price'],
-            'per' => (int)$row['per']
-        ]);
+		$this->replace($row);
+		return null;
     }
 
     public function name(): string
     {
         return 'Material Master';
     }
+
+	public function replace(array $row): void
+	{
+		Material::updateOrCreate([
+			'period_id' => $this->periodId,
+			'code' => Str::upper(trim($row['material'])),
+		], [
+			'description' => Str::title(trim($row['materialdescription'])),
+			'uom' => Str::upper(trim($row['uom'])),
+			'mtyp' => Str::upper(trim($row['mtyp'])),
+			'crcy' => Str::upper(trim($row['crcy'])),
+			'price' => (int)$row['price'],
+			'per' => (int)$row['per']
+		]);
+	}
 
     public function overwrite(): void
     {

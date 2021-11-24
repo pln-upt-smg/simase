@@ -29,49 +29,55 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 
 class SubAreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, WithQueuedValidation, ShouldQueue, ShouldBeUnique
 {
-    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasValidator, HasAreaResolver;
+	use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasValidator, HasAreaResolver;
 
-    public function __construct(?User $user)
-    {
-        $this->userId = $user?->id ?? 0;
-    }
+	public function __construct(?User $user)
+	{
+		$this->userId = $user?->id ?? 0;
+	}
 
-    public function validation(): array
-    {
-        return [
-            'subarea' => ['required', 'string', 'max:255'],
-            'sloc' => ['required', 'numeric', Rule::exists('areas', 'sloc')->whereNull('deleted_at')]
-        ];
-    }
+	public function validation(): array
+	{
+		return [
+			'subarea' => ['required', 'string', 'max:255'],
+			'sloc' => ['required', 'numeric', Rule::exists('areas', 'sloc')->whereNull('deleted_at')]
+		];
+	}
 
-    public function uniqueBy(): string|array
-    {
-        return [
-            'subarea'
-        ];
-    }
+	public function uniqueBy(): string|array
+	{
+		return [
+			'subarea'
+		];
+	}
 
-    /**
-     * @param array $row
-     * @return SubArea|null
-     * @throws ValidationException
-     */
-    public function model(array $row): ?SubArea
-    {
-        $this->validate($row);
-        return new SubArea([
-            'area_id' => $this->resolveAreaId($row['sloc'], true),
-            'name' => Str::title(trim($row['subarea']))
-        ]);
-    }
+	/**
+	 * @param array $row
+	 * @return SubArea|null
+	 * @throws ValidationException
+	 */
+	public function model(array $row): ?SubArea
+	{
+		$this->validate($row);
+		$this->replace($row);
+		return null;
+	}
 
-    public function name(): string
-    {
-        return 'Sub Area';
-    }
+	public function name(): string
+	{
+		return 'Sub Area';
+	}
 
-    public function overwrite(): void
-    {
-        SubArea::whereNull('deleted_at')->delete();
-    }
+	public function replace(array $row): void
+	{
+		SubArea::updateOrCreate([
+			'area_id' => $this->resolveAreaId($row['sloc'], true),
+			'name' => Str::title(trim($row['subarea']))
+		]);
+	}
+
+	public function overwrite(): void
+	{
+		SubArea::whereNull('deleted_at')->delete();
+	}
 }

@@ -58,10 +58,8 @@ class AreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultip
     public function model(array $row): ?Area
     {
         $this->validate($row);
-        return new Area([
-            'name' => Str::title(trim($row['area'])),
-            'sloc' => trim($row['sloc'])
-        ]);
+		$this->replace($row);
+        return null;
     }
 
     public function name(): string
@@ -69,8 +67,16 @@ class AreasImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultip
         return 'Area';
     }
 
-    public function overwrite(): void
-    {
-        Area::whereNull('deleted_at')->delete();
-    }
+	public function replace(array $row): void
+	{
+		Area::updateOrCreate([
+			'name' => Str::title(trim($row['area'])),
+			'sloc' => trim($row['sloc'])
+		]);
+	}
+
+	public function overwrite(): void
+	{
+		Area::whereNull('deleted_at')->delete();
+	}
 }

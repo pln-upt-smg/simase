@@ -19,7 +19,9 @@ trait HasDefaultEvents
     {
         return [
             BeforeImport::class => function () {
-                $this->overwrite();
+                if (config('excel.import_overwrite')) {
+	                $this->overwrite();
+                }
                 $this->importedBy()?->notify(new DataImportRequested($this->name()));
             },
             AfterImport::class => function () {

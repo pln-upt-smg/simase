@@ -326,5 +326,7 @@ return [
 		'force_resync_remote' => null,
 	],
 
-	'default_sheet' => env('LARAVEL_EXCEL_DEFAULT_SHEET', 'Sheet 1')
+	'default_sheet' => env('LARAVEL_EXCEL_DEFAULT_SHEET', 'Sheet 1'),
+
+	'import_overwrite' => (bool)env('LARAVEL_EXCEL_IMPORT_OVERWRITE', false)
 ];

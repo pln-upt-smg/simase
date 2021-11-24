@@ -64,19 +64,26 @@ class EmployeesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMu
     public function model(array $row): ?User
     {
         $this->validate($row);
-        return new User([
-            'role_id' => $this->resolveRoleId($row['role']),
-            'name' => Str::title(trim($row['name'])),
-            'phone' => trim($row['phone']),
-            'nip' => trim($row['nip']),
-            'password' => Hash::make(trim($row['nip']))
-        ]);
+		$this->replace($row);
+		return null;
     }
 
     public function name(): string
     {
         return 'Pegawai';
     }
+
+	public function replace(array $row): void
+	{
+		User::updateOrCreate([
+			'nip' => trim($row['nip']),
+		], [
+			'role_id' => $this->resolveRoleId($row['role']),
+			'name' => Str::title(trim($row['name'])),
+			'phone' => trim($row['phone']),
+			'password' => Hash::make(trim($row['nip']))
+		]);
+	}
 
     public function overwrite(): void
     {

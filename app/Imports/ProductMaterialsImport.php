@@ -61,19 +61,26 @@ class ProductMaterialsImport implements ToModel, SkipsEmptyRows, WithHeadingRow,
     public function model(array $row): ?ProductMaterial
     {
         $this->validate($row);
-        return new ProductMaterial([
-            'product_id' => $this->resolveProductId($row['product']),
-            'material_id' => $this->resolveMaterialId($row['material']),
-            'material_uom' => Str::upper(trim($row['uom'])),
-            'material_quantity' => $row['qty'],
-            'product_quantity' => $row['productqty']
-        ]);
+		$this->replace($row);
+		return null;
     }
 
     public function name(): string
     {
         return 'FG to Material';
     }
+
+	public function replace(array $row): void
+	{
+		ProductMaterial::updateOrCreate([
+			'product_id' => $this->resolveProductId($row['product']),
+			'material_id' => $this->resolveMaterialId($row['material'])
+		], [
+			'material_uom' => Str::upper(trim($row['uom'])),
+			'material_quantity' => $row['qty'],
+			'product_quantity' => $row['productqty']
+		]);
+	}
 
     public function overwrite(): void
     {

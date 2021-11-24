@@ -61,17 +61,24 @@ class BatchesImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMult
     public function model(array $row): ?Batch
     {
         $this->validate($row);
-        return new Batch([
-            'area_id' => $this->resolveAreaId($row['sloc'], true),
-            'material_id' => $this->resolveMaterialId($row['material']),
-            'code' => Str::upper(trim($row['batch']))
-        ]);
+		$this->replace($row);
+		return null;
     }
 
     public function name(): string
     {
         return 'Batch';
     }
+
+	public function replace(array $row): void
+	{
+		Batch::updateOrCreate([
+			'area_id' => $this->resolveAreaId($row['sloc'], true),
+			'material_id' => $this->resolveMaterialId($row['material']),
+		], [
+			'code' => Str::upper(trim($row['batch']))
+		]);
+	}
 
     public function overwrite(): void
     {

@@ -31,64 +31,71 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 
 class ActualStocksImport implements ToModel, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, WithQueuedValidation, ShouldQueue, ShouldBeUnique
 {
-    use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasValidator, HasMultipleSubArea, HasMaterialResolver;
+	use HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasValidator, HasMultipleSubArea, HasMaterialResolver;
 
-    private int $periodId;
+	private int $periodId;
 
-    public function __construct(?Period $period, ?User $user)
-    {
-        $this->periodId = $period?->id ?? 0;
-        $this->userId = $user?->id ?? 0;
-    }
+	public function __construct(?Period $period, ?User $user)
+	{
+		$this->periodId = $period?->id ?? 0;
+		$this->userId = $user?->id ?? 0;
+	}
 
-    public function validation(): array
-    {
-        return [
-            'subarea' => ['required', 'string', 'max:255', Rule::exists('sub_areas', 'name')->whereNull('deleted_at')],
-            'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
-            'batch' => ['required', 'string', 'max:255'],
-            'materialdescription' => ['nullable', 'string', 'max:255'],
-            'quantity' => ['required', 'numeric', 'min:0'],
-            'uom' => ['nullable', 'string', 'max:255'],
-            'mtyp' => ['nullable', 'string', 'max:255']
-        ];
-    }
+	public function validation(): array
+	{
+		return [
+			'subarea' => ['required', 'string', 'max:255', Rule::exists('sub_areas', 'name')->whereNull('deleted_at')],
+			'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
+			'batch' => ['required', 'string', 'max:255'],
+			'materialdescription' => ['nullable', 'string', 'max:255'],
+			'quantity' => ['required', 'numeric', 'min:0'],
+			'uom' => ['nullable', 'string', 'max:255'],
+			'mtyp' => ['nullable', 'string', 'max:255']
+		];
+	}
 
-    public function uniqueBy(): string|array
-    {
-        return [
-            'material'
-        ];
-    }
+	public function uniqueBy(): string|array
+	{
+		return [
+			'material'
+		];
+	}
 
-    /**
-     * @param array $row
-     * @return ActualStock|null
-     * @throws ValidationException
-     */
-    public function model(array $row): ?ActualStock
-    {
-        $this->validate($row);
-        $this->lookupSubArea($row);
-        return new ActualStock([
-            'sub_area_id' => $this->currentSubAreaId,
-            'material_id' => $this->resolveMaterialId($row['material']),
-            'user_id' => $this->userId,
-            'batch' => Str::upper(trim($row['batch'])),
-            'quantity' => $row['quantity']
-        ]);
-    }
+	/**
+	 * @param array $row
+	 * @return ActualStock|null
+	 * @throws ValidationException
+	 */
+	public function model(array $row): ?ActualStock
+	{
+		$this->validate($row);
+		$this->lookupSubArea($row);
+		$this->replace($row);
+		return null;
+	}
 
-    public function name(): string
-    {
-        return 'Actual Stock';
-    }
+	public function name(): string
+	{
+		return 'Actual Stock';
+	}
 
-    public function overwrite(): void
-    {
-        ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
-            ->where('materials.period_id', $this->periodId)
-            ->whereNull('actual_stocks.deleted_at')
-            ->delete();
-    }
+	public function replace(array $row): void
+	{
+		ActualStock::updateOrCreate([
+			'sub_area_id' => $this->currentSubAreaId,
+			'material_id' => $this->resolveMaterialId($row['material']),
+			'user_id' => $this->userId
+		], [
+			'batch' => Str::upper(trim($row['batch'])),
+			'quantity' => $row['quantity']
+		]);
+	}
+
+	public function overwrite(): void
+	{
+		ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
+			->where('materials.period_id', $this->periodId)
+			->whereNull('actual_stocks.deleted_at')
+			->delete();
+	}
 }
