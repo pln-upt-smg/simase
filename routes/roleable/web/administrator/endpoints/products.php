@@ -1,30 +1,44 @@
 <?php
 
+use App\Http\Controllers\Administrator\ProductBreakdownController;
 use App\Http\Controllers\Administrator\ProductController;
 use App\Http\Controllers\Administrator\ProductMaterialController;
 
 Route::resource('products', ProductController::class)->except(['create', 'show', 'edit']);
 
 Route::group([
-    'prefix' => 'products',
-    'as' => 'products.'
+	'prefix' => 'products',
+	'as' => 'products.'
 ], static function () {
 
-    Route::post('import', [ProductController::class, 'import'])->name('import');
+	Route::post('import', [ProductController::class, 'import'])->name('import');
 
-    Route::get('export', [ProductController::class, 'export'])->name('export');
+	Route::get('export', [ProductController::class, 'export'])->name('export');
 
-    Route::resource('materials', ProductMaterialController::class)->except(['create', 'show', 'edit']);
+	Route::resource('breakdowns', ProductBreakdownController::class)->except(['create', 'show', 'edit']);
 
-    Route::group([
-        'prefix' => 'materials',
-        'as' => 'materials.'
-    ], static function () {
+	Route::group([
+		'prefix' => 'breakdowns',
+		'as' => 'breakdowns.'
+	], static function () {
 
-        Route::post('import', [ProductMaterialController::class, 'import'])->name('import');
+		Route::post('import', [ProductBreakdownController::class, 'import'])->name('import');
 
-        Route::get('export', [ProductMaterialController::class, 'export'])->name('export');
+		Route::get('export', [ProductBreakdownController::class, 'export'])->name('export');
 
-    });
+	});
+
+	Route::resource('materials', ProductMaterialController::class)->except(['create', 'show', 'edit']);
+
+	Route::group([
+		'prefix' => 'materials',
+		'as' => 'materials.'
+	], static function () {
+
+		Route::post('import', [ProductMaterialController::class, 'import'])->name('import');
+
+		Route::get('export', [ProductMaterialController::class, 'export'])->name('export');
+
+	});
 
 });

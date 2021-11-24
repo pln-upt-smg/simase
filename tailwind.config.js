@@ -24,6 +24,13 @@ module.exports = {
             '2xl': '1536px'
         }
     },
+    variants: {
+        textColor: ['disabled'],
+        backgroundColor: ['disabled'],
+        borderColor: ['disabled'],
+        opacity: ['disabled'],
+        cursor: ['disabled']
+    },
     plugins: [
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),

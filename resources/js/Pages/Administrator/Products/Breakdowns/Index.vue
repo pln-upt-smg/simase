@@ -1,8 +1,9 @@
 <template>
-    <app-layout title="FG Master">
+    <app-layout title="FG Material Breakdown">
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6 mb-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 mb-4 lg:mb-0">
-                <jet-period-dropdown :selected="period" :periods="periods" partial="products" class="mb-2 lg:mb-0"/>
+                <jet-area-dropdown :selected="area" :areas="areas" partial="breakdowns" class="mb-4 lg:mb-0"/>
+                <jet-period-dropdown :selected="period" :periods="periods" partial="breakdowns" class="mb-2 lg:mb-0"/>
             </div>
             <div class="lg:text-right">
                 <jet-button type="button" @click="confirmStore" class="mr-2 mb-2 lg:mb-0">
@@ -22,75 +23,69 @@
         <jet-table
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="products"
+            :meta="breakdowns"
             :bottom-spacing="true"
             ref="table">
             <template #head>
                 <jet-table-header
-                    v-show="showColumn('code')"
-                    :cell="sortableHeader('code')">
+                    v-show="showColumn('sub_area_name')"
+                    :cell="sortableHeader('sub_area_name')">
+                    Sub Area
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('batch_code')"
+                    :cell="sortableHeader('batch_code')">
+                    Kode Batch
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('product_code')"
+                    :cell="sortableHeader('product_code')">
                     Kode SKU
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('description')"
-                    :cell="sortableHeader('description')">
+                    v-show="showColumn('product_description')"
+                    :cell="sortableHeader('product_description')">
                     Deskripsi Produk
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('uom')"
-                    :cell="sortableHeader('uom')">
-                    UoM
+                    v-show="showColumn('material_code')"
+                    :cell="sortableHeader('material_code')">
+                    Kode Material
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('mtyp')"
-                    :cell="sortableHeader('mtyp')">
-                    MType
+                    v-show="showColumn('material_description')"
+                    :cell="sortableHeader('material_description')">
+                    Deskripsi Material
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('crcy')"
-                    :cell="sortableHeader('crcy')">
-                    Currency
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('price')"
-                    :cell="sortableHeader('price')">
-                    Harga
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('per')"
-                    :cell="sortableHeader('per')">
-                    Per
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('update_date')"
-                    :cell="sortableHeader('update_date')">
-                    Tanggal Pembaruan
+                    v-show="showColumn('creator_name')"
+                    :cell="sortableHeader('creator_name')">
+                    Pembuat
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('action')"
                     :cell="staticHeader('action')"/>
             </template>
             <template #body>
-                <tr v-for="product in products.data" :key="product.id">
-                    <td v-show="showColumn('code')">{{ product.code }}</td>
-                    <td v-show="showColumn('description')">{{ product.description }}</td>
-                    <td v-show="showColumn('uom')">{{ product.uom }}</td>
-                    <td v-show="showColumn('mtyp')">{{ product.mtyp }}</td>
-                    <td v-show="showColumn('crcy')">{{ product.crcy }}</td>
-                    <td v-show="showColumn('price')">{{ product.price }}</td>
-                    <td v-show="showColumn('per')">{{ product.per }}</td>
-                    <td v-show="showColumn('update_date')">{{ product.update_date }}</td>
+                <tr v-for="breakdown in breakdowns.data" :key="breakdown.id">
+                    <td v-show="showColumn('sub_area_name')">{{ breakdown.sub_area_name }}</td>
+                    <td v-show="showColumn('batch_code')">{{ breakdown.batch_code ?? '-' }}</td>
+                    <td v-show="showColumn('product_code')">{{ breakdown.product_code }}</td>
+                    <td v-show="showColumn('product_description')">{{ breakdown.product_description }}</td>
+                    <td v-show="showColumn('material_code')">{{ breakdown.material_code }}</td>
+                    <td v-show="showColumn('material_description')">{{ breakdown.material_description }}</td>
+                    <td v-show="showColumn('creator_name')">{{ breakdown.creator_name }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
-                                <button @click="confirmUpdate(product)"
+                                <button @click="confirmUpdate(breakdown)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <pencil-alt-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Edit
                                 </button>
                             </menu-item>
                             <menu-item>
-                                <button @click="confirmDestroy(product)"
+                                <button @click="confirmDestroy(breakdown)"
                                         class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
                                     <trash-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
                                     Hapus
@@ -101,28 +96,35 @@
                 </tr>
             </template>
         </jet-table>
-        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah product">
+        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah FG material breakdown">
             <template #content>
-                Silakan masukkan data product yang ingin ditambahkan.
+                Silakan masukkan data FG material breakdown yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
+                    <v-select
+                        placeholder="Cari Sub Area"
+                        class="vue-select rounded-md block w-full"
+                        v-model="storeForm.sub_area"
+                        :filterable="false"
+                        :clearable="false"
+                        :options="subAreaOptions"
+                        @search="onSubAreaSearch">
+                        <template slot="no-options">
+                            Tidak ada hasil tersedia.
+                        </template>
+                        <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Tidak ada hasil untuk <em>{{ search }}</em>.
+                            </template>
+                            <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari sub area.</em>
+                        </template>
+                    </v-select>
                     <jet-select ref="storePeriod" placeholder="Pilih Periode" v-model="storeForm.period"
-                                :data="periods" class="block w-full"/>
+                                :data="periods" class="mt-4 block w-full"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode SKU"
-                               ref="storeCode" v-model="storeForm.code"/>
-                    <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Deskripsi Produk"
-                               ref="storeDescription" v-model="storeForm.description"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="UoM"
-                               ref="storeUom" v-model="storeForm.uom"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="MType"
-                               ref="storeMtyp" v-model="storeForm.mtyp"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase"
-                               placeholder="Currency"
-                               ref="storeCrcy" v-model="storeForm.crcy" disabled/>
-                    <jet-input type="number" class="mt-4 block w-full" placeholder="Harga"
-                               ref="storePrice" v-model="storeForm.price"/>
-                    <jet-input type="number" class="mt-4 block w-full" placeholder="Per"
-                               ref="storePer" v-model="storeForm.per" @keyup.enter="store"/>
+                               ref="storeMaterialCode" v-model="storeForm.product_code"/>
+                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas"
+                               ref="storeQuantity" v-model="storeForm.quantity" @keyup.enter="store"/>
                 </div>
             </template>
             <template #buttons>
@@ -138,33 +140,51 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit product">
+        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit FG material breakdown">
             <template #content>
-                Silakan masukkan data product yang ingin diubah.
+                <p>
+                    Ubah kode batch pada FG material breakdown. Setelah kode batch diubah,
+                    data FG material breakdown akan disimpan sebagai actual stock.
+                </p>
+                <p class="mt-2">
+                    Anda hanya bisa melakukan aksi ini sekali saja. Aksi tidak dapat dibatalkan.
+                </p>
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
+                    <v-select
+                        placeholder="Cari Sub Area"
+                        class="vue-select rounded-md block w-full"
+                        v-model="updateForm.sub_area"
+                        :filterable="false"
+                        :clearable="false"
+                        :options="subAreaOptions"
+                        @search="onSubAreaSearch"
+                        disabled>
+                        <template slot="no-options">
+                            Tidak ada hasil tersedia.
+                        </template>
+                        <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Tidak ada hasil untuk <em>{{ search }}</em>.
+                            </template>
+                            <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari sub area.</em>
+                        </template>
+                    </v-select>
                     <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
-                                :data="periods" class="block w-full"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode SKU"
-                               ref="updateCode" v-model="updateForm.code"/>
-                    <jet-input type="text" class="mt-4 block w-full capitalize" placeholder="Deskripsi Produk"
-                               ref="updateDescription" v-model="updateForm.description"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="UoM"
-                               ref="updateUom" v-model="updateForm.uom"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="MType"
-                               ref="updateMtyp" v-model="updateForm.mtyp"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Currency"
-                               ref="updateCrcy" v-model="updateForm.crcy" disabled/>
-                    <jet-input type="number" class="mt-4 block w-full" placeholder="Harga"
-                               ref="updatePrice" v-model="updateForm.price"/>
-                    <jet-input type="number" class="mt-4 block w-full" placeholder="Per"
-                               ref="updatePer" v-model="updateForm.per" @keyup.enter="update"/>
+                                :data="periods" class="mt-4 block w-full" :disabled="true"/>
+                    <jet-input type="text" class="mt-4 block w-full uppercase"
+                               placeholder="Kode SKU" ref="updateMaterialCode" v-model="updateForm.product_code"
+                               disabled/>
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Batch"
+                               ref="updateBatch" v-model="updateForm.batch_code"
+                               :disabled="updateForm.converted"
+                               @keyup.enter="updateForm.converted ? () => {} : update"/>
                 </div>
             </template>
             <template #buttons>
                 <jet-button type="button" @click="update"
-                            :class="{ 'opacity-25': updateForm.processing }"
-                            :disabled="updateForm.processing"
+                            :class="{ 'opacity-25': updateForm.processing || updateForm.converted}"
+                            :disabled="updateForm.processing || updateForm.converted"
                             class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Simpan
                 </jet-button>
@@ -174,10 +194,16 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus product">
+        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus FG material breakdown">
             <template #content>
-                Apakah Anda yakin ingin menghapus product ini? Setelah product dihapus, semua sumber daya
-                dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
+                <p>
+                    Apakah Anda yakin ingin menghapus FG material breakdown ini? Setelah FG material breakdown dihapus,
+                    semua sumber daya dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
+                </p>
+                <p class="mt-2">
+                    Menghapus data FG material breakdown tidak akan menghilangkan data actual stock yang telah disimpan
+                    melalui fitur ini.
+                </p>
             </template>
             <template #buttons>
                 <jet-danger-button @click="destroy"
@@ -192,11 +218,12 @@
                 </jet-secondary-button>
             </template>
         </jet-alert-modal>
-        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data product">
+        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor FG material breakdown">
             <template #content>
                 <p>
-                    Silakan unggah file data product yang ingin di-impor. Pastikan Anda sudah menggunakan template
-                    spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
+                    Silakan unggah file data FG material breakdown yang ingin di-impor. Pastikan Anda sudah menggunakan
+                    template spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet
+                    <b>Worksheet</b>.
                 </p>
                 <p class="mt-2">
                     Mengimpor data baru dapat memperbarui data lama yang sudah tersedia. Aksi ini tidak dapat
@@ -249,22 +276,26 @@
                 </jet-secondary-button>
             </template>
         </jet-import-modal>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data product">
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor FG material breakdown">
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data product? Proses ekspor dapat memakan waktu lama,
+                    Apakah Anda yakin ingin mengekspor semua data FG material breakdown? Proses ekspor dapat memakan
+                    waktu lama,
                     tergantung dari banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
                     Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
                 </p>
                 <p class="mt-2">
-                    Anda dapat menyaring data product berdasarkan periodenya dengan menyesuaikan kolom
+                    Anda dapat menyaring data FG material breakdown berdasarkan area dan periodenya dengan menyesuaikan
+                    kolom
                     pilihan dibawah ini.
                 </p>
                 <div class="mt-4">
+                    <jet-select ref="exportArea" placeholder="Semua Area" v-model="exportForm.area"
+                                :data="areas" class="block w-full"/>
                     <jet-select ref="exportPeriod" placeholder="Semua Periode" v-model="exportForm.period"
-                                :data="periods" class="block w-full"/>
+                                :data="periods" class="mt-4 block w-full"/>
                 </div>
             </template>
             <template #buttons>
@@ -312,10 +343,12 @@ import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import JetTable from '@/Jetstream/Table'
 import JetTableEngine from '@/Jetstream/TableEngine'
 import JetTableHeader from '@/Jetstream/TableHeader'
+import JetAreaDropdown from '@/Jetstream/AreaDropdown'
 import JetPeriodDropdown from '@/Jetstream/PeriodDropdown'
 import JetSelect from '@/Jetstream/Select'
+import vSelect from 'vue-select'
 
-JetTableEngine.respectParams(['period'])
+JetTableEngine.respectParams(['area', 'period'])
 
 export default defineComponent({
     data() {
@@ -336,25 +369,19 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
+                sub_area: null,
                 period: null,
-                code: null,
-                description: null,
-                uom: null,
-                mtyp: null,
-                crcy: 'IDR',
-                price: null,
-                per: null
+                product_code: null,
+                quantity: null
             }),
             updateForm: useForm({
-                period: null,
                 id: null,
-                code: null,
-                description: null,
-                uom: null,
-                mtyp: null,
-                crcy: 'IDR',
-                price: null,
-                per: null
+                sub_area: null,
+                period: null,
+                product_code: null,
+                batch_code: null,
+                quantity: null,
+                converted: false
             }),
             destroyForm: useForm({
                 id: null
@@ -364,15 +391,19 @@ export default defineComponent({
                 file: null
             }),
             exportForm: useForm({
+                area: null,
                 period: null
-            })
+            }),
+            subAreaOptions: []
         }
     },
     mixins: [JetTableEngine],
     props: {
+        area: Object,
+        areas: Object,
         period: Object,
         periods: Object,
-        products: Object
+        breakdowns: Object
     },
     components: {
         AppLayout,
@@ -390,6 +421,7 @@ export default defineComponent({
         JetSuccessNotification,
         JetDangerNotification,
         JetValidationErrors,
+        JetAreaDropdown,
         JetPeriodDropdown,
         JetSelect,
         MenuItem,
@@ -398,77 +430,79 @@ export default defineComponent({
         DownloadIcon,
         PencilAltIcon,
         TrashIcon,
-        DocumentAddIcon
+        DocumentAddIcon,
+        vSelect
     },
     methods: {
         store() {
-            this.storeForm.post(route('products.store'), {
+            this.storeForm.post(route('products.breakdowns.store'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeStoreModal()
-                    this.showSuccessNotification('FG Master berhasil ditambahkan', 'Sistem telah berhasil menyimpan data product baru')
+                    this.showSuccessNotification('FG material breakdown berhasil ditambahkan', 'Sistem telah berhasil menyimpan data FG material breakdown baru')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data product, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data FG material breakdown, mohon periksa ulang form')
             })
         },
         update() {
-            this.updateForm.put(route('products.update', this.updateForm.id), {
+            this.updateForm.put(route('products.breakdowns.update', this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeUpdateModal()
-                    this.showSuccessNotification('FG Master berhasil diedit', 'Sistem telah berhasil mengedit data product')
+                    this.showSuccessNotification('FG material breakdown berhasil diedit', 'Sistem telah berhasil mengedit data FG material breakdown')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data product, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data FG material breakdown, mohon periksa ulang form')
             })
         },
         destroy() {
-            this.destroyForm.delete(route('products.destroy', this.destroyForm.id), {
+            this.destroyForm.delete(route('products.breakdowns.destroy', this.destroyForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeDestroyModal()
-                    this.showSuccessNotification('FG Master berhasil dihapus', 'Sistem telah berhasil menghapus data product')
+                    this.showSuccessNotification('FG material breakdown berhasil dihapus', 'Sistem telah berhasil menghapus data FG material breakdown')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data product')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data FG material breakdown')
             })
         },
         importFile() {
-            this.importForm.post(route('products.import'), {
+            this.importForm.post(route('products.breakdowns.import'), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData()
                     this.closeImportModal()
-                    this.showSuccessNotification('Permintaan impor data telah dijadwalkan', 'Sistem berhasil menjadwalkan permintaan impor data product di latar belakang')
+                    this.showSuccessNotification('Permintaan impor data telah dijadwalkan', 'Sistem berhasil menjadwalkan permintaan impor data FG material breakdown di latar belakang')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data product, mohon periksa kesalahan yang telah dideteksi')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data FG material breakdown, mohon periksa kesalahan yang telah dideteksi')
             })
         },
         exportFile() {
-            window.open(route('products.export', {
+            window.open(route('products.breakdowns.export', {
+                area: this.exportForm.area,
                 period: this.exportForm.period
             }))
             this.closeExportModal()
         },
         confirmStore() {
             setTimeout(() => this.confirmingStore = true, 150)
-            setTimeout(() => this.$refs.storePeriod.focus(), 300)
         },
-        confirmUpdate(product) {
-            this.updateForm.id = product.id
-            this.updateForm.period = product.period_id
-            this.updateForm.code = product.code
-            this.updateForm.description = product.description
-            this.updateForm.uom = product.uom
-            this.updateForm.mtyp = product.mtyp
-            this.updateForm.price = product.price
-            this.updateForm.per = product.per
+        confirmUpdate(breakdown) {
+            this.updateForm.id = breakdown.id
+            this.updateForm.sub_area = {
+                id: breakdown.sub_area_id,
+                label: `${breakdown.area_name} - ${breakdown.sub_area_name} - ${breakdown.sloc}`
+            }
+            this.updateForm.period = breakdown.period_id
+            this.updateForm.product_code = breakdown.product_code
+            this.updateForm.batch_code = breakdown.batch_code
+            this.updateForm.quantity = breakdown.quantity
+            this.updateForm.converted = breakdown.converted
             setTimeout(() => this.confirmingUpdate = true, 150)
-            setTimeout(() => this.$refs.updatePeriod.focus(), 300)
         },
-        confirmDestroy(product) {
-            this.destroyForm.id = product.id
+        confirmDestroy(breakdown) {
+            this.destroyForm.id = breakdown.id
             setTimeout(() => this.confirmingDestroy = true, 150)
         },
         confirmImport() {
@@ -477,7 +511,7 @@ export default defineComponent({
         },
         confirmExport() {
             setTimeout(() => this.confirmingExport = true, 150)
-            setTimeout(() => this.$refs.exportPeriod.focus(), 300)
+            setTimeout(() => this.$refs.exportArea.focus(), 300)
         },
         closeStoreModal() {
             this.confirmingStore = false
@@ -485,13 +519,10 @@ export default defineComponent({
                 this.clearErrors()
                 this.storeForm.clearErrors()
                 this.storeForm.reset()
+                this.storeForm.sub_area = null
                 this.storeForm.period = null
-                this.storeForm.code = null
-                this.storeForm.description = null
-                this.storeForm.uom = null
-                this.storeForm.mtyp = null
-                this.storeForm.price = null
-                this.storeForm.per = null
+                this.storeForm.product_code = null
+                this.storeForm.quantity = null
             }, 500)
         },
         closeUpdateModal() {
@@ -501,13 +532,11 @@ export default defineComponent({
                 this.updateForm.clearErrors()
                 this.updateForm.reset()
                 this.updateForm.id = null
+                this.updateForm.sub_area = null
                 this.updateForm.period = null
-                this.updateForm.code = null
-                this.updateForm.description = null
-                this.updateForm.uom = null
-                this.updateForm.mtyp = null
-                this.updateForm.price = null
-                this.updateForm.per = null
+                this.updateForm.product_code = null
+                this.updateForm.batch_code = null
+                this.updateForm.quantity = null
             }, 500)
         },
         closeDestroyModal() {
@@ -533,6 +562,7 @@ export default defineComponent({
             this.confirmingExport = false
             setTimeout(() => {
                 this.exportForm.reset()
+                this.exportForm.area = null
                 this.exportForm.period = null
             }, 500)
         },
@@ -562,8 +592,32 @@ export default defineComponent({
             this.$page.props.errors = []
         },
         reloadData() {
-            this.$refs.table.reload('products')
-        }
+            this.$refs.table.reload('breakdowns')
+        },
+        onSubAreaSearch(search, loading) {
+            if (search.length) {
+                loading(true)
+                this.subAreaSearch(loading, this, this.showDangerNotification, {
+                    q: escape(search)
+                })
+            }
+        },
+        subAreaSearch: _.debounce((loading, vm, errorCallback, params) => {
+            axios.get(route('api.subareas'), {
+                params: params
+            }).then(res => {
+                vm.subAreaOptions = res.data.items.map((item) => {
+                    return {
+                        id: item.id,
+                        label: `${item.area_name} - ${item.name} - ${item.sloc}`
+                    }
+                })
+            }).catch(() => {
+                errorCallback('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data sub area, mohon coba lagi nanti')
+            }).finally(() => {
+                if (loading) loading(false)
+            })
+        }, 1000)
     }
 })
 </script>

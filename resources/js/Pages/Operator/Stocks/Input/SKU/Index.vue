@@ -75,8 +75,7 @@
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="product_description" value="Deskripsi Produk"/>
                     <jet-input id="product_description" type="text"
-                               class="mt-2 block w-full bg-gray-100 cursor-not-allowed capitalize"
-                               v-model="productData.description" disabled
+                               class="mt-2 block w-full capitalize" v-model="productData.description" disabled
                                title="Data ini diambil berdasarkan Kode SKU yang diberikan."/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
@@ -88,8 +87,7 @@
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="uom" value="UoM"/>
                     <jet-input id="uom" type="text"
-                               class="mt-2 block w-full bg-gray-100 cursor-not-allowed capitalize"
-                               v-model="productData.uom" disabled
+                               class="mt-2 block w-full capitalize" v-model="productData.uom" disabled
                                title="Data ini diambil berdasarkan Kode SKU yang diberikan."/>
                 </div>
             </template>

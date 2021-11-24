@@ -161,7 +161,7 @@
                     Kata sandi akun yang dibuat akan diambil dari data NIP pegawai yang diberikan.
                 </p>
                 <p class="mt-2">
-                    Mengimpor data baru akan menimpa data lama yang sudah ada. Aksi ini tidak dapat dibatalkan.
+                    Mengimpor data baru dapat memperbarui data lama yang sudah tersedia. Aksi ini tidak dapat dibatalkan.
                 </p>
                 <jet-validation-errors class="mt-4"/>
                 <div

@@ -20,8 +20,8 @@ class CreateActualStocksTable extends Migration
             $table->foreignId('user_id')->constrained();
             $table->string('batch');
             $table->float('quantity');
+	        $table->softDeletes();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

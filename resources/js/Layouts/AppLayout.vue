@@ -196,7 +196,8 @@ import {
     XIcon,
     CubeIcon,
     CubeTransparentIcon,
-    OfficeBuildingIcon
+    OfficeBuildingIcon,
+    ColorSwatchIcon
 } from '@heroicons/vue/outline'
 import NotificationPanel from '@/Layouts/NotificationPanel'
 
@@ -211,6 +212,7 @@ const navigations = {
             {name: 'Material Master', href: 'materials.index', icon: ArchiveIcon},
             {name: 'FG Master', href: 'products.index', icon: CubeIcon},
             {name: 'FG to Material', href: 'products.materials.index', icon: CubeTransparentIcon},
+            {name: 'FG Material Breakdown', href: 'products.breakdowns.index', icon: ColorSwatchIcon},
             {name: 'Actual Stock', href: 'stocks.actuals.index', icon: CollectionIcon},
             {name: 'Book Stock', href: 'stocks.books.index', icon: CollectionIcon},
             {name: 'PID', href: 'pids.index', icon: DocumentTextIcon},
@@ -266,7 +268,8 @@ export default defineComponent({
         SaveIcon,
         CubeIcon,
         CubeTransparentIcon,
-        OfficeBuildingIcon
+        OfficeBuildingIcon,
+        ColorSwatchIcon
     },
     setup() {
         const sidebarOpen = ref(false)

@@ -10,45 +10,42 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 class Product extends Model
 {
-    use Fluent, HasFactory, SoftDeletes;
+	use Fluent, HasFactory, SoftDeletes;
 
-    #[BelongsTo]
-    public Period $period;
+	#[BelongsTo]
+	public Period $period;
 
-    #[HasMany(ProductMaterial::class)]
-    public Collection $productMaterials;
+	#[HasMany(ProductMaterial::class)]
+	public Collection $productMaterials;
 
-    public string $code, $description, $uom, $mtyp, $crcy;
-    public int $price, $per;
+	public string $code, $description, $uom, $mtyp, $crcy;
+	public int $price, $per;
 
-    protected $fillable = [
-        'period_id',
-        'code',
-        'description',
-        'uom',
-        'mtyp',
-        'crcy',
-        'price',
-        'per'
-    ];
+	protected $fillable = [
+		'period_id',
+		'code',
+		'description',
+		'uom',
+		'mtyp',
+		'crcy',
+		'price',
+		'per'
+	];
 
-    public function convertAsActualStock(Request $request): void
-    {
-        $productMaterials = $this->load('productMaterials')->productMaterials;
-        foreach ($productMaterials as $productMaterial) {
-            for($i = 0; $i < (int)$request->quantity; $i++) {
-                ActualStock::create([
-                    'sub_area_id' => (int)$request['sub_area.id'],
-                    'material_id' => $productMaterial->load('material')->material->id,
-                    'user_id' => auth()->user()?->id ?? 0,
-                    'batch' => Str::upper($request->batch_code),
-                    'quantity' => $productMaterial->material_quantity
-                ]);
-            }
-        }
-    }
+	public function performBreakdown(Request $request): void
+	{
+		$productMaterials = $this->load('productMaterials')->productMaterials;
+		foreach ($productMaterials as $productMaterial) {
+			for ($i = 0; $i < (int)$request->quantity; $i++) {
+				ProductBreakdown::create([
+					'sub_area_id' => (int)$request['sub_area.id'],
+					'product_material_id' => $productMaterial->id,
+					'user_id' => auth()->user()?->id ?? 0
+				]);
+			}
+		}
+	}
 }

@@ -10,8 +10,10 @@ use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasImporter;
 use App\Imports\Helper\HasMaterialResolver;
 use App\Imports\Helper\HasMultipleSubArea;
-use App\Models\ActualStock;
+use App\Imports\Helper\HasProductMaterialResolver;
+use App\Imports\Helper\HasProductResolver;
 use App\Models\Period;
+use App\Models\ProductBreakdown;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,12 +31,11 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ActualStocksImport implements ToModel, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, WithValidation, ShouldQueue, ShouldBeUnique
+class ProductBreakdownsImport implements ToModel, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithEvents, WithDefaultEvents, WithValidation, ShouldQueue, ShouldBeUnique
 {
-	use Importable, SkipsFailures, SkipsErrors, HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleSubArea, HasMaterialResolver;
+	use Importable, SkipsFailures, SkipsErrors, HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleSubArea, HasMaterialResolver, HasProductResolver, HasProductMaterialResolver;
 
 	private int $periodId;
 
@@ -48,23 +49,15 @@ class ActualStocksImport implements ToModel, SkipsOnFailure, SkipsOnError, Skips
 	{
 		return [
 			'subarea' => ['required', 'string', 'max:255', Rule::exists('sub_areas', 'name')->whereNull('deleted_at')],
-			'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
 			'batch' => ['required', 'string', 'max:255'],
-			'materialdescription' => ['nullable', 'string', 'max:255'],
-			'quantity' => ['required', 'numeric', 'min:0'],
-			'uom' => ['nullable', 'string', 'max:255'],
-			'mtyp' => ['nullable', 'string', 'max:255']
+			'product' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
+			'productdescription' => ['nullable', 'string', 'max:255'],
+			'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
+			'materialdescription' => ['nullable', 'string', 'max:255']
 		];
 	}
 
-	public function uniqueBy(): string|array
-	{
-		return [
-			'material'
-		];
-	}
-
-	public function model(array $row): ?ActualStock
+	public function model(array $row): ?ProductBreakdown
 	{
 		$this->lookupSubArea($row);
 		$this->replace($row);
@@ -73,26 +66,26 @@ class ActualStocksImport implements ToModel, SkipsOnFailure, SkipsOnError, Skips
 
 	public function name(): string
 	{
-		return 'Actual Stock';
+		return 'FG Material Breakdown';
 	}
 
 	public function replace(array $row): void
 	{
-		ActualStock::updateOrCreate([
+		ProductBreakdown::updateOrCreate([
 			'sub_area_id' => $this->currentSubAreaId,
-			'material_id' => $this->resolveMaterialId($row['material']),
+			'product_material_id' => $this->resolveProductMaterialId($this->resolveProductId($row['product']), $this->resolveMaterialId($row['material'])),
 			'user_id' => $this->userId
 		], [
-			'batch' => Str::upper(trim($row['batch'])),
-			'quantity' => $row['quantity']
+			'batch' => Str::upper(trim($row['batch']))
 		]);
 	}
 
 	public function overwrite(): void
 	{
-		ActualStock::leftJoin('materials', 'materials.id', '=', 'actual_stocks.material_id')
+		ProductBreakdown::leftJoin('product_materials', 'product_materials.id', '=', 'product_breakdowns.product_material_id')
+			->leftJoin('materials', 'materials.id', '=', 'product_materials.material_id')
 			->where('materials.period_id', $this->periodId)
-			->whereNull('actual_stocks.deleted_at')
+			->whereNull('product_materials.deleted_at')
 			->delete();
 	}
 }

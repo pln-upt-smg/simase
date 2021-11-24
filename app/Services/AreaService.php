@@ -174,7 +174,8 @@ class AreaService
         $query = Area::orderBy('name')->whereNull('deleted_at');
         if (!is_null($request)) {
             $query = $query->whereRaw('lower(name) like "%?%"', Str::lower(trim($request->query('q') ?? '')))
-                ->orWhereRaw('lower(sloc) like "%?%"', Str::lower(trim($request->query('q') ?? '')));
+                ->orWhereRaw('lower(sloc) like "%?%"', Str::lower(trim($request->query('q') ?? '')))
+                ->limit(10);
         }
         return $query->get();
     }

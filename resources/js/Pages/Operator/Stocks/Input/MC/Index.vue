@@ -77,8 +77,7 @@
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="material_description" value="Deskripsi Material"/>
                     <jet-input id="material_description" type="text"
-                               class="mt-2 block w-full bg-gray-100 cursor-not-allowed capitalize"
-                               v-model="materialData.description" disabled
+                               class="mt-2 block w-full capitalize" v-model="materialData.description" disabled
                                title="Data ini diambil berdasarkan Kode Material yang diberikan."/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
@@ -103,7 +102,8 @@
                                 <template v-if="searching">
                                     Tidak ada hasil untuk <em>{{ search }}</em>.
                                 </template>
-                                <em v-else style="opacity: 0.5">Silahkan pilih Sub Area, Periode & Kode Material terlebih dahulu.</em>
+                                <em v-else style="opacity: 0.5">Silahkan pilih Sub Area, Periode & Kode Material
+                                    terlebih dahulu.</em>
                             </template>
                         </v-select>
                         <div class="ml-2">
@@ -123,8 +123,7 @@
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="uom" value="UoM"/>
                     <jet-input id="uom" type="text"
-                               class="mt-2 block w-full bg-gray-100 cursor-not-allowed capitalize"
-                               v-model="materialData.uom" disabled
+                               class="mt-2 block w-full capitalize" v-model="materialData.uom" disabled
                                title="Data ini diambil berdasarkan Kode Material yang diberikan."/>
                 </div>
             </template>

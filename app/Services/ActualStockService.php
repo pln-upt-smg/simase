@@ -207,7 +207,7 @@ class ActualStockService
             'quantity' => 'Kuantitas'
         ]);
         $product = Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('period_id', $request->period)->whereNull('deleted_at')->first();
-        $product?->convertAsActualStock($request);
+        $product?->performBreakdown($request);
         auth()->user()?->notify(new DataStored('Actual Stock', Str::upper($request->material_code)));
     }
 

@@ -116,7 +116,7 @@
                                ref="storeUom" v-model="storeForm.uom"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="MType"
                                ref="storeMtyp" v-model="storeForm.mtyp"/>
-                    <jet-input type="text" class="mt-4 block w-full bg-gray-100 cursor-not-allowed uppercase"
+                    <jet-input type="text" class="mt-4 block w-full uppercase"
                                placeholder="Currency"
                                ref="storeCrcy" v-model="storeForm.crcy" disabled/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Harga"
@@ -153,8 +153,7 @@
                                ref="updateUom" v-model="updateForm.uom"/>
                     <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="MType"
                                ref="updateMtyp" v-model="updateForm.mtyp"/>
-                    <jet-input type="text" class="mt-4 block w-full bg-gray-100 cursor-not-allowed uppercase"
-                               placeholder="Currency"
+                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Currency"
                                ref="updateCrcy" v-model="updateForm.crcy" disabled/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Harga"
                                ref="updatePrice" v-model="updateForm.price"/>
@@ -200,7 +199,7 @@
                     spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
                 </p>
                 <p class="mt-2">
-                    Mengimpor data baru akan menimpa data lama yang sudah ada. Aksi ini tidak dapat dibatalkan.
+                    Mengimpor data baru dapat memperbarui data lama yang sudah tersedia. Aksi ini tidak dapat dibatalkan.
                 </p>
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">

@@ -53,14 +53,7 @@ input {
 .vue-select .vs__dropdown-menu {
     font-size: 16px;
     font-family: "Nunito Sans", serif;
-    background: #FFFFFF;
-    color: #1F2937;
     padding: 6px 2px;
-}
-
-.vue-select .vs__search::placeholder {
-    --tw-placeholder-opacity: 1;
-    color: rgba(156, 163, 175, var(--tw-placeholder-opacity));
 }
 
 .vue-select .vs__clear,
@@ -95,4 +88,12 @@ input {
     position: absolute;
     top: -5px;
     left: 18px;
+}
+
+select:disabled {
+    background-color: #EFF0F2 !important;
+}
+
+select:disabled:hover {
+    cursor: not-allowed;
 }
