@@ -103,7 +103,7 @@
                                 <template v-if="searching">
                                     Tidak ada hasil untuk <em>{{ search }}</em>.
                                 </template>
-                                <em v-else style="opacity: 0.5">Mulai mengetik untuk mencari kode batch.</em>
+                                <em v-else style="opacity: 0.5">Silahkan pilih Sub Area, Periode & Kode Material terlebih dahulu.</em>
                             </template>
                         </v-select>
                         <div class="ml-2">
