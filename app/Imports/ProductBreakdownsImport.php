@@ -17,6 +17,7 @@ use App\Models\ProductBreakdown;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -25,7 +26,7 @@ use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -33,7 +34,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ProductBreakdownsImport implements ToModel, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithEvents, WithDefaultEvents, WithValidation, ShouldQueue, ShouldBeUnique
+class ProductBreakdownsImport implements ToCollection, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithEvents, WithDefaultEvents, WithValidation, ShouldQueue, ShouldBeUnique
 {
 	use Importable, SkipsFailures, SkipsErrors, HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleSubArea, HasMaterialResolver, HasProductResolver, HasProductMaterialResolver;
 
@@ -57,11 +58,12 @@ class ProductBreakdownsImport implements ToModel, SkipsOnFailure, SkipsOnError, 
 		];
 	}
 
-	public function model(array $row): ?ProductBreakdown
+	public function collection(Collection $collection): void
 	{
-		$this->lookupSubArea($row);
-		$this->replace($row);
-		return null;
+		foreach ($collection as $row) {
+			$this->lookupSubArea($row);
+			$this->replace($row->toArray());
+		}
 	}
 
 	public function name(): string

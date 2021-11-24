@@ -4,8 +4,8 @@ namespace App\Imports\Contract;
 
 interface WithQueuedValidation
 {
-    /**
-     * @return array
-     */
-    public function validation(): array;
+	/**
+	 * @return array
+	 */
+	public function validation(): array;
 }

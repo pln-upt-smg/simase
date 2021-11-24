@@ -7,11 +7,11 @@ use Illuminate\Validation\ValidationException;
 
 trait HasValidator
 {
-    /**
-     * @throws ValidationException
-     */
-    public function validate(array $row, array $rules = []): void
-    {
-        Validator::validate($row, function_exists('validation') ? $this->validation() : $rules);
-    }
+	/**
+	 * @throws ValidationException
+	 */
+	public function validate(array $row, array $rules = []): void
+	{
+		Validator::validate($row, function_exists('validation') ? $this->validation() : $rules);
+	}
 }

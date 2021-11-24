@@ -6,18 +6,18 @@ use App\Models\User;
 
 interface WithDefaultEvents
 {
-    /**
-     * @return string
-     */
-    public function name(): string;
+	/**
+	 * @return string
+	 */
+	public function name(): string;
 
-    /**
-     * @return void
-     */
-    public function overwrite(): void;
+	/**
+	 * @return void
+	 */
+	public function overwrite(): void;
 
-    /**
-     * @return User|null
-     */
-    public function importedBy(): ?User;
+	/**
+	 * @return User|null
+	 */
+	public function importedBy(): ?User;
 }

@@ -6,16 +6,16 @@ use App\Models\User;
 
 trait HasImporter
 {
-    /**
-     * @var int
-     */
-    private int $userId;
+	/**
+	 * @var int
+	 */
+	private int $userId;
 
-    /**
-     * @return User|null
-     */
-    public function importedBy(): ?User
-    {
-        return User::where('id', $this->userId)->first();
-    }
+	/**
+	 * @return User|null
+	 */
+	public function importedBy(): ?User
+	{
+		return User::where('id', $this->userId)->first();
+	}
 }
