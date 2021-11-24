@@ -90,6 +90,7 @@
                             class="vue-select rounded-md block w-full"
                             label="code"
                             v-model="form.batch_code"
+                            :searchable="false"
                             :filterable="false"
                             :clearable="false"
                             :options="batchCodeOptions"
