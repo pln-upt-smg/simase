@@ -114,7 +114,7 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 3. MySQL Server `v5.7`
 4. NodeJS `v16`
 5. Yarn `v1`
-6. [Laragon](https://laragon.org/) / [Laravel Valet](https://laravel.com/docs/8.x/valet) <sup><i>optional</i></sup>
+6. [Laravel Homestead](https://laravel.com/docs/8.x/homestead) / [Laravel Valet](https://laravel.com/docs/8.x/valet) <sup><i>optional</i></sup>
 
 #### 🖥️ Installation
 
@@ -144,7 +144,7 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 > #### 👌 Rekomendasi
 > - Gunakan `composer dev` untuk optimalisasi Laravel Intellisense pada IDE anda
 > - Gunakan `composer lint` untuk menjalankan PHP Linter (Static Code Analaysis)
-> - Gunakan local development environment seperti [Laragon](https://laragon.org) atau [Laravel Valet](https://laravel.com/docs/8.x/valet)
+> - Gunakan local development environment seperti [Laravel Homestead](https://laravel.com/docs/8.x/homestead) / [Laravel Valet](https://laravel.com/docs/8.x/valet)
 
 <br/>
 
