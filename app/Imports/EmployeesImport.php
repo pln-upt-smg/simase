@@ -74,10 +74,14 @@ class EmployeesImport implements ToCollection, SkipsOnFailure, SkipsOnError, Ski
 
 	public function replace(array $row): void
 	{
+		$roleId = $this->resolveRoleId($row['role']);
+		if ($roleId === 0) {
+			return;
+		}
 		User::updateOrCreate([
 			'nip' => trim($row['nip']),
 		], [
-			'role_id' => $this->resolveRoleId($row['role']),
+			'role_id' => $roleId,
 			'name' => Str::title(trim($row['name'])),
 			'phone' => trim($row['phone']),
 			'password' => Hash::make(trim($row['nip']))

@@ -71,9 +71,14 @@ class BatchesImport implements ToCollection, SkipsOnFailure, SkipsOnError, Skips
 
 	public function replace(array $row): void
 	{
+		$areaId = $this->resolveAreaId($row['sloc'], true);
+		$materialId = $this->resolveMaterialId($row['material']);
+		if ($areaId === 0 || $materialId === 0) {
+			return;
+		}
 		Batch::updateOrCreate([
-			'area_id' => $this->resolveAreaId($row['sloc'], true),
-			'material_id' => $this->resolveMaterialId($row['material']),
+			'area_id' => $areaId,
+			'material_id' => $materialId,
 		], [
 			'code' => Str::upper(trim($row['batch']))
 		]);

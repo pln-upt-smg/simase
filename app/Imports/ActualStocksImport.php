@@ -80,10 +80,16 @@ class ActualStocksImport implements ToCollection, SkipsOnFailure, SkipsOnError, 
 
 	public function replace(array $row): void
 	{
+		$subAreaId = $this->currentSubAreaId;
+		$materialId = $this->resolveMaterialId($row['material']);
+		$userId = $this->userId;
+		if ($subAreaId === 0 || $materialId === 0 || $userId === 0) {
+			return;
+		}
 		ActualStock::updateOrCreate([
-			'sub_area_id' => $this->currentSubAreaId,
-			'material_id' => $this->resolveMaterialId($row['material']),
-			'user_id' => $this->userId
+			'sub_area_id' => $subAreaId,
+			'material_id' => $materialId,
+			'user_id' => $userId
 		], [
 			'batch' => Str::upper(trim($row['batch'])),
 			'quantity' => $row['quantity']

@@ -73,10 +73,16 @@ class ProductBreakdownsImport implements ToCollection, SkipsOnFailure, SkipsOnEr
 
 	public function replace(array $row): void
 	{
+		$subAreaId = $this->currentSubAreaId;
+		$productMaterialId = $this->resolveProductMaterialId($this->resolveProductId($row['product']), $this->resolveMaterialId($row['material']));
+		$userId = $this->userId;
+		if ($subAreaId === 0 || $productMaterialId === 0 || $userId === 0) {
+			return;
+		}
 		ProductBreakdown::updateOrCreate([
-			'sub_area_id' => $this->currentSubAreaId,
-			'product_material_id' => $this->resolveProductMaterialId($this->resolveProductId($row['product']), $this->resolveMaterialId($row['material'])),
-			'user_id' => $this->userId
+			'sub_area_id' => $subAreaId,
+			'product_material_id' => $productMaterialId,
+			'user_id' => $userId
 		], [
 			'batch' => Str::upper(trim($row['batch']))
 		]);

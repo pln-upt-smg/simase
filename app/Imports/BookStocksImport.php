@@ -83,9 +83,14 @@ class BookStocksImport implements ToCollection, SkipsOnFailure, SkipsOnError, Sk
 
 	public function replace(array $row): void
 	{
+		$areaId = $this->currentAreaId;
+		$materialId = $this->resolveMaterialId($row['material']);
+		if ($areaId === 0 || $materialId === 0) {
+			return;
+		}
 		BookStock::updateOrCreate([
-			'area_id' => $this->currentAreaId,
-			'material_id' => $this->resolveMaterialId($row['material']),
+			'area_id' => $areaId,
+			'material_id' => $materialId,
 		], [
 			'batch' => Str::upper(trim($row['batch'])),
 			'quantity' => $row['quantity'],

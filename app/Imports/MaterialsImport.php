@@ -76,8 +76,12 @@ class MaterialsImport implements ToCollection, SkipsOnError, SkipsOnFailure, Ski
 
 	public function replace(array $row): void
 	{
+		$periodId = $this->periodId;
+		if ($periodId === 0) {
+			return;
+		}
 		Material::updateOrCreate([
-			'period_id' => $this->periodId,
+			'period_id' => $periodId,
 			'code' => Str::upper(trim($row['material'])),
 		], [
 			'description' => Str::title(trim($row['materialdescription'])),

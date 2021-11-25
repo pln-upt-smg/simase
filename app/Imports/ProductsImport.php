@@ -76,8 +76,12 @@ class ProductsImport implements ToCollection, SkipsOnFailure, SkipsOnError, Skip
 
 	public function replace(array $row): void
 	{
+		$periodId = $this->periodId;
+		if ($periodId === 0) {
+			return;
+		}
 		Product::updateOrCreate([
-			'period_id' => $this->periodId,
+			'period_id' => $periodId,
 			'code' => Str::upper(trim($row['product']))
 		], [
 			'description' => Str::title(trim($row['productdescription'])),

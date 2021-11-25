@@ -71,9 +71,14 @@ class ProductMaterialsImport implements ToCollection, SkipsOnFailure, SkipsOnErr
 
 	public function replace(array $row): void
 	{
+		$productId = $this->resolveProductId($row['product']);
+		$materialId = $this->resolveMaterialId($row['material']);
+		if ($productId === 0 || $materialId === 0) {
+			return;
+		}
 		ProductMaterial::updateOrCreate([
-			'product_id' => $this->resolveProductId($row['product']),
-			'material_id' => $this->resolveMaterialId($row['material'])
+			'product_id' => $productId,
+			'material_id' => $materialId
 		], [
 			'material_uom' => Str::upper(trim($row['uom'])),
 			'material_quantity' => $row['qty'],

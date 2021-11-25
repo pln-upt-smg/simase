@@ -69,8 +69,12 @@ class SubAreasImport implements ToCollection, SkipsOnFailure, SkipsOnError, Skip
 
 	public function replace(array $row): void
 	{
+		$areaId = $this->resolveAreaId($row['sloc'], true);
+		if ($areaId === 0) {
+			return;
+		}
 		SubArea::updateOrCreate([
-			'area_id' => $this->resolveAreaId($row['sloc'], true),
+			'area_id' => $areaId,
 			'name' => Str::title(trim($row['subarea']))
 		]);
 	}
