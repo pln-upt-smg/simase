@@ -61,7 +61,7 @@ class ProductBreakdownsImport implements ToCollection, SkipsOnFailure, SkipsOnEr
 	public function collection(Collection $collection): void
 	{
 		foreach ($collection as $row) {
-			$this->lookupSubArea($row);
+			$this->lookupSubArea($row->toArray());
 			$this->replace($row->toArray());
 		}
 	}

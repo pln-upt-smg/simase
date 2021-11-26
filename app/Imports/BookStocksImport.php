@@ -71,7 +71,7 @@ class BookStocksImport implements ToCollection, SkipsOnFailure, SkipsOnError, Sk
 	public function collection(Collection $collection): void
 	{
 		foreach ($collection as $row) {
-			$this->lookupArea($row, true);
+			$this->lookupArea($row->toArray(), true);
 			$this->replace($row->toArray());
 		}
 	}

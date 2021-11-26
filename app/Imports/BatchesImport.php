@@ -79,7 +79,6 @@ class BatchesImport implements ToCollection, SkipsOnFailure, SkipsOnError, Skips
 		Batch::updateOrCreate([
 			'area_id' => $areaId,
 			'material_id' => $materialId,
-		], [
 			'code' => Str::upper(trim($row['batch']))
 		]);
 	}

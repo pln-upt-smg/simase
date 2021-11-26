@@ -60,9 +60,9 @@ class FinalSummaryService
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
-                DB::raw('coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) as total_stock'),
-                DB::raw('(coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) as gap_stock'),
-                DB::raw('((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) * materials.price) as gap_value')
+                DB::raw("coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) as total_stock"),
+                DB::raw('(coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id and book_stocks.deleted_at is null), 0)) as gap_stock'),
+                DB::raw('((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id and book_stocks.deleted_at is null), 0)) * materials.price) as gap_value')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
@@ -113,9 +113,9 @@ class FinalSummaryService
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
                 'areas.name as area_name',
-                DB::raw('coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) as total_stock'),
-                DB::raw('(coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) as gap_stock'),
-                DB::raw('((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) * materials.price) as gap_value')
+                DB::raw('coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) as total_stock'),
+                DB::raw('(coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id and book_stocks.deleted_at is null), 0)) as gap_stock'),
+                DB::raw('((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id and book_stocks.deleted_at is null), 0)) * materials.price) as gap_value')
             ])
             ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
@@ -189,9 +189,9 @@ class FinalSummaryService
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
-                DB::raw('coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) as total_stock'),
-                DB::raw('(coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) as gap_stock'),
-                DB::raw('((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) * materials.price) as gap_value')
+                DB::raw('coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) as total_stock'),
+                DB::raw('(coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id and book_stocks.deleted_at is null), 0)) as gap_stock'),
+                DB::raw('((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id and book_stocks.deleted_at is null), 0)) * materials.price) as gap_value')
             ])
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
@@ -212,7 +212,7 @@ class FinalSummaryService
         $areas = $this->areaService->collection();
         foreach ($areas as $area) {
             $query = BookStock::select([
-                DB::raw('sum(((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id), 0)) * materials.price)) as gap_value')
+                DB::raw('sum(((coalesce((select sum(actual_stocks.quantity) from actual_stocks where actual_stocks.material_id = material_id and actual_stocks.deleted_at is null), 0) - coalesce((select sum(book_stocks.quantity) from book_stocks where book_stocks.material_id = material_id and book_stocks.deleted_at is null), 0)) * materials.price)) as gap_value')
             ])
                 ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
                 ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
