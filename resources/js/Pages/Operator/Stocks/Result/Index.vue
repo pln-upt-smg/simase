@@ -1,13 +1,13 @@
 <template>
     <app-layout title="Hasil Stock">
-        <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6 mb-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 mb-4 lg:mb-0">
+        <div class="grid grid-cols-1 mb-6 lg:grid-cols-2 lg:gap-6">
+            <div class="grid grid-cols-1 mb-4 lg:grid-cols-2 lg:mb-0">
                 <jet-area-dropdown :selected="area" :areas="areas" partial="stocks" class="mb-4 lg:mb-0"/>
                 <jet-period-dropdown :selected="period" :periods="periods" partial="stocks" class="mb-2 lg:mb-0"/>
             </div>
             <div class="lg:text-right">
                 <jet-button type="button" @click="confirmStore">
-                    <plus-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
+                    <plus-icon class="w-5 h-5 mr-2 text-white" aria-hidden="true"/>
                     Tambah
                 </jet-button>
             </div>
@@ -71,15 +71,15 @@
                         <jet-dropdown name="Opsi">
                             <menu-item>
                                 <button @click="confirmUpdate(stock)"
-                                        class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
-                                    <pencil-alt-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
+                                        class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group">
+                                    <pencil-alt-icon class="w-5 h-5 mr-3 text-gray-700" aria-hidden="true"/>
                                     Edit
                                 </button>
                             </menu-item>
                             <menu-item>
                                 <button @click="confirmDestroy(stock)"
-                                        class="text-gray-700 hover:bg-gray-100 group flex items-center px-4 py-2 text-sm w-full">
-                                    <trash-icon class="mr-3 h-5 w-5 text-gray-700" aria-hidden="true"/>
+                                        class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group">
+                                    <trash-icon class="w-5 h-5 mr-3 text-gray-700" aria-hidden="true"/>
                                     Hapus
                                 </button>
                             </menu-item>
@@ -95,7 +95,7 @@
                 <div class="mt-4">
                     <v-select
                         placeholder="Cari Sub Area"
-                        class="vue-select rounded-md block w-full"
+                        class="block w-full rounded-md vue-select"
                         v-model="updateForm.sub_area"
                         :filterable="false"
                         :clearable="false"
@@ -112,12 +112,12 @@
                         </template>
                     </v-select>
                     <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
-                                :data="periods" class="mt-4 block w-full"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Material"
+                                :data="periods" class="block w-full mt-4"/>
+                    <jet-input type="text" class="block w-full mt-4 uppercase" placeholder="Kode Material"
                                ref="updateMaterialCode" v-model="updateForm.material_code"/>
-                    <jet-input type="text" class="mt-4 block w-full uppercase" placeholder="Kode Batch"
-                               ref="updateBatch" v-model="updateForm.batch"/>
-                    <jet-input type="number" class="mt-4 block w-full" placeholder="Kuantitas"
+                    <jet-input type="text" class="block w-full mt-4 uppercase" placeholder="Kode Batch"
+                               ref="updateBatch" v-model="updateForm.batch_code"/>
+                    <jet-input type="number" class="block w-full mt-4" placeholder="Kuantitas"
                                ref="updateQuantity" v-model="updateForm.quantity" @keyup.enter="update"/>
                 </div>
             </template>
@@ -125,11 +125,11 @@
                 <jet-button type="button" @click="update"
                             :class="{ 'opacity-25': updateForm.processing }"
                             :disabled="updateForm.processing"
-                            class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                            class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Simpan
                 </jet-button>
                 <jet-secondary-button @click="closeUpdateModal"
-                                      class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                                      class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Batalkan
                 </jet-secondary-button>
             </template>
@@ -143,11 +143,11 @@
                 <jet-danger-button @click="destroy"
                                    :class="{ 'opacity-25': destroyForm.processing }"
                                    :disabled="destroyForm.processing"
-                                   class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                                   class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Hapus
                 </jet-danger-button>
                 <jet-secondary-button @click="closeDestroyModal"
-                                      class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                                      class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Batalkan
                 </jet-secondary-button>
             </template>
@@ -212,7 +212,7 @@ export default defineComponent({
                 sub_area: null,
                 period: null,
                 material_code: null,
-                batch: null,
+                batch_code: null,
                 quantity: null
             }),
             destroyForm: useForm({
@@ -291,7 +291,7 @@ export default defineComponent({
             }
             this.updateForm.period = stock.period_id
             this.updateForm.material_code = stock.material_code
-            this.updateForm.batch = stock.batch
+            this.updateForm.batch_code = stock.batch_code
             this.updateForm.quantity = stock.quantity
             setTimeout(() => this.confirmingUpdate = true, 150)
             setTimeout(() => this.$refs.updateArea.focus(), 300)
@@ -310,7 +310,7 @@ export default defineComponent({
                 this.updateForm.sub_area = null
                 this.updateForm.period = null
                 this.updateForm.material_code = null
-                this.updateForm.batch = null
+                this.updateForm.batch_code = null
                 this.updateForm.quantity = null
             }, 500)
         },
