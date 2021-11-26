@@ -95,9 +95,9 @@
                 </tr>
             </template>
         </jet-table>
-        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah product material">
+        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah FG to material">
             <template #content>
-                Silakan masukkan data product material yang ingin ditambahkan.
+                Silakan masukkan data FG to material yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
                     <jet-select ref="storePeriod" placeholder="Pilih Periode" v-model="storeForm.period"
@@ -127,9 +127,9 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit product material">
+        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit FG to material">
             <template #content>
-                Silakan masukkan data product material yang ingin diubah.
+                Silakan masukkan data FG to material yang ingin diubah.
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
                     <jet-select ref="updatePeriod" placeholder="Pilih Periode" v-model="updateForm.period"
@@ -159,9 +159,9 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus product material">
+        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus FG to material">
             <template #content>
-                Apakah Anda yakin ingin menghapus product material ini? Setelah product material dihapus, semua sumber daya
+                Apakah Anda yakin ingin menghapus FG to material ini? Setelah FG to material dihapus, semua sumber daya
                 dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
@@ -177,10 +177,10 @@
                 </jet-secondary-button>
             </template>
         </jet-alert-modal>
-        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data product material">
+        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data FG to material">
             <template #content>
                 <p>
-                    Silakan unggah file data product material yang ingin di-impor. Pastikan Anda sudah menggunakan template
+                    Silakan unggah file data FG to material yang ingin di-impor. Pastikan Anda sudah menggunakan template
                     spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
                 </p>
                 <p class="mt-2">
@@ -233,17 +233,17 @@
                 </jet-secondary-button>
             </template>
         </jet-import-modal>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data product material">
+        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data FG to material">
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data product material? Proses ekspor dapat memakan waktu lama,
+                    Apakah Anda yakin ingin mengekspor semua data FG to material? Proses ekspor dapat memakan waktu lama,
                     tergantung dari banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
                     Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
                 </p>
                 <p class="mt-2">
-                    Anda dapat menyaring data product material berdasarkan periodenya dengan menyesuaikan kolom
+                    Anda dapat menyaring data FG to material berdasarkan periodenya dengan menyesuaikan kolom
                     pilihan dibawah ini.
                 </p>
                 <div class="mt-4">
@@ -387,9 +387,9 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeStoreModal()
-                    this.showSuccessNotification('FG to Material berhasil ditambahkan', 'Sistem telah berhasil menyimpan data product material baru')
+                    this.showSuccessNotification('FG to Material berhasil ditambahkan', 'Sistem telah berhasil menyimpan data FG to material baru')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data product material, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data FG to material, mohon periksa ulang form')
             })
         },
         update() {
@@ -398,9 +398,9 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeUpdateModal()
-                    this.showSuccessNotification('FG to Material berhasil diedit', 'Sistem telah berhasil mengedit data product material')
+                    this.showSuccessNotification('FG to Material berhasil diedit', 'Sistem telah berhasil mengedit data FG to material')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data product material, mohon periksa ulang form')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data FG to material, mohon periksa ulang form')
             })
         },
         destroy() {
@@ -409,9 +409,9 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeDestroyModal()
-                    this.showSuccessNotification('FG to Material berhasil dihapus', 'Sistem telah berhasil menghapus data product material')
+                    this.showSuccessNotification('FG to Material berhasil dihapus', 'Sistem telah berhasil menghapus data FG to material')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data product material')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data FG to material')
             })
         },
         importFile() {
@@ -420,9 +420,9 @@ export default defineComponent({
                 onSuccess: () => {
                     this.reloadData()
                     this.closeImportModal()
-                    this.showSuccessNotification('Permintaan impor data telah dijadwalkan', 'Sistem berhasil menjadwalkan permintaan impor data product material di latar belakang')
+                    this.showSuccessNotification('Permintaan impor data telah dijadwalkan', 'Sistem berhasil menjadwalkan permintaan impor data FG to material di latar belakang')
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data product material, mohon periksa kesalahan yang telah dideteksi')
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data FG to material, mohon periksa kesalahan yang telah dideteksi')
             })
         },
         exportFile() {
