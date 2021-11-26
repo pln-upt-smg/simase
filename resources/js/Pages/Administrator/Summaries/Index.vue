@@ -39,6 +39,11 @@
                     MType
                 </jet-table-header>
                 <jet-table-header
+                    v-show="showColumn('sloc')"
+                    :cell="sortableHeader('sloc')">
+                    SLoc
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('unrestricted')"
                     :cell="sortableHeader('unrestricted')">
                     Unrestricted
@@ -70,6 +75,7 @@
                     <td v-show="showColumn('material_description')">{{ summary.material_description }}</td>
                     <td v-show="showColumn('uom')">{{ summary.uom }}</td>
                     <td v-show="showColumn('mtyp')">{{ summary.mtyp }}</td>
+                    <td v-show="showColumn('sloc')">{{ summary.sloc }}</td>
                     <td v-show="showColumn('unrestricted')">{{ summary.unrestricted }}</td>
                     <td v-show="showColumn('qualinsp')">{{ summary.qualinsp }}</td>
                     <td v-show="showColumn('total_stock')">{{ summary.total_stock }}</td>

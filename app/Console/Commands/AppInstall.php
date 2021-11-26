@@ -40,7 +40,7 @@ class AppInstall extends Command
         passthru('php artisan cloudflare:reload --ansi');
         passthru('php artisan optimize --ansi');
         passthru('php artisan view:cache --ansi');
-	    passthru(app()->isProduction() ? 'yarn run production' : 'yarn run development');
+	    passthru(app()->isProduction() ? 'yarn production' : 'yarn development');
         passthru('php artisan env --ansi');
         passthru('php artisan up --ansi');
         return 0;
