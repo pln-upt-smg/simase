@@ -17,7 +17,7 @@ trait HasMultipleArea
 	 */
 	public function lookupArea(array $row, bool $bySloc = false): void
 	{
-		$newAreaId = $this->resolveAreaId($row['area'], $bySloc);
+		$newAreaId = $this->resolveAreaId($row['area'] ?? $row['sloc'], $bySloc);
 		if ($this->currentAreaId !== $newAreaId) {
 			$this->currentAreaId = $newAreaId;
 		}
