@@ -17,6 +17,7 @@ class CreateAreasTable extends Migration
             $table->id();
             $table->string('sloc');
             $table->string('name');
+            $table->boolean('is_batch_required')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

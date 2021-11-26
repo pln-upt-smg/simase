@@ -18,9 +18,9 @@ class CreateActualStocksTable extends Migration
             $table->foreignId('sub_area_id')->constrained();
             $table->foreignId('material_id')->constrained();
             $table->foreignId('user_id')->constrained();
-            $table->string('batch');
+            $table->string('batch')->nullable();
             $table->float('quantity', 24);
-	        $table->softDeletes();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

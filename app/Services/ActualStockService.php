@@ -12,6 +12,7 @@ use App\Models\Area;
 use App\Models\Material;
 use App\Models\Period;
 use App\Models\Product;
+use App\Models\SubArea;
 use App\Notifications\DataDestroyed;
 use App\Notifications\DataStored;
 use App\Notifications\DataUpdated;
@@ -168,7 +169,7 @@ class ActualStockService
             'sub_area.id' => ['required', 'integer', Rule::exists('sub_areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
-            'batch_code' => ['required', 'string', 'max:255'],
+            'batch_code' => [Rule::requiredIf(SubArea::find((int) $request['sub_area.id'])->load('area')->area?->is_batch_required)],
             'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
             'sub_area.id' => 'Sub Area',
@@ -222,7 +223,7 @@ class ActualStockService
             'sub_area.id' => ['required', 'integer', Rule::exists('sub_areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
-            'batch_code' => ['required', 'string', 'max:255'],
+            'batch_code' => [Rule::requiredIf(SubArea::find((int) $request['sub_area.id'])->load('area')->area?->is_batch_required)],
             'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
             'sub_area.id' => 'Sub Area',

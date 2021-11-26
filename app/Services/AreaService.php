@@ -35,17 +35,20 @@ class AreaService
             ->select([
                 'areas.id as id',
                 'areas.name as name',
-                'areas.sloc as sloc'
+                'areas.sloc as sloc',
+                'areas.is_batch_required as is_batch_required'
             ])
             ->whereNull('areas.deleted_at')
             ->defaultSort('areas.name')
             ->allowedFilters(InertiaHelper::filterBy([
                 'areas.name',
-                'areas.sloc'
+                'areas.sloc',
+                'areas.is_batch_required'
             ]))
             ->allowedSorts([
                 'name',
-                'sloc'
+                'sloc',
+                'is_batch_required'
             ])
             ->paginate()
             ->withQueryString();
@@ -55,10 +58,12 @@ class AreaService
     {
         return $table->addSearchRows([
             'areas.name' => 'Nama Area',
-            'areas.sloc' => 'SLoc'
+            'areas.sloc' => 'SLoc',
+            'areas.is_batch_required' => 'Validasi Batch'
         ])->addColumns([
             'name' => 'Nama Area',
             'sloc' => 'SLoc',
+            'is_batch_required' => 'Validasi Batch',
             'action' => 'Aksi'
         ]);
     }
@@ -71,14 +76,16 @@ class AreaService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->whereNull('deleted_at')],
-            'sloc' => ['required', 'numeric', Rule::unique('areas', 'sloc')->whereNull('deleted_at')]
+            'sloc' => ['required', 'numeric', Rule::unique('areas', 'sloc')->whereNull('deleted_at')],
+            'is_batch_required' => ['nullable']
         ], attributes: [
             'name' => 'Nama Area',
             'sloc' => 'SLoc'
         ]);
         Area::create([
             'name' => Str::title($request->name),
-            'sloc' => $request->sloc
+            'sloc' => $request->sloc,
+            'is_batch_required' => $request->is_batch_required
         ]);
         auth()->user()?->notify(new DataStored('Area', Str::title($request->name)));
     }
@@ -92,14 +99,16 @@ class AreaService
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->ignore($area->id)->whereNull('deleted_at')],
-            'sloc' => ['required', 'numeric', Rule::unique('areas', 'sloc')->ignore($area->id)->whereNull('deleted_at')]
+            'sloc' => ['required', 'numeric', Rule::unique('areas', 'sloc')->ignore($area->id)->whereNull('deleted_at')],
+            'is_batch_required' => ['nullable']
         ], attributes: [
             'name' => 'Nama Area',
             'sloc' => 'SLoc'
         ]);
         $area->updateOrFail([
             'name' => Str::title($request->name),
-            'sloc' => $request->sloc
+            'sloc' => $request->sloc,
+            'is_batch_required' => $request->is_batch_required
         ]);
         $area->save();
         auth()->user()?->notify(new DataUpdated('Area', Str::title($request->name)));

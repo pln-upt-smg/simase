@@ -20,9 +20,11 @@ class Area extends Model
     public Collection $bookStocks;
 
     public string $sloc, $name;
+    public bool $is_batch_required;
 
     protected $fillable = [
         'sloc',
-        'name'
+        'name',
+        'is_batch_required'
     ];
 }
