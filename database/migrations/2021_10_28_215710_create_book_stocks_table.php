@@ -18,8 +18,8 @@ class CreateBookStocksTable extends Migration
             $table->foreignId('area_id')->constrained();
             $table->foreignId('material_id')->constrained();
             $table->string('batch');
-            $table->float('quantity');
-            $table->float('unrestricted');
+            $table->float('quantity', 24);
+            $table->float('unrestricted', 24);
             $table->bigInteger('plnt');
             $table->bigInteger('qualinsp');
             $table->timestamps();
