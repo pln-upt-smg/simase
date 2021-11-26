@@ -169,7 +169,7 @@ class ActualStockService
             'sub_area.id' => ['required', 'integer', Rule::exists('sub_areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
-            'batch_code' => [Rule::requiredIf(SubArea::find((int) $request['sub_area.id'])->load('area')->area?->is_batch_required)],
+            'batch_code' => [Rule::requiredIf(SubArea::find((int) $request['sub_area.id'])->load('area')->area->is_batch_required)],
             'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
             'sub_area.id' => 'Sub Area',
@@ -223,7 +223,7 @@ class ActualStockService
             'sub_area.id' => ['required', 'integer', Rule::exists('sub_areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
-            'batch_code' => [Rule::requiredIf(SubArea::find((int) $request['sub_area.id'])->load('area')->area?->is_batch_required)],
+            'batch_code' => [Rule::requiredIf(SubArea::find((int) $request['sub_area.id'])->load('area')->area->is_batch_required)],
             'quantity' => ['required', 'numeric', 'min:0']
         ], attributes: [
             'sub_area.id' => 'Sub Area',
