@@ -76,11 +76,11 @@ class FinalSummaryService
 			->allowedFilters(InertiaHelper::filterBy([
 				'book_stocks.unrestricted',
 				'book_stocks.qualinsp',
-				'areas.sloc' => 'SLoc',
 				'materials.code',
 				'materials.description',
 				'materials.uom',
-				'materials.mtyp'
+				'materials.mtyp',
+				'areas.sloc'
 			]))
 			->allowedSorts([
 				'unrestricted',
@@ -89,10 +89,10 @@ class FinalSummaryService
 				'material_description',
 				'uom',
 				'mtyp',
-				'sloc',
 				'total_stock',
 				'gap_stock',
-				'gap_value'
+				'gap_value',
+				'sloc'
 			])
 			->paginate()
 			->withQueryString();
@@ -149,20 +149,20 @@ class FinalSummaryService
 			'materials.description' => 'Deskripsi Material',
 			'materials.uom' => 'UoM',
 			'materials.mtyp' => 'MType',
-			'areas.sloc' => 'SLoc',
 			'book_stocks.unrestricted' => 'Unrestricted',
-			'book_stocks.qualinsp' => 'QualInsp'
+			'book_stocks.qualinsp' => 'QualInsp',
+			'areas.sloc' => 'SLoc'
 		])->addColumns([
 			'material_code' => 'Kode Material',
 			'material_description' => 'Deskripsi Material',
 			'uom' => 'UoM',
 			'mtyp' => 'MType',
-			'sloc' => 'SLoc',
 			'unrestricted' => 'Unrestricted',
 			'qualinsp' => 'QualInsp',
 			'total_stock' => 'Total Stock',
 			'gap_stock' => 'Gap Stock',
-			'gap_value' => 'Gap Value'
+			'gap_value' => 'Gap Value',
+			'sloc' => 'SLoc'
 		]);
 	}
 
