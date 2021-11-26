@@ -80,7 +80,7 @@
                 </div>
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="quantity" value="Kuantitas"/>
-                    <jet-input id="quantity" type="number" class="mt-2 block w-full" v-model="form.quantity"
+                    <jet-input id="quantity" type="number" step="any" class="mt-2 block w-full" v-model="form.quantity"
                                autocomplete="quantity" placeholder="Masukkan Kuantitas"/>
                     <jet-input-error :message="form.errors.quantity" class="mt-2"/>
                 </div>
