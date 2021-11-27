@@ -1,4 +1,4 @@
-name: ⛑️ Maintenance Mode on Staging
+name: ⛑️ Activate Maintenance Mode
 
 on:
   workflow_dispatch:
