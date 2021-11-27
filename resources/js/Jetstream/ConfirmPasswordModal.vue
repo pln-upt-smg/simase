@@ -20,7 +20,7 @@
                     <div
                         class="inline-block align-bottom bg-white rounded-lg p-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
                         <div class="sm:flex sm:items-start">
-                            <div class="text-center sm:mt-0 sm:text-left">
+                            <div class="text-center sm:mt-0 sm:text-left w-full">
                                 <DialogTitle as="h3" class="text-lg leading-6 font-bold text-gray-900">
                                     {{ title }}
                                 </DialogTitle>

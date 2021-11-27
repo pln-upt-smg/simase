@@ -273,7 +273,7 @@ class BookStockService
 	 */
 	public function truncate(?Area $area, ?Period $period): void
 	{
-		BookStock::whereNull('deleted_at')
+		BookStock::whereNull('book_stocks.deleted_at')
 			->when(!is_null($area), function ($query, $area) {
 				$query->where('book_stocks.area_id', $area);
 			})
