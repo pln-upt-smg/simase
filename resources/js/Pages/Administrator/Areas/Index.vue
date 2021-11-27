@@ -75,7 +75,8 @@
                     <jet-input type="number" class="block w-full mt-4" placeholder="SLoc"
                                ref="storeSloc" v-model="storeForm.sloc" @keyup.enter="store"/>
                     <jet-select class="block w-full mt-4" placeholder="Validasi Batch?"
-                                ref="storeIsBatchRequired" v-model="storeForm.is_batch_required" :data="[{id: 0, name: 'Tidak'}, {id: 1, name: 'Ya'}]" />
+                                ref="storeIsBatchRequired" v-model="storeForm.is_batch_required"
+                                :data="[{id: 0, name: 'Tidak'}, {id: 1, name: 'Ya'}]"/>
                 </div>
             </template>
             <template #buttons>
@@ -101,7 +102,8 @@
                     <jet-input type="number" class="block w-full mt-4" placeholder="SLoc"
                                ref="updateSloc" v-model="updateForm.sloc" @keyup.enter="update"/>
                     <jet-select class="block w-full mt-4" placeholder="Validasi Batch?"
-                               ref="updateIsBatchRequired" v-model="updateForm.is_batch_required" :data="[{id: 0, name: 'Tidak'}, {id: 1, name: 'Ya'}]" />
+                                ref="updateIsBatchRequired" v-model="updateForm.is_batch_required"
+                                :data="[{id: 0, name: 'Tidak'}, {id: 1, name: 'Ya'}]"/>
                 </div>
             </template>
             <template #buttons>
@@ -142,7 +144,8 @@
                     spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
                 </p>
                 <p class="mt-2">
-                    Mengimpor data baru dapat memperbarui data lama yang sudah tersedia. Aksi ini tidak dapat dibatalkan.
+                    Mengimpor data baru dapat memperbarui data lama yang sudah tersedia. Aksi ini tidak dapat
+                    dibatalkan.
                 </p>
                 <jet-validation-errors class="mt-4"/>
                 <div
@@ -389,7 +392,7 @@ export default defineComponent({
                 this.storeForm.clearErrors()
                 this.storeForm.reset()
                 this.storeForm.name = null
-                this.storeForm.sloc = null,
+                this.storeForm.sloc = null
                 this.storeForm.is_batch_required = false
             }, 500)
         },
@@ -401,7 +404,7 @@ export default defineComponent({
                 this.updateForm.reset()
                 this.updateForm.id = null
                 this.updateForm.name = null
-                this.updateForm.sloc = null,
+                this.updateForm.sloc = null
                 this.updateForm.is_batch_required = false
             }, 500)
         },

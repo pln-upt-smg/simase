@@ -1,5 +1,5 @@
 <template>
-    <Menu as="div" class="inline-block text-left">
+    <Menu as="div" class="relative inline-block text-left">
         <div>
             <MenuButton
                 class="inline-flex justify-center w-full rounded-md border border-gray-300 focus:border-indigo-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-100 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
@@ -15,7 +15,7 @@
             leave-from-class="transform opacity-100 scale-100"
             leave-to-class="transform opacity-0 scale-95">
             <MenuItems
-                class="origin-top-right absolute mt-2 w-48 py-1 rounded-md shadow-lg bg-white divide-y divide-gray-100 z-10">
+                class="absolute right-0 z-10 w-48 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <slot></slot>
             </MenuItems>
         </transition>
