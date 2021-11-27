@@ -8,8 +8,6 @@ Route::group([
     'as' => 'stocks.'
 ], static function () {
 
-    Route::resource('actuals', ActualStockController::class)->except(['create', 'show', 'edit']);
-
     Route::group([
         'prefix' => 'actuals',
         'as' => 'actuals.'
@@ -21,7 +19,7 @@ Route::group([
 
     });
 
-    Route::resource('books', BookStockController::class)->except(['create', 'show', 'edit']);
+	Route::resource('actuals', ActualStockController::class)->except(['create', 'show', 'edit']);
 
     Route::group([
         'prefix' => 'books',
@@ -32,6 +30,10 @@ Route::group([
 
         Route::get('export', [BookStockController::class, 'export'])->name('export');
 
+	    Route::delete('truncate', [BookStockController::class, 'truncate'])->name('truncate');
+
     });
+
+	Route::resource('books', BookStockController::class)->except(['create', 'show', 'edit']);
 
 });

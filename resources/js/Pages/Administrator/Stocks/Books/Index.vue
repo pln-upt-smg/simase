@@ -14,10 +14,14 @@
                     <upload-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
                     Impor
                 </jet-button>
-                <jet-button type="button" @click="confirmExport">
-                    <download-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
+                <jet-button type="button" @click="confirmExport" class="mr-2 mb-2 lg:mb-0">
+                    <upload-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
                     Ekspor
                 </jet-button>
+                <jet-danger-button type="button" @click="confirmTruncate">
+                    <trash-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
+                    Hapus Semua
+                </jet-danger-button>
             </div>
         </div>
         <jet-table
@@ -215,7 +219,8 @@
                     spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
                 </p>
                 <p class="mt-2">
-                    Mengimpor data baru dapat memperbarui data lama yang sudah tersedia. Aksi ini tidak dapat dibatalkan.
+                    Mengimpor data baru dapat memperbarui data lama yang sudah tersedia. Aksi ini tidak dapat
+                    dibatalkan.
                 </p>
                 <jet-validation-errors class="mt-4"/>
                 <div class="mt-4">
@@ -295,6 +300,42 @@
                 </jet-secondary-button>
             </template>
         </jet-export-modal>
+        <jet-alert-modal :show="confirmingTruncate" @close="closeTruncateModal" title="Hapus semua book stock">
+            <template #content>
+                <p>
+                    Apakah Anda yakin ingin menghapus semua book stock? Semua sumber daya dan data book stock akan
+                    dihapus secara permanen.
+                </p>
+                <p class="mt-2">
+                    Sangat disarankan untuk mengekspor semua data book stock saat ini sebagai data cadangan. Aksi ini
+                    tidak dapat dibatalkan.
+                </p>
+                <p class="mt-2">
+                    Anda dapat menyaring semua data book stock yang ingin dihapus berdasarkan area dan periodenya dengan
+                    menyesuaikan kolom pilihan dibawah ini.
+                </p>
+                <jet-validation-errors class="mt-4"/>
+                <div class="mt-4">
+                    <jet-select ref="truncateArea" placeholder="Semua Area" v-model="truncateForm.area"
+                                :data="areas" class="block w-full"/>
+                    <jet-select ref="truncatePeriod" placeholder="Semua Periode" v-model="truncateForm.period"
+                                :data="periods" class="mt-4 block w-full"/>
+                </div>
+            </template>
+            <template #buttons>
+                <jet-confirm-password-modal @confirmed="truncate">
+                    <jet-danger-button :class="{ 'opacity-25': truncateForm.processing }"
+                                       :disabled="truncateForm.processing"
+                                       class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                        Hapus Semua
+                    </jet-danger-button>
+                </jet-confirm-password-modal>
+                <jet-secondary-button @click="closeTruncateModal"
+                                      class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                    Batalkan
+                </jet-secondary-button>
+            </template>
+        </jet-alert-modal>
         <jet-success-notification
             :show="showingSuccessNotification"
             :title="successNotification.title"
@@ -332,6 +373,7 @@ import JetTableHeader from '@/Jetstream/TableHeader'
 import JetAreaDropdown from '@/Jetstream/AreaDropdown'
 import JetPeriodDropdown from '@/Jetstream/PeriodDropdown'
 import JetSelect from '@/Jetstream/Select'
+import JetConfirmPasswordModal from '@/Jetstream/ConfirmPasswordModal'
 
 JetTableEngine.respectParams(['area', 'period'])
 
@@ -351,6 +393,7 @@ export default defineComponent({
             confirmingDestroy: false,
             confirmingImport: false,
             confirmingExport: false,
+            confirmingTruncate: false,
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
@@ -386,6 +429,10 @@ export default defineComponent({
             exportForm: useForm({
                 area: null,
                 period: null
+            }),
+            truncateForm: useForm({
+                area: null,
+                period: null
             })
         }
     },
@@ -416,6 +463,7 @@ export default defineComponent({
         JetAreaDropdown,
         JetPeriodDropdown,
         JetSelect,
+        JetConfirmPasswordModal,
         MenuItem,
         PlusIcon,
         UploadIcon,
@@ -476,6 +524,20 @@ export default defineComponent({
             }))
             this.closeExportModal()
         },
+        truncate() {
+            this.truncateForm.delete(route('stocks.books.truncate', {
+                area: this.truncateForm.area,
+                period: this.truncateForm.period
+            }), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.reloadData()
+                    this.closeTruncateModal()
+                    this.showSuccessNotification('Semua book stock berhasil dihapus', 'Sistem telah berhasil menghapus semua data book stock')
+                },
+                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus semua data book stock')
+            })
+        },
         confirmStore() {
             setTimeout(() => this.confirmingStore = true, 150)
             setTimeout(() => this.$refs.storeArea.focus(), 300)
@@ -505,6 +567,10 @@ export default defineComponent({
         confirmExport() {
             setTimeout(() => this.confirmingExport = true, 150)
             setTimeout(() => this.$refs.exportArea.focus(), 300)
+        },
+        confirmTruncate() {
+            setTimeout(() => this.confirmingTruncate = true, 150)
+            setTimeout(() => this.$refs.truncateArea.focus(), 300)
         },
         closeStoreModal() {
             this.confirmingStore = false
@@ -566,6 +632,14 @@ export default defineComponent({
                 this.exportForm.reset()
                 this.exportForm.area = null
                 this.exportForm.period = null
+            }, 500)
+        },
+        closeTruncateModal() {
+            this.confirmingTruncate = false
+            setTimeout(() => {
+                this.truncateForm.reset()
+                this.truncateForm.area = null
+                this.truncateForm.period = null
             }, 500)
         },
         showSuccessNotification(title, description) {

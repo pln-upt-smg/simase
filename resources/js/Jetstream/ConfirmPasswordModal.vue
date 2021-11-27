@@ -89,7 +89,7 @@ export default defineComponent({
             default: 'Konfirmasi Kata Sandi'
         },
         content: {
-            default: 'Demi keamanan Anda, harap konfirmasikan kata sandi Anda untuk melanjutkan.'
+            default: 'Harap konfirmasikan kata sandi Anda untuk melanjutkan aksi ini.'
         },
         button: {
             default: 'Konfirmasi'
