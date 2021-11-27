@@ -63,8 +63,8 @@
                     MType
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('creator_name')"
-                    :cell="sortableHeader('creator_name')">
+                    v-show="showColumn('creator_nip')"
+                    :cell="sortableHeader('creator_nip')">
                     Pembuat
                 </jet-table-header>
                 <jet-table-header
@@ -80,7 +80,7 @@
                     <td v-show="showColumn('quantity')">{{ stock.quantity }}</td>
                     <td v-show="showColumn('uom')">{{ stock.uom }}</td>
                     <td v-show="showColumn('mtyp')">{{ stock.mtyp }}</td>
-                    <td v-show="showColumn('creator_name')">{{ stock.creator_name }}</td>
+                    <td v-show="showColumn('creator_nip')">{{ stock.creator_nip }}</td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>

@@ -49,6 +49,7 @@ class ActualStocksImport implements ToCollection, SkipsOnFailure, SkipsOnError, 
 	{
 		return [
 			'subarea' => ['required', 'string', 'max:255', Rule::exists('sub_areas', 'name')->whereNull('deleted_at')],
+			'sloc' => ['nullable', 'string', 'max:255'],
 			'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
 			'batch' => ['required', 'string', 'max:255'],
 			'materialdescription' => ['nullable', 'string', 'max:255'],

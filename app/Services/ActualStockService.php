@@ -71,7 +71,7 @@ class ActualStockService
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
-                'users.name as creator_name',
+                'users.nip as creator_nip',
                 'sub_areas.id as sub_area_id',
                 'sub_areas.name as sub_area_name',
                 'areas.name as area_name',
@@ -100,7 +100,7 @@ class ActualStockService
                 'materials.description',
                 'materials.uom',
                 'materials.mtyp',
-                'users.name',
+                'users.nip',
                 'sub_areas.name'
             ]))
             ->allowedSorts([
@@ -110,7 +110,7 @@ class ActualStockService
                 'material_description',
                 'uom',
                 'mtyp',
-                'creator_name',
+                'creator_nip',
                 'sub_area_name'
             ])
             ->paginate()
@@ -144,8 +144,8 @@ class ActualStockService
             'action' => 'Aksi'
         ];
         if (!$ownedByCurrentUser) {
-            $searchRows['users.name'] = 'Pembuat';
-            $columns['creator_name'] = 'Pembuat';
+            $searchRows['users.nip'] = 'Pembuat';
+            $columns['creator_nip'] = 'Pembuat';
         }
         return $table->addSearchRows($searchRows)->addColumns($columns);
     }

@@ -31,6 +31,7 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'SubArea',
+	        'SLoc',
             'Material',
             'Batch',
             'MaterialDescription',
@@ -44,6 +45,7 @@ class ActualStocksExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             Str::title(trim($row->subArea->name)),
+	        trim($row->subArea->sloc),
             Str::upper(trim($row->material->code)),
             Str::upper(trim($row->batch)),
             Str::title(trim($row->material->description)),
