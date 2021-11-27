@@ -198,13 +198,13 @@ class ActualStockService
             'sub_area.id' => ['required', 'integer', Rule::exists('sub_areas', 'id')->whereNull('deleted_at')],
             'period' => ['required', 'integer', Rule::exists('periods', 'id')->whereNull('deleted_at')],
             'product_code' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
-            'batch_code' => ['required', 'string', 'max:255'],
+            // 'batch_code' => ['required', 'string', 'max:255'],
             'quantity' => ['required', 'integer', 'min:0']
         ], attributes: [
             'sub_area.id' => 'Sub Area',
             'period' => 'Periode',
             'product_code' => 'Kode SKU',
-            'batch_code' => 'Kode Batch',
+            // 'batch_code' => 'Kode Batch',
             'quantity' => 'Kuantitas'
         ]);
         $product = Product::whereRaw('lower(code) = lower(?)', $request->product_code)->where('period_id', $request->period)->whereNull('deleted_at')->first();
