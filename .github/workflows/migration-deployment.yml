@@ -1,21 +1,17 @@
-name: 🚀 Deploy to Staging
+name: 🗃️ Deploy Migration to Production
 
 on:
-  workflow_run:
-    workflows: [ Laravel ]
+  workflow_dispatch:
     branches: [ main ]
-    types:
-      - completed
 
 jobs:
   deployment:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Install Github Action Checkout
         uses: actions/checkout@v2
 
-      - name: 🖥️ Deploy using SSH
+      - name: 🖥️ Deploy Migration using SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.STAGING_SSH_HOST }}
@@ -32,17 +28,7 @@ jobs:
             sudo chgrp -R www-data storage bootstrap/cache
             sudo chmod -R ug+rwx storage bootstrap/cache
             sudo chmod -R g+w storage/logs
-            php artisan optimize:clear
-            yarn
             composer i -o -n --no-dev
-            php artisan cloudflare:reload
-            php artisan optimize
-            php artisan view:cache
-            yarn run production
-            sudo supervisorctl restart stocktake-web-cron:*
-            sudo supervisorctl restart stocktake-web-worker:*
-            sudo supervisorctl restart stocktake-web-octane:*
-            sudo php artisan octane:reload
-            sudo rm -rf /var/cache/ngx_pagespeed/*
+            php artisan migrate:fresh --seed --force
             php artisan env
             php artisan up
