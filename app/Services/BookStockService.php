@@ -158,7 +158,6 @@ class BookStockService
 			'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
 			'batch_code' => ['required', 'string', 'max:255'],
 			'plnt' => ['required', 'integer', 'min:0'],
-			'sloc' => ['required', 'integer', 'min:0'],
 			'qualinsp' => ['required', 'integer', 'min:0'],
 			'unrestricted' => ['required', 'numeric'],
 			'quantity' => ['required', 'numeric', 'min:0']
@@ -168,7 +167,6 @@ class BookStockService
 			'material_code' => 'Kode Material',
 			'batch_code' => 'Kode Batch',
 			'plnt' => 'Plnt',
-			'sloc' => 'SLoc',
 			'qualinsp' => 'QualInsp',
 			'unrestricted' => 'Unrestricted',
 			'quantity' => 'Kuantitas'
@@ -178,7 +176,6 @@ class BookStockService
 			'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
 			'batch' => Str::upper($request->batch_code),
 			'plnt' => (int)$request->plnt,
-			'sloc' => (int)$request->sloc,
 			'qualinsp' => (int)$request->qualinsp,
 			'unrestricted' => $request->unrestricted,
 			'quantity' => $request->quantity
@@ -199,7 +196,6 @@ class BookStockService
 			'material_code' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $request->period)->whereNull('deleted_at')],
 			'batch_code' => ['required', 'string', 'max:255'],
 			'plnt' => ['required', 'integer', 'min:0'],
-			'sloc' => ['required', 'integer', 'min:0'],
 			'qualinsp' => ['required', 'integer', 'min:0'],
 			'unrestricted' => ['required', 'numeric'],
 			'quantity' => ['required', 'numeric', 'min:0']
@@ -209,7 +205,6 @@ class BookStockService
 			'material_code' => 'Kode Material',
 			'batch_code' => 'Kode Batch',
 			'plnt' => 'Plnt',
-			'sloc' => 'SLoc',
 			'qualinsp' => 'QualInsp',
 			'unrestricted' => 'Unrestricted',
 			'quantity' => 'Kuantitas'
@@ -219,7 +214,6 @@ class BookStockService
 			'material_id' => Material::whereRaw('lower(code) = lower(?)', $request->material_code)->where('period_id', $request->period)->whereNull('deleted_at')->first()?->id ?? 0,
 			'batch' => Str::upper($request->batch_code),
 			'plnt' => (int)$request->plnt,
-			'sloc' => (int)$request->sloc,
 			'qualinsp' => (int)$request->qualinsp,
 			'unrestricted' => $request->unrestricted,
 			'quantity' => $request->quantity

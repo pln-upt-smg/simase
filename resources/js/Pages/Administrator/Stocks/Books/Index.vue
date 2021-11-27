@@ -135,8 +135,6 @@
                                ref="storeQuantity" v-model="storeForm.quantity"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Plnt"
                                ref="storePlnt" v-model="storeForm.plnt"/>
-                    <jet-input type="number" class="mt-4 block w-full" placeholder="SLoc"
-                               ref="storeSloc" v-model="storeForm.sloc"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Unrestricted"
                                ref="storeUnrestricted" v-model="storeForm.unrestricted"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="QualInsp"
@@ -173,8 +171,6 @@
                                ref="updateQuantity" v-model="updateForm.quantity"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Plnt"
                                ref="updatePlnt" v-model="updateForm.plnt"/>
-                    <jet-input type="number" class="mt-4 block w-full" placeholder="SLoc"
-                               ref="updateSloc" v-model="updateForm.sloc"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="Unrestricted"
                                ref="updateUnrestricted" v-model="updateForm.unrestricted"/>
                     <jet-input type="number" class="mt-4 block w-full" placeholder="QualInsp"
@@ -403,7 +399,6 @@ export default defineComponent({
                 batch_code: null,
                 quantity: null,
                 plnt: null,
-                sloc: null,
                 qualinsp: null,
                 unrestricted: null
             }),
@@ -415,7 +410,6 @@ export default defineComponent({
                 batch_code: null,
                 quantity: null,
                 plnt: null,
-                sloc: null,
                 qualinsp: null,
                 unrestricted: null
             }),
@@ -550,7 +544,6 @@ export default defineComponent({
             this.updateForm.batch_code = stock.batch_code
             this.updateForm.quantity = stock.quantity
             this.updateForm.plnt = stock.plnt
-            this.updateForm.sloc = stock.sloc
             this.updateForm.qualinsp = stock.qualinsp
             this.updateForm.unrestricted = stock.unrestricted
             setTimeout(() => this.confirmingUpdate = true, 150)
@@ -584,7 +577,6 @@ export default defineComponent({
                 this.storeForm.batch_code = null
                 this.storeForm.quantity = null
                 this.storeForm.plnt = null
-                this.storeForm.sloc = null
                 this.storeForm.qualinsp = null
                 this.storeForm.unrestricted = null
             }, 500)
@@ -602,7 +594,6 @@ export default defineComponent({
                 this.updateForm.batch_code = null
                 this.updateForm.quantity = null
                 this.updateForm.plnt = null
-                this.updateForm.sloc = null
                 this.updateForm.qualinsp = null
                 this.updateForm.unrestricted = null
             }, 500)
