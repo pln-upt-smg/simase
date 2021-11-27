@@ -67,23 +67,17 @@
                     <td v-show="showColumn('quantity')">{{ stock.quantity }}</td>
                     <td v-show="showColumn('uom')">{{ stock.uom }}</td>
                     <td v-show="showColumn('mtyp')">{{ stock.mtyp }}</td>
-                    <td v-show="showColumn('action')" class="text-center">
-                        <jet-dropdown name="Opsi">
-                            <menu-item>
-                                <button @click="confirmUpdate(stock)"
-                                        class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group">
-                                    <pencil-alt-icon class="w-5 h-5 mr-3 text-gray-700" aria-hidden="true"/>
-                                    Edit
-                                </button>
-                            </menu-item>
-                            <menu-item>
-                                <button @click="confirmDestroy(stock)"
-                                        class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group">
-                                    <trash-icon class="w-5 h-5 mr-3 text-gray-700" aria-hidden="true"/>
-                                    Hapus
-                                </button>
-                            </menu-item>
-                        </jet-dropdown>
+                    <td v-show="showColumn('action')" class="flex space-x-2 text-center">
+                        <button @click="confirmUpdate(stock)"
+                                class="flex items-center w-full px-4 py-2 text-sm text-gray-700 border rounded hover:bg-gray-100">
+                            <pencil-alt-icon class="w-5 h-5 mr-3 text-gray-700" aria-hidden="true"/>
+                            Edit
+                        </button>
+                        <button @click="confirmDestroy(stock)"
+                                class="flex items-center w-full px-4 py-2 text-sm text-gray-700 border rounded hover:bg-gray-100">
+                            <trash-icon class="w-5 h-5 mr-3 text-gray-700" aria-hidden="true"/>
+                            Hapus
+                        </button>
                     </td>
                 </tr>
             </template>
