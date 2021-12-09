@@ -15,7 +15,7 @@
                         <v-select
                             id="sub_area"
                             placeholder="Cari Sub Area"
-                            class="vue-select rounded-md block w-full"
+                            class="block w-full rounded-md vue-select"
                             v-model="form.sub_area"
                             v-on:option:selected="onSubAreaSelected"
                             :filterable="false"
@@ -38,7 +38,7 @@
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="period" value="Periode"/>
                     <jet-select id="period" placeholder="Pilih Periode" v-model="form.period"
-                                :data="periods" class="mt-2 block w-full normal-case text-base lg:text-lg"/>
+                                :data="periods" class="block w-full mt-2 text-base normal-case lg:text-lg"/>
                     <jet-input-error :message="form.errors.period" class="mt-2"/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
@@ -47,7 +47,7 @@
                         <v-select
                             id="material_code"
                             placeholder="Masukkan Kode Material"
-                            class="vue-select rounded-md block w-full"
+                            class="block w-full rounded-md vue-select"
                             label="code"
                             v-model="form.material_code"
                             v-on:option:selected="onMaterialCodeSelected"
@@ -68,7 +68,7 @@
                         </v-select>
                         <div class="ml-2">
                             <jet-secondary-button type="button" @click="confirmScanMaterialBarcode" class="h-full">
-                                <qrcode-icon class="h-5 w-5 text-gray-800" aria-hidden="true"/>
+                                <qrcode-icon class="w-5 h-5 text-gray-800" aria-hidden="true"/>
                             </jet-secondary-button>
                         </div>
                     </div>
@@ -77,7 +77,7 @@
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="material_description" value="Deskripsi Material"/>
                     <jet-input id="material_description" type="text"
-                               class="mt-2 block w-full capitalize" v-model="materialData.description" disabled
+                               class="block w-full mt-2 capitalize" v-model="materialData.description" disabled
                                title="Data ini diambil berdasarkan Kode Material yang diberikan."/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
@@ -86,7 +86,7 @@
                         <v-select
                             id="batch_code"
                             placeholder="Masukkan Kode Batch"
-                            class="vue-select rounded-md block w-full"
+                            class="block w-full rounded-md vue-select"
                             label="code"
                             v-model="form.batch_code"
                             :searchable="false"
@@ -108,7 +108,7 @@
                         </v-select>
                         <div class="ml-2">
                             <jet-secondary-button type="button" @click="confirmScanBatchBarcode" class="h-full">
-                                <qrcode-icon class="h-5 w-5 text-gray-800" aria-hidden="true"/>
+                                <qrcode-icon class="w-5 h-5 text-gray-800" aria-hidden="true"/>
                             </jet-secondary-button>
                         </div>
                     </div>
@@ -116,14 +116,14 @@
                 </div>
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="quantity" value="Kuantitas"/>
-                    <jet-input id="quantity" type="number" step="any" class="mt-2 block w-full" v-model="form.quantity"
+                    <jet-input id="quantity" type="number" step="any" class="block w-full mt-2" v-model="form.quantity"
                                autocomplete="quantity" placeholder="Masukkan Kuantitas"/>
                     <jet-input-error :message="form.errors.quantity" class="mt-2"/>
                 </div>
                 <div class="col-span-6 sm:col-span-4">
                     <jet-label for="uom" value="UoM"/>
                     <jet-input id="uom" type="text"
-                               class="mt-2 block w-full capitalize" v-model="materialData.uom" disabled
+                               class="block w-full mt-2 capitalize" v-model="materialData.uom" disabled
                                title="Data ini diambil berdasarkan Kode Material yang diberikan."/>
                 </div>
             </template>
@@ -392,8 +392,12 @@ export default defineComponent({
                     material: this.materialData.id ?? 0
                 }
             }).then(res => {
-                if (_.isEmpty(res.data)) this.showDangerNotification('Kode batch tidak valid!', 'Sistem tidak dapat mengenali kode batch yang diberikan, mohon periksa kembali')
+                if (_.isEmpty(res.data)) {
+                    this.form.batch_code = ''
+                    this.showDangerNotification('Kode batch tidak valid!', 'Sistem tidak dapat mengenali kode batch yang diberikan, mohon periksa kembali')
+                }
             }).catch(() => {
+                this.form.batch_code = ''
                 this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengambil data batch, mohon coba lagi nanti')
             })
         }
