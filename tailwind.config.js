@@ -1,8 +1,7 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
-    mode: 'jit',
-    purge: [
+    content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',
         './storage/framework/views/*.php',
@@ -14,6 +13,11 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['Nunito Sans', ...defaultTheme.fontFamily.sans]
+            },
+            colors: {
+              green: colors.emerald,
+              yellow: colors.amber,
+              purple: colors.violet,
             }
         },
         screens: {
@@ -23,13 +27,6 @@ module.exports = {
             'xl': '1280px',
             '2xl': '1536px'
         }
-    },
-    variants: {
-        textColor: ['disabled'],
-        backgroundColor: ['disabled'],
-        borderColor: ['disabled'],
-        opacity: ['disabled'],
-        cursor: ['disabled']
     },
     plugins: [
         require('@tailwindcss/forms'),
