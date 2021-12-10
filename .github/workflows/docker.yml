@@ -61,6 +61,9 @@ jobs:
       - name: 🪵 Check Docker MySQL Containers Log
         run: docker logs stocktake-web-mysql-1
 
+      - name: 🪵 Check Docker Redis Containers Log
+        run: docker logs stocktake-web-redis-1
+
       - name: 🚨 Set Application Directory Permissions
         run: |
           docker exec -t stocktake-web-laravel.test-1 chmod -R ug+rwx storage bootstrap/cache
