@@ -2,9 +2,9 @@ name: Docker
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -54,44 +54,44 @@ jobs:
         run: docker ps -a
 
       - name: 🪵 Check Docker App Containers Log
-        run: docker logs stocktake-web-app-1
+        run: docker logs stocktake-web-laravel.test-1
 
       - name: 🪵 Check Docker MySQL Containers Log
         run: docker logs stocktake-web-mysql-1
 
       - name: 🚨 Set Application Directory Permissions
         run: |
-          docker exec -t stocktake-web-app-1 chmod -R ug+rwx storage bootstrap/cache
-          docker exec -t stocktake-web-app-1 chmod -R g+w storage/logs
+          docker exec -t stocktake-web-laravel.test-1 chmod -R ug+rwx storage bootstrap/cache
+          docker exec -t stocktake-web-laravel.test-1 chmod -R g+w storage/logs
 
       - name: 📦 Install NPM Dependencies
-        run: docker exec -t stocktake-web-app-1 npm i
+        run: docker exec -t stocktake-web-laravel.test-1 npm i
 
       - name: 🔑 Generate Application Key
-        run: docker exec -t stocktake-web-app-1 php artisan key:generate
+        run: docker exec -t stocktake-web-laravel.test-1 php artisan key:generate
 
       - name: 💾 Link Application Storage
-        run: docker exec -t stocktake-web-app-1 php artisan storage:link
+        run: docker exec -t stocktake-web-laravel.test-1 php artisan storage:link
 
       - name: 🗄️ Run Database Migration
-        run: docker exec -t stocktake-web-app-1 php artisan migrate --force
+        run: docker exec -t stocktake-web-laravel.test-1 php artisan migrate --force
 
       - name: 🔄 Verify Database Rollback
-        run: docker exec -t stocktake-web-app-1 php artisan migrate:refresh --force
+        run: docker exec -t stocktake-web-laravel.test-1 php artisan migrate:refresh --force
 
       - name: 🗃️ Run Database Seeder
-        run: docker exec -t stocktake-web-app-1 php artisan db:seed --force
+        run: docker exec -t stocktake-web-laravel.test-1 php artisan db:seed --force
 
       - name: 🗑️ Clear Laravel Cache
-        run: docker exec -t stocktake-web-app-1 php artisan optimize:clear
+        run: docker exec -t stocktake-web-laravel.test-1 php artisan optimize:clear
 
       - name: 🔧 Optimize Laravel Configuration
         run: |
-          docker exec -t stocktake-web-app-1 php artisan optimize
-          docker exec -t stocktake-web-app-1 php artisan view:cache
+          docker exec -t stocktake-web-laravel.test-1 php artisan optimize
+          docker exec -t stocktake-web-laravel.test-1 php artisan view:cache
 
       - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
-        run: docker exec -t stocktake-web-app-1 composer lint
+        run: docker exec -t stocktake-web-laravel.test-1 composer lint
 
       - name: 🛑 Stop Application Containers
         run: docker compose down

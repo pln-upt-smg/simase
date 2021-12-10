@@ -2,7 +2,7 @@ name: ⛑️ Activate Maintenance Mode
 
 on:
   workflow_dispatch:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deployment:

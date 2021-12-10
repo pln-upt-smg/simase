@@ -1,12 +1,12 @@
 {
     "private": true,
     "scripts": {
-        "dev": "yarn run development",
+        "dev": "npm run development",
         "development": "mix",
         "watch": "mix watch",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
-        "prod": "yarn run production",
+        "prod": "npm run production",
         "production": "mix --production"
     },
     "devDependencies": {
@@ -19,6 +19,7 @@
         "axios": "^0.24.0",
         "browser-sync": "^2.27.7",
         "browser-sync-webpack-plugin": "^2.3.0",
+        "chokidar": "^3.5.2",
         "clean-webpack-plugin": "^4.0.0",
         "laravel-mix": "^6.0.39",
         "lodash": "^4.17.21",
