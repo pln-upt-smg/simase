@@ -31,12 +31,12 @@ jobs:
             sudo chmod -R ug+rwx storage bootstrap/cache
             sudo chmod -R g+w storage/logs
             php artisan optimize:clear
-            yarn
+            npm i
             composer i -o -n --no-dev
             php artisan cloudflare:reload
             php artisan optimize
             php artisan view:cache
-            yarn run production
+            npm run production
             sudo supervisorctl restart stocktake-web-cron:*
             sudo supervisorctl restart stocktake-web-worker:*
             sudo supervisorctl restart stocktake-web-octane:*
