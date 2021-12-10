@@ -37,8 +37,6 @@ jobs:
           sed -i 's/APP_ENV_CI_CD=false/APP_ENV_CI_CD=true/' .env
           sed -i 's/APP_DEBUG=true/APP_DEBUG=false/' .env
           sed -i 's/DB_HOST=127.0.0.1/DB_HOST=mysql/' .env
-          sed -i 's/DB_USERNAME=stocktake/DB_USERNAME=root/' .env
-          sed -i 's/DB_PASSWORD=stocktake/DB_PASSWORD=root/' .env
 
       - name: 📦 Install Composer Dependencies
         uses: ramsey/composer-install@v1
