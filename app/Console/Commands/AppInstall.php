@@ -32,7 +32,7 @@ class AppInstall extends Command
         passthru('php artisan down --ansi');
         passthru('php artisan optimize:clear --ansi');
         passthru('php artisan view:clear --ansi');
-        passthru('yarn');
+        passthru('npm i');
         passthru(app()->isProduction() ? 'composer i -o --no-dev --ansi --ignore-platform-reqs' : 'composer i -o --ansi --ignore-platform-reqs');
         passthru('php artisan key:generate --ansi');
         passthru('php artisan storage:link --ansi');
@@ -40,7 +40,7 @@ class AppInstall extends Command
         passthru('php artisan cloudflare:reload --ansi');
         passthru('php artisan optimize --ansi');
         passthru('php artisan view:cache --ansi');
-	    passthru(app()->isProduction() ? 'yarn production' : 'yarn development');
+	    passthru(app()->isProduction() ? 'npm run production' : 'npm run development');
         passthru('php artisan env --ansi');
         passthru('php artisan up --ansi');
         return 0;

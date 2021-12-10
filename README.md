@@ -10,8 +10,8 @@
 <a href="https://nodejs.org/en/download">
     <img alt="Node Version" src="https://img.shields.io/badge/node-%3E%3D%2016-brightgreen">
 </a>
-<a href="https://yarnpkg.com">
-    <img alt="Yarn Version" src="https://img.shields.io/badge/yarn-%3E%3D%201-red">
+<a href="https://npmjs.com">
+    <img alt="NPM Version" src="https://img.shields.io/badge/npm-%3E%3D%208-red">
 </a>
 <a href="https://www.php.net/releases">
     <img alt="PHP Version" src="https://img.shields.io/badge/php-%3E%3D%208.0-blue">
@@ -65,7 +65,7 @@ Item Stock Management System for Unilever Indonesia.
 24. [Github Action CI/CD](https://github.com/features/actions) <sup><i>optional</i></sup>
 25. [Docker](https://www.docker.com) <sup><i>optional</i></sup>
 26. [Sentry](https://sentry.io) <sup><i>optional</i></sup>
-27. [Yarn](https://yarnpkg.com) <sup><i>optional</i></sup>
+27. [npm](https://npmjs.com) <sup><i>optional</i></sup>
 
 <br/>
 
@@ -113,7 +113,7 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 2. Composer `v2`
 3. MySQL Server `v5.7`
 4. NodeJS `v16`
-5. Yarn `v1`
+5. npm `v8`
 6. [Laravel Homestead](https://laravel.com/docs/8.x/homestead) / [Laravel Valet](https://laravel.com/docs/8.x/valet) <sup><i>optional</i></sup>
 
 #### 🖥️ Installation
@@ -162,7 +162,7 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 2. Composer `v2`
 3. MySQL Server `v5.7`
 4. NodeJS `v16`
-5. Yarn `v1`
+5. npm `v8`
 6. [Nginx](https://nginx.org/en/download.html) / [Apache2](https://httpd.apache.org/download.cgi)
    / [LiteSpeed](https://openlitespeed.org/Downloads/)
 7. [Supercronic](https://github.com/aptible/supercronic)
