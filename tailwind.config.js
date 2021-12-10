@@ -13,11 +13,6 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['Nunito Sans', ...defaultTheme.fontFamily.sans]
-            },
-            colors: {
-              green: colors.emerald,
-              yellow: colors.amber,
-              purple: colors.violet,
             }
         },
         screens: {
