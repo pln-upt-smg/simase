@@ -1,10 +1,14 @@
 name: 🚀 Deploy to Production (Zero-Downtime)
 
 on:
-  workflow_run:
+  workflow_dispatch:
     branches: [main]
-    workflows: [Laravel]
-    types: [completed]
+
+# on:
+#   workflow_run:
+#     branches: [main]
+#     workflows: [Laravel]
+#     types: [completed]
 
 jobs:
   deployment:
