@@ -21,7 +21,7 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.11
         continue-on-error: true
 
-      - name: 📥 Install PHP v8.0
+      - name: 📥 Install PHP v8.0 and Composer v2
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.0"
@@ -39,6 +39,9 @@ jobs:
           sed -i 's/DB_HOST=127.0.0.1/DB_HOST=mysql/' .env
           sed -i 's/DB_USERNAME=stocktake/DB_USERNAME=root/' .env
           sed -i 's/DB_PASSWORD=stocktake/DB_PASSWORD=root/' .env
+
+      - name: 📦 Install Composer Dependencies
+        uses: ramsey/composer-install@v1
 
       - name: 🔨 Build Application Image
         run: docker compose build
