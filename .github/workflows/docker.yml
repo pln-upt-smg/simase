@@ -116,16 +116,13 @@ jobs:
           docker volume prune -f
           docker image prune -f
 
-      - name: ⚙️ Set up Docker Environment Variables
-        run: |
-          export APP_SERVICE=${APP_SERVICE:-"laravel.test"}
-          export DB_PORT=${DB_PORT:-3306}
-          export WWWUSER=${WWWUSER:-$UID}
-          export WWWGROUP=${WWWGROUP:-$(id -g)}
-
       - name: 📀 Push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: ./docker/8.1
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          build-args: |
+            WWWGROUP=1000
+            WWWUSER=1000
+
