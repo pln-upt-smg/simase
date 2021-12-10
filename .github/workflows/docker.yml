@@ -11,7 +11,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  verify-build:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Install Github Action Checkout
@@ -99,19 +99,6 @@ jobs:
 
       - name: 🛑 Stop Application Containers
         run: docker compose down
-
-      - name: 🗑️ Prune unused Docker volumes and images
-        run: |
-          docker volume prune -f
-          docker image prune -f
-
-  build-and-push-image:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: 📥 Install Github Action Checkout
         uses: actions/checkout@v2
 
       - name: 🗝️ Log in to the Container Registry
@@ -127,9 +114,14 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: 📀 Build and Push Docker Image
+      - name: 📀 Push Docker Image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: ./docker/8.1
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+
+      - name: 🗑️ Prune unused Docker volumes and images
+        run: |
+          docker volume prune -f
+          docker image prune -f
