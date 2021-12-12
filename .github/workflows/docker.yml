@@ -128,4 +128,3 @@ jobs:
           build-args: |
             WWWGROUP=1000
             WWWUSER=1000
-

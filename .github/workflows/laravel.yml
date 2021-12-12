@@ -70,13 +70,13 @@ jobs:
       - name: 🗑️ Clear Laravel Cache
         run: sudo php artisan optimize:clear
 
+      - name: 🎨 Run Laravel Mix for Production
+        run: npm run production
+
       - name: 🔧 Optimize Laravel Configuration
         run: |
           php artisan optimize
           php artisan view:cache
-
-      - name: 🎨 Run Laravel Mix for Production
-        run: npm run production
 
       - name: 🧪 Run Application Linter (Static Code Analyzer) via PHPStan
         run: composer lint
