@@ -75,7 +75,7 @@ Ikuti salah satu dari langkah berikut untuk melakukan deploy aplikasi pada tahap
 
 ### 🐋 Docker
 
-Langkah instalasi dockerized application dengan ⛵ Laravel Sail untuk memudahkan proses deployment aplikasi
+Langkah instalasi containerized application dengan ⛵ Laravel Sail untuk memudahkan proses deployment aplikasi
 
 #### ✔️ Requirement
 
