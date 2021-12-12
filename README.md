@@ -96,8 +96,8 @@ Langkah instalasi dockerized application dengan ⛵ Laravel Sail untuk memudahka
 4. `vendor/bin/sail up`
 
 > #### 📝 Informasi
+> - Untuk kebutuhan running aplikasi, Docker Image sudah tersedia pada laman [berikut](https://github.com/evercode-software/stocktake-web/pkgs/container/stocktake-web).
 > - Jika menggunakan OS Windows, jalankan Laravel Sail dalam [Windows WSL v2](https://ubuntu.com/wsl)
-> - Akses aplikasi via web pada alamat `http://127.0.0.1`
 > - Alamat URL dan port aplikasi yang digunakan Laravel Sail sesuai konfigurasi pada `.env`
 
 > #### 👌 Rekomendasi
