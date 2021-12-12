@@ -32,8 +32,8 @@ Item Stock Management System for Unilever Indonesia.
 
 > ⚠️ **Important Notes**
 >
-> - [Swoole](https://www.swoole.co.uk) need to be installed in the server in order to use Laravel Octane.
-> - Please respect the Laravel Octane [rules and limitations](https://laravel.com/docs/8.x/octane#dependency-injection-and-octane) in order to avoid memory leaks.
+> -   [Swoole](https://www.swoole.co.uk) need to be installed in the server in order to use Laravel Octane.
+> -   Please respect the Laravel Octane [rules and limitations](https://laravel.com/docs/8.x/octane#dependency-injection-and-octane) in order to avoid memory leaks.
 
 <br/>
 
@@ -96,12 +96,14 @@ Langkah instalasi dockerized application dengan ⛵ Laravel Sail untuk memudahka
 4. `vendor/bin/sail up`
 
 > #### 📝 Informasi
-> - Untuk kebutuhan running aplikasi, Docker Image sudah tersedia pada laman [berikut](https://github.com/evercode-software/stocktake-web/pkgs/container/stocktake-web).
-> - Jika menggunakan OS Windows, jalankan Laravel Sail dalam [Windows WSL v2](https://ubuntu.com/wsl)
-> - Alamat URL dan port aplikasi yang digunakan Laravel Sail sesuai konfigurasi pada `.env`
+>
+> -   Untuk kebutuhan running aplikasi, Docker Image sudah tersedia pada laman [berikut](https://github.com/evercode-software/stocktake-web/pkgs/container/stocktake-web).
+> -   Jika menggunakan OS Windows, jalankan Laravel Sail dalam [Windows WSL v2](https://ubuntu.com/wsl)
+> -   Alamat URL dan port aplikasi yang digunakan Laravel Sail sesuai konfigurasi pada `.env`
 
 > #### 👌 Rekomendasi
-> - Pelajari perintah **Laravel Sail** pada dokumentasi [berikut](https://laravel.com/docs/8.x/sail)
+>
+> -   Pelajari perintah **Laravel Sail** pada dokumentasi [berikut](https://laravel.com/docs/8.x/sail)
 
 ### 🏡 Self Hosted
 
@@ -133,18 +135,21 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 5. `php artisan app:install`
 
 > #### 📝 Informasi
-> - Pastikan ekstensi PHP yang dibutuhkan Laravel `v8` sudah terpasang pada local development environment, sesuai dokumentasi [berikut](https://laravel.com/docs/8.x/deployment)
+>
+> -   Pastikan ekstensi PHP yang dibutuhkan Laravel `v8` sudah terpasang pada local development environment, sesuai dokumentasi [berikut](https://laravel.com/docs/8.x/deployment)
 
 > #### 💡 Opsional
-> - Gunakan `php artisan serve` untuk membuka aplikasi via PHP Built-in Web Server
-> - Gunakan `php artisan queue:work database` untuk testing fitur [Queues](https://laravel.com/docs/8.x/queues)
-> - Gunakan `php artisan schedule:run` untuk testing fitur [Task Scheduling](https://laravel.com/docs/8.x/scheduling)
-> - Gunakan `php artisan optimize` saat setelah proses development untuk mempercepat performa aplikasi
+>
+> -   Gunakan `php artisan serve` untuk membuka aplikasi via PHP Built-in Web Server
+> -   Gunakan `php artisan queue:work database` untuk testing fitur [Queues](https://laravel.com/docs/8.x/queues)
+> -   Gunakan `php artisan schedule:run` untuk testing fitur [Task Scheduling](https://laravel.com/docs/8.x/scheduling)
+> -   Gunakan `php artisan optimize` saat setelah proses development untuk mempercepat performa aplikasi
 
 > #### 👌 Rekomendasi
-> - Gunakan `composer dev` untuk optimalisasi Laravel Intellisense pada IDE anda
-> - Gunakan `composer lint` untuk menjalankan PHP Linter (Static Code Analaysis)
-> - Gunakan local development environment seperti [Laravel Homestead](https://laravel.com/docs/8.x/homestead) / [Laravel Valet](https://laravel.com/docs/8.x/valet)
+>
+> -   Gunakan `composer dev` untuk optimalisasi Laravel Intellisense pada IDE anda
+> -   Gunakan `composer lint` untuk menjalankan PHP Linter (Static Code Analaysis)
+> -   Gunakan local development environment seperti [Laravel Homestead](https://laravel.com/docs/8.x/homestead) / [Laravel Valet](https://laravel.com/docs/8.x/valet)
 
 <br/>
 
@@ -189,99 +194,106 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
     - `sudo nano /etc/redis/redis.conf`, lalu ubah `supervised no` menjadi `supervised systemd`
     - `sudo service redis-server restart`
 8. Install **supercronic** untuk aplikasi:
+
     - `sudo apt install snap`
     - `sudo snap install go`
     - `go get -d github.com/aptible/supercronic`
     - `cd ~/go/pkg/mod/github.com/aptible/supercronic@v<version>`
-      <div style="margin-top: 21px">
+        <div style="margin-top: 21px">
 
-      > Ubah `<version>` ke versi terakhir supercronic sesuai laman [berikut](https://github.com/aptible/supercronic/releases)
+        > Ubah `<version>` ke versi terakhir supercronic sesuai laman [berikut](https://github.com/aptible/supercronic/releases)
 
-      </div>
+        </div>
+
     - `go mod vendor`
     - `go install`
     - `source /etc/profile`
     - Verifikasi instalasi supercronic dengan perintah `supercronic`
     - Siapkan cronjob untuk aplikasi:
-      ```bash
-      rm -rf ~/supercronic && \
-      sudo mkdir ~/supercronic && \
-      sudo touch ~/supercronic/stocktake-web.cron && \
-      sudo echo "path=/var/www/stocktake/web" >> ~/supercronic/stocktake-web.cron && \
-      sudo echo "* * * * * php $path/artisan schedule:run >> /dev/null 2>&1" >> ~/supercronic/stocktake-web.cron && \
-      sudo echo "0 1 * * * rm -rf $path/storage/logs/laravel.log && touch $path/storage/logs/laravel.log" >> ~/supercronic/stocktake-web.cron && \
-      sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-cron.log && touch $path/storage/logs/stocktake-web-cron.log" >> ~/supercronic/stocktake-web.cron && \
-      sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-worker.log && touch $path/storage/logs/stocktake-web-worker.log" >> ~/supercronic/stocktake-web.cron && \
-      sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-octane.log && touch $path/storage/logs/stocktake-web-octane.log" >> ~/supercronic/stocktake-web.cron && \
-      sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-access.log && touch $path/storage/logs/nginx-access.log" >> ~/supercronic/stocktake-web.cron && \
-      sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-error.log && touch $path/storage/logs/nginx-error.log" >> ~/supercronic/stocktake-web.cron
-      ```
-      > Sesuaikan path `/var/www/stocktake/web` dengan lokasi direktori proyek
+        ```bash
+        rm -rf ~/supercronic && \
+        sudo mkdir ~/supercronic && \
+        sudo touch ~/supercronic/stocktake-web.cron && \
+        sudo echo "path=/var/www/stocktake/web" >> ~/supercronic/stocktake-web.cron && \
+        sudo echo "* * * * * php $path/artisan schedule:run >> /dev/null 2>&1" >> ~/supercronic/stocktake-web.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/laravel.log && touch $path/storage/logs/laravel.log" >> ~/supercronic/stocktake-web.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-cron.log && touch $path/storage/logs/stocktake-web-cron.log" >> ~/supercronic/stocktake-web.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-worker.log && touch $path/storage/logs/stocktake-web-worker.log" >> ~/supercronic/stocktake-web.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-octane.log && touch $path/storage/logs/stocktake-web-octane.log" >> ~/supercronic/stocktake-web.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-access.log && touch $path/storage/logs/nginx-access.log" >> ~/supercronic/stocktake-web.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-error.log && touch $path/storage/logs/nginx-error.log" >> ~/supercronic/stocktake-web.cron
+        ```
+        > Sesuaikan path `/var/www/stocktake/web` dengan lokasi direktori proyek
+
 9. Install **supervisor** untuk aplikasi:
+
     - `sudo apt install supervisor`
     - `sudo chown -R www-data:www-data /var/www/`
     - `nano /etc/supervisor/conf.d/stocktake-web-supervisor.conf`
     - Masukkan konfigurasi berikut:
-      <div style="margin-top: 21px">
+        <div style="margin-top: 21px">
 
-      ```
-      [supervisord]
-      nodaemon=false
-      logfile=/dev/null
-      logfile_maxbytes=0
-      pidfile=/run/supervisord.pid
-      
-      [program:stocktake-web-cron]
-      process_name=%(program_name)s_%(process_num)02d
-      command=/root/go/bin/supercronic /root/supercronic/stocktake-web.cron
-      autostart=true
-      autorestart=true
-      user=root
-      numprocs=1
-      redirect_stderr=true
-      stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-cron.log
-      stdout_logfile_maxbytes=0
-      stopwaitsecs=3600
-       
-      [program:stocktake-web-worker]
-      process_name=%(program_name)s_%(process_num)02d
-      command=php /var/www/stocktake/web/artisan queue:work database --sleep=3 --tries=3
-      autostart=true
-      autorestart=true
-      user=root
-      numprocs=8
-      redirect_stderr=true
-      stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-worker.log
-      stdout_logfile_maxbytes=0
-      stopwaitsecs=3600
-       
-      [program:stocktake-web-octane]
-      process_name=%(program_name)s_%(process_num)02d
-      command=php /var/www/stocktake/web/artisan octane:start --max-requests=500
-      autostart=true
-      autorestart=true
-      user=root
-      numprocs=1
-      redirect_stderr=true
-      stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-octane.log
-      stdout_logfile_maxbytes=0
-      stopwaitsecs=3600
-      ```
+        ```
+        [supervisord]
+        nodaemon=false
+        logfile=/dev/null
+        logfile_maxbytes=0
+        pidfile=/run/supervisord.pid
 
-      </div>
+        [program:stocktake-web-cron]
+        process_name=%(program_name)s_%(process_num)02d
+        command=/root/go/bin/supercronic /root/supercronic/stocktake-web.cron
+        autostart=true
+        autorestart=true
+        user=root
+        numprocs=1
+        redirect_stderr=true
+        stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-cron.log
+        stdout_logfile_maxbytes=0
+        stopwaitsecs=3600
 
-      > Sesuaikan `/var/www/stocktake/web` dengan lokasi direktori proyek
+        [program:stocktake-web-worker]
+        process_name=%(program_name)s_%(process_num)02d
+        command=php /var/www/stocktake/web/artisan queue:work database --sleep=3 --tries=3
+        autostart=true
+        autorestart=true
+        user=root
+        numprocs=8
+        redirect_stderr=true
+        stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-worker.log
+        stdout_logfile_maxbytes=0
+        stopwaitsecs=3600
+
+        [program:stocktake-web-octane]
+        process_name=%(program_name)s_%(process_num)02d
+        command=php /var/www/stocktake/web/artisan octane:start --max-requests=500
+        autostart=true
+        autorestart=true
+        user=root
+        numprocs=1
+        redirect_stderr=true
+        stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-octane.log
+        stdout_logfile_maxbytes=0
+        stopwaitsecs=3600
+        ```
+
+        </div>
+
+        > Sesuaikan `/var/www/stocktake/web` dengan lokasi direktori proyek
 
     - `sudo supervisorctl reread`
     - `sudo supervisorctl update`
     - `sudo supervisorctl restart all` <br/>
 
 > #### 📝 Informasi
-> - Pastikan ekstensi PHP yang dibutuhkan Laravel `v8` sudah terpasang pada server, sesuai dokumentasi [berikut](https://laravel.com/docs/8.x/deployment)
+>
+> -   Pastikan ekstensi PHP yang dibutuhkan Laravel `v8` sudah terpasang pada server, sesuai dokumentasi [berikut](https://laravel.com/docs/8.x/deployment)
 
 > #### 💡 Opsional
-> - Untuk mempercepat performa aplikasi, jalankan `php artisan optimize` saat setelah update source code pada aplikasi
+>
+> -   Untuk mempercepat performa aplikasi, jalankan `php artisan optimize` saat setelah update source code pada aplikasi
 
 > #### 👌 Rekomendasi
-> - Gunakan OS berbasis Linux (e.g. Ubuntu 20.04.3 LTS) <br/>
-> - Gunakan Web Server [Nginx](https://nginx.org/en/download.html), [Apache2](https://httpd.apache.org/download.cgi), atau [LiteSpeed](https://openlitespeed.org/Downloads/)
+>
+> -   Gunakan OS berbasis Linux (e.g. Ubuntu 20.04.3 LTS) <br/>
+> -   Gunakan Web Server [Nginx](https://nginx.org/en/download.html), [Apache2](https://httpd.apache.org/download.cgi), atau [LiteSpeed](https://openlitespeed.org/Downloads/)
