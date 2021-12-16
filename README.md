@@ -4,6 +4,9 @@
 <a href="https://github.com/evercode-software/stocktake-web/actions/workflows/docker.yml">
     <img alt="Docker" src="https://github.com/evercode-software/stocktake-web/actions/workflows/docker.yml/badge.svg">
 </a>
+<a href="https://stock.zara-app.com">
+    <img alt="Production" src="https://img.shields.io/website?label=production&up_message=deployed&url=https%3A%2F%2Fstock.zara-app.com">
+</a>
 <a href="https://nodejs.org/en/download">
     <img alt="Node Version" src="https://img.shields.io/badge/node-%3E%3D%2016-brightgreen">
 </a>
