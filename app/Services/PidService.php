@@ -51,6 +51,7 @@ class PidService
     {
         $query = QueryBuilder::for(BookStock::class)
             ->select([
+                'areas.sloc',
                 'book_stocks.id as id',
                 'book_stocks.area_id as area_id',
                 'book_stocks.batch as batch_code',
@@ -62,24 +63,41 @@ class PidService
                 'materials.description as material_description',
                 'materials.uom as uom',
                 'materials.mtyp as mtyp',
-                DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
-                DB::raw('coalesce(((case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end) - book_stocks.quantity), 0) as gap_qty')
+                DB::raw('sum(if(actual_stocks.quantity IS NOT NULL, actual_stocks.quantity, 0)) as actual_qty'),
+                DB::raw('(sum(if(actual_stocks.quantity IS NOT NULL, actual_stocks.quantity, 0)) - if(book_stocks.quantity IS NOT NULL, book_stocks.quantity, 0)) as gap_qty')
             ])
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
             ->leftJoin('areas', 'areas.id', '=', 'book_stocks.area_id')
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->leftJoin('sub_areas', 'sub_areas.id', '=', 'actual_stocks.sub_area_id')
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-            //->where('sub_areas.area_id', '=', 'areas.id')
-            ->whereNull(['book_stocks.deleted_at', 'actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
+            ->whereNull(['book_stocks.deleted_at', 'actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at'])
+            ->groupBy([
+                'areas.sloc',
+                'book_stocks.area_id',
+                'book_stocks.id',
+                'book_stocks.batch',
+                'book_stocks.unrestricted',
+                'book_stocks.qualinsp',
+                'book_stocks.quantity',
+                'materials.period_id',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
+            ]);
+
         if (!is_null($area)) {
             $query = $query->where('areas.id', $area->id);
         }
+
         if (!is_null($period)) {
             $query = $query->where('periods.id', $period->id);
         }
+
         return $query->defaultSort('materials.code')
             ->allowedFilters(InertiaHelper::filterBy([
+                'areas.sloc',
                 'book_stocks.batch',
                 'book_stocks.unrestricted',
                 'book_stocks.qualinsp',
@@ -90,6 +108,7 @@ class PidService
                 'materials.mtyp'
             ]))
             ->allowedSorts([
+                'sloc',
                 'batch_code',
                 'unrestricted',
                 'qualinsp',
@@ -112,6 +131,7 @@ class PidService
     public function tableMeta(InertiaTable $table): InertiaTable
     {
         return $table->addSearchRows([
+            'areas.sloc' => 'Sloc',
             'materials.code' => 'Kode Material',
             'materials.description' => 'Deskripsi Material',
             'materials.uom' => 'UoM',
@@ -121,6 +141,7 @@ class PidService
             'book_stocks.qualinsp' => 'QualInsp',
             'book_stocks.quantity' => 'BookQty'
         ])->addColumns([
+            'sloc' => 'Sloc',
             'material_code' => 'Kode Material',
             'material_description' => 'Deskripsi Material',
             'uom' => 'UoM',
@@ -156,6 +177,7 @@ class PidService
     public function collection(?Area $area, ?Period $period): Collection
     {
         $query = BookStock::select([
+            'areas.sloc as sloc',
             'book_stocks.id as id',
             'book_stocks.batch as batch_code',
             'book_stocks.unrestricted as unrestricted',
@@ -166,8 +188,8 @@ class PidService
             'materials.uom as uom',
             'materials.mtyp as mtyp',
             'areas.name as area_name',
-            DB::raw('case when actual_stocks.quantity is null then 0 else coalesce(actual_stocks.quantity, 0) end as actual_qty'),
-            DB::raw('coalesce((actual_stocks.quantity - book_stocks.quantity), 0) as gap_qty')
+            DB::raw('sum(if(actual_stocks.quantity IS NOT NULL, actual_stocks.quantity, 0)) as actual_qty'),
+            DB::raw('(sum(if(actual_stocks.quantity IS NOT NULL, actual_stocks.quantity, 0)) - if(book_stocks.quantity IS NOT NULL, book_stocks.quantity, 0)) as gap_qty')
         ])
             ->orderBy('materials.code')
             ->leftJoin('actual_stocks', 'actual_stocks.material_id', '=', 'book_stocks.material_id')
@@ -175,14 +197,30 @@ class PidService
             ->leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
             ->leftJoin('sub_areas', 'sub_areas.id', '=', 'actual_stocks.sub_area_id')
             ->leftJoin('periods', 'periods.id', '=', 'materials.period_id')
-            //->where('sub_areas.area_id', '=', 'areas.id')
-            ->whereNull(['book_stocks.deleted_at', 'actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at']);
+            ->whereNull(['book_stocks.deleted_at', 'actual_stocks.deleted_at', 'areas.deleted_at', 'materials.deleted_at', 'periods.deleted_at'])
+            ->groupBy([
+                'areas.sloc',
+                'book_stocks.area_id',
+                'book_stocks.id',
+                'book_stocks.batch',
+                'book_stocks.unrestricted',
+                'book_stocks.qualinsp',
+                'book_stocks.quantity',
+                'materials.period_id',
+                'materials.code',
+                'materials.description',
+                'materials.uom',
+                'materials.mtyp',
+            ]);
+
         if (!is_null($area)) {
             $query = $query->where('areas.id', $area->id);
         }
+
         if (!is_null($period)) {
             $query = $query->where('periods.id', $period->id);
         }
+
         return $query->get();
     }
 }
