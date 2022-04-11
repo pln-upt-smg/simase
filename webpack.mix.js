@@ -43,8 +43,8 @@ mix.vue()
         require('postcss-import'),
         require('tailwindcss')
     ])
-    .minify('public/js/app.js', 'public/js')
-    .minify('public/css/app.css', 'public/css')
+    .minify('public/js/app.js', 'public/js/app.min.js')
+    .minify('public/css/app.css', 'public/css/app.min.css')
     .sourceMaps()
     .generateSW({
         exclude: [/\.(?:png|jpg|jpeg|svg)$/],
