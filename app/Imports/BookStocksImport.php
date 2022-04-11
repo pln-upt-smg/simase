@@ -33,7 +33,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class BookStocksImport implements ToCollection, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, WithValidation, ShouldQueue, ShouldBeUnique
+class BookStocksImport implements ToCollection, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
 {
 	use Importable, SkipsFailures, SkipsErrors, HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleArea, HasMaterialResolver;
 
@@ -84,7 +84,7 @@ class BookStocksImport implements ToCollection, SkipsOnFailure, SkipsOnError, Sk
 	public function replace(array $row): void
 	{
 		$areaId = $this->currentAreaId;
-		$materialId = $this->resolveMaterialId($row['material']);
+		$materialId = $this->resolveMaterialId($row['material'], $this->periodId);
 		if ($areaId === 0 || $materialId === 0) {
 			return;
 		}

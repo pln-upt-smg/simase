@@ -30,7 +30,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class MaterialsImport implements ToCollection, SkipsOnError, SkipsOnFailure, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, WithValidation, ShouldQueue, ShouldBeUnique
+class MaterialsImport implements ToCollection, SkipsOnError, SkipsOnFailure, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
 {
 	use Importable, SkipsErrors, SkipsFailures, HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize;
 

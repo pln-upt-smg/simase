@@ -32,7 +32,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ProductMaterialsImport implements ToCollection, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithEvents, WithDefaultEvents, WithValidation, ShouldQueue, ShouldBeUnique
+class ProductMaterialsImport implements ToCollection, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
 {
 	use Importable, SkipsFailures, SkipsErrors, HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasProductResolver, HasMaterialResolver;
 
@@ -71,8 +71,8 @@ class ProductMaterialsImport implements ToCollection, SkipsOnFailure, SkipsOnErr
 
 	public function replace(array $row): void
 	{
-		$productId = $this->resolveProductId($row['product']);
-		$materialId = $this->resolveMaterialId($row['material']);
+		$productId = $this->resolveProductId($row['product'], $this->periodId);
+		$materialId = $this->resolveMaterialId($row['material'], $this->periodId);
 		if ($productId === 0 || $materialId === 0) {
 			return;
 		}

@@ -17,8 +17,8 @@ trait HasMaterialResolver
 
         if ($periodId) {
             $material->where('period_id', $periodId);
-        }
+        }	
 
-        return $material->first()?->id ?? 0;
-    }
+        	return $material->first()?->id ?? 0;
+    	}
 }

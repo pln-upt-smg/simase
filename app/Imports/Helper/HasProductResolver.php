@@ -10,9 +10,15 @@ trait HasProductResolver
 	 * @param string|null $productCode
 	 * @return int
 	 */
-	public function resolveProductId(?string $productCode): int
+	public function resolveProductId(?string $productCode, ?int $periodId): int
 	{
 		$productCode = $productCode ?? '';
-		return Product::whereRaw('lower(code) = lower(?)', trim($productCode))->whereNull('deleted_at')->first()?->id ?? 0;
+		$product = Product::whereRaw('lower(code) = lower(?)', trim($productCode))->whereNull('deleted_at');
+
+	        if ($periodId) {
+	            $product->where('period_id', $periodId);
+        	}
+
+	        return $product->first()?->id ?? 0;
 	}
 }

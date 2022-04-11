@@ -9,11 +9,9 @@ use App\Imports\Helper\HasDefaultEvents;
 use App\Imports\Helper\HasDefaultSheet;
 use App\Imports\Helper\HasImporter;
 use App\Imports\Helper\HasMaterialResolver;
-use App\Imports\Helper\HasMultipleSubArea;
-use App\Imports\Helper\HasProductMaterialResolver;
-use App\Imports\Helper\HasProductResolver;
+use App\Imports\Helper\HasMultipleArea;
+use App\Models\BookStock;
 use App\Models\Period;
-use App\Models\ProductBreakdown;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,11 +30,12 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ProductBreakdownsImport implements ToCollection, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
+class BookStocksImport implements ToCollection, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithUpserts, WithEvents, WithDefaultEvents, WithValidation, ShouldQueue, ShouldBeUnique
 {
-	use Importable, SkipsFailures, SkipsErrors, HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleSubArea, HasMaterialResolver, HasProductResolver, HasProductMaterialResolver;
+	use Importable, SkipsFailures, SkipsErrors, HasDefaultSheet, HasDefaultEvents, HasImporter, HasChunkSize, HasBatchSize, HasMultipleArea, HasMaterialResolver;
 
 	private int $periodId;
 
@@ -49,51 +48,65 @@ class ProductBreakdownsImport implements ToCollection, SkipsOnFailure, SkipsOnEr
 	public function rules(): array
 	{
 		return [
-			'subarea' => ['required', 'string', 'max:255', Rule::exists('sub_areas', 'name')->whereNull('deleted_at')],
-			'batch' => ['required', 'string', 'max:255'],
-			'product' => ['required', 'string', 'max:255', Rule::exists('products', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
-			'productdescription' => ['nullable', 'string', 'max:255'],
 			'material' => ['required', 'string', 'max:255', Rule::exists('materials', 'code')->where('period_id', $this->periodId)->whereNull('deleted_at')],
-			'materialdescription' => ['nullable', 'string', 'max:255']
+			'plnt' => ['required', 'integer', 'min:0'],
+			'sloc' => ['required', 'string', 'max:255', Rule::exists('areas', 'sloc')->whereNull('deleted_at')],
+			'batch' => ['required', 'string', 'max:255'],
+			'unrestricted' => ['required', 'numeric'],
+			'qualinsp' => ['required', 'integer', 'min:0'],
+			'materialdescription' => ['nullable', 'string', 'max:255'],
+			'quantity' => ['required', 'numeric', 'min:0'],
+			'uom' => ['nullable', 'string', 'max:255'],
+			'mtyp' => ['nullable', 'string', 'max:255']
+		];
+	}
+
+	public function uniqueBy(): string|array
+	{
+		return [
+			'material'
 		];
 	}
 
 	public function collection(Collection $collection): void
 	{
 		foreach ($collection as $row) {
-			$this->lookupSubArea($row->toArray());
+			$this->lookupArea($row->toArray(), true);
 			$this->replace($row->toArray());
 		}
 	}
 
 	public function name(): string
 	{
-		return 'FG Material Breakdown';
+		return 'Book Stock';
 	}
 
 	public function replace(array $row): void
 	{
-		$subAreaId = $this->currentSubAreaId;
-		$productMaterialId = $this->resolveProductMaterialId($this->resolveProductId($row['product']), $this->resolveMaterialId($row['material']));
-		$userId = $this->userId;
-		if ($subAreaId === 0 || $productMaterialId === 0 || $userId === 0) {
+		$areaId = $this->currentAreaId;
+		$materialId = $this->resolveMaterialId($row['material']);
+			
+
+		if ($areaId === 0 || $materialId === 0) {
 			return;
 		}
-		ProductBreakdown::updateOrCreate([
-			'sub_area_id' => $subAreaId,
-			'product_material_id' => $productMaterialId,
-			'user_id' => $userId
+		BookStock::updateOrCreate([
+			'area_id' => $areaId,
+			'material_id' => $materialId,
 		], [
-			'batch' => Str::upper(trim($row['batch']))
+			'batch' => Str::upper(trim($row['batch'])),
+			'quantity' => $row['quantity'],
+			'plnt' => (int)$row['plnt'],
+			'unrestricted' => $row['unrestricted'],
+			'qualinsp' => (int)$row['qualinsp']
 		]);
 	}
 
 	public function overwrite(): void
 	{
-		ProductBreakdown::leftJoin('product_materials', 'product_materials.id', '=', 'product_breakdowns.product_material_id')
-			->leftJoin('materials', 'materials.id', '=', 'product_materials.material_id')
+		BookStock::leftJoin('materials', 'materials.id', '=', 'book_stocks.material_id')
 			->where('materials.period_id', $this->periodId)
-			->whereNull('product_materials.deleted_at')
+			->whereNull('book_stocks.deleted_at')
 			->delete();
 	}
 }
