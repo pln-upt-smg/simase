@@ -1,13 +1,13 @@
 <template>
     <app-layout title="PID">
-        <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-6 mb-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 mb-4 lg:mb-0">
+        <div class="grid grid-cols-1 mb-6 lg:grid-cols-2 lg:gap-6">
+            <div class="grid grid-cols-1 mb-4 lg:grid-cols-2 lg:mb-0">
                 <jet-area-dropdown :selected="area" :areas="areas" partial="stocks" class="mb-4 lg:mb-0"/>
                 <jet-period-dropdown :selected="period" :periods="periods" partial="stocks" class="mb-2 lg:mb-0"/>
             </div>
             <div class="lg:text-right">
                 <jet-button type="button" @click="confirmExport">
-                    <download-icon class="h-5 w-5 mr-2 text-white" aria-hidden="true"/>
+                    <download-icon class="w-5 h-5 mr-2 text-white" aria-hidden="true"/>
                     Ekspor
                 </jet-button>
             </div>
@@ -19,6 +19,11 @@
             :bottom-spacing="true"
             ref="table">
             <template #head>
+                <jet-table-header
+                    v-show="showColumn('sloc')"
+                    :cell="sortableHeader('sloc')">
+                    Sloc
+                </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('material_code')"
                     :cell="sortableHeader('material_code')">
@@ -72,6 +77,7 @@
             </template>
             <template #body>
                 <tr v-for="stock in stocks.data" :key="stock.id">
+                    <td v-show="showColumn('sloc')">{{ stock.sloc }}</td>
                     <td v-show="showColumn('material_code')">{{ stock.material_code }}</td>
                     <td v-show="showColumn('material_description')">{{ stock.material_description }}</td>
                     <td v-show="showColumn('uom')">{{ stock.uom }}</td>
@@ -102,16 +108,16 @@
                     <jet-select ref="exportArea" placeholder="Semua Area" v-model="exportForm.area"
                                 :data="areas" class="block w-full"/>
                     <jet-select ref="exportPeriod" placeholder="Semua Periode" v-model="exportForm.period"
-                                :data="periods" class="mt-4 block w-full"/>
+                                :data="periods" class="block w-full mt-4"/>
                 </div>
             </template>
             <template #buttons>
                 <jet-button type="button" @click="exportFile"
-                            class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                            class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Ekspor
                 </jet-button>
                 <jet-secondary-button @click="closeExportModal"
-                                      class="w-full inline-flex justify-center px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                                      class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
                     Batalkan
                 </jet-secondary-button>
             </template>
