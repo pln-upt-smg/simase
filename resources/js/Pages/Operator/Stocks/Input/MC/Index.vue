@@ -89,11 +89,13 @@
                             class="block w-full rounded-md vue-select"
                             label="code"
                             v-model="form.batch_code"
-                            :searchable="false"
-                            :filterable="false"
+                            taggable
+                            searchable
+                            push-tags
                             :clearable="false"
                             :options="batchCodeOptions"
                             :reduce="option => option.code"
+                            :create-option="code => ({ code })"
                             @search="onBatchCodeSearch">
                             <template slot="no-options">
                                 Tidak ada hasil tersedia.
