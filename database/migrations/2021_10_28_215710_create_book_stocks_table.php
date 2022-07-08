@@ -15,8 +15,8 @@ class CreateBookStocksTable extends Migration
     {
         Schema::create('book_stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('area_id')->constrained();
-            $table->foreignId('material_id')->constrained();
+            $table->bigInteger('area_id')->unsigned();
+            $table->bigInteger('material_id')->unsigned();
             $table->string('batch')->nullable();
             $table->float('quantity', 24);
             $table->float('unrestricted', 24);

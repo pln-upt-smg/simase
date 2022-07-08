@@ -1,7 +1,7 @@
 {
-    "name": "Stocktake",
-    "short_name": "Stocktake",
-    "description": "Item Stock Management System for Unilever Indonesia.",
+    "name": "SIMASE",
+    "short_name": "SIMASE",
+    "description": "Asset Management System for PT Perusahaan Listrik Negara (Persero).",
     "start_url": "/",
     "icons": [
         {

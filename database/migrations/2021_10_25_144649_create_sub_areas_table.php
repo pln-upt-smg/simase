@@ -15,7 +15,7 @@ class CreateSubAreasTable extends Migration
     {
         Schema::create('sub_areas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('area_id')->constrained();
+            $table->bigInteger('area_id')->unsigned();
             $table->string('name');
             $table->timestamps();
             $table->softDeletes();

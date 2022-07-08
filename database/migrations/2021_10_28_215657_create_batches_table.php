@@ -15,8 +15,8 @@ class CreateBatchesTable extends Migration
     {
         Schema::create('batches', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('area_id')->constrained();
-            $table->foreignId('material_id')->constrained();
+            $table->bigInteger('area_id')->unsigned();
+            $table->bigInteger('material_id')->unsigned();
             $table->string('code');
             $table->timestamps();
             $table->softDeletes();

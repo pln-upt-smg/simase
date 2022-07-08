@@ -1,8 +1,8 @@
-<a href="https://github.com/evercode-software/stocktake-web/actions/workflows/laravel.yml">
-    <img alt="Laravel" src="https://github.com/evercode-software/stocktake-web/actions/workflows/laravel.yml/badge.svg">
+<a href="https://github.com/evercode-software/simase/actions/workflows/laravel.yml">
+    <img alt="Laravel" src="https://github.com/evercode-software/simase/actions/workflows/laravel.yml/badge.svg">
 </a>
-<a href="https://github.com/evercode-software/stocktake-web/actions/workflows/docker.yml">
-    <img alt="Docker" src="https://github.com/evercode-software/stocktake-web/actions/workflows/docker.yml/badge.svg">
+<a href="https://github.com/evercode-software/simase/actions/workflows/docker.yml">
+    <img alt="Docker" src="https://github.com/evercode-software/simase/actions/workflows/docker.yml/badge.svg">
 </a>
 <a href="https://stock.zara-app.com">
     <img alt="Production" src="https://img.shields.io/website?label=production&up_message=deployed&url=https%3A%2F%2Fstock.zara-app.com">
@@ -20,9 +20,9 @@
     <img alt="PWA Support" src="https://img.shields.io/badge/%20pwa-enabled-blueviolet">
 </a>
 
-# 📦 stocktake
+# 📦 simase
 
-Item Stock Management System for Unilever Indonesia.
+Asset Management System for PT Perusahaan Listrik Negara (Persero).
 
 🔨 Built with [Laravel Jetstream](https://jetstream.laravel.com) and [Inertia.js](https://inertiajs.com) for Single Page Application builder ([PWA](https://web.dev/progressive-web-apps) enabled).
 
@@ -97,7 +97,7 @@ Langkah instalasi containerized application dengan ⛵ Laravel Sail untuk memuda
 
 > #### 📝 Informasi
 >
-> -   Untuk kebutuhan running aplikasi, Docker Image sudah tersedia pada laman [berikut](https://github.com/evercode-software/stocktake-web/pkgs/container/stocktake-web).
+> -   Untuk kebutuhan running aplikasi, Docker Image sudah tersedia pada laman [berikut](https://github.com/evercode-software/simase/pkgs/container/simase).
 > -   Jika menggunakan OS Windows, jalankan Laravel Sail dalam [Windows WSL v2](https://ubuntu.com/wsl)
 > -   Alamat URL dan port aplikasi yang digunakan Laravel Sail sesuai konfigurasi pada `.env`
 
@@ -122,9 +122,9 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 
 1. Buat MySQL database untuk aplikasi:
     - `mysql -u root -p`
-    - `create database stocktake;`
-    - `create user 'stocktake'@'localhost' identified by 'stocktake';`
-    - `grant all privileges on stocktake.* to 'stocktake'@'localhost';`
+    - `create database simase;`
+    - `create user 'simase'@'localhost' identified by 'simase';`
+    - `grant all privileges on simase.* to 'simase'@'localhost';`
     - `flush privileges;`
     - `exit;`
 2. Clone repository ini ke local environment, lalu checkout ke `development` branch
@@ -177,9 +177,9 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 
 1. Buat MySQL database untuk aplikasi:
     - `mysql -u root -p`
-    - `create database stocktake;`
-    - `create user 'stocktake'@'localhost' identified by 'stocktake';`
-    - `grant all privileges on stocktake.* to 'stocktake'@'localhost';`
+    - `create database simase;`
+    - `create user 'simase'@'localhost' identified by 'simase';`
+    - `grant all privileges on simase.* to 'simase'@'localhost';`
     - `flush privileges;`
     - `exit;`
 2. Clone repository ini ke server, lalu checkout ke `main` branch
@@ -199,11 +199,11 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
     - `sudo snap install go`
     - `go get -d github.com/aptible/supercronic`
     - `cd ~/go/pkg/mod/github.com/aptible/supercronic@v<version>`
-        <div style="margin-top: 21px">
+          <div style="margin-top: 21px">
 
         > Ubah `<version>` ke versi terakhir supercronic sesuai laman [berikut](https://github.com/aptible/supercronic/releases)
 
-        </div>
+          </div>
 
     - `go mod vendor`
     - `go install`
@@ -213,25 +213,25 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
         ```bash
         rm -rf ~/supercronic && \
         sudo mkdir ~/supercronic && \
-        sudo touch ~/supercronic/stocktake-web.cron && \
-        sudo echo "path=/var/www/stocktake/web" >> ~/supercronic/stocktake-web.cron && \
-        sudo echo "* * * * * php $path/artisan schedule:run >> /dev/null 2>&1" >> ~/supercronic/stocktake-web.cron && \
-        sudo echo "0 1 * * * rm -rf $path/storage/logs/laravel.log && touch $path/storage/logs/laravel.log" >> ~/supercronic/stocktake-web.cron && \
-        sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-cron.log && touch $path/storage/logs/stocktake-web-cron.log" >> ~/supercronic/stocktake-web.cron && \
-        sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-worker.log && touch $path/storage/logs/stocktake-web-worker.log" >> ~/supercronic/stocktake-web.cron && \
-        sudo echo "0 1 * * * rm -rf $path/storage/logs/stocktake-web-octane.log && touch $path/storage/logs/stocktake-web-octane.log" >> ~/supercronic/stocktake-web.cron && \
-        sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-access.log && touch $path/storage/logs/nginx-access.log" >> ~/supercronic/stocktake-web.cron && \
-        sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-error.log && touch $path/storage/logs/nginx-error.log" >> ~/supercronic/stocktake-web.cron
+        sudo touch ~/supercronic/simase.cron && \
+        sudo echo "path=/var/www/simase/web" >> ~/supercronic/simase.cron && \
+        sudo echo "* * * * * php $path/artisan schedule:run >> /dev/null 2>&1" >> ~/supercronic/simase.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/laravel.log && touch $path/storage/logs/laravel.log" >> ~/supercronic/simase.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/simase-cron.log && touch $path/storage/logs/simase-cron.log" >> ~/supercronic/simase.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/simase-worker.log && touch $path/storage/logs/simase-worker.log" >> ~/supercronic/simase.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/simase-octane.log && touch $path/storage/logs/simase-octane.log" >> ~/supercronic/simase.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-access.log && touch $path/storage/logs/nginx-access.log" >> ~/supercronic/simase.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-error.log && touch $path/storage/logs/nginx-error.log" >> ~/supercronic/simase.cron
         ```
-        > Sesuaikan path `/var/www/stocktake/web` dengan lokasi direktori proyek
+        > Sesuaikan path `/var/www/simase/web` dengan lokasi direktori proyek
 
 9. Install **supervisor** untuk aplikasi:
 
     - `sudo apt install supervisor`
     - `sudo chown -R www-data:www-data /var/www/`
-    - `nano /etc/supervisor/conf.d/stocktake-web-supervisor.conf`
+    - `nano /etc/supervisor/conf.d/simase-supervisor.conf`
     - Masukkan konfigurasi berikut:
-        <div style="margin-top: 21px">
+          <div style="margin-top: 21px">
 
         ```
         [supervisord]
@@ -240,46 +240,46 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
         logfile_maxbytes=0
         pidfile=/run/supervisord.pid
 
-        [program:stocktake-web-cron]
+        [program:simase-cron]
         process_name=%(program_name)s_%(process_num)02d
-        command=/root/go/bin/supercronic /root/supercronic/stocktake-web.cron
+        command=/root/go/bin/supercronic /root/supercronic/simase.cron
         autostart=true
         autorestart=true
         user=root
         numprocs=1
         redirect_stderr=true
-        stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-cron.log
+        stdout_logfile=/var/www/simase/web/storage/logs/simase-cron.log
         stdout_logfile_maxbytes=0
         stopwaitsecs=3600
 
-        [program:stocktake-web-worker]
+        [program:simase-worker]
         process_name=%(program_name)s_%(process_num)02d
-        command=php /var/www/stocktake/web/artisan queue:work database --sleep=3 --tries=3
+        command=php /var/www/simase/web/artisan queue:work database --sleep=3 --tries=3
         autostart=true
         autorestart=true
         user=root
         numprocs=8
         redirect_stderr=true
-        stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-worker.log
+        stdout_logfile=/var/www/simase/web/storage/logs/simase-worker.log
         stdout_logfile_maxbytes=0
         stopwaitsecs=3600
 
-        [program:stocktake-web-octane]
+        [program:simase-octane]
         process_name=%(program_name)s_%(process_num)02d
-        command=php /var/www/stocktake/web/artisan octane:start --max-requests=500
+        command=php /var/www/simase/web/artisan octane:start --max-requests=500
         autostart=true
         autorestart=true
         user=root
         numprocs=1
         redirect_stderr=true
-        stdout_logfile=/var/www/stocktake/web/storage/logs/stocktake-web-octane.log
+        stdout_logfile=/var/www/simase/web/storage/logs/simase-octane.log
         stdout_logfile_maxbytes=0
         stopwaitsecs=3600
         ```
 
-        </div>
+          </div>
 
-        > Sesuaikan `/var/www/stocktake/web` dengan lokasi direktori proyek
+        > Sesuaikan `/var/www/simase/web` dengan lokasi direktori proyek
 
     - `sudo supervisorctl reread`
     - `sudo supervisorctl update`

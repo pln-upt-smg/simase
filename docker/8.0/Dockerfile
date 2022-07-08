@@ -1,7 +1,7 @@
 FROM ubuntu:21.04
 
 LABEL maintainer "Ezra Lazuardy <ezralucio@gmail.com>"
-LABEL org.opencontainers.image.description "Container Image for Stocktake Web. This image is created for development purposes only."
+LABEL org.opencontainers.image.description "Container Image for SIMASE. This image is created for development purposes only."
 
 ARG WWWGROUP
 ARG NODE_VERSION=16

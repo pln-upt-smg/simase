@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#4338CA"/>
-    <meta name="keywords" content="Stocktake">
-    <meta name="description" content="Item Stock Management System for Unilever Indonesia.">
-    <title inertia>{{ config('app.name', 'Stocktake') }}</title>
+    <meta name="keywords" content="SIMASE">
+    <meta name="description" content="Asset Management System for PT Perusahaan Listrik Negara (Persero).">
+    <title inertia>{{ config('app.name', 'SIMASE') }}</title>
     <link rel="preconnect" href="{{ config('app.url') }}">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">

@@ -29,8 +29,8 @@ jobs:
         with:
           host port: "3306"
           mysql version: "5.7"
-          mysql root password: "stocktake"
-          mysql database: "stocktake"
+          mysql root password: "simase"
+          mysql database: "simase"
 
       - name: ⚙️ Set up Application Environment Variables for CI/CD (Development)
         run: |
@@ -39,7 +39,7 @@ jobs:
           sed -i 's/APP_ENV=local/APP_ENV=production/' .env
           sed -i 's/APP_ENV_CI_CD=false/APP_ENV_CI_CD=true/' .env
           sed -i 's/APP_DEBUG=true/APP_DEBUG=false/' .env
-          sed -i 's/DB_USERNAME=stocktake/DB_USERNAME=root/' .env
+          sed -i 's/DB_USERNAME=simase/DB_USERNAME=root/' .env
 
       - name: 🚨 Set Application Directory Permissions
         run: |

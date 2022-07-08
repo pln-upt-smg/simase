@@ -15,10 +15,10 @@ class CreateProductBreakdownsTable extends Migration
 	{
 		Schema::create('product_breakdowns', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('sub_area_id')->constrained();
-			$table->foreignId('product_material_id')->constrained();
-			$table->foreignId('user_id')->constrained();
-			$table->foreignId('actual_stock_id')->nullable()->index();
+			$table->bigInteger('sub_area_id')->unsigned();
+			$table->bigInteger('product_material_id')->unsigned();
+			$table->bigInteger('user_id')->unsigned();
+			$table->bigInteger('actual_stock_id')->unsigned()->nullable();
 			$table->string('batch')->nullable();
 			$table->softDeletes();
 			$table->timestamps();

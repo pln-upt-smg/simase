@@ -29,7 +29,7 @@
                             </div>
                         </TransitionChild>
                         <div class="flex items-center flex-shrink-0 px-4">
-                            <span class="text-2xl font-bold text-white">📦 Stocktake</span>
+                            <span class="text-2xl font-bold text-white">📦 SIMASE</span>
                         </div>
                         <div
                             class="flex-1 h-full pb-4 mt-4 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
@@ -68,7 +68,7 @@
                 <div
                     class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
                     <div class="flex items-center flex-shrink-0 px-4">
-                        <span class="text-2xl font-bold text-white">📦 Stocktake</span>
+                        <span class="text-2xl font-bold text-white">📦 SIMASE</span>
                     </div>
                     <div class="flex flex-col flex-1">
                         <nav>

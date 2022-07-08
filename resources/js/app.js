@@ -5,7 +5,7 @@ import {createInertiaApp, Link} from '@inertiajs/inertia-vue3'
 import {InertiaProgress} from '@inertiajs/progress'
 import {Workbox} from 'workbox-window'
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Stocktake'
+const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'SIMASE'
 const cacheName = 'v1'
 
 createInertiaApp({

@@ -15,9 +15,9 @@ class CreateActualStocksTable extends Migration
     {
         Schema::create('actual_stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sub_area_id')->constrained();
-            $table->foreignId('material_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->bigInteger('sub_area_id')->unsigned();
+            $table->bigInteger('material_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->string('batch')->nullable();
             $table->float('quantity', 24);
             $table->softDeletes();

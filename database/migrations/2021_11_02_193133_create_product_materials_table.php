@@ -15,8 +15,8 @@ class CreateProductMaterialsTable extends Migration
     {
         Schema::create('product_materials', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained();
-            $table->foreignId('material_id')->constrained();
+            $table->bigInteger('product_id')->unsigned();
+            $table->bigInteger('material_id')->unsigned();
             $table->string('material_uom');
             $table->float('material_quantity', 24);
             $table->float('product_quantity', 24);

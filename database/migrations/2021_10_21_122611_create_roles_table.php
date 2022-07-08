@@ -20,7 +20,7 @@ class CreateRolesTable extends Migration
             $table->softDeletes();
         });
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('role_id')->after('id')->constrained();
+            $table->bigInteger('role_id')->unsigned();
         });
     }
 
@@ -32,7 +32,7 @@ class CreateRolesTable extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign('users_role_id_foreign');
+            $table->dropColumn('role_id');
         });
         Schema::dropIfExists('roles');
     }
