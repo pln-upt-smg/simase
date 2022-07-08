@@ -32,7 +32,6 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use Maatwebsite\Excel\Concerns\WithValidation;
 
 class ProductBreakdownsImport implements ToCollection, SkipsOnFailure, SkipsOnError, SkipsEmptyRows, WithHeadingRow, WithMultipleSheets, WithChunkReading, WithBatchInserts, WithEvents, WithDefaultEvents, ShouldQueue, ShouldBeUnique
 {
@@ -74,7 +73,7 @@ class ProductBreakdownsImport implements ToCollection, SkipsOnFailure, SkipsOnEr
 	public function replace(array $row): void
 	{
 		$subAreaId = $this->currentSubAreaId;
-		$productMaterialId = $this->resolveProductMaterialId($this->resolveProductId($row['product']), $this->resolveMaterialId($row['material']));
+		$productMaterialId = $this->resolveProductMaterialId($this->resolveProductId($row['product'], $this->resolveMaterialId($row['material'])), $this->resolveMaterialId($row['material']));
 		$userId = $this->userId;
 		if ($subAreaId === 0 || $productMaterialId === 0 || $userId === 0) {
 			return;

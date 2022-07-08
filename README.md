@@ -1,11 +1,11 @@
-<a href="https://github.com/evercode-software/simase/actions/workflows/laravel.yml">
-    <img alt="Laravel" src="https://github.com/evercode-software/simase/actions/workflows/laravel.yml/badge.svg">
+<a href="https://github.com/pln-upt-smg/simase/actions/workflows/laravel.yml">
+    <img alt="Laravel" src="https://github.com/pln-upt-smg/simase/actions/workflows/laravel.yml/badge.svg">
 </a>
-<a href="https://github.com/evercode-software/simase/actions/workflows/docker.yml">
-    <img alt="Docker" src="https://github.com/evercode-software/simase/actions/workflows/docker.yml/badge.svg">
+<a href="https://github.com/pln-upt-smg/simase/actions/workflows/docker.yml">
+    <img alt="Docker" src="https://github.com/pln-upt-smg/simase/actions/workflows/docker.yml/badge.svg">
 </a>
-<a href="https://stock.zara-app.com">
-    <img alt="Production" src="https://img.shields.io/website?label=production&up_message=deployed&url=https%3A%2F%2Fstock.zara-app.com">
+<a href="https://simase.ezralazuardy.com">
+    <img alt="Production" src="https://img.shields.io/website?label=production&up_message=deployed&url=https%3A%2F%2Fsimase.ezralazuardy.com">
 </a>
 <a href="https://nodejs.org/en/download">
     <img alt="Node Version" src="https://img.shields.io/badge/node-%3E%3D%2016-brightgreen">
@@ -97,7 +97,7 @@ Langkah instalasi containerized application dengan ⛵ Laravel Sail untuk memuda
 
 > #### 📝 Informasi
 >
-> -   Untuk kebutuhan running aplikasi, Docker Image sudah tersedia pada laman [berikut](https://github.com/evercode-software/simase/pkgs/container/simase).
+> -   Untuk kebutuhan running aplikasi, Docker Image sudah tersedia pada laman [berikut](https://github.com/pln-upt-smg/simase/pkgs/container/simase).
 > -   Jika menggunakan OS Windows, jalankan Laravel Sail dalam [Windows WSL v2](https://ubuntu.com/wsl)
 > -   Alamat URL dan port aplikasi yang digunakan Laravel Sail sesuai konfigurasi pada `.env`
 
@@ -175,41 +175,41 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
 
 #### 🖥️ Installation
 
-1. Buat MySQL database untuk aplikasi:
-    - `mysql -u root -p`
-    - `create database simase;`
-    - `create user 'simase'@'localhost' identified by 'simase';`
-    - `grant all privileges on simase.* to 'simase'@'localhost';`
-    - `flush privileges;`
-    - `exit;`
-2. Clone repository ini ke server, lalu checkout ke `main` branch
-3. Buat file `.env` dengan menyalin file `.env.example`, lalu konfigurasikan seperti berikut:
-    - Ubah `APP_ENV` menjadi `production`
-    - Ubah `APP_DEBUG` menjadi `false`
-4. `composer i --no-dev`
-5. `php artisan app:install`
-6. Konfigurasikan Web Server dengan path **Document Root** mengarah ke lokasi direktori `public` pada proyek
-7. Install **redis-server** untuk aplikasi:
-    - `sudo apt install redis-server`
-    - `sudo nano /etc/redis/redis.conf`, lalu ubah `supervised no` menjadi `supervised systemd`
-    - `sudo service redis-server restart`
-8. Install **supercronic** untuk aplikasi:
+1.  Buat MySQL database untuk aplikasi:
+    -   `mysql -u root -p`
+    -   `create database simase;`
+    -   `create user 'simase'@'localhost' identified by 'simase';`
+    -   `grant all privileges on simase.* to 'simase'@'localhost';`
+    -   `flush privileges;`
+    -   `exit;`
+2.  Clone repository ini ke server, lalu checkout ke `main` branch
+3.  Buat file `.env` dengan menyalin file `.env.example`, lalu konfigurasikan seperti berikut:
+    -   Ubah `APP_ENV` menjadi `production`
+    -   Ubah `APP_DEBUG` menjadi `false`
+4.  `composer i --no-dev`
+5.  `php artisan app:install`
+6.  Konfigurasikan Web Server dengan path **Document Root** mengarah ke lokasi direktori `public` pada proyek
+7.  Install **redis-server** untuk aplikasi:
+    -   `sudo apt install redis-server`
+    -   `sudo nano /etc/redis/redis.conf`, lalu ubah `supervised no` menjadi `supervised systemd`
+    -   `sudo service redis-server restart`
+8.  Install **supercronic** untuk aplikasi:
 
-    - `sudo apt install snap`
-    - `sudo snap install go`
-    - `go get -d github.com/aptible/supercronic`
-    - `cd ~/go/pkg/mod/github.com/aptible/supercronic@v<version>`
-          <div style="margin-top: 21px">
+    -   `sudo apt install snap`
+    -   `sudo snap install go`
+    -   `go get -d github.com/aptible/supercronic`
+    -   `cd ~/go/pkg/mod/github.com/aptible/supercronic@v<version>`
+        <div style="margin-top: 21px">
 
         > Ubah `<version>` ke versi terakhir supercronic sesuai laman [berikut](https://github.com/aptible/supercronic/releases)
 
-          </div>
+            </div>
 
-    - `go mod vendor`
-    - `go install`
-    - `source /etc/profile`
-    - Verifikasi instalasi supercronic dengan perintah `supercronic`
-    - Siapkan cronjob untuk aplikasi:
+    -   `go mod vendor`
+    -   `go install`
+    -   `source /etc/profile`
+    -   Verifikasi instalasi supercronic dengan perintah `supercronic`
+    -   Siapkan cronjob untuk aplikasi:
         ```bash
         rm -rf ~/supercronic && \
         sudo mkdir ~/supercronic && \
@@ -225,13 +225,13 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
         ```
         > Sesuaikan path `/var/www/simase/web` dengan lokasi direktori proyek
 
-9. Install **supervisor** untuk aplikasi:
+9.  Install **supervisor** untuk aplikasi:
 
-    - `sudo apt install supervisor`
-    - `sudo chown -R www-data:www-data /var/www/`
-    - `nano /etc/supervisor/conf.d/simase-supervisor.conf`
-    - Masukkan konfigurasi berikut:
-          <div style="margin-top: 21px">
+    -   `sudo apt install supervisor`
+    -   `sudo chown -R www-data:www-data /var/www/`
+    -   `nano /etc/supervisor/conf.d/simase-supervisor.conf`
+    -   Masukkan konfigurasi berikut:
+        <div style="margin-top: 21px">
 
         ```
         [supervisord]
@@ -277,13 +277,13 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
         stopwaitsecs=3600
         ```
 
-          </div>
+            </div>
 
         > Sesuaikan `/var/www/simase/web` dengan lokasi direktori proyek
 
-    - `sudo supervisorctl reread`
-    - `sudo supervisorctl update`
-    - `sudo supervisorctl restart all` <br/>
+    -   `sudo supervisorctl reread`
+    -   `sudo supervisorctl update`
+    -   `sudo supervisorctl restart all` <br/>
 
 > #### 📝 Informasi
 >
