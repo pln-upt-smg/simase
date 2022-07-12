@@ -4,20 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBatchesTable extends Migration
+class CreateAssetsTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('batches', function (Blueprint $table) {
+        Schema::create('assets', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('asset_type_id')->unsigned();
             $table->bigInteger('area_id')->unsigned();
-            $table->bigInteger('material_id')->unsigned();
-            $table->string('code');
+            $table->bigInteger('created_by')->unsigned();
+            $table->string('name');
+            $table->bigInteger('quantity');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,8 +30,8 @@ class CreateBatchesTable extends Migration
      *
      * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('batches');
+        Schema::dropIfExists('assets');
     }
 }

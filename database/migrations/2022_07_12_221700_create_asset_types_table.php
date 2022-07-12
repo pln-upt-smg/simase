@@ -4,18 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePeriodsTable extends Migration
+class CreateAssetTypesTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('periods', function (Blueprint $table) {
+        Schema::create('asset_types', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('created_by')->unsigned();
             $table->string('name');
+            $table->string('uom');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -26,8 +28,8 @@ class CreatePeriodsTable extends Migration
      *
      * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('periods');
+        Schema::dropIfExists('asset_types');
     }
 }

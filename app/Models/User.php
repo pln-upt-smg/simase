@@ -17,7 +17,7 @@ class User extends Authenticatable
 {
     use Fluent, HasApiTokens, HasFactory, HasProfilePhoto, Notifiable, TwoFactorAuthenticatable, SoftDeletes, SerializesModels;
 
-    #[BelongsTo]
+    #[BelongsTo('role_id')]
     public Role $role;
 
     public string $name, $nip, $password;

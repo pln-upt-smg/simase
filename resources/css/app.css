@@ -4,16 +4,12 @@
 @import 'tailwindcss/utilities';
 @import 'vue-select/dist/vue-select.css';
 
-/**
- * https://stackoverflow.com/questions/25704650/disable-blue-highlight-when-touch-press-object-with-cursorpointer
- */
+/* https://stackoverflow.com/questions/25704650/disable-blue-highlight-when-touch-press-object-with-cursorpointer */
 button, textarea, input, select, a {
     -webkit-tap-highlight-color: transparent;
 }
 
-/**
- * https://stackoverflow.com/questions/25180140/make-input-value-uppercase-in-css-without-affecting-the-placeholder
- */
+/* https://stackoverflow.com/questions/25180140/make-input-value-uppercase-in-css-without-affecting-the-placeholder */
 input {
     text-transform: uppercase;
 }
@@ -38,16 +34,12 @@ input {
     text-transform: none;
 }
 
-/**
- * Clicakble Inertia.js table header
- */
+/* Clicakble Inertia.js table header */
 .clickable-table-header th:hover {
     cursor: pointer;
 }
 
-/**
- * Vue Select styling
- */
+/* Vue Select styling */
 .vue-select .vs__search::placeholder,
 .vue-select .vs__dropdown-toggle,
 .vue-select .vs__dropdown-menu {
@@ -65,9 +57,7 @@ input {
     text-transform: none;
 }
 
-/**
- * https://stackoverflow.com/questions/60186557/how-to-put-notification-badges-on-icons
- */
+/* https://stackoverflow.com/questions/60186557/how-to-put-notification-badges-on-icons */
 .icon-badge-container {
     position: relative;
 }

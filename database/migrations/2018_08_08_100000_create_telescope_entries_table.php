@@ -49,7 +49,6 @@ return new class extends Migration
             $table->string('type', 20);
             $table->longText('content');
             $table->dateTime('created_at')->nullable();
-
             $table->unique('uuid');
             $table->index('batch_id');
             $table->index('family_hash');
@@ -58,14 +57,15 @@ return new class extends Migration
         });
 
         $this->schema->create('telescope_entries_tags', function (Blueprint $table) {
+            $table->id();
             $table->uuid('entry_uuid');
             $table->string('tag');
-
             $table->index(['entry_uuid', 'tag']);
             $table->index('tag');
         });
 
         $this->schema->create('telescope_monitoring', function (Blueprint $table) {
+            $table->id();
             $table->string('tag');
         });
     }

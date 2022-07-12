@@ -10,30 +10,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
-class ActualStock extends Model
+class AssetType extends Model
 {
     use Fluent, HasFactory, SoftDeletes;
 
-    #[BelongsTo]
-    public SubArea $subArea;
-
-    #[BelongsTo]
-    public Material $material;
-
-    #[BelongsTo]
+    #[BelongsTo('created_by')]
     public User $user;
 
-	#[HasMany(ProductBreakdown::class)]
-	public Collection $productBreakdowns;
+    #[HasMany(Asset::class, 'asset_type_id')]
+    public Collection $assets;
 
-    public string $batch;
-    public float $quantity;
+    public string $name, $uom;
 
     protected $fillable = [
-        'sub_area_id',
-        'material_id',
-        'user_id',
-        'batch',
-        'quantity'
+        'created_by',
+        'name',
+        'uom'
     ];
 }

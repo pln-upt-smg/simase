@@ -47,25 +47,35 @@ class UserSeeder extends Seeder
         }
     }
 
+    /**
+     * Run the database seeds in staging environment.
+     *
+     * @return void
+     */
     protected function staging(): void
     {
         User::create([
             'role' => Role::administrator(),
             'name' => 'Administrator',
             'phone' => $this->faker->phoneNumber(),
-            'nip' => '241178',
-            'password' => Hash::make('241178')
+            'nip' => '000000',
+            'password' => Hash::make('000000'),
         ]);
         User::create([
             'role' => Role::operator(),
             'name' => $this->faker->name(),
             'phone' => $this->faker->phoneNumber(),
-            'nip' => '752114',
-            'password' => Hash::make('752114')
+            'nip' => '111111',
+            'password' => Hash::make('111111'),
         ]);
-        User::factory(49)->create();
+        User::factory(19)->create();
     }
 
+    /**
+     * Run the database seeds in production environment.
+     *
+     * @return void
+     */
     protected function production(): void
     {
         User::create([
@@ -73,7 +83,7 @@ class UserSeeder extends Seeder
             'name' => 'Administrator',
             'phone' => $this->faker->phoneNumber(),
             'nip' => '000000',
-            'password' => Hash::make('000000')
+            'password' => Hash::make('000000'),
         ]);
     }
 }

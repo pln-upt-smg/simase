@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Data;
 
-use App\Models\Area;
 use Illuminate\Database\Seeder;
+use App\Models\AreaType;
 
 class AreaSeeder extends Seeder
 {
@@ -17,6 +17,7 @@ class AreaSeeder extends Seeder
         if (app()->isProduction() && !config('app.env_staging')) {
             return;
         }
-        Area::factory(5)->create();
+        AreaType::create(['created_by' => 1, 'name' => 'Tower SUTET']);
+        AreaType::create(['created_by' => 1, 'name' => 'Tower SUTT']);
     }
 }

@@ -4,19 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubAreasTable extends Migration
+class CreateAssetLossDamageImagesTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('sub_areas', function (Blueprint $table) {
+        Schema::create('asset_loss_damage_images', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('area_id')->unsigned();
-            $table->string('name');
+            $table->bigInteger('asset_loss_damage_id')->unsigned();
+            $table->text('image');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -27,8 +27,8 @@ class CreateSubAreasTable extends Migration
      *
      * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('sub_areas');
+        Schema::dropIfExists('asset_loss_damage_images');
     }
 }

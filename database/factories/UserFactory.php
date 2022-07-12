@@ -2,12 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Role;
-use App\Models\Team;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Jetstream\Features;
+use App\Models\{Role, Team, User};
 
 class UserFactory extends Factory
 {
@@ -51,5 +49,33 @@ class UserFactory extends Factory
             }),
             'ownedTeams'
         );
+    }
+
+    /**
+     * Indicate that the user is administrator.
+     *
+     * @return Factory
+     */
+    public function administrator()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => Role::administrator(),
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the user is operator.
+     *
+     * @return Factory
+     */
+    public function operator()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role' => Role::operator(),
+            ];
+        });
     }
 }

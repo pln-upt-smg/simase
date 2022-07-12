@@ -8,21 +8,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Batch extends Model
+class AssetLossDamageImage extends Model
 {
     use Fluent, HasFactory, SoftDeletes;
 
-    #[BelongsTo]
-    public Area $area;
+    #[BelongsTo('asset_loss_damage_id')]
+    public AssetLossDamage $assetLossDamage;
 
-    #[BelongsTo]
-    public Material $material;
+    public string $image;
 
-    public string $code;
-
-    protected $fillable = [
-        'area_id',
-        'material_id',
-        'code'
-    ];
+    protected $fillable = ['asset_loss_damage_id', 'image'];
 }

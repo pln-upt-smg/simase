@@ -12,10 +12,10 @@ class Role extends Model
 {
     use Fluent, HasFactory;
 
-    public string $name;
-
-    #[HasMany(User::class)]
+    #[HasMany(User::class, 'role_id')]
     public Collection $users;
+
+    public string $name;
 
     protected $fillable = [
         'name'

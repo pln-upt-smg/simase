@@ -4,16 +4,16 @@ namespace Database\Factories;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Area;
+use App\Models\Asset;
 
-class AreaFactory extends Factory
+class AssetFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Area::class;
+    protected $model = Asset::class;
 
     /**
      * Define the model's default state.
@@ -23,15 +23,13 @@ class AreaFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => $this->faker->numberBetween(1111, 9999),
             'name' => Str::title($this->faker->unique->words(1, 1)),
-            'lat' => $this->faker->randomFloat(),
-            'lon' => $this->faker->randomFloat(),
+            'quantity' => $this->faker->numberBetween(1, 100),
         ];
     }
 
     /**
-     * Indicate the area type.
+     * Indicate the asset type.
      *
      * @return Factory
      */
@@ -39,13 +37,27 @@ class AreaFactory extends Factory
     {
         return $this->state(function (array $attributes) use ($typeId) {
             return [
-                'area_type_id' => $typeId,
+                'asset_type_id' => $typeId,
             ];
         });
     }
 
     /**
-     * Indicate the area creator.
+     * Indicate the asset area.
+     *
+     * @return Factory
+     */
+    public function area(int $areaId)
+    {
+        return $this->state(function (array $attributes) use ($areaId) {
+            return [
+                'area_id' => $areaId,
+            ];
+        });
+    }
+
+    /**
+     * Indicate the asset creator.
      *
      * @return Factory
      */
