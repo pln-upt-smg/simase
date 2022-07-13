@@ -1,4 +1,6 @@
 {
+    "name": "simase",
+    "description": "⚡ Asset Management System for PT Perusahaan Listrik Negara (Persero).",
     "private": true,
     "scripts": {
         "dev": "npm run development",

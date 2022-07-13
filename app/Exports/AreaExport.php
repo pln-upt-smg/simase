@@ -2,15 +2,15 @@
 
 namespace App\Exports;
 
-use App\Notifications\DataExported;
-use App\Services\AreaService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use App\Notifications\DataExported;
+use App\Services\AreaService;
 
-class AreasExport implements FromCollection, WithHeadings, WithMapping
+class AreaExport implements FromCollection, WithHeadings, WithMapping
 {
     private AreaService $areaService;
 
@@ -21,24 +21,28 @@ class AreasExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return [
-            'Area',
-            'SLoc'
-        ];
+        return ['Kode', 'Area', 'Tipe Area', 'Latitude', 'Longitude'];
     }
 
     public function map($row): array
     {
         return [
+            trim($row->code),
             Str::title(trim($row->name)),
-            trim($row->sloc)
+            Str::title(trim($row->areaType->name)),
+            trim($row->lat),
+            trim($row->lon),
         ];
     }
 
     public function collection(): Collection
     {
         $data = $this->areaService->collection();
-        auth()->user()?->notify(new DataExported('Area', $data->count()));
+        if (!is_null(auth()->user())) {
+            auth()
+                ->user()
+                ->notify(new DataExported('Area', $data->count()));
+        }
         return $data;
     }
 }

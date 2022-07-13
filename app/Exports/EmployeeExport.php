@@ -21,12 +21,7 @@ class EmployeesExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return [
-            'Name',
-            'Phone',
-            'NIP',
-            'Role'
-        ];
+        return ['Nama', 'Telepon', 'NIP', 'Peran'];
     }
 
     public function map($row): array
@@ -35,14 +30,18 @@ class EmployeesExport implements FromCollection, WithHeadings, WithMapping
             Str::title(trim($row->name)),
             trim($row->phone),
             trim($row->nip),
-            Str::title(trim($row->role->name))
+            Str::title(trim($row->role->name)),
         ];
     }
 
     public function collection(): Collection
     {
         $data = $this->employeeService->collection();
-        auth()->user()?->notify(new DataExported('Pegawai', $data->count()));
+        if (!is_null(auth()->user())) {
+            auth()
+                ->user()
+                ->notify(new DataExported('Pegawai', $data->count()));
+        }
         return $data;
     }
 }
