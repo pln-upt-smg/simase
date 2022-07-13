@@ -3,23 +3,23 @@
 namespace App\Models;
 
 use Based\Fluent\Fluent;
-use Based\Fluent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
-    use Fluent, HasFactory;
-
-    #[HasMany(User::class, 'role_id')]
-    public Collection $users;
+    use Fluent, HasFactory, SoftDeletes;
 
     public string $name;
 
-    protected $fillable = [
-        'name'
-    ];
+    protected $fillable = ['name'];
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'role_id');
+    }
 
     public static function administrator(): ?self
     {

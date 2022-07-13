@@ -76,7 +76,7 @@ class AssetSeeder extends Seeder
                                 return ['asset_id' => $asset->id];
                             })
                             ->has(
-                                AssetLossDamage::factory()
+                                AssetLossDamageImage::factory()
                                     ->count(3)
                                     ->state(function (
                                         array $attributes,
@@ -131,7 +131,7 @@ class AssetSeeder extends Seeder
                                 return ['asset_id' => $asset->id];
                             })
                             ->has(
-                                AssetLossDamage::factory()
+                                AssetLossDamageImage::factory()
                                     ->count(3)
                                     ->state(function (
                                         array $attributes,

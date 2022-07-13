@@ -6,6 +6,8 @@ use Based\Fluent\Fluent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AreaType extends Model
 {
@@ -15,12 +17,12 @@ class AreaType extends Model
 
     protected $fillable = ['created_by', 'name'];
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function areas()
+    public function areas(): HasMany
     {
         return $this->hasMany(Area::class, 'area_type_id');
     }
