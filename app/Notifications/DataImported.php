@@ -43,7 +43,7 @@ class DataImported extends Notification implements ShouldQueue
     {
         return [
             'title' => $this->title,
-            'description' => $this->description
+            'description' => $this->description,
         ];
     }
 }

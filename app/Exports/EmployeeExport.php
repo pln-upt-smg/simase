@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class EmployeesExport implements FromCollection, WithHeadings, WithMapping
+class EmployeeExport implements FromCollection, WithHeadings, WithMapping
 {
     private EmployeeService $employeeService;
 

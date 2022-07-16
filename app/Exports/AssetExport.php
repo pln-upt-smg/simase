@@ -21,18 +21,27 @@ class AssetExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ['Area', 'Tipe Area', 'Aset', 'Tipe Aset', 'UoM', 'Kuantitas'];
+        return [
+            'Aset',
+            'Tipe Aset',
+            'UoM',
+            'Kuantitas',
+            'Kode Area',
+            'Area',
+            'Tipe Area',
+        ];
     }
 
     public function map($row): array
     {
         return [
-            Str::title(trim($row->area->name)),
-            Str::title(trim($row->area->areaType->name)),
             Str::title(trim($row->name)),
             Str::title(trim($row->assetType->name)),
             trim($row->assetType->uom),
             $row->quantity,
+            trim($row->area->code),
+            Str::title(trim($row->area->name)),
+            Str::title(trim($row->area->areaType->name)),
         ];
     }
 

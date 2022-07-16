@@ -2,21 +2,17 @@
 
 namespace App\Services;
 
-use App\Exports\AreasExport;
-use App\Http\Helper\InertiaHelper;
-use App\Http\Helper\MediaHelper;
-use App\Imports\AreasImport;
+use App\Http\Helper\{InertiaHelper, MediaHelper};
+use App\Imports\AreaImport;
+use App\Exports\AreaExport;
 use App\Models\Area;
-use App\Notifications\DataDestroyed;
-use App\Notifications\DataStored;
-use App\Notifications\DataUpdated;
-use App\Services\Helper\HasValidator;
+use App\Notifications\{DataDestroyed, DataStored, DataUpdated};
+use App\Services\Helpers\HasValidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\{Collection, Str};
+use Illuminate\Validation\{Rule, ValidationException};
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -34,38 +30,49 @@ class AreaService
         return QueryBuilder::for(Area::class)
             ->select([
                 'areas.id as id',
+                'areas.code as code',
                 'areas.name as name',
-                'areas.sloc as sloc',
-                'areas.is_batch_required as is_batch_required'
+                'areas.latitude as latitude',
+                'areas.longitude as longitude',
+                'area_types.name as area_type',
+                DB::raw(
+                    'date_format(areas.updated_at, "%d %b %Y") as update_date'
+                ),
             ])
+            ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
             ->whereNull('areas.deleted_at')
-            ->defaultSort('areas.name')
-            ->allowedFilters(InertiaHelper::filterBy([
-                'areas.name',
-                'areas.sloc',
-                'areas.is_batch_required'
-            ]))
-            ->allowedSorts([
-                'name',
-                'sloc',
-                'is_batch_required'
-            ])
+            ->defaultSort('areas.code')
+            ->allowedFilters(
+                InertiaHelper::filterBy([
+                    'areas.code',
+                    'areas.name',
+                    'area_types.name',
+                ])
+            )
+            ->allowedSorts(['code', 'name', 'area_type', 'update_date'])
             ->paginate()
             ->withQueryString();
     }
 
     public function tableMeta(InertiaTable $table): InertiaTable
     {
-        return $table->addSearchRows([
-            'areas.name' => 'Nama Area',
-            'areas.sloc' => 'SLoc',
-            'areas.is_batch_required' => 'Validasi Batch'
-        ])->addColumns([
-            'name' => 'Nama Area',
-            'sloc' => 'SLoc',
-            'is_batch_required' => 'Validasi Batch',
-            'action' => 'Aksi'
-        ]);
+        return $table
+            ->addSearchRows([
+                'areas.code' => 'Kode Area',
+                'areas.name' => 'Nama Area',
+                'areas.latitude' => 'Latitude',
+                'areas.longitude' => 'Longitude',
+                'area_types.name' => 'Tipe Area',
+            ])
+            ->addColumns([
+                'code' => 'Kode Area',
+                'name' => 'Nama Area',
+                'latitude' => 'Latitude',
+                'longitude' => 'Longitude',
+                'area_type' => 'Tipe Area',
+                'update_date' => 'Tanggal Pembaruan',
+                'action' => 'Aksi',
+            ]);
     }
 
     /**
@@ -74,20 +81,42 @@ class AreaService
      */
     public function store(Request $request): void
     {
-        $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->whereNull('deleted_at')],
-            'sloc' => ['required', 'numeric', Rule::unique('areas', 'sloc')->whereNull('deleted_at')],
-            'is_batch_required' => ['nullable']
-        ], attributes: [
-            'name' => 'Nama Area',
-            'sloc' => 'SLoc'
-        ]);
+        $this->validate(
+            $request,
+            [
+                'type' => [
+                    'required',
+                    'integer',
+                    Rule::exists('area_types', 'id')->whereNull('deleted_at'),
+                ],
+                'code' => [
+                    'required',
+                    'numeric',
+                    Rule::unique('areas', 'code')->whereNull('deleted_at'),
+                ],
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('areas', 'name')->whereNull('deleted_at'),
+                ],
+            ],
+            [
+                'type' => 'Tipe Area',
+                'code' => 'Kode Area',
+                'name' => 'Nama Area',
+            ]
+        );
         Area::create([
+            'area_type_id' => (int) $request->type,
+            'code' => $request->code,
             'name' => Str::title($request->name),
-            'sloc' => $request->sloc,
-            'is_batch_required' => $request->is_batch_required
         ]);
-        auth()->user()?->notify(new DataStored('Area', Str::title($request->name)));
+        if (auth()->user()) {
+            auth()
+                ->user()
+                ->notify(new DataStored('Area', Str::title($request->name)));
+        }
     }
 
     /**
@@ -97,21 +126,47 @@ class AreaService
      */
     public function update(Request $request, Area $area): void
     {
-        $this->validate($request, [
-            'name' => ['required', 'string', 'max:255', Rule::unique('areas', 'name')->ignore($area->id)->whereNull('deleted_at')],
-            'sloc' => ['required', 'numeric', Rule::unique('areas', 'sloc')->ignore($area->id)->whereNull('deleted_at')],
-            'is_batch_required' => ['nullable']
-        ], attributes: [
-            'name' => 'Nama Area',
-            'sloc' => 'SLoc'
-        ]);
+        $this->validate(
+            $request,
+            [
+                'type' => [
+                    'required',
+                    'integer',
+                    Rule::exists('area_types', 'id')->whereNull('deleted_at'),
+                ],
+                'code' => [
+                    'required',
+                    'numeric',
+                    Rule::unique('areas', 'code')
+                        ->ignore($area->id)
+                        ->whereNull('deleted_at'),
+                ],
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('areas', 'name')
+                        ->ignore($area->id)
+                        ->whereNull('deleted_at'),
+                ],
+            ],
+            [
+                'type' => 'Tipe Area',
+                'code' => 'Kode Area',
+                'name' => 'Nama Area',
+            ]
+        );
         $area->updateOrFail([
+            'area_type_id' => (int) $request->type,
+            'code' => $request->code,
             'name' => Str::title($request->name),
-            'sloc' => $request->sloc,
-            'is_batch_required' => $request->is_batch_required
         ]);
         $area->save();
-        auth()->user()?->notify(new DataUpdated('Area', Str::title($request->name)));
+        if (auth()->user()) {
+            auth()
+                ->user()
+                ->notify(new DataUpdated('Area', Str::title($request->name)));
+        }
     }
 
     /**
@@ -122,7 +177,11 @@ class AreaService
     {
         $data = $area->name;
         $area->deleteOrFail();
-        auth()->user()?->notify(new DataDestroyed('Area', Str::title($data)));
+        if (auth()->user()) {
+            auth()
+                ->user()
+                ->notify(new DataDestroyed('Area', Str::title($data)));
+        }
     }
 
     /**
@@ -131,7 +190,10 @@ class AreaService
      */
     public function import(Request $request): void
     {
-        MediaHelper::importSpreadsheet($request, new AreasImport(auth()->user()));
+        MediaHelper::importSpreadsheet(
+            $request,
+            new AreaImport(auth()->user())
+        );
     }
 
     /**
@@ -140,7 +202,10 @@ class AreaService
      */
     public function export(): BinaryFileResponse
     {
-        return MediaHelper::exportSpreadsheet(new AreasExport($this), new Area);
+        return MediaHelper::exportSpreadsheet(
+            new AreaExport($this),
+            new Area()
+        );
     }
 
     /**
@@ -160,7 +225,10 @@ class AreaService
         if ($request->query('area') === '0' || $request->query('area') === 0) {
             return null;
         }
-        return Area::where('id', $request->query('area') ? (int)$request->query('area') : 0)
+        return Area::where(
+            'id',
+            $request->query('area') ? (int) $request->query('area') : 0
+        )
             ->whereNull('deleted_at')
             ->first();
     }
@@ -182,8 +250,15 @@ class AreaService
     {
         $query = Area::orderBy('name')->whereNull('deleted_at');
         if (!is_null($request)) {
-            $query = $query->whereRaw('lower(name) like "%?%"', Str::lower(trim($request->query('q') ?? '')))
-                ->orWhereRaw('lower(sloc) like "%?%"', Str::lower(trim($request->query('q') ?? '')))
+            $query = $query
+                ->orWhereRaw(
+                    'lower(code) like "%?%"',
+                    Str::lower(trim($request->query('q') ?? ''))
+                )
+                ->whereRaw(
+                    'lower(name) like "%?%"',
+                    Str::lower(trim($request->query('q') ?? ''))
+                )
                 ->limit(10);
         }
         return $query->get();

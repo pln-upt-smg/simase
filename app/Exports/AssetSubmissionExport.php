@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use App\Notifications\DataExported;
 use App\Services\AssetSubmissionService;
 
-class AssetExport implements FromCollection, WithHeadings, WithMapping
+class AssetSubmissionExport implements FromCollection, WithHeadings, WithMapping
 {
     private AssetSubmissionService $assetSubmissionService;
 

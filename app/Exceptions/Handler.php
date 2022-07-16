@@ -49,7 +49,12 @@ class Handler extends ExceptionHandler
     public function report(Throwable $e): void
     {
         parent::report($e);
-        if (!config('app.env_ci_cd') && app()->isProduction() && app()->bound('sentry') && $this->shouldReport($e)) {
+        if (
+            !config('app.env_ci_cd') &&
+            app()->isProduction() &&
+            app()->bound('sentry') &&
+            $this->shouldReport($e)
+        ) {
             app('sentry')->captureException($e);
         }
     }

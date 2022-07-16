@@ -2,24 +2,18 @@
 
 namespace App\Services;
 
-use App\Exports\EmployeesExport;
-use App\Http\Helper\InertiaHelper;
-use App\Http\Helper\MediaHelper;
-use App\Imports\EmployeesImport;
+use App\Http\Helper\{InertiaHelper, MediaHelper};
+use App\Imports\EmployeeImport;
+use App\Exports\EmployeeExport;
 use App\Models\User;
-use App\Notifications\DataDestroyed;
-use App\Notifications\DataStored;
-use App\Notifications\DataUpdated;
-use App\Rules\IsValidDigit;
-use App\Rules\IsValidPhone;
-use App\Services\Helper\HasValidator;
+use App\Notifications\{DataDestroyed, DataStored, DataUpdated};
+use App\Rules\{IsValidDigit, IsValidPhone};
+use App\Services\Helpers\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Illuminate\Support\{Collection, Str};
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\{Rule, ValidationException};
 use Laravel\Fortify\Rules\Password;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -35,6 +29,10 @@ class EmployeeService
 	 */
 	public function tableData(): LengthAwarePaginator
 	{
+        $userId = 0;
+        if (auth()->user()) {
+            $userId = auth()->user()->id;
+        }
 		return QueryBuilder::for(User::class)
 			->select([
 				'users.id as id',
@@ -45,7 +43,7 @@ class EmployeeService
 				'roles.name as role'
 			])
 			->leftJoin('roles', 'roles.id', '=', 'users.role_id')
-			->where('users.id', '<>', auth()->user()?->id ?? 0)
+			->where('users.id', '<>', $userId)
 			->whereNull(['users.deleted_at', 'roles.deleted_at'])
 			->defaultSort('users.name')
 			->allowedFilters(InertiaHelper::filterBy([
@@ -110,7 +108,9 @@ class EmployeeService
 			'nip' => $request->nip,
 			'password' => Hash::make($request->password)
 		]);
-		auth()->user()?->notify(new DataStored('Pegawai', $request->nip));
+        if (auth()->user()) {
+            auth()->user()->notify(new DataStored('Pegawai', $request->nip));
+        }
 	}
 
 	/**
@@ -141,7 +141,9 @@ class EmployeeService
 			'password' => Hash::make($request->password)
 		]);
 		$employee->save();
-		auth()->user()?->notify(new DataUpdated('Pegawai', $request->nip));
+        if (auth()->user()) {
+            auth()->user()->notify(new DataUpdated('Pegawai', $request->nip));
+        }
 	}
 
 	/**
@@ -152,7 +154,9 @@ class EmployeeService
 	{
 		$data = $employee->nip;
 		$employee->deleteOrFail();
-		auth()->user()?->notify(new DataDestroyed('Pegawai', $data));
+        if (auth()->user()) {
+            auth()->user()->notify(new DataDestroyed('Pegawai', $data));
+        }
 	}
 
 	/**
@@ -161,7 +165,7 @@ class EmployeeService
 	 */
 	public function import(Request $request): void
 	{
-		MediaHelper::importSpreadsheet($request, new EmployeesImport(auth()->user()));
+		MediaHelper::importSpreadsheet($request, new EmployeeImport(auth()->user()));
 	}
 
 	/**
@@ -170,7 +174,7 @@ class EmployeeService
 	 */
 	public function export(): BinaryFileResponse
 	{
-		return MediaHelper::exportSpreadsheet(new EmployeesExport($this), 'employees');
+		return MediaHelper::exportSpreadsheet(new EmployeeExport($this), 'employees');
 	}
 
 	/**
@@ -186,8 +190,12 @@ class EmployeeService
 	 */
 	public function collection(): Collection
 	{
+        $userId = 0;
+        if (auth()->user()) {
+            $userId = auth()->user()->id;
+        }
 		return User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
-			->where('users.id', '<>', auth()->user()?->id ?? 0)
+			->where('users.id', '<>', $userId)
 			->whereNull(['users.deleted_at', 'roles.deleted_at'])
 			->orderBy('users.name')
 			->get()

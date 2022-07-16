@@ -8,8 +8,6 @@ use App\Services\AreaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Response;
-use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -33,14 +31,12 @@ class AreaController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return Response|ResponseFactory
      */
-    public function index(): Response|ResponseFactory
+    public function index()
     {
         return inertia('Administrator/Areas/Index', [
             'areas' => $this->areaService->tableData(),
-            'template' => $this->areaService->template()
+            'template' => $this->areaService->template(),
         ])->table(function (InertiaTable $table) {
             $this->areaService->tableMeta($table);
         });
@@ -118,7 +114,11 @@ class AreaController extends Controller
      */
     public function json(Request $request): JsonResponse
     {
-        return response()->json($this->areaService->single($request)?->toJson());
+        $data = $this->areaService->single($request);
+        if (!is_null($data)) {
+            $data = $data->toJson();
+        }
+        return response()->json($data);
     }
 
     /**
@@ -132,7 +132,7 @@ class AreaController extends Controller
         $data = $this->areaService->collection($request);
         return response()->json([
             'items' => $data->toArray(),
-            'total_count' => $data->count()
+            'total_count' => $data->count(),
         ]);
     }
 }
