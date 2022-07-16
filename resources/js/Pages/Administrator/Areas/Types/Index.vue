@@ -1,5 +1,5 @@
 <template>
-    <app-layout title="Area">
+    <app-layout title="Tipe Area">
         <div class="mb-6 lg:text-right">
             <jet-button
                 type="button"
@@ -31,39 +31,15 @@
         <jet-table
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="areas"
+            :meta="area_types"
             ref="table"
         >
             <template #head>
                 <jet-table-header
-                    v-show="showColumn('code')"
-                    :cell="sortableHeader('code')"
-                >
-                    Kode Area
-                </jet-table-header>
-                <jet-table-header
                     v-show="showColumn('name')"
                     :cell="sortableHeader('name')"
                 >
-                    Nama Area
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('area_type')"
-                    :cell="sortableHeader('area_type')"
-                >
-                    Tipe Area
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('latitude')"
-                    :cell="sortableHeader('latitude')"
-                >
-                    Latitude
-                </jet-table-header>
-                <jet-table-header
-                    v-show="showColumn('longitude')"
-                    :cell="sortableHeader('longitude')"
-                >
-                    Longitude
+                    Nama Tipe Area
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('user_name')"
@@ -83,27 +59,19 @@
                 />
             </template>
             <template #body>
-                <tr v-for="area in areas.data" :key="area.id">
-                    <td v-show="showColumn('code')">{{ area.code }}</td>
-                    <td v-show="showColumn('name')">{{ area.name }}</td>
-                    <td v-show="showColumn('area_type')">
-                        {{ area.area_type }}
-                    </td>
-                    <td v-show="showColumn('latitude')">{{ area.latitude }}</td>
-                    <td v-show="showColumn('longitude')">
-                        {{ area.longitude }}
-                    </td>
+                <tr v-for="area_type in area_types.data" :key="area_type.id">
+                    <td v-show="showColumn('name')">{{ area_type.name }}</td>
                     <td v-show="showColumn('user_name')">
-                        {{ area.user_name }}
+                        {{ area_type.user_name }}
                     </td>
                     <td v-show="showColumn('update_date')">
-                        {{ area.update_date }}
+                        {{ area_type.update_date }}
                     </td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
                                 <button
-                                    @click="confirmUpdate(area)"
+                                    @click="confirmUpdate(area_type)"
                                     class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group"
                                 >
                                     <pencil-alt-icon
@@ -115,7 +83,7 @@
                             </menu-item>
                             <menu-item>
                                 <button
-                                    @click="confirmDestroy(area)"
+                                    @click="confirmDestroy(area_type)"
                                     class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group"
                                 >
                                     <trash-icon
@@ -133,46 +101,18 @@
         <jet-modal
             :show="confirmingStore"
             @close="closeStoreModal"
-            title="Tambah area"
+            title="Tambah tipe area"
         >
             <template #content>
-                Silakan masukkan data area yang ingin ditambahkan.
+                Silakan masukkan data tipe area yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
                     <jet-input
-                        type="number"
-                        class="block w-full"
-                        placeholder="Kode Area"
-                        ref="storeCode"
-                        v-model="storeForm.code"
-                    />
-                    <jet-input
                         type="text"
-                        class="block w-full capitalize mt-4"
-                        placeholder="Nama Area"
+                        class="block w-full capitalize"
+                        placeholder="Nama Tipe Area"
                         ref="storeName"
                         v-model="storeForm.name"
-                    />
-                    <jet-input
-                        type="number"
-                        class="block w-full mt-4"
-                        placeholder="Latitude"
-                        ref="storeLatitude"
-                        v-model="storeForm.latitude"
-                    />
-                    <jet-input
-                        type="number"
-                        class="block w-full mt-4"
-                        placeholder="Longitude"
-                        ref="storeLongitude"
-                        v-model="storeForm.longitude"
-                    />
-                    <jet-select
-                        ref="storeType"
-                        class="block w-full mt-4"
-                        placeholder="Pilih Tipe Area"
-                        v-model="storeForm.type"
-                        :data="area_types"
                         @keyup.enter="store"
                     />
                 </div>
@@ -198,46 +138,18 @@
         <jet-modal
             :show="confirmingUpdate"
             @close="closeUpdateModal"
-            title="Edit area"
+            title="Edit tipe area"
         >
             <template #content>
-                Silakan masukkan data area yang ingin diubah.
+                Silakan masukkan data tipe area yang ingin diubah.
                 <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
                     <jet-input
-                        type="number"
-                        class="block w-full"
-                        placeholder="Kode Area"
-                        ref="updateCode"
-                        v-model="updateForm.code"
-                    />
-                    <jet-input
                         type="text"
-                        class="block w-full capitalize mt-4"
-                        placeholder="Nama Area"
+                        class="block w-full capitalize"
+                        placeholder="Nama Tipe Area"
                         ref="updateName"
                         v-model="updateForm.name"
-                    />
-                    <jet-input
-                        type="number"
-                        class="block w-full mt-4"
-                        placeholder="Latitude"
-                        ref="updateLatitude"
-                        v-model="updateForm.latitude"
-                    />
-                    <jet-input
-                        type="number"
-                        class="block w-full mt-4"
-                        placeholder="Longitude"
-                        ref="updateLongitude"
-                        v-model="updateForm.longitude"
-                    />
-                    <jet-select
-                        ref="updateType"
-                        class="block w-full mt-4"
-                        placeholder="Pilih Tipe Area"
-                        v-model="updateForm.type"
-                        :data="area_types"
                         @keyup.enter="update"
                     />
                 </div>
@@ -263,11 +175,11 @@
         <jet-alert-modal
             :show="confirmingDestroy"
             @close="closeDestroyModal"
-            title="Hapus area"
+            title="Hapus tipe area"
         >
             <template #content>
-                Apakah Anda yakin ingin menghapus area ini? Setelah area
-                dihapus, semua sumber daya dan datanya akan dihapus secara
+                Apakah Anda yakin ingin menghapus tipe area ini? Setelah tipe
+                area dihapus, semua sumber daya dan datanya akan dihapus secara
                 permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
@@ -290,13 +202,13 @@
         <jet-import-modal
             :show="confirmingImport"
             @close="closeImportModal"
-            title="Impor data area"
+            title="Impor data tipe area"
         >
             <template #content>
                 <p>
-                    Silakan unggah file data area yang ingin di-impor. Pastikan
-                    Anda sudah menggunakan template spreadsheet yang ditentukan.
-                    Sistem hanya memproses data yang ada pada sheet
+                    Silakan unggah file data tipe area yang ingin di-impor.
+                    Pastikan Anda sudah menggunakan template spreadsheet yang
+                    ditentukan. Sistem hanya memproses data yang ada pada sheet
                     <b>Worksheet</b>.
                 </p>
                 <p class="mt-2">
@@ -370,13 +282,13 @@
         <jet-export-modal
             :show="confirmingExport"
             @close="closeExportModal"
-            title="Ekspor data area"
+            title="Ekspor data tipe area"
         >
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data area? Proses
-                    ekspor dapat memakan waktu lama, tergantung dari banyaknya
-                    data yang tersedia.
+                    Apakah Anda yakin ingin mengekspor semua data tipe area?
+                    Proses ekspor dapat memakan waktu lama, tergantung dari
+                    banyaknya data yang tersedia.
                 </p>
                 <p class="mt-2">
                     Sistem akan mengekspor data berupa file spreadsheet dengan
@@ -474,7 +386,6 @@ export default defineComponent({
     },
     props: {
         area_types: Object,
-        areas: Object,
     },
     data() {
         return {
@@ -518,44 +429,47 @@ export default defineComponent({
     },
     methods: {
         store() {
-            this.storeForm.post(route("areas.store"), {
+            this.storeForm.post(route("areas.types.store"), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
                     this.closeStoreModal();
                     this.showSuccessNotification(
                         "Area berhasil ditambahkan",
-                        "Sistem telah berhasil menyimpan data area baru"
+                        "Sistem telah berhasil menyimpan data tipe area baru"
                     );
                 },
                 onError: () =>
                     this.showDangerNotification(
                         "Kesalahan telah terjadi",
-                        "Sistem tidak dapat menyimpan data area, mohon periksa ulang form"
+                        "Sistem tidak dapat menyimpan data tipe area, mohon periksa ulang form"
                     ),
             });
         },
         update() {
-            this.updateForm.put(route("areas.update", this.updateForm.id), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    this.reloadData();
-                    this.closeUpdateModal();
-                    this.showSuccessNotification(
-                        "Area berhasil diedit",
-                        "Sistem telah berhasil mengedit data area"
-                    );
-                },
-                onError: () =>
-                    this.showDangerNotification(
-                        "Kesalahan telah terjadi",
-                        "Sistem tidak dapat mengubah data area, mohon periksa ulang form"
-                    ),
-            });
+            this.updateForm.put(
+                route("areas.types.update", this.updateForm.id),
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        this.reloadData();
+                        this.closeUpdateModal();
+                        this.showSuccessNotification(
+                            "Area berhasil diedit",
+                            "Sistem telah berhasil mengedit data tipe area"
+                        );
+                    },
+                    onError: () =>
+                        this.showDangerNotification(
+                            "Kesalahan telah terjadi",
+                            "Sistem tidak dapat mengubah data tipe area, mohon periksa ulang form"
+                        ),
+                }
+            );
         },
         destroy() {
             this.destroyForm.delete(
-                route("areas.destroy", this.destroyForm.id),
+                route("areas.types.destroy", this.destroyForm.id),
                 {
                     preserveScroll: true,
                     onSuccess: () => {
@@ -563,55 +477,51 @@ export default defineComponent({
                         this.closeDestroyModal();
                         this.showSuccessNotification(
                             "Area berhasil dihapus",
-                            "Sistem telah berhasil menghapus data area"
+                            "Sistem telah berhasil menghapus data tipe area"
                         );
                     },
                     onError: () =>
                         this.showDangerNotification(
                             "Kesalahan telah terjadi",
-                            "Sistem tidak dapat menghapus data area"
+                            "Sistem tidak dapat menghapus data tipe area"
                         ),
                 }
             );
         },
         importFile() {
-            this.importForm.post(route("areas.import"), {
+            this.importForm.post(route("areas.types.import"), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
                     this.closeImportModal();
                     this.showSuccessNotification(
                         "Permintaan impor data telah dijadwalkan",
-                        "Sistem berhasil menjadwalkan permintaan impor data area di latar belakang"
+                        "Sistem berhasil menjadwalkan permintaan impor data tipe area di latar belakang"
                     );
                 },
                 onError: () =>
                     this.showDangerNotification(
                         "Kesalahan telah terjadi",
-                        "Sistem tidak dapat mengimpor data area, mohon periksa kesalahan yang telah dideteksi"
+                        "Sistem tidak dapat mengimpor data tipe area, mohon periksa kesalahan yang telah dideteksi"
                     ),
             });
         },
         exportFile() {
-            window.open(route("areas.export"));
+            window.open(route("areas.types.export"));
             this.closeExportModal();
         },
         confirmStore() {
             setTimeout(() => (this.confirmingStore = true), 150);
             setTimeout(() => this.$refs.storeName.focus(), 300);
         },
-        confirmUpdate(area) {
-            this.updateForm.id = area.id;
-            this.updateForm.code = area.code;
-            this.updateForm.name = area.name;
-            this.updateForm.latitude = area.latitude;
-            this.updateForm.longitude = area.longitude;
-            this.updateForm.type = area.area_type_id;
+        confirmUpdate(area_type) {
+            this.updateForm.id = area_type.id;
+            this.updateForm.name = area_type.name;
             setTimeout(() => (this.confirmingUpdate = true), 150);
             setTimeout(() => this.$refs.updateName.focus(), 300);
         },
-        confirmDestroy(area) {
-            this.destroyForm.id = area.id;
+        confirmDestroy(area_type) {
+            this.destroyForm.id = area_type.id;
             setTimeout(() => (this.confirmingDestroy = true), 150);
         },
         confirmImport() {
@@ -626,11 +536,7 @@ export default defineComponent({
                 this.clearErrors();
                 this.storeForm.clearErrors();
                 this.storeForm.reset();
-                this.storeForm.code = null;
                 this.storeForm.name = null;
-                this.storeForm.latitude = null;
-                this.storeForm.longitude = null;
-                this.storeForm.type = null;
             }, 500);
         },
         closeUpdateModal() {
@@ -640,11 +546,7 @@ export default defineComponent({
                 this.updateForm.clearErrors();
                 this.updateForm.reset();
                 this.updateForm.id = null;
-                this.updateForm.code = null;
                 this.updateForm.name = null;
-                this.updateForm.latitude = null;
-                this.updateForm.longitude = null;
-                this.updateForm.type = null;
             }, 500);
         },
         closeDestroyModal() {
@@ -711,7 +613,7 @@ export default defineComponent({
             this.$page.props.errors = [];
         },
         reloadData() {
-            this.$refs.table.reload("areas");
+            this.$refs.table.reload("area_types");
         },
     },
 });

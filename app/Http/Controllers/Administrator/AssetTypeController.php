@@ -37,7 +37,7 @@ class AssetTypeController extends Controller
      */
     public function index(): Response
     {
-        return inertia('Administrator/AssetTypes/Index', [
+        return inertia('Administrator/Assets/Types/Index', [
             'asset_types' => $this->assetTypeService->tableData(),
             'template' => $this->assetTypeService->template(),
         ])->table(function (InertiaTable $table) {
@@ -62,28 +62,26 @@ class AssetTypeController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param AssetType $areaType
+     * @param AssetType $type
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(
-        Request $request,
-        AssetType $areaType
-    ): RedirectResponse {
-        $this->assetTypeService->update($request, $areaType);
+    public function update(Request $request, AssetType $type): RedirectResponse
+    {
+        $this->assetTypeService->update($request, $type);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param AssetType $areaType
+     * @param AssetType $type
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(AssetType $areaType): RedirectResponse
+    public function destroy(AssetType $type): RedirectResponse
     {
-        $this->assetTypeService->destroy($areaType);
+        $this->assetTypeService->destroy($type);
         return back();
     }
 

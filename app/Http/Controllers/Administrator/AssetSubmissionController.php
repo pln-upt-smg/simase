@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
-use App\Models\Asset;
-use App\Services\{AssetService, AssetTypeService};
+use App\Models\AssetSubmission;
+use App\Services\{AssetSubmissionService, PriorityService};
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,30 +13,30 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class AssetController extends Controller
+class AssetSubmissionController extends Controller
 {
     /**
-     * @var AssetService
+     * @var AssetSubmissionService
      */
-    private AssetService $assetService;
+    private AssetSubmissionService $assetSubmissionService;
 
     /**
-     * @var AssetTypeService
+     * @var PriorityService
      */
-    private AssetTypeService $assetTypeService;
+    private PriorityService $priorityService;
 
     /**
      * Create a new Controller instance.
      *
-     * @param AssetService $assetService
-     * @param AssetTypeService $assetTypeService
+     * @param AssetSubmissionService $assetSubmissionService
+     * @param PriorityService $priorityService
      */
     public function __construct(
-        AssetService $assetService,
-        AssetTypeService $assetTypeService
+        AssetSubmissionService $assetSubmissionService,
+        PriorityService $priorityService
     ) {
-        $this->assetService = $assetService;
-        $this->assetTypeService = $assetTypeService;
+        $this->assetSubmissionService = $assetSubmissionService;
+        $this->priorityService = $priorityService;
     }
 
     /**
@@ -46,12 +46,12 @@ class AssetController extends Controller
      */
     public function index(): Response
     {
-        return inertia('Administrator/Assets/Index', [
-            'asset_types' => $this->assetTypeService->collection()->toArray(),
-            'assets' => $this->assetService->tableData(),
-            'template' => $this->assetService->template(),
+        return inertia('Administrator/Assets/Submissions/Index', [
+            'priorities' => $this->priorityService->collection()->toArray(),
+            'asset_submissions' => $this->assetSubmissionService->tableData(),
+            'template' => $this->assetSubmissionService->template(),
         ])->table(function (InertiaTable $table) {
-            $this->assetService->tableMeta($table);
+            $this->assetSubmissionService->tableMeta($table);
         });
     }
 
@@ -64,7 +64,7 @@ class AssetController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $this->assetService->store($request);
+        $this->assetSubmissionService->store($request);
         return back();
     }
 
@@ -72,26 +72,28 @@ class AssetController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Asset $asset
+     * @param AssetSubmission $submission
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Asset $asset): RedirectResponse
-    {
-        $this->assetService->update($request, $asset);
+    public function update(
+        Request $request,
+        AssetSubmission $submission
+    ): RedirectResponse {
+        $this->assetSubmissionService->update($request, $submission);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Asset $asset
+     * @param AssetSubmission $submission
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Asset $asset): RedirectResponse
+    public function destroy(AssetSubmission $submission): RedirectResponse
     {
-        $this->assetService->destroy($asset);
+        $this->assetSubmissionService->destroy($submission);
         return back();
     }
 
@@ -104,7 +106,7 @@ class AssetController extends Controller
      */
     public function import(Request $request): RedirectResponse
     {
-        $this->assetService->import($request);
+        $this->assetSubmissionService->import($request);
         return back();
     }
 
@@ -116,7 +118,7 @@ class AssetController extends Controller
      */
     public function export(): BinaryFileResponse
     {
-        return $this->assetService->export();
+        return $this->assetSubmissionService->export();
     }
 
     /**
@@ -127,7 +129,7 @@ class AssetController extends Controller
      */
     public function json(Request $request): JsonResponse
     {
-        $data = $this->assetService->single($request);
+        $data = $this->assetSubmissionService->single($request);
         if (!is_null($data)) {
             $data = $data->toJson();
         }
@@ -142,7 +144,7 @@ class AssetController extends Controller
      */
     public function jsonCollection(Request $request): JsonResponse
     {
-        $data = $this->assetService->collection($request);
+        $data = $this->assetSubmissionService->collection($request);
         return response()->json([
             'items' => $data->toArray(),
             'total_count' => $data->count(),

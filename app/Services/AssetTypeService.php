@@ -38,7 +38,6 @@ class AssetTypeService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'asset_types.created_by')
-            ->whereNull('asset_types.deleted_at')
             ->defaultSort('asset_types.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
@@ -206,9 +205,7 @@ class AssetTypeService
             $request->query('asset_types')
                 ? (int) $request->query('asset_types')
                 : 0
-        )
-            ->whereNull('deleted_at')
-            ->first();
+        )->first();
     }
 
     /**
@@ -226,15 +223,13 @@ class AssetTypeService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = AssetType::orderBy('name')->whereNull('deleted_at');
+        $query = AssetType::orderBy('name')->limit(10);
         if (!is_null($request)) {
-            $query = $query
-                ->whereRaw(
-                    'lower(name) like "%?%"',
-                    'lower(uom) like "%?%"',
-                    Str::lower(trim($request->query('q') ?? ''))
-                )
-                ->limit(10);
+            $query = $query->whereRaw(
+                'lower(name) like "%?%"',
+                'lower(uom) like "%?%"',
+                Str::lower(trim($request->query('q') ?? ''))
+            );
         }
         return $query->get();
     }

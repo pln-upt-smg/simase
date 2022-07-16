@@ -17,7 +17,7 @@ class CreateAssetLossDamagesTable extends Migration
             $table->id();
             $table->bigInteger('asset_id')->unsigned();
             $table->bigInteger('created_by')->unsigned();
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->tinyInteger('priority');
             $table->timestamps();
             $table->softDeletes();

@@ -30,8 +30,8 @@ class AreaExport implements FromCollection, WithHeadings, WithMapping
             trim($row->code),
             Str::title(trim($row->name)),
             Str::title(trim($row->areaType->name)),
-            trim($row->lat),
-            trim($row->lon),
+            $row->lat,
+            $row->lon,
         ];
     }
 

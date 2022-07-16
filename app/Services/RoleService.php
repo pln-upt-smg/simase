@@ -20,9 +20,7 @@ class RoleService
         return Role::where(
             'id',
             $request->query('role') ? (int) $request->query('role') : 0
-        )
-            ->whereNull('deleted_at')
-            ->first();
+        )->first();
     }
 
     /**
@@ -30,8 +28,6 @@ class RoleService
      */
     public function collection(): Collection
     {
-        return Role::orderBy('name')
-            ->whereNull('deleted_at')
-            ->get();
+        return Role::orderBy('name')->get();
     }
 }

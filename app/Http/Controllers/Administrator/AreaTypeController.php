@@ -37,7 +37,7 @@ class AreaTypeController extends Controller
      */
     public function index(): Response
     {
-        return inertia('Administrator/AreaTypes/Index', [
+        return inertia('Administrator/Areas/Types/Index', [
             'area_types' => $this->areaTypeService->tableData(),
             'template' => $this->areaTypeService->template(),
         ])->table(function (InertiaTable $table) {
@@ -62,28 +62,26 @@ class AreaTypeController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param AreaType $areaType
+     * @param AreaType $type
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(
-        Request $request,
-        AreaType $areaType
-    ): RedirectResponse {
-        $this->areaTypeService->update($request, $areaType);
+    public function update(Request $request, AreaType $type): RedirectResponse
+    {
+        $this->areaTypeService->update($request, $type);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param AreaType $areaType
+     * @param AreaType $type
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(AreaType $areaType): RedirectResponse
+    public function destroy(AreaType $type): RedirectResponse
     {
-        $this->areaTypeService->destroy($areaType);
+        $this->areaTypeService->destroy($type);
         return back();
     }
 

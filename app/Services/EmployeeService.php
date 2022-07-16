@@ -45,7 +45,6 @@ class EmployeeService
 			])
 			->leftJoin('roles', 'roles.id', '=', 'users.role_id')
 			->where('users.id', '<>', $userId)
-			->whereNull(['users.deleted_at', 'roles.deleted_at'])
 			->defaultSort('users.name')
 			->allowedFilters(InertiaHelper::filterBy([
 				'users.name',
@@ -201,7 +200,6 @@ class EmployeeService
         }
 		return User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
 			->where('users.id', '<>', $userId)
-			->whereNull(['users.deleted_at', 'roles.deleted_at'])
 			->orderBy('users.name')
 			->get()
 			->load('role');

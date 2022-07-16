@@ -1,5 +1,5 @@
 <template>
-    <app-layout title="Area">
+    <app-layout title="Aset">
         <div class="mb-6 lg:text-right">
             <jet-button
                 type="button"
@@ -31,39 +31,45 @@
         <jet-table
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="areas"
+            :meta="assets"
             ref="table"
         >
             <template #head>
                 <jet-table-header
-                    v-show="showColumn('code')"
-                    :cell="sortableHeader('code')"
-                >
-                    Kode Area
-                </jet-table-header>
-                <jet-table-header
                     v-show="showColumn('name')"
                     :cell="sortableHeader('name')"
                 >
-                    Nama Area
+                    Nama Aset
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('area_type')"
-                    :cell="sortableHeader('area_type')"
+                    v-show="showColumn('asset_type_name')"
+                    :cell="sortableHeader('asset_type_name')"
+                >
+                    Tipe Aset
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('area_name')"
+                    :cell="sortableHeader('area_name')"
+                >
+                    Area
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('area_type_name')"
+                    :cell="sortableHeader('area_type_name')"
                 >
                     Tipe Area
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('latitude')"
-                    :cell="sortableHeader('latitude')"
+                    v-show="showColumn('quantity')"
+                    :cell="sortableHeader('quantity')"
                 >
-                    Latitude
+                    Kuantitas
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('longitude')"
-                    :cell="sortableHeader('longitude')"
+                    v-show="showColumn('uom')"
+                    :cell="sortableHeader('uom')"
                 >
-                    Longitude
+                    UoM
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('user_name')"
@@ -83,27 +89,32 @@
                 />
             </template>
             <template #body>
-                <tr v-for="area in areas.data" :key="area.id">
-                    <td v-show="showColumn('code')">{{ area.code }}</td>
-                    <td v-show="showColumn('name')">{{ area.name }}</td>
-                    <td v-show="showColumn('area_type')">
-                        {{ area.area_type }}
+                <tr v-for="asset in assets.data" :key="asset.id">
+                    <td v-show="showColumn('name')">{{ asset.name }}</td>
+                    <td v-show="showColumn('asset_type_name')">
+                        {{ asset.asset_type_name }}
                     </td>
-                    <td v-show="showColumn('latitude')">{{ area.latitude }}</td>
-                    <td v-show="showColumn('longitude')">
-                        {{ area.longitude }}
+                    <td v-show="showColumn('area_name')">
+                        {{ asset.area_name }}
                     </td>
+                    <td v-show="showColumn('area_type_name')">
+                        {{ asset.area_type_name }}
+                    </td>
+                    <td v-show="showColumn('quantity')">
+                        {{ asset.quantity }}
+                    </td>
+                    <td v-show="showColumn('uom')">{{ asset.uom }}</td>
                     <td v-show="showColumn('user_name')">
-                        {{ area.user_name }}
+                        {{ asset.user_name }}
                     </td>
                     <td v-show="showColumn('update_date')">
-                        {{ area.update_date }}
+                        {{ asset.update_date }}
                     </td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
                                 <button
-                                    @click="confirmUpdate(area)"
+                                    @click="confirmUpdate(asset)"
                                     class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group"
                                 >
                                     <pencil-alt-icon
@@ -115,7 +126,7 @@
                             </menu-item>
                             <menu-item>
                                 <button
-                                    @click="confirmDestroy(area)"
+                                    @click="confirmDestroy(asset)"
                                     class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group"
                                 >
                                     <trash-icon
@@ -133,48 +144,57 @@
         <jet-modal
             :show="confirmingStore"
             @close="closeStoreModal"
-            title="Tambah area"
+            title="Tambah aset"
         >
             <template #content>
-                Silakan masukkan data area yang ingin ditambahkan.
+                Silakan masukkan data aset yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
                     <jet-input
-                        type="number"
-                        class="block w-full"
-                        placeholder="Kode Area"
-                        ref="storeCode"
-                        v-model="storeForm.code"
-                    />
-                    <jet-input
                         type="text"
-                        class="block w-full capitalize mt-4"
-                        placeholder="Nama Area"
+                        class="block w-full capitalize"
+                        placeholder="Nama Aset"
                         ref="storeName"
                         v-model="storeForm.name"
                     />
                     <jet-input
                         type="number"
                         class="block w-full mt-4"
-                        placeholder="Latitude"
-                        ref="storeLatitude"
-                        v-model="storeForm.latitude"
-                    />
-                    <jet-input
-                        type="number"
-                        class="block w-full mt-4"
-                        placeholder="Longitude"
-                        ref="storeLongitude"
-                        v-model="storeForm.longitude"
+                        placeholder="Kuantitas"
+                        ref="storeQuantity"
+                        v-model="storeForm.quantity"
+                        @keyup.enter="store"
                     />
                     <jet-select
                         ref="storeType"
                         class="block w-full mt-4"
-                        placeholder="Pilih Tipe Area"
+                        placeholder="Pilih Tipe Aset"
                         v-model="storeForm.type"
-                        :data="area_types"
-                        @keyup.enter="store"
+                        :data="asset_types"
                     />
+                    <v-select
+                        placeholder="Cari & Pilih Area"
+                        class="vue-select rounded-md block w-full mt-4"
+                        v-model="storeForm.area"
+                        :filterable="false"
+                        :clearable="false"
+                        :options="areaOptions"
+                        @search="onAreaSearch"
+                        @keyup.enter="store"
+                    >
+                        <template slot="no-options">
+                            Tidak ada hasil tersedia.
+                        </template>
+                        <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Tidak ada hasil untuk <em>{{ search }}</em
+                                >.
+                            </template>
+                            <em v-else style="opacity: 0.5;"
+                                >Mulai mengetik untuk mencari area.</em
+                            >
+                        </template>
+                    </v-select>
                 </div>
             </template>
             <template #buttons>
@@ -198,48 +218,56 @@
         <jet-modal
             :show="confirmingUpdate"
             @close="closeUpdateModal"
-            title="Edit area"
+            title="Edit aset"
         >
             <template #content>
-                Silakan masukkan data area yang ingin diubah.
+                Silakan masukkan data aset yang ingin diubah.
                 <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
                     <jet-input
-                        type="number"
-                        class="block w-full"
-                        placeholder="Kode Area"
-                        ref="updateCode"
-                        v-model="updateForm.code"
-                    />
-                    <jet-input
                         type="text"
-                        class="block w-full capitalize mt-4"
-                        placeholder="Nama Area"
+                        class="block w-full capitalize"
+                        placeholder="Nama Aset"
                         ref="updateName"
                         v-model="updateForm.name"
                     />
                     <jet-input
                         type="number"
                         class="block w-full mt-4"
-                        placeholder="Latitude"
-                        ref="updateLatitude"
-                        v-model="updateForm.latitude"
-                    />
-                    <jet-input
-                        type="number"
-                        class="block w-full mt-4"
-                        placeholder="Longitude"
-                        ref="updateLongitude"
-                        v-model="updateForm.longitude"
+                        placeholder="Kuantitas"
+                        ref="updateQuantity"
+                        v-model="updateForm.quantity"
                     />
                     <jet-select
                         ref="updateType"
                         class="block w-full mt-4"
-                        placeholder="Pilih Tipe Area"
+                        placeholder="Pilih Tipe Aset"
                         v-model="updateForm.type"
-                        :data="area_types"
-                        @keyup.enter="update"
+                        :data="asset_types"
                     />
+                    <v-select
+                        placeholder="Cari & Pilih Area"
+                        class="vue-select rounded-md block w-full mt-4"
+                        v-model="updateForm.area"
+                        :filterable="false"
+                        :clearable="false"
+                        :options="areaOptions"
+                        @search="onAreaSearch"
+                        @keyup.enter="update"
+                    >
+                        <template slot="no-options">
+                            Tidak ada hasil tersedia.
+                        </template>
+                        <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Tidak ada hasil untuk <em>{{ search }}</em
+                                >.
+                            </template>
+                            <em v-else style="opacity: 0.5;"
+                                >Mulai mengetik untuk mencari area.</em
+                            >
+                        </template>
+                    </v-select>
                 </div>
             </template>
             <template #buttons>
@@ -263,10 +291,10 @@
         <jet-alert-modal
             :show="confirmingDestroy"
             @close="closeDestroyModal"
-            title="Hapus area"
+            title="Hapus aset"
         >
             <template #content>
-                Apakah Anda yakin ingin menghapus area ini? Setelah area
+                Apakah Anda yakin ingin menghapus aset ini? Setelah tipe area
                 dihapus, semua sumber daya dan datanya akan dihapus secara
                 permanen. Aksi ini tidak dapat dibatalkan.
             </template>
@@ -290,11 +318,11 @@
         <jet-import-modal
             :show="confirmingImport"
             @close="closeImportModal"
-            title="Impor data area"
+            title="Impor data aset"
         >
             <template #content>
                 <p>
-                    Silakan unggah file data area yang ingin di-impor. Pastikan
+                    Silakan unggah file data aset yang ingin di-impor. Pastikan
                     Anda sudah menggunakan template spreadsheet yang ditentukan.
                     Sistem hanya memproses data yang ada pada sheet
                     <b>Worksheet</b>.
@@ -370,11 +398,11 @@
         <jet-export-modal
             :show="confirmingExport"
             @close="closeExportModal"
-            title="Ekspor data area"
+            title="Ekspor data aset"
         >
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data area? Proses
+                    Apakah Anda yakin ingin mengekspor semua data aset? Proses
                     ekspor dapat memakan waktu lama, tergantung dari banyaknya
                     data yang tersedia.
                 </p>
@@ -443,6 +471,7 @@ import JetTable from "@/Jetstream/Table";
 import JetTableEngine from "@/Jetstream/TableEngine";
 import JetTableHeader from "@/Jetstream/TableHeader";
 import JetSelect from "@/Jetstream/Select";
+import vSelect from "vue-select";
 
 export default defineComponent({
     mixins: [JetTableEngine],
@@ -471,10 +500,11 @@ export default defineComponent({
         PencilAltIcon,
         TrashIcon,
         DocumentAddIcon,
+        vSelect,
     },
     props: {
-        area_types: Object,
-        areas: Object,
+        asset_types: Object,
+        assets: Object,
     },
     data() {
         return {
@@ -494,19 +524,17 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
-                code: null,
-                name: null,
-                latitude: null,
-                longitude: null,
                 type: null,
+                area: null,
+                name: null,
+                quantity: null,
             }),
             updateForm: useForm({
                 id: null,
-                code: null,
-                name: null,
-                latitude: null,
-                longitude: null,
                 type: null,
+                area: null,
+                name: null,
+                quantity: null,
             }),
             destroyForm: useForm({
                 id: null,
@@ -514,48 +542,49 @@ export default defineComponent({
             importForm: useForm({
                 file: null,
             }),
+            areaOptions: [],
         };
     },
     methods: {
         store() {
-            this.storeForm.post(route("areas.store"), {
+            this.storeForm.post(route("assets.store"), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
                     this.closeStoreModal();
                     this.showSuccessNotification(
                         "Area berhasil ditambahkan",
-                        "Sistem telah berhasil menyimpan data area baru"
+                        "Sistem telah berhasil menyimpan data aset baru"
                     );
                 },
                 onError: () =>
                     this.showDangerNotification(
                         "Kesalahan telah terjadi",
-                        "Sistem tidak dapat menyimpan data area, mohon periksa ulang form"
+                        "Sistem tidak dapat menyimpan data aset, mohon periksa ulang form"
                     ),
             });
         },
         update() {
-            this.updateForm.put(route("areas.update", this.updateForm.id), {
+            this.updateForm.put(route("assets.update", this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
                     this.closeUpdateModal();
                     this.showSuccessNotification(
                         "Area berhasil diedit",
-                        "Sistem telah berhasil mengedit data area"
+                        "Sistem telah berhasil mengedit data aset"
                     );
                 },
                 onError: () =>
                     this.showDangerNotification(
                         "Kesalahan telah terjadi",
-                        "Sistem tidak dapat mengubah data area, mohon periksa ulang form"
+                        "Sistem tidak dapat mengubah data aset, mohon periksa ulang form"
                     ),
             });
         },
         destroy() {
             this.destroyForm.delete(
-                route("areas.destroy", this.destroyForm.id),
+                route("assets.destroy", this.destroyForm.id),
                 {
                     preserveScroll: true,
                     onSuccess: () => {
@@ -563,55 +592,57 @@ export default defineComponent({
                         this.closeDestroyModal();
                         this.showSuccessNotification(
                             "Area berhasil dihapus",
-                            "Sistem telah berhasil menghapus data area"
+                            "Sistem telah berhasil menghapus data aset"
                         );
                     },
                     onError: () =>
                         this.showDangerNotification(
                             "Kesalahan telah terjadi",
-                            "Sistem tidak dapat menghapus data area"
+                            "Sistem tidak dapat menghapus data aset"
                         ),
                 }
             );
         },
         importFile() {
-            this.importForm.post(route("areas.import"), {
+            this.importForm.post(route("assets.import"), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
                     this.closeImportModal();
                     this.showSuccessNotification(
                         "Permintaan impor data telah dijadwalkan",
-                        "Sistem berhasil menjadwalkan permintaan impor data area di latar belakang"
+                        "Sistem berhasil menjadwalkan permintaan impor data aset di latar belakang"
                     );
                 },
                 onError: () =>
                     this.showDangerNotification(
                         "Kesalahan telah terjadi",
-                        "Sistem tidak dapat mengimpor data area, mohon periksa kesalahan yang telah dideteksi"
+                        "Sistem tidak dapat mengimpor data aset, mohon periksa kesalahan yang telah dideteksi"
                     ),
             });
         },
         exportFile() {
-            window.open(route("areas.export"));
+            window.open(route("assets.export"));
             this.closeExportModal();
         },
         confirmStore() {
             setTimeout(() => (this.confirmingStore = true), 150);
             setTimeout(() => this.$refs.storeName.focus(), 300);
         },
-        confirmUpdate(area) {
-            this.updateForm.id = area.id;
-            this.updateForm.code = area.code;
-            this.updateForm.name = area.name;
-            this.updateForm.latitude = area.latitude;
-            this.updateForm.longitude = area.longitude;
-            this.updateForm.type = area.area_type_id;
+        confirmUpdate(asset) {
+            this.updateForm.id = asset.id;
+            this.updateForm.name = asset.name;
+            this.updateForm.quantity = asset.quantity;
+            this.updateForm.type = asset.asset_type_id;
+            this.updateForm.area = {
+                id: asset.area_id,
+                label: `${asset.area_code} - ${asset.area_name} (${asset.area_type_name})`,
+            };
             setTimeout(() => (this.confirmingUpdate = true), 150);
             setTimeout(() => this.$refs.updateName.focus(), 300);
         },
-        confirmDestroy(area) {
-            this.destroyForm.id = area.id;
+        confirmDestroy(asset) {
+            this.destroyForm.id = asset.id;
             setTimeout(() => (this.confirmingDestroy = true), 150);
         },
         confirmImport() {
@@ -626,11 +657,10 @@ export default defineComponent({
                 this.clearErrors();
                 this.storeForm.clearErrors();
                 this.storeForm.reset();
-                this.storeForm.code = null;
                 this.storeForm.name = null;
-                this.storeForm.latitude = null;
-                this.storeForm.longitude = null;
+                this.storeForm.quantity = null;
                 this.storeForm.type = null;
+                this.storeForm.area = null;
             }, 500);
         },
         closeUpdateModal() {
@@ -640,11 +670,10 @@ export default defineComponent({
                 this.updateForm.clearErrors();
                 this.updateForm.reset();
                 this.updateForm.id = null;
-                this.updateForm.code = null;
                 this.updateForm.name = null;
-                this.updateForm.latitude = null;
-                this.updateForm.longitude = null;
+                this.updateForm.quantity = null;
                 this.updateForm.type = null;
+                this.updateForm.area = null;
             }, 500);
         },
         closeDestroyModal() {
@@ -711,8 +740,39 @@ export default defineComponent({
             this.$page.props.errors = [];
         },
         reloadData() {
-            this.$refs.table.reload("areas");
+            this.$refs.table.reload("assets");
         },
+        onAreaSearch(search, loading) {
+            if (search.length) {
+                loading(true);
+                this.areaSearch(loading, this, this.showDangerNotification, {
+                    q: escape(search),
+                });
+            }
+        },
+        areaSearch: _.debounce((loading, vm, errorCallback, params) => {
+            axios
+                .get(route("api.areas"), {
+                    params: params,
+                })
+                .then((res) => {
+                    vm.areaOptions = res.data.items.map((item) => {
+                        return {
+                            id: item.id,
+                            label: `${item.code} - ${item.name} (${item.area_type})`,
+                        };
+                    });
+                })
+                .catch(() => {
+                    errorCallback(
+                        "Kesalahan telah terjadi",
+                        "Sistem tidak dapat mengambil data area, mohon coba lagi nanti"
+                    );
+                })
+                .finally(() => {
+                    if (loading) loading(false);
+                });
+        }, 1000),
     },
 });
 </script>

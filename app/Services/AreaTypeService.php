@@ -37,7 +37,6 @@ class AreaTypeService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'area_types.created_by')
-            ->whereNull('area_types.deleted_at')
             ->defaultSort('area_types.name')
             ->allowedFilters(
                 InertiaHelper::filterBy(['area_types.name', 'users.name'])
@@ -192,9 +191,7 @@ class AreaTypeService
             $request->query('area_types')
                 ? (int) $request->query('area_types')
                 : 0
-        )
-            ->whereNull('deleted_at')
-            ->first();
+        )->first();
     }
 
     /**
@@ -212,14 +209,12 @@ class AreaTypeService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = AreaType::orderBy('name')->whereNull('deleted_at');
+        $query = AreaType::orderBy('name')->limit(10);
         if (!is_null($request)) {
-            $query = $query
-                ->whereRaw(
-                    'lower(name) like "%?%"',
-                    Str::lower(trim($request->query('q') ?? ''))
-                )
-                ->limit(10);
+            $query = $query->whereRaw(
+                'lower(name) like "%?%"',
+                Str::lower(trim($request->query('q') ?? ''))
+            );
         }
         return $query->get();
     }

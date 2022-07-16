@@ -28,14 +28,18 @@ class AssetSubmissionService
     {
         return QueryBuilder::for(AssetSubmission::class)
             ->select([
-                'assets.id as id',
+                'assets.id as asset_id',
                 'assets.name as name',
                 'assets.quantity as quantity',
+                'asset_types.id as asset_type_id',
                 'asset_types.name as asset_type_name',
                 'asset_types.uom as asset_type_uom',
+                'areas.id as area_id',
+                'areas.code as area_code',
                 'areas.name as area_name',
                 'area_types.name as area_type_name',
                 'users.name as user_name',
+                'asset_submissions.id as id',
                 'asset_submissions.note as asset_submission_note',
                 'asset_submissions.quantity as asset_submission_quantity',
                 'asset_submissions.priority as asset_submission_priority',
@@ -53,7 +57,6 @@ class AssetSubmissionService
             )
             ->leftJoin('areas', 'areas.id', '=', 'assets.area_id')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
-            ->whereNull('asset_submissions.deleted_at')
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
@@ -126,7 +129,7 @@ class AssetSubmissionService
         $this->validate(
             $request,
             [
-                'asset' => [
+                'asset.id' => [
                     'required',
                     'integer',
                     Rule::exists('assets', 'id')->whereNull('deleted_at'),
@@ -135,8 +138,9 @@ class AssetSubmissionService
                 'quantity' => ['required', 'numeric', 'min:1'],
                 'priority' => ['required', 'numeric', 'min:1', 'max:3'],
             ],
+            [],
             [
-                'asset' => 'Aset',
+                'asset.id' => 'Aset',
                 'note' => 'Keterangan',
                 'quantity' => 'Pengajuan Kuantitas',
                 'priority' => 'Prioritas',
@@ -145,8 +149,8 @@ class AssetSubmissionService
         $user = auth()->user();
         if (!is_null($user)) {
             AssetSubmission::create([
-                'asset_id' => (int) $request->asset,
-                'note' => $request->name,
+                'asset_id' => (int) $request->asset['id'],
+                'note' => $request->note,
                 'quantity' => (int) $request->quantity,
                 'priority' => (int) $request->priority,
                 'created_by' => $user->id,
@@ -172,7 +176,7 @@ class AssetSubmissionService
         $this->validate(
             $request,
             [
-                'asset' => [
+                'asset.id' => [
                     'required',
                     'integer',
                     Rule::exists('assets', 'id')->whereNull('deleted_at'),
@@ -181,8 +185,9 @@ class AssetSubmissionService
                 'quantity' => ['required', 'numeric', 'min:1'],
                 'priority' => ['required', 'numeric', 'min:1', 'max:3'],
             ],
+            [],
             [
-                'asset' => 'Aset',
+                'asset.id' => 'Aset',
                 'note' => 'Keterangan',
                 'quantity' => 'Pengajuan Kuantitas',
                 'priority' => 'Prioritas',
@@ -191,8 +196,8 @@ class AssetSubmissionService
         $user = auth()->user();
         if (!is_null($user)) {
             $assetSubmission->updateOrFail([
-                'asset_id' => (int) $request->asset,
-                'note' => $request->name,
+                'asset_id' => (int) $request->asset['id'],
+                'note' => $request->note,
                 'quantity' => (int) $request->quantity,
                 'priority' => (int) $request->priority,
             ]);
@@ -259,9 +264,7 @@ class AssetSubmissionService
             $request->query('asset_submission')
                 ? (int) $request->query('asset_submission')
                 : 0
-        )
-            ->whereNull('deleted_at')
-            ->first();
+        )->first();
     }
 
     /**
@@ -279,7 +282,7 @@ class AssetSubmissionService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = AssetSubmission::orderBy('name')->whereNull('deleted_at');
+        $query = AssetSubmission::orderBy('name')->limit(10);
         if (!is_null($request)) {
             $query = $query
                 ->leftJoin(
@@ -295,8 +298,7 @@ class AssetSubmissionService
                 ->orWhereRaw(
                     'lower(asset_submissions.quantity) like "%?%"',
                     Str::lower(trim($request->query('q') ?? ''))
-                )
-                ->limit(10);
+                );
         }
         return $query->get();
     }

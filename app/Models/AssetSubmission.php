@@ -14,7 +14,7 @@ class AssetSubmission extends Model
 {
     use Fluent, HasFactory, HasPriority, SoftDeletes;
 
-    public string $note;
+    public ?string $note;
     public int $quantity, $priority;
 
     protected $fillable = [

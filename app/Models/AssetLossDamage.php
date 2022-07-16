@@ -14,7 +14,7 @@ class AssetLossDamage extends Model
 {
     use Fluent, HasFactory, HasPriority, SoftDeletes;
 
-    public string $note;
+    public ?string $note;
     public int $priority;
 
     protected $fillable = ['asset_id', 'created_by', 'note', 'priority'];

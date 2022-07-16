@@ -32,8 +32,11 @@ class AssetService
                 'assets.id as id',
                 'assets.name as name',
                 'assets.quantity as quantity',
+                'asset_types.id as asset_type_id',
                 'asset_types.name as asset_type_name',
                 'asset_types.uom as asset_type_uom',
+                'areas.id as area_id',
+                'areas.code as area_code',
                 'areas.name as area_name',
                 'area_types.name as area_type_name',
                 'users.name as user_name',
@@ -50,7 +53,6 @@ class AssetService
             )
             ->leftJoin('areas', 'areas.id', '=', 'assets.area_id')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
-            ->whereNull('assets.deleted_at')
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
@@ -111,7 +113,7 @@ class AssetService
         $this->validate(
             $request,
             [
-                'area' => [
+                'area.id' => [
                     'required',
                     'integer',
                     Rule::exists('areas', 'id')->whereNull('deleted_at'),
@@ -129,8 +131,9 @@ class AssetService
                 ],
                 'quantity' => ['required', 'numeric'],
             ],
+            [],
             [
-                'area' => 'Asset',
+                'area.id' => 'Area',
                 'type' => 'Tipe Aset',
                 'name' => 'Nama Aset',
                 'quantity' => 'Kuantitas',
@@ -140,7 +143,7 @@ class AssetService
         if (!is_null($user)) {
             Asset::create([
                 'created_by' => $user->id,
-                'area_id' => (int) $request->area,
+                'area_id' => (int) $request->area['id'],
                 'asset_type_id' => (int) $request->type,
                 'name' => Str::title($request->name),
                 'quantity' => (int) $request->quantity,
@@ -159,7 +162,7 @@ class AssetService
         $this->validate(
             $request,
             [
-                'area' => [
+                'area.id' => [
                     'required',
                     'integer',
                     Rule::exists('areas', 'id')->whereNull('deleted_at'),
@@ -179,17 +182,18 @@ class AssetService
                 ],
                 'quantity' => ['required', 'numeric'],
             ],
+            [],
             [
-                'area' => 'Area',
-                'type' => 'Tipe Asset',
-                'name' => 'Nama Asset',
+                'area.id' => 'Area',
+                'type' => 'Tipe Aset',
+                'name' => 'Nama Aset',
                 'quantity' => 'Kuantitas',
             ]
         );
         $user = auth()->user();
         if (!is_null($user)) {
             $asset->updateOrFail([
-                'area_id' => (int) $request->area,
+                'area_id' => (int) $request->area['id'],
                 'asset_type_id' => (int) $request->type,
                 'name' => Str::title($request->name),
                 'quantity' => (int) $request->quantity,
@@ -260,9 +264,7 @@ class AssetService
         return Asset::where(
             'id',
             $request->query('asset') ? (int) $request->query('asset') : 0
-        )
-            ->whereNull('deleted_at')
-            ->first();
+        )->first();
     }
 
     /**
@@ -280,18 +282,40 @@ class AssetService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = Asset::orderBy('name')->whereNull('deleted_at');
+        $query = Asset::orderBy('name')
+            ->select([
+                'assets.id as id',
+                'assets.name as name',
+                'assets.quantity as quantity',
+                'asset_types.id as asset_type_id',
+                'asset_types.name as asset_type_name',
+                'asset_types.uom as asset_type_uom',
+                'areas.id as area_id',
+                'areas.code as area_code',
+                'areas.name as area_name',
+                'area_types.name as area_type_name',
+                'users.name as user_name',
+            ])
+            ->leftJoin('users', 'users.id', '=', 'assets.created_by')
+            ->leftJoin(
+                'asset_types',
+                'asset_types.id',
+                '=',
+                'assets.asset_type_id'
+            )
+            ->leftJoin('areas', 'areas.id', '=', 'assets.area_id')
+            ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
+            ->limit(10);
         if (!is_null($request)) {
-            $query = $query
-                ->whereRaw(
-                    'lower(name) like "%?%"',
-                    Str::lower(trim($request->query('q') ?? ''))
-                )
-                ->orWhereRaw(
-                    'lower(quantity) like "%?%"',
-                    Str::lower(trim($request->query('q') ?? ''))
-                )
-                ->limit(10);
+            $filter = Str::lower(trim($request->query('q') ?? ''));
+            $query = $query->where(function ($query) use ($filter) {
+                $query
+                    ->orWhereRaw("lower(assets.name) like (?)", ["%{$filter}%"])
+                    ->orWhereRaw("lower(asset_types.name) like (?)", [
+                        "%{$filter}%",
+                    ])
+                    ->orWhereRaw("lower(areas.name) like (?)", ["%{$filter}%"]);
+            });
         }
         return $query->get();
     }

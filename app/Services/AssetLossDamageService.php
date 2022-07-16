@@ -62,7 +62,6 @@ class AssetLossDamageService
             )
             ->leftJoin('areas', 'areas.id', '=', 'assets.area_id')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
-            ->whereNull('asset_loss_damages.deleted_at')
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
@@ -258,9 +257,7 @@ class AssetLossDamageService
             $request->query('asset_submission')
                 ? (int) $request->query('asset_submission')
                 : 0
-        )
-            ->whereNull('deleted_at')
-            ->first();
+        )->first();
     }
 
     /**
@@ -278,7 +275,7 @@ class AssetLossDamageService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = AssetLossDamage::orderBy('name')->whereNull('deleted_at');
+        $query = AssetLossDamage::orderBy('name')->limit(10);
         if (!is_null($request)) {
             $query = $query
                 ->leftJoin(
@@ -294,8 +291,7 @@ class AssetLossDamageService
                 ->orWhereRaw(
                     'lower(assets.quantity) like "%?%"',
                     Str::lower(trim($request->query('q') ?? ''))
-                )
-                ->limit(10);
+                );
         }
         return $query->get();
     }

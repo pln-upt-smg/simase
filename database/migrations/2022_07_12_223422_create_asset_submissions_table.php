@@ -18,7 +18,7 @@ class CreateAssetSubmissionsTable extends Migration
             $table->bigInteger('asset_id')->unsigned();
             $table->bigInteger('created_by')->unsigned();
             $table->bigInteger('quantity');
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->tinyInteger('priority');
             $table->timestamps();
             $table->softDeletes();

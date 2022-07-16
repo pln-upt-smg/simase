@@ -43,7 +43,6 @@ class AreaService
             ])
             ->leftJoin('users', 'users.id', '=', 'areas.created_by')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
-            ->whereNull('areas.deleted_at')
             ->defaultSort('areas.code')
             ->allowedFilters(
                 InertiaHelper::filterBy([
@@ -252,9 +251,7 @@ class AreaService
         return Area::where(
             'id',
             $request->query('area') ? (int) $request->query('area') : 0
-        )
-            ->whereNull('deleted_at')
-            ->first();
+        )->first();
     }
 
     /**
@@ -272,18 +269,30 @@ class AreaService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = Area::orderBy('name')->whereNull('deleted_at');
+        $query = Area::orderBy('name')
+            ->select([
+                'areas.id as id',
+                'areas.code as code',
+                'areas.name as name',
+                'areas.lat as latitude',
+                'areas.lon as longitude',
+                'area_types.id as area_type_id',
+                'area_types.name as area_type',
+                'users.name as user_name',
+                DB::raw(
+                    'date_format(areas.updated_at, "%d %b %Y") as update_date'
+                ),
+            ])
+            ->leftJoin('users', 'users.id', '=', 'areas.created_by')
+            ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
+            ->limit(10);
         if (!is_null($request)) {
-            $query = $query
-                ->orWhereRaw(
-                    'lower(code) like "%?%"',
-                    Str::lower(trim($request->query('q') ?? ''))
-                )
-                ->whereRaw(
-                    'lower(name) like "%?%"',
-                    Str::lower(trim($request->query('q') ?? ''))
-                )
-                ->limit(10);
+            $filter = Str::lower(trim($request->query('q') ?? ''));
+            $query = $query->where(function ($query) use ($filter) {
+                $query
+                    ->orWhereRaw("lower(areas.code) like (?)", ["%{$filter}%"])
+                    ->orWhereRaw("lower(areas.name) like (?)", ["%{$filter}%"]);
+            });
         }
         return $query->get();
     }
