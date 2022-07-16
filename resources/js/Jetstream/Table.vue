@@ -33,18 +33,25 @@ table :deep(tr:hover td) {
                 name="tableFilter"
                 :hasFilters="hasFilters"
                 :filters="filters"
-                :changeFilterValue="changeFilterValue">
-                <table-filter v-if="hasFilters" :filters="filters" :on-change="changeFilterValue"/>
+                :changeFilterValue="changeFilterValue"
+            >
+                <table-filter
+                    v-if="hasFilters"
+                    :filters="filters"
+                    :on-change="changeFilterValue"
+                />
             </slot>
             <slot
                 name="tableGlobalSearch"
                 :search="search"
-                :changeGlobalSearchValue="changeGlobalSearchValue">
+                :changeGlobalSearchValue="changeGlobalSearchValue"
+            >
                 <div class="flex-grow">
                     <table-global-search
                         v-if="search && search.global"
                         :value="search.global.value"
-                        :on-change="changeGlobalSearchValue"/>
+                        :on-change="changeGlobalSearchValue"
+                    />
                 </div>
             </slot>
             <slot
@@ -52,19 +59,26 @@ table :deep(tr:hover td) {
                 :hasSearchRows="hasSearchRows"
                 :search="search"
                 :newSearch="newSearch"
-                :enableSearch="enableSearch">
+                :enableSearch="enableSearch"
+            >
                 <table-add-search-row
                     v-if="hasSearchRows"
                     :rows="search"
                     :new="newSearch"
-                    :on-add="enableSearch"/>
+                    :on-add="enableSearch"
+                />
             </slot>
             <slot
                 name="tableColumns"
                 :hasColumns="hasColumns"
                 :columns="columns"
-                :changeColumnStatus="changeColumnStatus">
-                <table-columns v-if="hasColumns" :columns="columns" :on-change="changeColumnStatus"/>
+                :changeColumnStatus="changeColumnStatus"
+            >
+                <table-columns
+                    v-if="hasColumns"
+                    :columns="columns"
+                    :on-change="changeColumnStatus"
+                />
             </slot>
         </div>
         <slot
@@ -73,35 +87,53 @@ table :deep(tr:hover td) {
             :search="search"
             :newSearch="newSearch"
             :disableSearch="disableSearch"
-            :changeSearchValue="changeSearchValue">
+            :changeSearchValue="changeSearchValue"
+        >
             <table-search-rows
                 ref="rows"
                 v-if="hasSearchRows"
                 :rows="search"
                 :new="newSearch"
                 :on-remove="disableSearch"
-                :on-change="changeSearchValue"/>
+                :on-change="changeSearchValue"
+            />
         </slot>
         <slot name="tableWrapper" :meta="meta">
             <div class="flex flex-col">
                 <div
-                    class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
-                    <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                        <div class="shadow border-b border-gray-200" :class="[bottomSpacing ? 'mb-8' : 'mb-0']">
+                    class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 scrollbar-thin scrollbar-thumb-amber-800 scrollbar-track-amber-200"
+                >
+                    <div
+                        class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
+                    >
+                        <div
+                            class="shadow border-b border-gray-200"
+                            :class="[bottomSpacing ? 'mb-8' : 'mb-0']"
+                        >
                             <slot name="table">
-                                <table class="min-w-full divide-y divide-gray-200 bg-white mt-4 lg:mt-6 z-0">
-                                    <thead class="bg-indigo-100 text-white">
-                                    <tr :class="[clickableHeader ? 'clickable-table-header' : '']">
-                                        <slot name="head"/>
-                                    </tr>
+                                <table
+                                    class="min-w-full divide-y divide-gray-200 bg-white mt-4 lg:mt-6 z-0"
+                                >
+                                    <thead class="bg-amber-100 text-white">
+                                        <tr
+                                            :class="[
+                                                clickableHeader
+                                                    ? 'clickable-table-header'
+                                                    : '',
+                                            ]"
+                                        >
+                                            <slot name="head" />
+                                        </tr>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                    <slot name="body"/>
+                                    <tbody
+                                        class="bg-white divide-y divide-gray-200"
+                                    >
+                                        <slot name="body" />
                                     </tbody>
                                 </table>
                             </slot>
                             <slot name="pagination" v-if="paginate">
-                                <table-pagination :meta="paginationMeta"/>
+                                <table-pagination :meta="paginationMeta" />
                             </slot>
                         </div>
                     </div>
@@ -112,29 +144,32 @@ table :deep(tr:hover td) {
 </template>
 
 <script>
-import {defineComponent} from 'vue'
-import {Components, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder'
-import TableFilter from '@/Jetstream/TableFilter'
-import TableGlobalSearch from '@/Jetstream/TableSearch'
-import TableAddSearchRow from '@/Jetstream/TableAddSearchRow'
-import TableSearchRows from '@/Jetstream/TableSearchRows'
-import TablePagination from '@/Jetstream/TablePagination'
+import { defineComponent } from "vue";
+import {
+    Components,
+    Tailwind2,
+} from "@protonemedia/inertiajs-tables-laravel-query-builder";
+import TableFilter from "@/Jetstream/TableFilter";
+import TableGlobalSearch from "@/Jetstream/TableSearch";
+import TableAddSearchRow from "@/Jetstream/TableAddSearchRow";
+import TableSearchRows from "@/Jetstream/TableSearchRows";
+import TablePagination from "@/Jetstream/TablePagination";
 
 export default defineComponent({
     mixins: [Components.Table],
     props: {
         bottomSpacing: {
             type: Boolean,
-            default: false
+            default: false,
         },
         paginate: {
             type: Boolean,
-            default: true
+            default: true,
         },
         clickableHeader: {
             type: Boolean,
-            default: true
-        }
+            default: true,
+        },
     },
     components: {
         TableColumns: Tailwind2.TableColumns,
@@ -142,14 +177,22 @@ export default defineComponent({
         TableGlobalSearch,
         TableAddSearchRow,
         TableSearchRows,
-        TablePagination
+        TablePagination,
     },
     methods: {
         reload(resource) {
-            let options = {replace: true, preserveState: true, preserveScroll: true}
-            if (resource) options.only = [resource]
-            this.$inertia.get(route(route().current(), route().params), {}, options)
-        }
-    }
-})
+            let options = {
+                replace: true,
+                preserveState: true,
+                preserveScroll: true,
+            };
+            if (resource) options.only = [resource];
+            this.$inertia.get(
+                route(route().current(), route().params),
+                {},
+                options
+            );
+        },
+    },
+});
 </script>

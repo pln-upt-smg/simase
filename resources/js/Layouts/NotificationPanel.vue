@@ -15,14 +15,14 @@
                                      leave-from="translate-x-0" leave-to="translate-x-full">
                         <div class="w-screen max-w-md">
                             <div class="h-full flex flex-col bg-white shadow-xl overflow-y-hidden">
-                                <div class="py-6 px-4 bg-indigo-700 sm:px-6">
+                                <div class="py-6 px-4 bg-cyan-700 sm:px-6">
                                     <div class="flex items-center justify-between">
                                         <DialogTitle class="text-lg font-medium text-white">
                                             Notifikasi
                                         </DialogTitle>
                                         <div class="ml-3 h-7 flex items-center">
                                             <button
-                                                class="bg-indigo-700 rounded-md text-indigo-200 hover:text-white focus:outline-none"
+                                                class="bg-cyan-700 rounded-md text-cyan-200 hover:text-white focus:outline-none"
                                                 @click="close">
                                                 <span class="sr-only">Tutup</span>
                                                 <x-icon class="h-6 w-6" aria-hidden="true"/>

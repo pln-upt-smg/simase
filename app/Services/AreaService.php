@@ -32,8 +32,9 @@ class AreaService
                 'areas.id as id',
                 'areas.code as code',
                 'areas.name as name',
-                'areas.latitude as latitude',
-                'areas.longitude as longitude',
+                'areas.lat as latitude',
+                'areas.lon as longitude',
+                'area_types.id as area_type_id',
                 'area_types.name as area_type',
                 'users.name as user_name',
                 DB::raw(
@@ -69,8 +70,8 @@ class AreaService
             ->addSearchRows([
                 'areas.code' => 'Kode Area',
                 'areas.name' => 'Nama Area',
-                'areas.latitude' => 'Latitude',
-                'areas.longitude' => 'Longitude',
+                'areas.lat' => 'Latitude',
+                'areas.lon' => 'Longitude',
                 'area_types.name' => 'Tipe Area',
                 'users.name' => 'Pembuat',
             ])
@@ -111,11 +112,16 @@ class AreaService
                     'max:255',
                     Rule::unique('areas', 'name')->whereNull('deleted_at'),
                 ],
+                'latitude' => ['required', 'numeric'],
+                'longitude' => ['required', 'numeric'],
             ],
+            [],
             [
                 'type' => 'Tipe Area',
                 'code' => 'Kode Area',
                 'name' => 'Nama Area',
+                'latitude' => 'Latitude',
+                'longitude' => 'Longitude',
             ]
         );
         $user = auth()->user();
@@ -125,6 +131,8 @@ class AreaService
                 'area_type_id' => (int) $request->type,
                 'code' => $request->code,
                 'name' => Str::title($request->name),
+                'lat' => $request->latitude,
+                'lon' => $request->longitude,
             ]);
             $user->notify(new DataStored('Area', Str::title($request->name)));
         }
@@ -160,11 +168,16 @@ class AreaService
                         ->ignore($area->id)
                         ->whereNull('deleted_at'),
                 ],
+                'latitude' => ['required', 'numeric'],
+                'longitude' => ['required', 'numeric'],
             ],
+            [],
             [
                 'type' => 'Tipe Area',
                 'code' => 'Kode Area',
                 'name' => 'Nama Area',
+                'latitude' => 'Latitude',
+                'longitude' => 'Longitude',
             ]
         );
         $user = auth()->user();
@@ -173,6 +186,8 @@ class AreaService
                 'area_type_id' => (int) $request->type,
                 'code' => $request->code,
                 'name' => Str::title($request->name),
+                'lat' => $request->latitude,
+                'lon' => $request->longitude,
             ]);
             $area->save();
             $user->notify(new DataUpdated('Area', Str::title($request->name)));

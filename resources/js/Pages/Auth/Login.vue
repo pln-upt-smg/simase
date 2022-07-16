@@ -1,5 +1,5 @@
 <template>
-    <Head title="Log in"/>
+    <Head title="Masuk"/>
     <jet-authentication-card>
         <template #logo>
             <jet-authentication-card-logo/>

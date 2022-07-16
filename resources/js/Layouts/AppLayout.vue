@@ -15,7 +15,7 @@
                                  enter-from="-translate-x-full" enter-to="translate-x-0"
                                  leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0"
                                  leave-to="-translate-x-full">
-                    <div class="relative flex flex-col flex-1 w-full max-w-xs pt-5 bg-indigo-700">
+                    <div class="relative flex flex-col flex-1 w-full max-w-xs pt-5 bg-cyan-700">
                         <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0"
                                          enter-to="opacity-100" leave="ease-in-out duration-300"
                                          leave-from="opacity-100" leave-to="opacity-0">
@@ -32,13 +32,13 @@
                             <span class="text-2xl font-bold text-white">📦 SIMASE</span>
                         </div>
                         <div
-                            class="flex-1 h-full pb-4 mt-4 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
+                            class="flex-1 h-full pb-4 mt-4 overflow-y-auto scrollbar-thin scrollbar-thumb-cyan-800 scrollbar-track-cyan-200">
                             <nav>
                                 <div class="px-4 pt-2 space-y-2">
                                     <span class="text-base font-semibold text-white">Menu</span>
                                     <Link v-for="item in this.menuNavigations" :key="item.name" :href="route(item.href)"
-                                          :class="[route().current(item.href) || (item.currents && item.currents.includes(route().current())) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
-                                        <component :is="item.icon" class="flex-shrink-0 w-6 h-6 mr-4 text-indigo-300"
+                                          :class="[route().current(item.href) || (item.currents && item.currents.includes(route().current())) ? 'bg-cyan-800 text-white' : 'text-cyan-100 hover:bg-cyan-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
+                                        <component :is="item.icon" class="flex-shrink-0 w-6 h-6 mr-4 text-cyan-300"
                                                    aria-hidden="true"/>
                                         {{ item.name }}
                                     </Link>
@@ -47,8 +47,8 @@
                                     <span class="text-base font-semibold text-white">Kelola</span>
                                     <Link v-for="item in this.manageNavigations" :key="item.name"
                                           :href="route(item.href)"
-                                          :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
-                                        <component :is="item.icon" class="flex-shrink-0 w-6 h-6 mr-4 text-indigo-300"
+                                          :class="[route().current(item.href) ? 'bg-cyan-800 text-white' : 'text-cyan-100 hover:bg-cyan-600', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
+                                        <component :is="item.icon" class="flex-shrink-0 w-6 h-6 mr-4 text-cyan-300"
                                                    aria-hidden="true"/>
                                         {{ item.name }}
                                     </Link>
@@ -63,10 +63,10 @@
             </Dialog>
         </TransitionRoot>
         <!-- Desktop Sidebar -->
-        <div class="hidden bg-indigo-700 md:flex md:flex-shrink-0">
+        <div class="hidden bg-cyan-700 md:flex md:flex-shrink-0">
             <div class="flex flex-col w-64">
                 <div
-                    class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
+                    class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-cyan-800 scrollbar-track-cyan-200">
                     <div class="flex items-center flex-shrink-0 px-4">
                         <span class="text-2xl font-bold text-white">📦 SIMASE</span>
                     </div>
@@ -75,8 +75,8 @@
                             <div class="flex-1 px-4 pt-6 space-y-2">
                                 <span class="text-base font-semibold text-white">Menu</span>
                                 <Link v-for="item in menuNavigations" :key="item.name" :href="route(item.href)"
-                                      :class="[route().current(item.href) || (item.currents && item.currents.includes(route().current())) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
-                                    <component :is="item.icon" class="flex-shrink-0 w-6 h-6 mr-3 text-indigo-300"
+                                      :class="[route().current(item.href) || (item.currents && item.currents.includes(route().current())) ? 'bg-cyan-800 text-white' : 'text-cyan-100 hover:bg-cyan-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
+                                    <component :is="item.icon" class="flex-shrink-0 w-6 h-6 mr-3 text-cyan-300"
                                                aria-hidden="true"/>
                                     {{ item.name }}
                                 </Link>
@@ -84,8 +84,8 @@
                             <div class="flex-1 px-4 pt-6 space-y-2">
                                 <span class="text-base font-semibold text-white">Kelola</span>
                                 <Link v-for="item in manageNavigations" :key="item.name" :href="route(item.href)"
-                                      :class="[route().current(item.href) ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
-                                    <component :is="item.icon" class="flex-shrink-0 w-6 h-6 mr-3 text-indigo-300"
+                                      :class="[route().current(item.href) ? 'bg-cyan-800 text-white' : 'text-cyan-100 hover:bg-cyan-600', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
+                                    <component :is="item.icon" class="flex-shrink-0 w-6 h-6 mr-3 text-cyan-300"
                                                aria-hidden="true"/>
                                     {{ item.name }}
                                 </Link>
@@ -113,7 +113,7 @@
                         <div class="icon-badge-container">
                             <button
                                 @click="showNotificationPanel"
-                                class="p-1 mr-4 text-gray-400 bg-white rounded-full icon-badge-icon hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                class="p-1 mr-4 text-gray-400 bg-white rounded-full icon-badge-icon hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
                                 <span class="sr-only">Lihat notifikasi</span>
                                 <BellIcon class="w-6 h-6" aria-hidden="true"/>
                             </button>
@@ -125,7 +125,7 @@
                         <Menu as="div" class="relative ml-3">
                             <div>
                                 <MenuButton
-                                    class="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    class="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
                                     <span class="sr-only">Buka menu</span>
                                     <img v-if="$page.props.jetstream.managesProfilePhotos"
                                          class="w-8 h-8 rounded-full"
@@ -163,7 +163,7 @@
                 </div>
             </div>
             <main
-                class="relative flex-1 overflow-x-hidden overflow-y-auto focus:outline-none scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-indigo-200">
+                class="relative flex-1 overflow-x-hidden overflow-y-auto focus:outline-none scrollbar-thin scrollbar-thumb-cyan-800 scrollbar-track-cyan-200">
                 <div class="px-6 py-8 mx-auto max-w-7xl lg:px-8">
                     <slot></slot>
                 </div>
@@ -206,18 +206,17 @@ const navigations = {
         menu: [
             {name: 'Dashboard', href: 'dashboard', icon: HomeIcon},
             {name: 'Area', href: 'areas.index', icon: LocationMarkerIcon},
-            {name: 'Sub Area', href: 'subareas.index', icon: OfficeBuildingIcon},
-            {name: 'Periode', href: 'periods.index', icon: CalendarIcon},
-            {name: 'Batch', href: 'batches.index', icon: TicketIcon},
-            {name: 'Material Master', href: 'materials.index', icon: ArchiveIcon},
-            {name: 'FG Master', href: 'products.index', icon: CubeIcon},
-            {name: 'FG to Material', href: 'products.materials.index', icon: CubeTransparentIcon},
-            {name: 'FG Material Breakdown', href: 'products.breakdowns.index', icon: ColorSwatchIcon},
-            {name: 'Actual Stock', href: 'stocks.actuals.index', icon: CollectionIcon},
-            {name: 'Book Stock', href: 'stocks.books.index', icon: CollectionIcon},
-            {name: 'PID', href: 'pids.index', icon: DocumentTextIcon},
-            // {name: 'PID Detail', href: 'pids.details.index', icon: DocumentSearchIcon},
-            {name: 'Final Summary', href: 'summaries.index', icon: DocumentReportIcon}
+            // {name: 'Sub Area', href: 'subareas.index', icon: OfficeBuildingIcon},
+            // {name: 'Periode', href: 'periods.index', icon: CalendarIcon},
+            // {name: 'Batch', href: 'batches.index', icon: TicketIcon},
+            // {name: 'Material Master', href: 'materials.index', icon: ArchiveIcon},
+            // {name: 'FG Master', href: 'products.index', icon: CubeIcon},
+            // {name: 'FG to Material', href: 'products.materials.index', icon: CubeTransparentIcon},
+            // {name: 'FG Material Breakdown', href: 'products.breakdowns.index', icon: ColorSwatchIcon},
+            // {name: 'Actual Stock', href: 'stocks.actuals.index', icon: CollectionIcon},
+            // {name: 'Book Stock', href: 'stocks.books.index', icon: CollectionIcon},
+            // {name: 'PID', href: 'pids.index', icon: DocumentTextIcon},
+            // {name: 'Final Summary', href: 'summaries.index', icon: DocumentReportIcon}
         ],
         manage: [
             {name: 'Pegawai', href: 'employees.index', icon: UsersIcon},
@@ -226,8 +225,8 @@ const navigations = {
     },
     operator: {
         menu: [
-            {name: 'Entry Stock', href: 'stocks.create', icon: SaveIcon, currents: ['stocks.sku.create']},
-            {name: 'Hasil Stock', href: 'stocks.index', icon: DocumentTextIcon}
+            // {name: 'Entry Stock', href: 'stocks.create', icon: SaveIcon, currents: ['stocks.sku.create']},
+            // {name: 'Hasil Stock', href: 'stocks.index', icon: DocumentTextIcon}
         ],
         manage: [
             {name: 'Pengaturan', href: 'profile.show', icon: CogIcon}

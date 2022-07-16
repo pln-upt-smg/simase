@@ -20,7 +20,7 @@ createInertiaApp({
     }
 })
 
-InertiaProgress.init({color: '#29227D'})
+InertiaProgress.init({color: '#ec6c02'})
 
 if ('serviceWorker' in navigator) {
 

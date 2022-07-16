@@ -1,16 +1,30 @@
 <template>
     <app-layout title="Area">
         <div class="mb-6 lg:text-right">
-            <jet-button type="button" @click="confirmStore" class="mb-2 mr-2 lg:mb-0">
-                <plus-icon class="w-5 h-5 mr-2 text-white" aria-hidden="true"/>
+            <jet-button
+                type="button"
+                @click="confirmStore"
+                class="mb-2 mr-2 lg:mb-0"
+            >
+                <plus-icon class="w-5 h-5 mr-2 text-white" aria-hidden="true" />
                 Tambah
             </jet-button>
-            <jet-button type="button" @click="confirmImport" class="mb-2 mr-2 lg:mb-0">
-                <upload-icon class="w-5 h-5 mr-2 text-white" aria-hidden="true"/>
+            <jet-button
+                type="button"
+                @click="confirmImport"
+                class="mb-2 mr-2 lg:mb-0"
+            >
+                <upload-icon
+                    class="w-5 h-5 mr-2 text-white"
+                    aria-hidden="true"
+                />
                 Impor
             </jet-button>
             <jet-button type="button" @click="confirmExport">
-                <download-icon class="w-5 h-5 mr-2 text-white" aria-hidden="true"/>
+                <download-icon
+                    class="w-5 h-5 mr-2 text-white"
+                    aria-hidden="true"
+                />
                 Ekspor
             </jet-button>
         </div>
@@ -18,45 +32,96 @@
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
             :meta="areas"
-            ref="table">
+            ref="table"
+        >
             <template #head>
                 <jet-table-header
+                    v-show="showColumn('code')"
+                    :cell="sortableHeader('code')"
+                >
+                    Kode Area
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('name')"
-                    :cell="sortableHeader('name')">
+                    :cell="sortableHeader('name')"
+                >
                     Nama Area
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('sloc')"
-                    :cell="sortableHeader('sloc')">
-                    SLoc
+                    v-show="showColumn('latitude')"
+                    :cell="sortableHeader('latitude')"
+                >
+                    Latitude
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('is_batch_required')"
-                    :cell="sortableHeader('is_batch_required')">
-                    Validasi Batch
+                    v-show="showColumn('longitude')"
+                    :cell="sortableHeader('longitude')"
+                >
+                    Longitude
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('area_type')"
+                    :cell="sortableHeader('area_type')"
+                >
+                    Tipe Area
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('user_name')"
+                    :cell="sortableHeader('user_name')"
+                >
+                    Pembuat
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('update_date')"
+                    :cell="sortableHeader('update_date')"
+                >
+                    Tanggal Pembaruan
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('action')"
-                    :cell="staticHeader('action')"/>
+                    :cell="staticHeader('action')"
+                />
             </template>
             <template #body>
                 <tr v-for="area in areas.data" :key="area.id">
+                    <td v-show="showColumn('code')">{{ area.code }}</td>
                     <td v-show="showColumn('name')">{{ area.name }}</td>
-                    <td v-show="showColumn('sloc')">{{ area.sloc }}</td>
-                    <td v-show="showColumn('is_batch_required')">{{ area.is_batch_required ? 'Ya' : 'Tidak' }}</td>
+                    <td v-show="showColumn('area_type')">
+                        {{ area.area_type }}
+                    </td>
+                    <td v-show="showColumn('latitude')">{{ area.latitude }}</td>
+                    <td v-show="showColumn('longitude')">
+                        {{ area.longitude }}
+                    </td>
+                    <td v-show="showColumn('user_name')">
+                        {{ area.user_name }}
+                    </td>
+                    <td v-show="showColumn('update_date')">
+                        {{ area.update_date }}
+                    </td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
-                                <button @click="confirmUpdate(area)"
-                                        class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group">
-                                    <pencil-alt-icon class="w-5 h-5 mr-3 text-gray-700" aria-hidden="true"/>
+                                <button
+                                    @click="confirmUpdate(area)"
+                                    class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group"
+                                >
+                                    <pencil-alt-icon
+                                        class="w-5 h-5 mr-3 text-gray-700"
+                                        aria-hidden="true"
+                                    />
                                     Edit
                                 </button>
                             </menu-item>
                             <menu-item>
-                                <button @click="confirmDestroy(area)"
-                                        class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group">
-                                    <trash-icon class="w-5 h-5 mr-3 text-gray-700" aria-hidden="true"/>
+                                <button
+                                    @click="confirmDestroy(area)"
+                                    class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group"
+                                >
+                                    <trash-icon
+                                        class="w-5 h-5 mr-3 text-gray-700"
+                                        aria-hidden="true"
+                                    />
                                     Hapus
                                 </button>
                             </menu-item>
@@ -65,103 +130,211 @@
                 </tr>
             </template>
         </jet-table>
-        <jet-modal :show="confirmingStore" @close="closeStoreModal" title="Tambah area">
+        <jet-modal
+            :show="confirmingStore"
+            @close="closeStoreModal"
+            title="Tambah area"
+        >
             <template #content>
                 Silakan masukkan data area yang ingin ditambahkan.
-                <jet-validation-errors class="mt-4"/>
+                <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full capitalize" placeholder="Nama Area"
-                               ref="storeName" v-model="storeForm.name"/>
-                    <jet-input type="number" class="block w-full mt-4" placeholder="SLoc"
-                               ref="storeSloc" v-model="storeForm.sloc" @keyup.enter="store"/>
-                    <jet-select class="block w-full mt-4" placeholder="Validasi Batch?"
-                                ref="storeIsBatchRequired" v-model="storeForm.is_batch_required"
-                                :data="[{id: 0, name: 'Tidak'}, {id: 1, name: 'Ya'}]"/>
+                    <jet-input
+                        type="number"
+                        class="block w-full"
+                        placeholder="Kode Area"
+                        ref="storeCode"
+                        v-model="storeForm.code"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full capitalize mt-4"
+                        placeholder="Nama Area"
+                        ref="storeName"
+                        v-model="storeForm.name"
+                    />
+                    <jet-input
+                        type="number"
+                        class="block w-full mt-4"
+                        placeholder="Latitude"
+                        ref="storeLatitude"
+                        v-model="storeForm.latitude"
+                    />
+                    <jet-input
+                        type="number"
+                        class="block w-full mt-4"
+                        placeholder="Longitude"
+                        ref="storeLongitude"
+                        v-model="storeForm.longitude"
+                    />
+                    <jet-select
+                        ref="storeType"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Tipe Area"
+                        v-model="storeForm.type"
+                        :data="area_types"
+                        @keyup.enter="store"
+                    />
                 </div>
             </template>
             <template #buttons>
-                <jet-button type="button" @click="store"
-                            :class="{ 'opacity-25': storeForm.processing }"
-                            :disabled="storeForm.processing"
-                            class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-button
+                    type="button"
+                    @click="store"
+                    :class="{ 'opacity-25': storeForm.processing }"
+                    :disabled="storeForm.processing"
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Simpan
                 </jet-button>
-                <jet-secondary-button @click="closeStoreModal"
-                                      class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-secondary-button
+                    @click="closeStoreModal"
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Batalkan
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal :show="confirmingUpdate" @close="closeUpdateModal" title="Edit area">
+        <jet-modal
+            :show="confirmingUpdate"
+            @close="closeUpdateModal"
+            title="Edit area"
+        >
             <template #content>
                 Silakan masukkan data area yang ingin diubah.
-                <jet-validation-errors class="mt-4"/>
+                <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
-                    <jet-input type="text" class="block w-full capitalize" placeholder="Nama Area"
-                               ref="updateName" v-model="updateForm.name"/>
-                    <jet-input type="number" class="block w-full mt-4" placeholder="SLoc"
-                               ref="updateSloc" v-model="updateForm.sloc" @keyup.enter="update"/>
-                    <jet-select class="block w-full mt-4" placeholder="Validasi Batch?"
-                                ref="updateIsBatchRequired" v-model="updateForm.is_batch_required"
-                                :data="[{id: 0, name: 'Tidak'}, {id: 1, name: 'Ya'}]"/>
+                    <jet-input
+                        type="number"
+                        class="block w-full"
+                        placeholder="Kode Area"
+                        ref="updateCode"
+                        v-model="updateForm.code"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full capitalize mt-4"
+                        placeholder="Nama Area"
+                        ref="updateName"
+                        v-model="updateForm.name"
+                    />
+                    <jet-input
+                        type="number"
+                        class="block w-full mt-4"
+                        placeholder="Latitude"
+                        ref="updateLatitude"
+                        v-model="updateForm.latitude"
+                    />
+                    <jet-input
+                        type="number"
+                        class="block w-full mt-4"
+                        placeholder="Longitude"
+                        ref="updateLongitude"
+                        v-model="updateForm.longitude"
+                    />
+                    <jet-select
+                        ref="updateType"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Tipe Area"
+                        v-model="updateForm.type"
+                        :data="area_types"
+                        @keyup.enter="update"
+                    />
                 </div>
             </template>
             <template #buttons>
-                <jet-button type="button" @click="update"
-                            :class="{ 'opacity-25': updateForm.processing }"
-                            :disabled="updateForm.processing"
-                            class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-button
+                    type="button"
+                    @click="update"
+                    :class="{ 'opacity-25': updateForm.processing }"
+                    :disabled="updateForm.processing"
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Simpan
                 </jet-button>
-                <jet-secondary-button @click="closeUpdateModal"
-                                      class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-secondary-button
+                    @click="closeUpdateModal"
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Batalkan
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-alert-modal :show="confirmingDestroy" @close="closeDestroyModal" title="Hapus area">
+        <jet-alert-modal
+            :show="confirmingDestroy"
+            @close="closeDestroyModal"
+            title="Hapus area"
+        >
             <template #content>
-                Apakah Anda yakin ingin menghapus area ini? Setelah area dihapus, semua sumber daya
-                dan datanya akan dihapus secara permanen. Aksi ini tidak dapat dibatalkan.
+                Apakah Anda yakin ingin menghapus area ini? Setelah area
+                dihapus, semua sumber daya dan datanya akan dihapus secara
+                permanen. Aksi ini tidak dapat dibatalkan.
             </template>
             <template #buttons>
-                <jet-danger-button @click="destroy"
-                                   :class="{ 'opacity-25': destroyForm.processing }"
-                                   :disabled="destroyForm.processing"
-                                   class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-danger-button
+                    @click="destroy"
+                    :class="{ 'opacity-25': destroyForm.processing }"
+                    :disabled="destroyForm.processing"
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Hapus
                 </jet-danger-button>
-                <jet-secondary-button @click="closeDestroyModal"
-                                      class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-secondary-button
+                    @click="closeDestroyModal"
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Batalkan
                 </jet-secondary-button>
             </template>
         </jet-alert-modal>
-        <jet-import-modal :show="confirmingImport" @close="closeImportModal" title="Impor data area">
+        <jet-import-modal
+            :show="confirmingImport"
+            @close="closeImportModal"
+            title="Impor data area"
+        >
             <template #content>
                 <p>
-                    Silakan unggah file data area yang ingin di-impor. Pastikan Anda sudah menggunakan template
-                    spreadsheet yang ditentukan. Sistem hanya memproses data yang ada pada sheet <b>Worksheet</b>.
+                    Silakan unggah file data area yang ingin di-impor. Pastikan
+                    Anda sudah menggunakan template spreadsheet yang ditentukan.
+                    Sistem hanya memproses data yang ada pada sheet
+                    <b>Worksheet</b>.
                 </p>
                 <p class="mt-2">
-                    Mengimpor data baru dapat memperbarui data lama yang sudah tersedia. Aksi ini tidak dapat
-                    dibatalkan.
+                    Mengimpor data baru dapat memperbarui data lama yang sudah
+                    tersedia. Aksi ini tidak dapat dibatalkan.
                 </p>
-                <jet-validation-errors class="mt-4"/>
+                <jet-validation-errors class="mt-4" />
                 <div
                     @click="this.$refs.importInput.click()"
-                    class="flex justify-center px-6 pt-5 pb-6 mt-4 border-2 border-gray-300 border-dashed rounded-md cursor-pointer">
+                    class="flex justify-center px-6 pt-5 pb-6 mt-4 border-2 border-gray-300 border-dashed rounded-md cursor-pointer"
+                >
                     <div class="space-y-1 text-center">
-                        <document-add-icon class="w-12 h-12 mx-auto text-gray-400" aria-hidden="true"/>
+                        <document-add-icon
+                            class="w-12 h-12 mx-auto text-gray-400"
+                            aria-hidden="true"
+                        />
                         <div class="flex justify-center text-sm text-gray-600">
-                            <label for="import-file"
-                                   class="relative font-medium text-indigo-600 bg-white rounded-md cursor-pointer hover:text-indigo-500">
+                            <label
+                                for="import-file"
+                                class="relative font-medium text-amber-600 bg-white rounded-md cursor-pointer hover:text-amber-500"
+                            >
                                 <span>
-                                    {{ importForm.file === null ? 'Unggah file dokumen' : importForm.file.name }}
+                                    {{
+                                        importForm.file === null
+                                            ? "Unggah file dokumen"
+                                            : importForm.file.name
+                                    }}
                                 </span>
-                                <input for="import-file" ref="importInput" type="file" class="sr-only"
-                                       accept=".xlsx, .csv"
-                                       @input="importForm.file = $event.target.files[0]"/>
+                                <input
+                                    for="import-file"
+                                    ref="importInput"
+                                    type="file"
+                                    class="sr-only"
+                                    accept=".xlsx, .csv"
+                                    @input="
+                                        importForm.file = $event.target.files[0]
+                                    "
+                                />
                             </label>
                         </div>
                         <p class="text-xs text-gray-500">
@@ -171,42 +344,57 @@
                 </div>
             </template>
             <template #buttons>
-                <jet-button type="button"
-                            @click="importFile"
-                            :class="{ 'opacity-25': importForm.processing }"
-                            :disabled="importForm.processing"
-                            class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-button
+                    type="button"
+                    @click="importFile"
+                    :class="{ 'opacity-25': importForm.processing }"
+                    :disabled="importForm.processing"
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Impor
                 </jet-button>
                 <jet-secondary-button
                     @click="openImportTemplate"
-                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Unduh Template
                 </jet-secondary-button>
                 <jet-secondary-button
                     @click="closeImportModal"
-                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Batalkan
                 </jet-secondary-button>
             </template>
         </jet-import-modal>
-        <jet-export-modal :show="confirmingExport" @close="closeExportModal" title="Ekspor data area">
+        <jet-export-modal
+            :show="confirmingExport"
+            @close="closeExportModal"
+            title="Ekspor data area"
+        >
             <template #content>
                 <p>
-                    Apakah Anda yakin ingin mengekspor semua data area? Proses ekspor dapat memakan waktu lama,
-                    tergantung dari banyaknya data yang tersedia.
+                    Apakah Anda yakin ingin mengekspor semua data area? Proses
+                    ekspor dapat memakan waktu lama, tergantung dari banyaknya
+                    data yang tersedia.
                 </p>
                 <p class="mt-2">
-                    Sistem akan mengekspor data berupa file spreadsheet dengan format <b>XLSX</b>.
+                    Sistem akan mengekspor data berupa file spreadsheet dengan
+                    format <b>XLSX</b>.
                 </p>
             </template>
             <template #buttons>
-                <jet-button type="button" @click="exportFile"
-                            class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-button
+                    type="button"
+                    @click="exportFile"
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Ekspor
                 </jet-button>
-                <jet-secondary-button @click="closeExportModal"
-                                      class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto">
+                <jet-secondary-button
+                    @click="closeExportModal"
+                    class="inline-flex justify-center w-full px-4 py-2 mt-2 sm:ml-3 sm:w-auto"
+                >
                     Batalkan
                 </jet-secondary-button>
             </template>
@@ -215,37 +403,46 @@
             :show="showingSuccessNotification"
             :title="successNotification.title"
             :description="successNotification.description"
-            @close="closeSuccessNotification"/>
+            @close="closeSuccessNotification"
+        />
         <jet-danger-notification
             :show="showingDangerNotification"
             :title="dangerNotification.title"
             :description="dangerNotification.description"
-            @close="closeDangerNotification"/>
+            @close="closeDangerNotification"
+        />
     </app-layout>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
-import {Link as JetLink, useForm} from '@inertiajs/inertia-vue3'
-import {MenuItem} from '@headlessui/vue'
-import {DocumentAddIcon, DownloadIcon, PencilAltIcon, PlusIcon, TrashIcon, UploadIcon} from '@heroicons/vue/outline'
-import AppLayout from '@/Layouts/AppLayout'
-import JetButton from '@/Jetstream/Button'
-import JetDangerButton from '@/Jetstream/DangerButton'
-import JetSecondaryButton from '@/Jetstream/SecondaryButton'
-import JetDropdown from '@/Jetstream/Dropdown'
-import JetModal from '@/Jetstream/Modal'
-import JetAlertModal from '@/Jetstream/AlertModal'
-import JetImportModal from '@/Jetstream/ImportModal'
-import JetExportModal from '@/Jetstream/ExportModal'
-import JetInput from '@/Jetstream/Input'
-import JetSelect from '@/Jetstream/Select'
-import JetSuccessNotification from '@/Jetstream/SuccessNotification'
-import JetDangerNotification from '@/Jetstream/DangerNotification'
-import JetValidationErrors from '@/Jetstream/ValidationErrors'
-import JetTable from '@/Jetstream/Table'
-import JetTableEngine from '@/Jetstream/TableEngine'
-import JetTableHeader from '@/Jetstream/TableHeader'
+import { defineComponent } from "vue";
+import { Link as JetLink, useForm } from "@inertiajs/inertia-vue3";
+import { MenuItem } from "@headlessui/vue";
+import {
+    DocumentAddIcon,
+    DownloadIcon,
+    PencilAltIcon,
+    PlusIcon,
+    TrashIcon,
+    UploadIcon,
+} from "@heroicons/vue/outline";
+import AppLayout from "@/Layouts/AppLayout";
+import JetButton from "@/Jetstream/Button";
+import JetDangerButton from "@/Jetstream/DangerButton";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton";
+import JetDropdown from "@/Jetstream/Dropdown";
+import JetModal from "@/Jetstream/Modal";
+import JetAlertModal from "@/Jetstream/AlertModal";
+import JetImportModal from "@/Jetstream/ImportModal";
+import JetExportModal from "@/Jetstream/ExportModal";
+import JetInput from "@/Jetstream/Input";
+import JetSuccessNotification from "@/Jetstream/SuccessNotification";
+import JetDangerNotification from "@/Jetstream/DangerNotification";
+import JetValidationErrors from "@/Jetstream/ValidationErrors";
+import JetTable from "@/Jetstream/Table";
+import JetTableEngine from "@/Jetstream/TableEngine";
+import JetTableHeader from "@/Jetstream/TableHeader";
+import JetSelect from "@/Jetstream/Select";
 
 export default defineComponent({
     mixins: [JetTableEngine],
@@ -262,10 +459,10 @@ export default defineComponent({
         JetImportModal,
         JetExportModal,
         JetInput,
-        JetSelect,
         JetSuccessNotification,
         JetDangerNotification,
         JetValidationErrors,
+        JetSelect,
         JetLink,
         MenuItem,
         PlusIcon,
@@ -273,20 +470,21 @@ export default defineComponent({
         DownloadIcon,
         PencilAltIcon,
         TrashIcon,
-        DocumentAddIcon
+        DocumentAddIcon,
     },
     props: {
-        areas: Object
+        area_types: Object,
+        areas: Object,
     },
     data() {
         return {
             successNotification: {
                 title: null,
-                description: null
+                description: null,
             },
             dangerNotification: {
                 title: null,
-                description: null
+                description: null,
             },
             confirmingStore: false,
             confirmingUpdate: false,
@@ -296,167 +494,225 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
+                code: null,
                 name: null,
-                sloc: null,
-                is_batch_required: false
+                latitude: null,
+                longitude: null,
+                type: null,
             }),
             updateForm: useForm({
                 id: null,
+                code: null,
                 name: null,
-                sloc: null,
-                is_batch_required: false
+                latitude: null,
+                longitude: null,
+                type: null,
             }),
             destroyForm: useForm({
-                id: null
+                id: null,
             }),
             importForm: useForm({
-                file: null
-            })
-        }
+                file: null,
+            }),
+        };
     },
     methods: {
         store() {
-            this.storeForm.post(route('areas.store'), {
+            this.storeForm.post(route("areas.store"), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.reloadData()
-                    this.closeStoreModal()
-                    this.showSuccessNotification('Area berhasil ditambahkan', 'Sistem telah berhasil menyimpan data area baru')
+                    this.reloadData();
+                    this.closeStoreModal();
+                    this.showSuccessNotification(
+                        "Area berhasil ditambahkan",
+                        "Sistem telah berhasil menyimpan data area baru"
+                    );
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menyimpan data area, mohon periksa ulang form')
-            })
+                onError: () =>
+                    this.showDangerNotification(
+                        "Kesalahan telah terjadi",
+                        "Sistem tidak dapat menyimpan data area, mohon periksa ulang form"
+                    ),
+            });
         },
         update() {
-            this.updateForm.put(route('areas.update', this.updateForm.id), {
+            this.updateForm.put(route("areas.update", this.updateForm.id), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.reloadData()
-                    this.closeUpdateModal()
-                    this.showSuccessNotification('Area berhasil diedit', 'Sistem telah berhasil mengedit data area')
+                    this.reloadData();
+                    this.closeUpdateModal();
+                    this.showSuccessNotification(
+                        "Area berhasil diedit",
+                        "Sistem telah berhasil mengedit data area"
+                    );
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengubah data area, mohon periksa ulang form')
-            })
+                onError: () =>
+                    this.showDangerNotification(
+                        "Kesalahan telah terjadi",
+                        "Sistem tidak dapat mengubah data area, mohon periksa ulang form"
+                    ),
+            });
         },
         destroy() {
-            this.destroyForm.delete(route('areas.destroy', this.destroyForm.id), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    this.reloadData()
-                    this.closeDestroyModal()
-                    this.showSuccessNotification('Area berhasil dihapus', 'Sistem telah berhasil menghapus data area')
-                },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat menghapus data area')
-            })
+            this.destroyForm.delete(
+                route("areas.destroy", this.destroyForm.id),
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        this.reloadData();
+                        this.closeDestroyModal();
+                        this.showSuccessNotification(
+                            "Area berhasil dihapus",
+                            "Sistem telah berhasil menghapus data area"
+                        );
+                    },
+                    onError: () =>
+                        this.showDangerNotification(
+                            "Kesalahan telah terjadi",
+                            "Sistem tidak dapat menghapus data area"
+                        ),
+                }
+            );
         },
         importFile() {
-            this.importForm.post(route('areas.import'), {
+            this.importForm.post(route("areas.import"), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.reloadData()
-                    this.closeImportModal()
-                    this.showSuccessNotification('Permintaan impor data telah dijadwalkan', 'Sistem berhasil menjadwalkan permintaan impor data area di latar belakang')
+                    this.reloadData();
+                    this.closeImportModal();
+                    this.showSuccessNotification(
+                        "Permintaan impor data telah dijadwalkan",
+                        "Sistem berhasil menjadwalkan permintaan impor data area di latar belakang"
+                    );
                 },
-                onError: () => this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat mengimpor data area, mohon periksa kesalahan yang telah dideteksi')
-            })
+                onError: () =>
+                    this.showDangerNotification(
+                        "Kesalahan telah terjadi",
+                        "Sistem tidak dapat mengimpor data area, mohon periksa kesalahan yang telah dideteksi"
+                    ),
+            });
         },
         exportFile() {
-            window.open(route('areas.export'))
-            this.closeExportModal()
+            window.open(route("areas.export"));
+            this.closeExportModal();
         },
         confirmStore() {
-            setTimeout(() => this.confirmingStore = true, 150)
-            setTimeout(() => this.$refs.storeName.focus(), 300)
+            setTimeout(() => (this.confirmingStore = true), 150);
+            setTimeout(() => this.$refs.storeName.focus(), 300);
         },
         confirmUpdate(area) {
-            this.updateForm.id = area.id
-            this.updateForm.name = area.name
-            this.updateForm.sloc = area.sloc
-            this.updateForm.is_batch_required = area.is_batch_required
-            setTimeout(() => this.confirmingUpdate = true, 150)
-            setTimeout(() => this.$refs.updateName.focus(), 300)
+            this.updateForm.id = area.id;
+            this.updateForm.code = area.code;
+            this.updateForm.name = area.name;
+            this.updateForm.latitude = area.latitude;
+            this.updateForm.longitude = area.longitude;
+            this.updateForm.type = area.area_type_id;
+            setTimeout(() => (this.confirmingUpdate = true), 150);
+            setTimeout(() => this.$refs.updateName.focus(), 300);
         },
         confirmDestroy(area) {
-            this.destroyForm.id = area.id
-            setTimeout(() => this.confirmingDestroy = true, 150)
+            this.destroyForm.id = area.id;
+            setTimeout(() => (this.confirmingDestroy = true), 150);
         },
         confirmImport() {
-            setTimeout(() => this.confirmingImport = true, 150)
+            setTimeout(() => (this.confirmingImport = true), 150);
         },
         confirmExport() {
-            setTimeout(() => this.confirmingExport = true, 150)
+            setTimeout(() => (this.confirmingExport = true), 150);
         },
         closeStoreModal() {
-            this.confirmingStore = false
+            this.confirmingStore = false;
             setTimeout(() => {
-                this.clearErrors()
-                this.storeForm.clearErrors()
-                this.storeForm.reset()
-                this.storeForm.name = null
-                this.storeForm.sloc = null
-                this.storeForm.is_batch_required = false
-            }, 500)
+                this.clearErrors();
+                this.storeForm.clearErrors();
+                this.storeForm.reset();
+                this.storeForm.code = null;
+                this.storeForm.name = null;
+                this.storeForm.latitude = null;
+                this.storeForm.longitude = null;
+                this.storeForm.type = null;
+            }, 500);
         },
         closeUpdateModal() {
-            this.confirmingUpdate = false
+            this.confirmingUpdate = false;
             setTimeout(() => {
-                this.clearErrors()
-                this.updateForm.clearErrors()
-                this.updateForm.reset()
-                this.updateForm.id = null
-                this.updateForm.name = null
-                this.updateForm.sloc = null
-                this.updateForm.is_batch_required = false
-            }, 500)
+                this.clearErrors();
+                this.updateForm.clearErrors();
+                this.updateForm.reset();
+                this.updateForm.id = null;
+                this.updateForm.code = null;
+                this.updateForm.name = null;
+                this.updateForm.latitude = null;
+                this.updateForm.longitude = null;
+                this.updateForm.type = null;
+            }, 500);
         },
         closeDestroyModal() {
-            this.confirmingDestroy = false
+            this.confirmingDestroy = false;
             setTimeout(() => {
-                this.clearErrors()
-                this.destroyForm.clearErrors()
-                this.destroyForm.reset()
-                this.destroyForm.id = null
-            }, 500)
+                this.clearErrors();
+                this.destroyForm.clearErrors();
+                this.destroyForm.reset();
+                this.destroyForm.id = null;
+            }, 500);
         },
         closeImportModal() {
-            this.confirmingImport = false
+            this.confirmingImport = false;
             setTimeout(() => {
-                this.clearErrors()
-                this.importForm.clearErrors()
-                this.importForm.reset()
-                this.importForm.file = null
-            }, 500)
+                this.clearErrors();
+                this.importForm.clearErrors();
+                this.importForm.reset();
+                this.importForm.file = null;
+            }, 500);
         },
         closeExportModal() {
-            this.confirmingExport = false
+            this.confirmingExport = false;
         },
         showSuccessNotification(title, description) {
-            this.successNotification.title = title
-            this.successNotification.description = description
-            this.showingSuccessNotification = true
-            setTimeout(() => this.showingSuccessNotification ? this.closeSuccessNotification() : null, 5000)
+            this.successNotification.title = title;
+            this.successNotification.description = description;
+            this.showingSuccessNotification = true;
+            setTimeout(
+                () =>
+                    this.showingSuccessNotification
+                        ? this.closeSuccessNotification()
+                        : null,
+                5000
+            );
         },
         showDangerNotification(title, description) {
-            this.dangerNotification.title = title
-            this.dangerNotification.description = description
-            this.showingDangerNotification = true
-            setTimeout(() => this.showingDangerNotification ? this.closeDangerNotification() : null, 5000)
+            this.dangerNotification.title = title;
+            this.dangerNotification.description = description;
+            this.showingDangerNotification = true;
+            setTimeout(
+                () =>
+                    this.showingDangerNotification
+                        ? this.closeDangerNotification()
+                        : null,
+                5000
+            );
         },
         closeSuccessNotification() {
-            this.showingSuccessNotification = false
+            this.showingSuccessNotification = false;
         },
         closeDangerNotification() {
-            this.showingDangerNotification = false
+            this.showingDangerNotification = false;
         },
         openImportTemplate() {
-            if (this.$page.props.template) window.open(this.$page.props.template)
-            else this.showDangerNotification('Kesalahan telah terjadi', 'Sistem tidak dapat membaca template, mohon coba lagi nanti')
+            if (this.$page.props.template)
+                window.open(this.$page.props.template);
+            else
+                this.showDangerNotification(
+                    "Kesalahan telah terjadi",
+                    "Sistem tidak dapat membaca template, mohon coba lagi nanti"
+                );
         },
         clearErrors() {
-            this.$page.props.errors = []
+            this.$page.props.errors = [];
         },
         reloadData() {
-            this.$refs.table.reload('areas')
-        }
-    }
-})
+            this.$refs.table.reload("areas");
+        },
+    },
+});
 </script>

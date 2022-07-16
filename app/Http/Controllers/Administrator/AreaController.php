@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Area;
-use App\Services\AreaService;
+use App\Services\{AreaService, AreaTypeService};
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,13 +21,22 @@ class AreaController extends Controller
     private AreaService $areaService;
 
     /**
+     * @var AreaTypeService
+     */
+    private AreaTypeService $areaTypeService;
+
+    /**
      * Create a new Controller instance.
      *
      * @param AreaService $areaService
+     * @param AreaTypeService $areaTypeService
      */
-    public function __construct(AreaService $areaService)
-    {
+    public function __construct(
+        AreaService $areaService,
+        AreaTypeService $areaTypeService
+    ) {
         $this->areaService = $areaService;
+        $this->areaTypeService = $areaTypeService;
     }
 
     /**
@@ -38,6 +47,7 @@ class AreaController extends Controller
     public function index(): Response
     {
         return inertia('Administrator/Areas/Index', [
+            'area_types' => $this->areaTypeService->collection()->toArray(),
             'areas' => $this->areaService->tableData(),
             'template' => $this->areaService->template(),
         ])->table(function (InertiaTable $table) {
