@@ -31,14 +31,18 @@ class AreaTypeService
             ->select([
                 'area_types.id as id',
                 'area_types.name as name',
+                'users.name as user_name',
                 DB::raw(
                     'date_format(area_types.updated_at, "%d %b %Y") as update_date'
                 ),
             ])
+            ->leftJoin('users', 'users.id', '=', 'area_types.created_by')
             ->whereNull('area_types.deleted_at')
             ->defaultSort('area_types.name')
-            ->allowedFilters(InertiaHelper::filterBy(['area_types.name']))
-            ->allowedSorts(['name', 'update_date'])
+            ->allowedFilters(
+                InertiaHelper::filterBy(['area_types.name', 'users.name'])
+            )
+            ->allowedSorts(['name', 'user_name', 'update_date'])
             ->paginate()
             ->withQueryString();
     }
@@ -48,9 +52,11 @@ class AreaTypeService
         return $table
             ->addSearchRows([
                 'area_types.name' => 'Nama Tipe Area',
+                'users.name' => 'Pembuat',
             ])
             ->addColumns([
                 'name' => 'Nama Tipe Area',
+                'user_name' => 'Pembuat',
                 'update_date' => 'Tanggal Pembaruan',
                 'action' => 'Aksi',
             ]);
@@ -76,11 +82,12 @@ class AreaTypeService
                 'name' => 'Nama Tipe Area',
             ]
         );
-        AreaType::create([
-            'name' => Str::title($request->name),
-        ]);
         $user = auth()->user();
         if (!is_null($user)) {
+            AreaType::create([
+                'created_by' => $user->id,
+                'name' => Str::title($request->name),
+            ]);
             $user->notify(
                 new DataStored('Tipe Area', Str::title($request->name))
             );
@@ -110,12 +117,12 @@ class AreaTypeService
                 'name' => 'Nama Tipe Area',
             ]
         );
-        $areaType->updateOrFail([
-            'name' => Str::title($request->name),
-        ]);
-        $areaType->save();
         $user = auth()->user();
         if (!is_null($user)) {
+            $areaType->updateOrFail([
+                'name' => Str::title($request->name),
+            ]);
+            $areaType->save();
             $user->notify(
                 new DataUpdated('Tipe Area', Str::title($request->name))
             );
@@ -129,9 +136,9 @@ class AreaTypeService
     public function destroy(AreaType $areaType): void
     {
         $data = $areaType->name;
-        $areaType->deleteOrFail();
         $user = auth()->user();
         if (!is_null($user)) {
+            $areaType->deleteOrFail();
             $user->notify(new DataDestroyed('Tipe Area', Str::title($data)));
         }
     }

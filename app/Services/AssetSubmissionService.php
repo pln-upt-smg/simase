@@ -43,6 +43,7 @@ class AssetSubmissionService
                     'date_format(asset_submissions.updated_at, "%d %b %Y") as update_date'
                 ),
             ])
+            ->leftJoin('users', 'users.id', '=', 'asset_submissions.created_by')
             ->leftJoin('assets', 'assets.id', '=', 'asset_submissions.asset_id')
             ->leftJoin(
                 'asset_types',
@@ -187,15 +188,15 @@ class AssetSubmissionService
                 'priority' => 'Prioritas',
             ]
         );
-        $assetSubmission->updateOrFail([
-            'asset_id' => (int) $request->asset,
-            'note' => $request->name,
-            'quantity' => (int) $request->quantity,
-            'priority' => (int) $request->priority,
-        ]);
-        $assetSubmission->save();
         $user = auth()->user();
         if (!is_null($user)) {
+            $assetSubmission->updateOrFail([
+                'asset_id' => (int) $request->asset,
+                'note' => $request->name,
+                'quantity' => (int) $request->quantity,
+                'priority' => (int) $request->priority,
+            ]);
+            $assetSubmission->save();
             $user->notify(
                 new DataUpdated(
                     'Laporan Pengajuan Aset',
@@ -212,9 +213,9 @@ class AssetSubmissionService
     public function destroy(AssetSubmission $assetSubmission): void
     {
         $data = $assetSubmission->name;
-        $assetSubmission->deleteOrFail();
         $user = auth()->user();
         if (!is_null($user)) {
+            $assetSubmission->deleteOrFail();
             $user->notify(
                 new DataDestroyed('Laporan Pengajuan Aset', Str::title($data))
             );

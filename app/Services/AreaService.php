@@ -35,10 +35,12 @@ class AreaService
                 'areas.latitude as latitude',
                 'areas.longitude as longitude',
                 'area_types.name as area_type',
+                'users.name as user_name',
                 DB::raw(
                     'date_format(areas.updated_at, "%d %b %Y") as update_date'
                 ),
             ])
+            ->leftJoin('users', 'users.id', '=', 'areas.created_by')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
             ->whereNull('areas.deleted_at')
             ->defaultSort('areas.code')
@@ -47,9 +49,16 @@ class AreaService
                     'areas.code',
                     'areas.name',
                     'area_types.name',
+                    'users.name',
                 ])
             )
-            ->allowedSorts(['code', 'name', 'area_type', 'update_date'])
+            ->allowedSorts([
+                'code',
+                'name',
+                'area_type',
+                'user_name',
+                'update_date',
+            ])
             ->paginate()
             ->withQueryString();
     }
@@ -63,6 +72,7 @@ class AreaService
                 'areas.latitude' => 'Latitude',
                 'areas.longitude' => 'Longitude',
                 'area_types.name' => 'Tipe Area',
+                'users.name' => 'Pembuat',
             ])
             ->addColumns([
                 'code' => 'Kode Area',
@@ -70,6 +80,7 @@ class AreaService
                 'latitude' => 'Latitude',
                 'longitude' => 'Longitude',
                 'area_type' => 'Tipe Area',
+                'user_name' => 'Pembuat',
                 'update_date' => 'Tanggal Pembaruan',
                 'action' => 'Aksi',
             ]);
@@ -107,13 +118,14 @@ class AreaService
                 'name' => 'Nama Area',
             ]
         );
-        Area::create([
-            'area_type_id' => (int) $request->type,
-            'code' => $request->code,
-            'name' => Str::title($request->name),
-        ]);
         $user = auth()->user();
         if (!is_null($user)) {
+            Area::create([
+                'created_by' => $user->id,
+                'area_type_id' => (int) $request->type,
+                'code' => $request->code,
+                'name' => Str::title($request->name),
+            ]);
             $user->notify(new DataStored('Area', Str::title($request->name)));
         }
     }
@@ -155,14 +167,14 @@ class AreaService
                 'name' => 'Nama Area',
             ]
         );
-        $area->updateOrFail([
-            'area_type_id' => (int) $request->type,
-            'code' => $request->code,
-            'name' => Str::title($request->name),
-        ]);
-        $area->save();
         $user = auth()->user();
         if (!is_null($user)) {
+            $area->updateOrFail([
+                'area_type_id' => (int) $request->type,
+                'code' => $request->code,
+                'name' => Str::title($request->name),
+            ]);
+            $area->save();
             $user->notify(new DataUpdated('Area', Str::title($request->name)));
         }
     }
@@ -174,9 +186,9 @@ class AreaService
     public function destroy(Area $area): void
     {
         $data = $area->name;
-        $area->deleteOrFail();
         $user = auth()->user();
         if (!is_null($user)) {
+            $area->deleteOrFail();
             $user->notify(new DataDestroyed('Area', Str::title($data)));
         }
     }

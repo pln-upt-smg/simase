@@ -32,16 +32,22 @@ class AssetTypeService
                 'asset_types.id as id',
                 'asset_types.name as name',
                 'asset_types.uom as uom',
+                'users.name as user_name',
                 DB::raw(
                     'date_format(asset_types.updated_at, "%d %b %Y") as update_date'
                 ),
             ])
+            ->leftJoin('users', 'users.id', '=', 'asset_types.created_by')
             ->whereNull('asset_types.deleted_at')
             ->defaultSort('asset_types.name')
             ->allowedFilters(
-                InertiaHelper::filterBy(['asset_types.name', 'asset_types.uom'])
+                InertiaHelper::filterBy([
+                    'asset_types.name',
+                    'asset_types.uom',
+                    'users.name',
+                ])
             )
-            ->allowedSorts(['name', 'uom', 'update_date'])
+            ->allowedSorts(['name', 'uom', 'user_name', 'update_date'])
             ->paginate()
             ->withQueryString();
     }
@@ -52,10 +58,12 @@ class AssetTypeService
             ->addSearchRows([
                 'asset_types.name' => 'Nama Tipe Aset',
                 'asset_types.uom' => 'UoM',
+                'users.name' => 'Pembuat',
             ])
             ->addColumns([
                 'name' => 'Nama Tipe Aset',
                 'uom' => 'UoM',
+                'user_name' => 'Pembuat',
                 'update_date' => 'Tanggal Pembaruan',
                 'action' => 'Aksi',
             ]);
@@ -85,12 +93,13 @@ class AssetTypeService
                 'uom' => 'UoM',
             ]
         );
-        AssetType::create([
-            'name' => Str::title($request->name),
-            'uom' => $request->uom,
-        ]);
         $user = auth()->user();
         if (!is_null($user)) {
+            AssetType::create([
+                'created_by' => $user->id,
+                'name' => Str::title($request->name),
+                'uom' => $request->uom,
+            ]);
             $user->notify(
                 new DataStored('Tipe Aset', Str::title($request->name))
             );
@@ -121,13 +130,13 @@ class AssetTypeService
                 'name' => 'Nama Tipe Aset',
             ]
         );
-        $assetType->updateOrFail([
-            'name' => Str::title($request->name),
-            'uom' => $request->uom,
-        ]);
-        $assetType->save();
         $user = auth()->user();
         if (!is_null($user)) {
+            $assetType->updateOrFail([
+                'name' => Str::title($request->name),
+                'uom' => $request->uom,
+            ]);
+            $assetType->save();
             $user->notify(
                 new DataUpdated('Tipe Aset', Str::title($request->name))
             );
@@ -141,9 +150,9 @@ class AssetTypeService
     public function destroy(AssetType $assetType): void
     {
         $data = $assetType->name;
-        $assetType->deleteOrFail();
         $user = auth()->user();
         if (!is_null($user)) {
+            $assetType->deleteOrFail();
             $user->notify(new DataDestroyed('Tipe Aset', Str::title($data)));
         }
     }

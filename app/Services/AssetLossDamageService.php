@@ -43,6 +43,12 @@ class AssetLossDamageService
                 ),
             ])
             ->leftJoin(
+                'users',
+                'users.id',
+                '=',
+                'asset_loss_damages.created_by'
+            )
+            ->leftJoin(
                 'assets',
                 'assets.id',
                 '=',
@@ -142,10 +148,10 @@ class AssetLossDamageService
         $user = auth()->user();
         if (!is_null($user)) {
             AssetLossDamage::create([
+                'created_by' => $user->id,
                 'asset_id' => (int) $request->asset,
                 'note' => $request->name,
                 'priority' => (int) $request->priority,
-                'created_by' => $user->id,
             ]);
             $user->notify(
                 new DataStored(
@@ -182,14 +188,14 @@ class AssetLossDamageService
                 'priority' => 'Prioritas',
             ]
         );
-        $assetSubmission->updateOrFail([
-            'asset_id' => (int) $request->asset,
-            'note' => $request->name,
-            'priority' => (int) $request->priority,
-        ]);
-        $assetSubmission->save();
         $user = auth()->user();
         if (!is_null($user)) {
+            $assetSubmission->updateOrFail([
+                'asset_id' => (int) $request->asset,
+                'note' => $request->name,
+                'priority' => (int) $request->priority,
+            ]);
+            $assetSubmission->save();
             $user->notify(
                 new DataUpdated(
                     'Laporan Kehilangan Aset',
@@ -206,9 +212,9 @@ class AssetLossDamageService
     public function destroy(AssetLossDamage $assetSubmission): void
     {
         $data = $assetSubmission->name;
-        $assetSubmission->deleteOrFail();
         $user = auth()->user();
         if (!is_null($user)) {
+            $assetSubmission->deleteOrFail();
             $user->notify(
                 new DataDestroyed('Laporan Kehilangan Aset', Str::title($data))
             );

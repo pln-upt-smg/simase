@@ -36,10 +36,12 @@ class AssetService
                 'asset_types.uom as asset_type_uom',
                 'areas.name as area_name',
                 'area_types.name as area_type_name',
+                'users.name as user_name',
                 DB::raw(
                     'date_format(assets.updated_at, "%d %b %Y") as update_date'
                 ),
             ])
+            ->leftJoin('users', 'users.id', '=', 'assets.created_by')
             ->leftJoin(
                 'asset_types',
                 'asset_types.id',
@@ -58,6 +60,7 @@ class AssetService
                     'asset_types.uom',
                     'areas.name',
                     'area_types.name',
+                    'users.name',
                 ])
             )
             ->allowedSorts([
@@ -67,6 +70,7 @@ class AssetService
                 'asset_type_uom',
                 'area_name',
                 'area_type_name',
+                'user_name',
                 'update_date',
             ])
             ->paginate()
@@ -83,6 +87,7 @@ class AssetService
                 'asset_types.uom' => 'UoM',
                 'areas.name' => 'Asset',
                 'area_types.name' => 'Tipe Asset',
+                'users.name' => 'Pembuat',
             ])
             ->addColumns([
                 'name' => 'Nama Aset',
@@ -91,6 +96,7 @@ class AssetService
                 'asset_type_uom' => 'UoM',
                 'area_name' => 'Asset',
                 'area_type_name' => 'Tipe Asset',
+                'user_name' => 'Pembuat',
                 'update_date' => 'Tanggal Pembaruan',
                 'action' => 'Aksi',
             ]);
@@ -130,14 +136,15 @@ class AssetService
                 'quantity' => 'Kuantitas',
             ]
         );
-        Asset::create([
-            'area_id' => (int) $request->area,
-            'asset_type_id' => (int) $request->type,
-            'name' => Str::title($request->name),
-            'quantity' => (int) $request->quantity,
-        ]);
         $user = auth()->user();
         if (!is_null($user)) {
+            Asset::create([
+                'created_by' => $user->id,
+                'area_id' => (int) $request->area,
+                'asset_type_id' => (int) $request->type,
+                'name' => Str::title($request->name),
+                'quantity' => (int) $request->quantity,
+            ]);
             $user->notify(new DataStored('Aset', Str::title($request->name)));
         }
     }
@@ -179,15 +186,15 @@ class AssetService
                 'quantity' => 'Kuantitas',
             ]
         );
-        $asset->updateOrFail([
-            'area_id' => (int) $request->area,
-            'asset_type_id' => (int) $request->type,
-            'name' => Str::title($request->name),
-            'quantity' => (int) $request->quantity,
-        ]);
-        $asset->save();
         $user = auth()->user();
         if (!is_null($user)) {
+            $asset->updateOrFail([
+                'area_id' => (int) $request->area,
+                'asset_type_id' => (int) $request->type,
+                'name' => Str::title($request->name),
+                'quantity' => (int) $request->quantity,
+            ]);
+            $asset->save();
             $user->notify(new DataUpdated('Aset', Str::title($request->name)));
         }
     }
@@ -199,9 +206,9 @@ class AssetService
     public function destroy(Asset $asset): void
     {
         $data = $asset->name;
-        $asset->deleteOrFail();
         $user = auth()->user();
         if (!is_null($user)) {
+            $asset->deleteOrFail();
             $user->notify(new DataDestroyed('Aset', Str::title($data)));
         }
     }
