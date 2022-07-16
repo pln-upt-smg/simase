@@ -20,6 +20,6 @@ parameters:
         - '#Undefined variable: \$this#'
         - '#of function trim expects string#'
         - '#Call to an undefined method#'
-        - '#supplied for foreach, only iterables are supported#'
         - '#unreadNotifications#'
+        - '#Access to an undefined property#'
     checkMissingIterableValueType: false

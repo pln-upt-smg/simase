@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
-use App\Models\Area;
-use App\Services\AreaService;
+use App\Models\Asset;
+use App\Services\AssetService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,21 +13,21 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class AreaController extends Controller
+class AssetController extends Controller
 {
     /**
-     * @var AreaService
+     * @var AssetService
      */
-    private AreaService $areaService;
+    private AssetService $assetService;
 
     /**
      * Create a new Controller instance.
      *
-     * @param AreaService $areaService
+     * @param AssetService $assetService
      */
-    public function __construct(AreaService $areaService)
+    public function __construct(AssetService $assetService)
     {
-        $this->areaService = $areaService;
+        $this->assetService = $assetService;
     }
 
     /**
@@ -37,11 +37,11 @@ class AreaController extends Controller
      */
     public function index(): Response
     {
-        return inertia('Administrator/Areas/Index', [
-            'areas' => $this->areaService->tableData(),
-            'template' => $this->areaService->template(),
+        return inertia('Administrator/Assets/Index', [
+            'assets' => $this->assetService->tableData(),
+            'template' => $this->assetService->template(),
         ])->table(function (InertiaTable $table) {
-            $this->areaService->tableMeta($table);
+            $this->assetService->tableMeta($table);
         });
     }
 
@@ -54,7 +54,7 @@ class AreaController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $this->areaService->store($request);
+        $this->assetService->store($request);
         return back();
     }
 
@@ -62,26 +62,26 @@ class AreaController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Area $area
+     * @param Asset $area
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Area $area): RedirectResponse
+    public function update(Request $request, Asset $area): RedirectResponse
     {
-        $this->areaService->update($request, $area);
+        $this->assetService->update($request, $area);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Area $area
+     * @param Asset $area
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Area $area): RedirectResponse
+    public function destroy(Asset $area): RedirectResponse
     {
-        $this->areaService->destroy($area);
+        $this->assetService->destroy($area);
         return back();
     }
 
@@ -94,7 +94,7 @@ class AreaController extends Controller
      */
     public function import(Request $request): RedirectResponse
     {
-        $this->areaService->import($request);
+        $this->assetService->import($request);
         return back();
     }
 
@@ -106,7 +106,7 @@ class AreaController extends Controller
      */
     public function export(): BinaryFileResponse
     {
-        return $this->areaService->export();
+        return $this->assetService->export();
     }
 
     /**
@@ -117,7 +117,7 @@ class AreaController extends Controller
      */
     public function json(Request $request): JsonResponse
     {
-        $data = $this->areaService->single($request);
+        $data = $this->assetService->single($request);
         if (!is_null($data)) {
             $data = $data->toJson();
         }
@@ -132,7 +132,7 @@ class AreaController extends Controller
      */
     public function jsonCollection(Request $request): JsonResponse
     {
-        $data = $this->areaService->collection($request);
+        $data = $this->assetService->collection($request);
         return response()->json([
             'items' => $data->toArray(),
             'total_count' => $data->count(),

@@ -9,7 +9,6 @@ use App\Services\RoleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
@@ -32,8 +31,10 @@ class EmployeeController extends Controller
      * @param EmployeeService $employeeService
      * @param RoleService $roleService
      */
-    public function __construct(EmployeeService $employeeService, RoleService $roleService)
-    {
+    public function __construct(
+        EmployeeService $employeeService,
+        RoleService $roleService
+    ) {
         $this->employeeService = $employeeService;
         $this->roleService = $roleService;
     }
@@ -41,14 +42,14 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response|ResponseFactory
+     * @return Response
      */
-    public function index(): Response|ResponseFactory
+    public function index(): Response
     {
         return inertia('Administrator/Employees/Index', [
             'roles' => $this->roleService->collection()->toArray(),
             'employees' => $this->employeeService->tableData(),
-            'template' => $this->employeeService->template()
+            'template' => $this->employeeService->template(),
         ])->table(function (InertiaTable $table) {
             $this->employeeService->tableMeta($table);
         });

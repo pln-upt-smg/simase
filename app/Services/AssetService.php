@@ -136,10 +136,9 @@ class AssetService
             'name' => Str::title($request->name),
             'quantity' => (int) $request->quantity,
         ]);
-        if (auth()->user()) {
-            auth()
-                ->user()
-                ->notify(new DataStored('Aset', Str::title($request->name)));
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(new DataStored('Aset', Str::title($request->name)));
         }
     }
 
@@ -187,10 +186,9 @@ class AssetService
             'quantity' => (int) $request->quantity,
         ]);
         $asset->save();
-        if (auth()->user()) {
-            auth()
-                ->user()
-                ->notify(new DataUpdated('Aset', Str::title($request->name)));
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(new DataUpdated('Aset', Str::title($request->name)));
         }
     }
 
@@ -202,10 +200,9 @@ class AssetService
     {
         $data = $asset->name;
         $asset->deleteOrFail();
-        if (auth()->user()) {
-            auth()
-                ->user()
-                ->notify(new DataDestroyed('Aset', Str::title($data)));
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(new DataDestroyed('Aset', Str::title($data)));
         }
     }
 

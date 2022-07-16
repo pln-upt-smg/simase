@@ -30,8 +30,9 @@ class EmployeeService
 	public function tableData(): LengthAwarePaginator
 	{
         $userId = 0;
-        if (auth()->user()) {
-            $userId = auth()->user()->id;
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $userId = $user->id;
         }
 		return QueryBuilder::for(User::class)
 			->select([
@@ -108,8 +109,9 @@ class EmployeeService
 			'nip' => $request->nip,
 			'password' => Hash::make($request->password)
 		]);
-        if (auth()->user()) {
-            auth()->user()->notify(new DataStored('Pegawai', $request->nip));
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(new DataStored('Pegawai', $request->nip));
         }
 	}
 
@@ -141,8 +143,9 @@ class EmployeeService
 			'password' => Hash::make($request->password)
 		]);
 		$employee->save();
-        if (auth()->user()) {
-            auth()->user()->notify(new DataUpdated('Pegawai', $request->nip));
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(new DataUpdated('Pegawai', $request->nip));
         }
 	}
 
@@ -154,8 +157,9 @@ class EmployeeService
 	{
 		$data = $employee->nip;
 		$employee->deleteOrFail();
-        if (auth()->user()) {
-            auth()->user()->notify(new DataDestroyed('Pegawai', $data));
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notfy(new DataDestroyed('Pegawai', $data));
         }
 	}
 
@@ -191,8 +195,9 @@ class EmployeeService
 	public function collection(): Collection
 	{
         $userId = 0;
-        if (auth()->user()) {
-            $userId = auth()->user()->id;
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $userId = $user->id;
         }
 		return User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
 			->where('users.id', '<>', $userId)

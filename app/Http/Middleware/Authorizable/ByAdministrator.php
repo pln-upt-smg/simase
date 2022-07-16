@@ -18,11 +18,12 @@ class ByAdministrator
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        $user = auth()->user()?->load('role');
+        $user = auth()->user();
         if (is_null($user)) {
             return redirect('login');
         }
-        if (!$user->role->isAdministrator()) {
+        $user = $user->load('role');
+        if (!is_null($user->role) && !$user->role->isAdministrator()) {
             abort(403, 'Unauthorized action.');
         }
         return $next($request);

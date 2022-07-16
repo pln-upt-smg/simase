@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
-use App\Models\Area;
-use App\Services\AreaService;
+use App\Models\AreaType;
+use App\Services\AreaTypeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,21 +13,21 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class AreaController extends Controller
+class AreaTypeController extends Controller
 {
     /**
-     * @var AreaService
+     * @var AreaTypeService
      */
-    private AreaService $areaService;
+    private AreaTypeService $areaTypeService;
 
     /**
      * Create a new Controller instance.
      *
-     * @param AreaService $areaService
+     * @param AreaTypeService $areaTypeService
      */
-    public function __construct(AreaService $areaService)
+    public function __construct(AreaTypeService $areaTypeService)
     {
-        $this->areaService = $areaService;
+        $this->areaTypeService = $areaTypeService;
     }
 
     /**
@@ -37,11 +37,11 @@ class AreaController extends Controller
      */
     public function index(): Response
     {
-        return inertia('Administrator/Areas/Index', [
-            'areas' => $this->areaService->tableData(),
-            'template' => $this->areaService->template(),
+        return inertia('Administrator/AreaTypes/Index', [
+            'area_types' => $this->areaTypeService->tableData(),
+            'template' => $this->areaTypeService->template(),
         ])->table(function (InertiaTable $table) {
-            $this->areaService->tableMeta($table);
+            $this->areaTypeService->tableMeta($table);
         });
     }
 
@@ -54,7 +54,7 @@ class AreaController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $this->areaService->store($request);
+        $this->areaTypeService->store($request);
         return back();
     }
 
@@ -62,26 +62,28 @@ class AreaController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Area $area
+     * @param AreaType $areaType
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Area $area): RedirectResponse
-    {
-        $this->areaService->update($request, $area);
+    public function update(
+        Request $request,
+        AreaType $areaType
+    ): RedirectResponse {
+        $this->areaTypeService->update($request, $areaType);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Area $area
+     * @param AreaType $areaType
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Area $area): RedirectResponse
+    public function destroy(AreaType $areaType): RedirectResponse
     {
-        $this->areaService->destroy($area);
+        $this->areaTypeService->destroy($areaType);
         return back();
     }
 
@@ -94,7 +96,7 @@ class AreaController extends Controller
      */
     public function import(Request $request): RedirectResponse
     {
-        $this->areaService->import($request);
+        $this->areaTypeService->import($request);
         return back();
     }
 
@@ -106,7 +108,7 @@ class AreaController extends Controller
      */
     public function export(): BinaryFileResponse
     {
-        return $this->areaService->export();
+        return $this->areaTypeService->export();
     }
 
     /**
@@ -117,7 +119,7 @@ class AreaController extends Controller
      */
     public function json(Request $request): JsonResponse
     {
-        $data = $this->areaService->single($request);
+        $data = $this->areaTypeService->single($request);
         if (!is_null($data)) {
             $data = $data->toJson();
         }
@@ -132,7 +134,7 @@ class AreaController extends Controller
      */
     public function jsonCollection(Request $request): JsonResponse
     {
-        $data = $this->areaService->collection($request);
+        $data = $this->areaTypeService->collection($request);
         return response()->json([
             'items' => $data->toArray(),
             'total_count' => $data->count(),

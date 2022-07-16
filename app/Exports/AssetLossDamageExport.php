@@ -8,15 +8,15 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use App\Notifications\DataExported;
-use App\Services\AssetSubmissionService;
+use App\Services\AssetLossDamageService;
 
 class AssetLossDamageExport implements FromCollection, WithHeadings, WithMapping
 {
-    private AssetSubmissionService $assetSubmissionService;
+    private AssetLossDamageService $assetLossDamageService;
 
-    public function __construct(AssetSubmissionService $assetSubmissionService)
+    public function __construct(AssetLossDamageService $assetLossDamageService)
     {
-        $this->assetSubmissionService = $assetSubmissionService;
+        $this->assetLossDamageService = $assetLossDamageService;
     }
 
     public function headings(): array
@@ -53,7 +53,7 @@ class AssetLossDamageExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection(): Collection
     {
-        $data = $this->assetSubmissionService->collection();
+        $data = $this->assetLossDamageService->collection();
         if (!is_null(auth()->user())) {
             auth()
                 ->user()

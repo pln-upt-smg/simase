@@ -112,10 +112,9 @@ class AreaService
             'code' => $request->code,
             'name' => Str::title($request->name),
         ]);
-        if (auth()->user()) {
-            auth()
-                ->user()
-                ->notify(new DataStored('Area', Str::title($request->name)));
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(new DataStored('Area', Str::title($request->name)));
         }
     }
 
@@ -162,10 +161,9 @@ class AreaService
             'name' => Str::title($request->name),
         ]);
         $area->save();
-        if (auth()->user()) {
-            auth()
-                ->user()
-                ->notify(new DataUpdated('Area', Str::title($request->name)));
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(new DataUpdated('Area', Str::title($request->name)));
         }
     }
 
@@ -177,10 +175,9 @@ class AreaService
     {
         $data = $area->name;
         $area->deleteOrFail();
-        if (auth()->user()) {
-            auth()
-                ->user()
-                ->notify(new DataDestroyed('Area', Str::title($data)));
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(new DataDestroyed('Area', Str::title($data)));
         }
     }
 

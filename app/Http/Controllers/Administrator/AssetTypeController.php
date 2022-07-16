@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
-use App\Models\Area;
-use App\Services\AreaService;
+use App\Models\AssetType;
+use App\Services\AssetTypeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,21 +13,21 @@ use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class AreaController extends Controller
+class AssetTypeController extends Controller
 {
     /**
-     * @var AreaService
+     * @var AssetTypeService
      */
-    private AreaService $areaService;
+    private AssetTypeService $assetTypeService;
 
     /**
      * Create a new Controller instance.
      *
-     * @param AreaService $areaService
+     * @param AssetTypeService $assetTypeService
      */
-    public function __construct(AreaService $areaService)
+    public function __construct(AssetTypeService $assetTypeService)
     {
-        $this->areaService = $areaService;
+        $this->assetTypeService = $assetTypeService;
     }
 
     /**
@@ -37,11 +37,11 @@ class AreaController extends Controller
      */
     public function index(): Response
     {
-        return inertia('Administrator/Areas/Index', [
-            'areas' => $this->areaService->tableData(),
-            'template' => $this->areaService->template(),
+        return inertia('Administrator/AssetTypes/Index', [
+            'asset_types' => $this->assetTypeService->tableData(),
+            'template' => $this->assetTypeService->template(),
         ])->table(function (InertiaTable $table) {
-            $this->areaService->tableMeta($table);
+            $this->assetTypeService->tableMeta($table);
         });
     }
 
@@ -54,7 +54,7 @@ class AreaController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $this->areaService->store($request);
+        $this->assetTypeService->store($request);
         return back();
     }
 
@@ -62,26 +62,28 @@ class AreaController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Area $area
+     * @param AssetType $areaType
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function update(Request $request, Area $area): RedirectResponse
-    {
-        $this->areaService->update($request, $area);
+    public function update(
+        Request $request,
+        AssetType $areaType
+    ): RedirectResponse {
+        $this->assetTypeService->update($request, $areaType);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Area $area
+     * @param AssetType $areaType
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function destroy(Area $area): RedirectResponse
+    public function destroy(AssetType $areaType): RedirectResponse
     {
-        $this->areaService->destroy($area);
+        $this->assetTypeService->destroy($areaType);
         return back();
     }
 
@@ -94,7 +96,7 @@ class AreaController extends Controller
      */
     public function import(Request $request): RedirectResponse
     {
-        $this->areaService->import($request);
+        $this->assetTypeService->import($request);
         return back();
     }
 
@@ -106,7 +108,7 @@ class AreaController extends Controller
      */
     public function export(): BinaryFileResponse
     {
-        return $this->areaService->export();
+        return $this->assetTypeService->export();
     }
 
     /**
@@ -117,7 +119,7 @@ class AreaController extends Controller
      */
     public function json(Request $request): JsonResponse
     {
-        $data = $this->areaService->single($request);
+        $data = $this->assetTypeService->single($request);
         if (!is_null($data)) {
             $data = $data->toJson();
         }
@@ -132,7 +134,7 @@ class AreaController extends Controller
      */
     public function jsonCollection(Request $request): JsonResponse
     {
-        $data = $this->areaService->collection($request);
+        $data = $this->assetTypeService->collection($request);
         return response()->json([
             'items' => $data->toArray(),
             'total_count' => $data->count(),

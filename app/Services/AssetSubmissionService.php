@@ -141,22 +141,21 @@ class AssetSubmissionService
                 'priority' => 'Prioritas',
             ]
         );
-        AssetSubmission::create([
-            'asset_id' => (int) $request->asset,
-            'note' => $request->name,
-            'quantity' => (int) $request->quantity,
-            'priority' => (int) $request->priority,
-            'created_by' => auth()->user()->id,
-        ]);
-        if (auth()->user()) {
-            auth()
-                ->user()
-                ->notify(
-                    new DataStored(
-                        'Laporan Pengajuan Aset',
-                        Str::title($request->name)
-                    )
-                );
+        $user = auth()->user();
+        if (!is_null($user)) {
+            AssetSubmission::create([
+                'asset_id' => (int) $request->asset,
+                'note' => $request->name,
+                'quantity' => (int) $request->quantity,
+                'priority' => (int) $request->priority,
+                'created_by' => $user->id,
+            ]);
+            $user->notify(
+                new DataStored(
+                    'Laporan Pengajuan Aset',
+                    Str::title($request->name)
+                )
+            );
         }
     }
 
@@ -195,15 +194,14 @@ class AssetSubmissionService
             'priority' => (int) $request->priority,
         ]);
         $assetSubmission->save();
-        if (auth()->user()) {
-            auth()
-                ->user()
-                ->notify(
-                    new DataUpdated(
-                        'Laporan Pengajuan Aset',
-                        Str::title($request->name)
-                    )
-                );
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(
+                new DataUpdated(
+                    'Laporan Pengajuan Aset',
+                    Str::title($request->name)
+                )
+            );
         }
     }
 
@@ -215,15 +213,11 @@ class AssetSubmissionService
     {
         $data = $assetSubmission->name;
         $assetSubmission->deleteOrFail();
-        if (auth()->user()) {
-            auth()
-                ->user()
-                ->notify(
-                    new DataDestroyed(
-                        'Laporan Pengajuan Aset',
-                        Str::title($data)
-                    )
-                );
+        $user = auth()->user();
+        if (!is_null($user)) {
+            $user->notify(
+                new DataDestroyed('Laporan Pengajuan Aset', Str::title($data))
+            );
         }
     }
 

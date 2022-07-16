@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Services\AreaService;
-use App\Services\FinalSummaryService;
-use App\Services\PeriodService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Inertia\ResponseFactory;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 
 class DashboardController extends Controller
@@ -19,58 +16,40 @@ class DashboardController extends Controller
     private AreaService $areaService;
 
     /**
-     * @var PeriodService
-     */
-    private PeriodService $periodService;
-
-    /**
-     * @var FinalSummaryService
-     */
-    private FinalSummaryService $finalSummaryService;
-
-    /**
      * Create a new Controller instance.
      *
      * @param AreaService $areaService
-     * @param PeriodService $periodService
-     * @param FinalSummaryService $finalSummaryService
      */
-    public function __construct(AreaService $areaService, PeriodService $periodService, FinalSummaryService $finalSummaryService)
+    public function __construct(AreaService $areaService)
     {
         $this->areaService = $areaService;
-        $this->periodService = $periodService;
-        $this->finalSummaryService = $finalSummaryService;
     }
 
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return Response|ResponseFactory|RedirectResponse
+     * @return mixed
      */
-    public function index(Request $request): Response|ResponseFactory|RedirectResponse
+    public function index(Request $request): mixed
     {
         if (is_null(auth()->user())) {
             return redirect()->route('login');
         }
-        if (auth()->user()->load('role')->role->isOperator()) {
+        $role = auth()
+            ->user()
+            ->load('role')->role;
+        if (!is_null($role) && $role->isOperator()) {
             return redirect()->route('stocks.create');
         }
         $area = $this->areaService->resolve($request);
-        $period = $this->periodService->resolve($request);
         $areas = $this->areaService->collection();
         return inertia('Administrator/Dashboard/Index', [
             'area' => $area,
-            'period' => $period,
             'areaIds' => $areas->pluck('id')->toArray(),
             'areas' => $areas->pluck('name')->toArray(),
-            'periods' => $this->periodService->collection()->toArray(),
             'areaFinalSummaries' => [],
-            'gapValueRank' => []
-            // 'areaFinalSummaries' => $this->finalSummaryService->chart($period),
-            // 'gapValueRank' => $this->finalSummaryService->gapValueRankTableData($area, $period)
-        ])->table(function (InertiaTable $table) {
-            $this->finalSummaryService->tableMeta($table);
-        });
+            'gapValueRank' => [],
+        ]);
     }
 }
