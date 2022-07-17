@@ -26,12 +26,12 @@ class AssetSeeder extends Seeder
             return;
         }
 
-        AssetType::create([
+        AssetType::updateOrCreate([
             'created_by' => 1,
             'name' => 'Kabel Tembaga',
             'uom' => 'M',
         ]);
-        AssetType::create([
+        AssetType::updateOrCreate([
             'created_by' => 1,
             'name' => 'Terminal Listrik',
             'uom' => 'PCS',

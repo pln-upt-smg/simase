@@ -17,7 +17,8 @@ class AreaSeeder extends Seeder
         if (app()->isProduction() && !config('app.env_staging')) {
             return;
         }
-        AreaType::create(['created_by' => 1, 'name' => 'Tower SUTET']);
-        AreaType::create(['created_by' => 1, 'name' => 'Tower SUTT']);
+
+        AreaType::updateOrCreate(['created_by' => 1, 'name' => 'Tower SUTET']);
+        AreaType::updateOrCreate(['created_by' => 1, 'name' => 'Tower SUTT']);
     }
 }
