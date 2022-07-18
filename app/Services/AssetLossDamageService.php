@@ -28,7 +28,7 @@ class AssetLossDamageService
     {
         return QueryBuilder::for(AssetLossDamage::class)
             ->select([
-                'assets.id as id',
+                'assets.id as asset_id',
                 'assets.name as name',
                 'assets.quantity as quantity',
                 'asset_types.name as asset_type_name',
@@ -36,6 +36,7 @@ class AssetLossDamageService
                 'areas.name as area_name',
                 'area_types.name as area_type_name',
                 'users.name as user_name',
+                'asset_loss_damages.id as id',
                 'asset_loss_damages.note as asset_loss_damage_note',
                 'asset_loss_damages.priority as asset_loss_damage_priority',
                 DB::raw(
@@ -130,7 +131,7 @@ class AssetLossDamageService
         $this->validate(
             $request,
             [
-                'asset' => [
+                'asset.id' => [
                     'required',
                     'integer',
                     Rule::exists('assets', 'id')->whereNull('deleted_at'),
@@ -138,8 +139,9 @@ class AssetLossDamageService
                 'note' => ['nullable', 'string'],
                 'priority' => ['required', 'numeric', 'min:1', 'max:3'],
             ],
+            [],
             [
-                'asset' => 'Aset',
+                'asset.id' => 'Aset',
                 'note' => 'Keterangan',
                 'priority' => 'Prioritas',
             ]
@@ -148,8 +150,8 @@ class AssetLossDamageService
         if (!is_null($user)) {
             AssetLossDamage::create([
                 'created_by' => $user->id,
-                'asset_id' => (int) $request->asset,
-                'note' => $request->name,
+                'asset_id' => (int) $request->asset['id'],
+                'note' => $request->note,
                 'priority' => (int) $request->priority,
             ]);
             $user->notify(
@@ -173,7 +175,7 @@ class AssetLossDamageService
         $this->validate(
             $request,
             [
-                'asset' => [
+                'asset.id' => [
                     'required',
                     'integer',
                     Rule::exists('assets', 'id')->whereNull('deleted_at'),
@@ -181,8 +183,9 @@ class AssetLossDamageService
                 'note' => ['nullable', 'string'],
                 'priority' => ['required', 'numeric', 'min:1', 'max:3'],
             ],
+            [],
             [
-                'asset' => 'Aset',
+                'asset.id' => 'Aset',
                 'note' => 'Keterangan',
                 'priority' => 'Prioritas',
             ]
@@ -190,8 +193,8 @@ class AssetLossDamageService
         $user = auth()->user();
         if (!is_null($user)) {
             $assetSubmission->updateOrFail([
-                'asset_id' => (int) $request->asset,
-                'note' => $request->name,
+                'asset_id' => (int) $request->asset['id'],
+                'note' => $request->note,
                 'priority' => (int) $request->priority,
             ]);
             $assetSubmission->save();

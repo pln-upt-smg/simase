@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssetLossDamage;
-use App\Services\AssetLossDamageService;
+use App\Services\{AssetLossDamageService, PriorityService};
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,13 +21,22 @@ class AssetLossDamageController extends Controller
     private AssetLossDamageService $assetLossDamageService;
 
     /**
+     * @var PriorityService
+     */
+    private PriorityService $priorityService;
+
+    /**
      * Create a new Controller instance.
      *
      * @param AssetLossDamageService $assetLossDamageService
+     * @param PriorityService $priorityService
      */
-    public function __construct(AssetLossDamageService $assetLossDamageService)
-    {
+    public function __construct(
+        AssetLossDamageService $assetLossDamageService,
+        PriorityService $priorityService
+    ) {
         $this->assetLossDamageService = $assetLossDamageService;
+        $this->priorityService = $priorityService;
     }
 
     /**
@@ -37,7 +46,8 @@ class AssetLossDamageController extends Controller
      */
     public function index(): Response
     {
-        return inertia('Administrator/Asset/LossDamages/Index', [
+        return inertia('Administrator/Assets/Loss/Index', [
+            'priorities' => $this->priorityService->collection()->toArray(),
             'asset_loss_damages' => $this->assetLossDamageService->tableData(),
             'template' => $this->assetLossDamageService->template(),
         ])->table(function (InertiaTable $table) {

@@ -136,7 +136,7 @@ export default defineComponent({
             if (this.$refs.photo) {
                 this.form.photo = this.$refs.photo.files[0];
             }
-            this.form   (route("user-profile-information.update"), {
+            this.form.put(route("user-profile-information.update"), {
                 errorBag: "updateProfileInformation",
                 preserveScroll: true,
                 onSuccess: () => this.clearPhotoFileInput(),

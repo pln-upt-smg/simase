@@ -1,6 +1,6 @@
-const mix = require('laravel-mix')
-const minify = require('minify-html-webpack-plugin')
-require('laravel-mix-workbox')
+const mix = require("laravel-mix");
+const minify = require("minify-html-webpack-plugin");
+require("laravel-mix-workbox");
 
 /*
  |--------------------------------------------------------------------------
@@ -15,13 +15,13 @@ require('laravel-mix-workbox')
 
 mix.webpackConfig({
     stats: {
-        warnings: false
+        warnings: false,
     },
     plugins: [
         new minify({
             afterBuild: true,
-            src: './storage/framework/views',
-            dest: './storage/framework/views',
+            src: "./storage/framework/views",
+            dest: "./storage/framework/views",
             ignoreFileNameRegex: /\.(gitignore)$/,
             ignoreFileContentsRegex: /(<\?xml version)|(mail::message)/,
             rules: {
@@ -30,40 +30,42 @@ mix.webpackConfig({
                 collapseWhitespace: true,
                 removeAttributeQuotes: true,
                 removeComments: true,
-                minifyJS: true
-            }
-        })
-    ]
-})
+                minifyJS: true,
+            },
+        }),
+    ],
+});
 
 mix.vue()
-    .webpackConfig(require('./webpack.config'))
-    .js('resources/js/app.js', 'public/js')
-    .postCss('resources/css/app.css', 'public/css', [
-        require('postcss-import'),
-        require('tailwindcss')
+    .webpackConfig(require("./webpack.config"))
+    .js("resources/js/app.js", "public/js")
+    .postCss("resources/css/app.css", "public/css", [
+        require("postcss-import"),
+        require("tailwindcss"),
     ])
-    .minify('public/js/app.js', 'public/js/app.min.js')
-    .minify('public/css/app.css', 'public/css/app.min.css')
+    .minify("public/js/app.js", "public/js/app.min.js")
+    .minify("public/css/app.css", "public/css/app.min.css")
     .sourceMaps()
     .generateSW({
         exclude: [/\.(?:png|jpg|jpeg|svg)$/],
-        runtimeCaching: [{
-            urlPattern: /\.(?:png|jpg|jpeg|svg)$/,
-            handler: 'CacheFirst',
-            options: {
-                cacheName: 'images',
-                expiration: {
-                    maxEntries: 10,
+        runtimeCaching: [
+            {
+                urlPattern: /\.(?:png|jpg|jpeg|svg)$/,
+                handler: "CacheFirst",
+                options: {
+                    cacheName: "images",
+                    expiration: {
+                        maxEntries: 10,
+                    },
                 },
             },
-        }],
+        ],
         maximumFileSizeToCacheInBytes: 10000000,
         skipWaiting: true,
         cleanupOutdatedCaches: true,
-        sourcemap: true
-    })
+        sourcemap: true,
+    });
 
-if (mix.inProduction()) mix.version()
+if (mix.inProduction()) mix.version();
 
-mix.disableNotifications()
+mix.disableNotifications();
