@@ -67,8 +67,8 @@ jobs:
           docker exec -t simase-laravel.test-1 chmod -R ug+rwx storage bootstrap/cache
           docker exec -t simase-laravel.test-1 chmod -R g+w storage/logs
 
-      - name: 📦 Install NPM Dependencies
-        run: docker exec -t simase-laravel.test-1 npm i
+      - name: 📦 Install Yarn Dependencies
+        run: docker exec -t simase-laravel.test-1 yarn
 
       - name: 🔑 Generate Application Key
         run: docker exec -t simase-laravel.test-1 php artisan key:generate
