@@ -145,10 +145,10 @@ class AssetService
                 'created_by' => $user->id,
                 'area_id' => (int) $request->area['id'],
                 'asset_type_id' => (int) $request->type,
-                'name' => Str::title($request->name),
+                'name' => $request->name,
                 'quantity' => (int) $request->quantity,
             ]);
-            $user->notify(new DataStored('Aset', Str::title($request->name)));
+            $user->notify(new DataStored('Aset', $request->name));
         }
     }
 
@@ -195,11 +195,11 @@ class AssetService
             $asset->updateOrFail([
                 'area_id' => (int) $request->area['id'],
                 'asset_type_id' => (int) $request->type,
-                'name' => Str::title($request->name),
+                'name' => $request->name,
                 'quantity' => (int) $request->quantity,
             ]);
             $asset->save();
-            $user->notify(new DataUpdated('Aset', Str::title($request->name)));
+            $user->notify(new DataUpdated('Aset', $request->name));
         }
     }
 
@@ -213,7 +213,7 @@ class AssetService
         $user = auth()->user();
         if (!is_null($user)) {
             $asset->deleteOrFail();
-            $user->notify(new DataDestroyed('Aset', Str::title($data)));
+            $user->notify(new DataDestroyed('Aset', $data));
         }
     }
 

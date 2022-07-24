@@ -129,11 +129,11 @@ class AreaService
                 'created_by' => $user->id,
                 'area_type_id' => (int) $request->type,
                 'code' => $request->code,
-                'name' => Str::title($request->name),
+                'name' => $request->name,
                 'lat' => $request->latitude,
                 'lon' => $request->longitude,
             ]);
-            $user->notify(new DataStored('Area', Str::title($request->name)));
+            $user->notify(new DataStored('Area', $request->name));
         }
     }
 
@@ -184,12 +184,12 @@ class AreaService
             $area->updateOrFail([
                 'area_type_id' => (int) $request->type,
                 'code' => $request->code,
-                'name' => Str::title($request->name),
+                'name' => $request->name,
                 'lat' => $request->latitude,
                 'lon' => $request->longitude,
             ]);
             $area->save();
-            $user->notify(new DataUpdated('Area', Str::title($request->name)));
+            $user->notify(new DataUpdated('Area', $request->name));
         }
     }
 
@@ -203,7 +203,7 @@ class AreaService
         $user = auth()->user();
         if (!is_null($user)) {
             $area->deleteOrFail();
-            $user->notify(new DataDestroyed('Area', Str::title($data)));
+            $user->notify(new DataDestroyed('Area', $data));
         }
     }
 

@@ -156,10 +156,7 @@ class AssetSubmissionService
                 'created_by' => $user->id,
             ]);
             $user->notify(
-                new DataStored(
-                    'Laporan Pengajuan Aset',
-                    Str::title($request->name)
-                )
+                new DataStored('Laporan Pengajuan Aset', $request->name)
             );
         }
     }
@@ -203,10 +200,7 @@ class AssetSubmissionService
             ]);
             $assetSubmission->save();
             $user->notify(
-                new DataUpdated(
-                    'Laporan Pengajuan Aset',
-                    Str::title($request->name)
-                )
+                new DataUpdated('Laporan Pengajuan Aset', $request->name)
             );
         }
     }
@@ -221,9 +215,7 @@ class AssetSubmissionService
         $user = auth()->user();
         if (!is_null($user)) {
             $assetSubmission->deleteOrFail();
-            $user->notify(
-                new DataDestroyed('Laporan Pengajuan Aset', Str::title($data))
-            );
+            $user->notify(new DataDestroyed('Laporan Pengajuan Aset', $data));
         }
     }
 

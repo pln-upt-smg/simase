@@ -11,7 +11,7 @@ use App\Rules\{IsValidDigit, IsValidPhone};
 use App\Services\Helpers\HasValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\{Collection, Str};
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\{Rule, ValidationException};
 use Laravel\Fortify\Rules\Password;
@@ -113,7 +113,7 @@ class EmployeeService
 		User::create([
 			'role_id' => (int)$request->role,
 			'division_id' => (int)$request->division,
-			'name' => Str::title($request->name),
+			'name' => $request->name,
 			'phone' => $request->phone,
 			'nip' => $request->nip,
 			'password' => Hash::make($request->password)
@@ -149,7 +149,7 @@ class EmployeeService
 		$employee->updateOrFail([
 			'role_id' => (int)$request->role,
             'division_id' => (int)$request->division,
-			'name' => Str::title($request->name),
+			'name' => $request->name,
 			'phone' => $request->phone,
 			'nip' => $request->nip,
 			'password' => Hash::make($request->password)

@@ -96,12 +96,10 @@ class AssetTypeService
         if (!is_null($user)) {
             AssetType::create([
                 'created_by' => $user->id,
-                'name' => Str::title($request->name),
+                'name' => $request->name,
                 'uom' => $request->uom,
             ]);
-            $user->notify(
-                new DataStored('Tipe Aset', Str::title($request->name))
-            );
+            $user->notify(new DataStored('Tipe Aset', $request->name));
         }
     }
 
@@ -132,13 +130,11 @@ class AssetTypeService
         $user = auth()->user();
         if (!is_null($user)) {
             $assetType->updateOrFail([
-                'name' => Str::title($request->name),
+                'name' => $request->name,
                 'uom' => $request->uom,
             ]);
             $assetType->save();
-            $user->notify(
-                new DataUpdated('Tipe Aset', Str::title($request->name))
-            );
+            $user->notify(new DataUpdated('Tipe Aset', $request->name));
         }
     }
 
@@ -152,7 +148,7 @@ class AssetTypeService
         $user = auth()->user();
         if (!is_null($user)) {
             $assetType->deleteOrFail();
-            $user->notify(new DataDestroyed('Tipe Aset', Str::title($data)));
+            $user->notify(new DataDestroyed('Tipe Aset', $data));
         }
     }
 

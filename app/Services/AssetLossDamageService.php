@@ -155,10 +155,7 @@ class AssetLossDamageService
                 'priority' => (int) $request->priority,
             ]);
             $user->notify(
-                new DataStored(
-                    'Laporan Kehilangan Aset',
-                    Str::title($request->name)
-                )
+                new DataStored('Laporan Kehilangan Aset', $request->name)
             );
         }
     }
@@ -199,10 +196,7 @@ class AssetLossDamageService
             ]);
             $assetSubmission->save();
             $user->notify(
-                new DataUpdated(
-                    'Laporan Kehilangan Aset',
-                    Str::title($request->name)
-                )
+                new DataUpdated('Laporan Kehilangan Aset', $request->name)
             );
         }
     }
@@ -217,9 +211,7 @@ class AssetLossDamageService
         $user = auth()->user();
         if (!is_null($user)) {
             $assetSubmission->deleteOrFail();
-            $user->notify(
-                new DataDestroyed('Laporan Kehilangan Aset', Str::title($data))
-            );
+            $user->notify(new DataDestroyed('Laporan Kehilangan Aset', $data));
         }
     }
 
