@@ -35,7 +35,7 @@ jobs:
             php artisan horizon:publish
             php artisan cloudflare:reload
             php artisan optimize:clear
-            yarn install --production --frozen-lockfile
+            yarn
             composer i -o -n --no-dev
             php artisan optimize
             php artisan view:cache
