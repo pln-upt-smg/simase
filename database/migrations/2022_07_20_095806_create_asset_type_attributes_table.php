@@ -16,7 +16,7 @@ class CreateAssetTypeAttributesTable extends Migration
         Schema::create('asset_type_attributes', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('asset_type_id')->unsigned();
-            $table->text('custom_attributes');
+            $table->text('attributes');
             $table->timestamps();
             $table->softDeletes();
         });
