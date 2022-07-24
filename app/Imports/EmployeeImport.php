@@ -2,6 +2,10 @@
 
 namespace App\Imports;
 
+use Illuminate\Contracts\Queue\{ShouldBeUnique, ShouldQueue};
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\Imports\Contracts\WithDefaultEvents;
 use App\Imports\Helpers\{
     HasBatchSize,
@@ -9,14 +13,11 @@ use App\Imports\Helpers\{
     HasDefaultEvents,
     HasDefaultSheet,
     HasImporter,
-    HasRoleResolver
+    HasRoleResolver,
+    HasDivisionResolver
 };
 use App\Models\User;
 use App\Rules\{IsValidDigit, IsValidPhone};
-use Illuminate\Contracts\Queue\{ShouldBeUnique, ShouldQueue};
-use Illuminate\Support\{Collection, Str};
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\{
     Importable,
     SkipsEmptyRows,
@@ -58,7 +59,8 @@ class EmployeeImport implements
         HasImporter,
         HasChunkSize,
         HasBatchSize,
-        HasRoleResolver;
+        HasRoleResolver,
+        HasDivisionResolver;
 
     public function __construct(?User $user)
     {
@@ -80,6 +82,12 @@ class EmployeeImport implements
                 'string',
                 'max:255',
                 Rule::exists('roles', 'name')->whereNull('deleted_at'),
+            ],
+            'divisi' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::exists('division', 'name')->whereNull('deleted_at'),
             ],
         ];
     }
@@ -103,8 +111,9 @@ class EmployeeImport implements
 
     public function replace(array $row): void
     {
-        $roleId = $this->resolveRoleId($row['role']);
-        if ($roleId === 0) {
+        $roleId = $this->resolveRoleId($row['peran']);
+        $divisionId = $this->resolveDivisionId($row['divisi']);
+        if ($roleId === 0 || $divisionId === 0) {
             return;
         }
         User::updateOrCreate(
@@ -113,7 +122,8 @@ class EmployeeImport implements
             ],
             [
                 'role_id' => $roleId,
-                'name' => Str::title(trim($row['name'])),
+                'division_id' => $divisionId,
+                'name' => trim($row['name']),
                 'phone' => trim($row['phone']),
                 'password' => Hash::make(trim($row['nip'])),
             ]

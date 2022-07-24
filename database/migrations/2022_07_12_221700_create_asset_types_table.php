@@ -17,7 +17,6 @@ class CreateAssetTypesTable extends Migration
             $table->id();
             $table->bigInteger('created_by')->unsigned();
             $table->string('name');
-            $table->string('uom');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -3,10 +3,7 @@
 namespace App\Exports;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\{FromCollection, WithHeadings, WithMapping};
 use App\Notifications\DataExported;
 use App\Services\AssetTypeService;
 
@@ -21,12 +18,12 @@ class AssetTypeExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ['Tipe Aset', 'UoM'];
+        return ['Nama Tipe Aset'];
     }
 
     public function map($row): array
     {
-        return [Str::title(trim($row->name)), trim($row->uom)];
+        return [trim($row->name)];
     }
 
     public function collection(): Collection

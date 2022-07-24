@@ -4,9 +4,16 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use Database\Seeders\Data\{RoleSeeder, UserSeeder, AreaSeeder, AssetSeeder};
+use Database\Seeders\Data\{
+    RoleSeeder,
+    DivisionSeeder,
+    UserSeeder,
+    AreaSeeder,
+    AssetSeeder
+};
 use App\Models\{
     Role,
+    Division,
     User,
     AreaType,
     Area,
@@ -37,6 +44,7 @@ class DatabaseSeeder extends Seeder
     {
         Schema::disableForeignKeyConstraints();
         Role::truncate();
+        Division::truncate();
         User::truncate();
         AreaType::truncate();
         Area::truncate();
@@ -52,6 +60,7 @@ class DatabaseSeeder extends Seeder
     protected function seeds(): void
     {
         $this->call(RoleSeeder::class);
+        $this->call(DivisionSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(AreaSeeder::class);
         $this->call(AssetSeeder::class);

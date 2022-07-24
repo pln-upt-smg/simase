@@ -3,10 +3,7 @@
 namespace App\Exports;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\{FromCollection, WithHeadings, WithMapping};
 use App\Notifications\DataExported;
 use App\Services\AssetSubmissionService;
 
@@ -22,13 +19,13 @@ class AssetSubmissionExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            'Area',
-            'Tipe Area',
-            'Aset',
+            'Nama Aset',
             'Tipe Aset',
-            'UoM',
+            'Nama Area',
+            'Tipe Area',
             'Kuantitas',
             'Penambahan Kuantitas',
+            'UoM',
             'Prioritas',
             'Keterangan',
             'Foto Lampiran',
@@ -38,13 +35,13 @@ class AssetSubmissionExport implements FromCollection, WithHeadings, WithMapping
     public function map($row): array
     {
         return [
-            Str::title(trim($row->asset->area->name)),
-            Str::title(trim($row->asset->area->areaType->name)),
-            Str::title(trim($row->asset->name)),
-            Str::title(trim($row->asset->assetType->name)),
-            trim($row->asset->assetType->uom),
+            trim($row->asset->area->name),
+            trim($row->asset->area->areaType->name),
+            trim($row->asset->name),
+            trim($row->asset->assetType->name),
             $row->asset->quantity,
             $row->quantity,
+            trim($row->asset->assetType->uom),
             $row->priority,
             trim($row->note),
             $row->assetSubmissionImages->pluck('images')->join(', '),

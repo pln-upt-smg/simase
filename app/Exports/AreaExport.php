@@ -3,10 +3,7 @@
 namespace App\Exports;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\{FromCollection, WithHeadings, WithMapping};
 use App\Notifications\DataExported;
 use App\Services\AreaService;
 
@@ -21,15 +18,15 @@ class AreaExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ['Kode', 'Area', 'Tipe Area', 'Latitude', 'Longitude'];
+        return ['Kode Area', 'Nama Area', 'Tipe Area', 'Latitude', 'Longitude'];
     }
 
     public function map($row): array
     {
         return [
             trim($row->code),
-            Str::title(trim($row->name)),
-            Str::title(trim($row->areaType->name)),
+            trim($row->name),
+            trim($row->areaType->name),
             $row->lat,
             $row->lon,
         ];

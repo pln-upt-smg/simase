@@ -20,7 +20,7 @@ class CreateRolesTable extends Migration
             $table->softDeletes();
         });
         Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('role_id')->unsigned();
+            $table->bigInteger('role_id')->unsigned()->default(2);
         });
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Imports;
 
+use Illuminate\Contracts\Queue\{ShouldBeUnique, ShouldQueue};
+use Illuminate\Support\Collection;
 use App\Imports\Contracts\WithDefaultEvents;
 use App\Imports\Helpers\{
     HasBatchSize,
@@ -12,8 +14,6 @@ use App\Imports\Helpers\{
     HasAreaResolver
 };
 use App\Models\{Asset, User};
-use Illuminate\Contracts\Queue\{ShouldBeUnique, ShouldQueue};
-use Illuminate\Support\{Collection, Str};
 use Maatwebsite\Excel\Concerns\{
     Importable,
     SkipsEmptyRows,
@@ -69,7 +69,7 @@ class AssetImport implements
     public function rules(): array
     {
         return [
-            'aset' => ['required', 'string', 'max:255'],
+            'namaaset' => ['required', 'string', 'max:255'],
             'tipeaset' => ['required', 'string', 'max:255'],
             'uom' => ['required', 'string', 'max:255'],
             'kuantitas' => ['required', 'numeric', 'min:0'],
@@ -81,7 +81,7 @@ class AssetImport implements
 
     public function uniqueBy()
     {
-        return ['aset'];
+        return ['namaaset'];
     }
 
     public function collection(Collection $collection): void
@@ -107,7 +107,7 @@ class AssetImport implements
             'asset_type_id' => $assetTypeId,
             'area_id' => $areaId,
             'created_by' => $this->userId,
-            'name' => Str::title(trim($row['aset'])),
+            'name' => trim($row['namaaset']),
             'quantity' => $row['kuantitas'],
         ]);
     }

@@ -29,12 +29,10 @@ class AssetSeeder extends Seeder
         AssetType::updateOrCreate([
             'created_by' => 1,
             'name' => 'Kabel Tembaga',
-            'uom' => 'M',
         ]);
         AssetType::updateOrCreate([
             'created_by' => 1,
             'name' => 'Terminal Listrik',
-            'uom' => 'PCS',
         ]);
 
         Area::factory()

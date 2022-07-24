@@ -23,6 +23,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'role_id',
+        'division_id',
         'name',
         'phone',
         'nip',
@@ -43,6 +44,11 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function division(): BelongsTo
+    {
+        return $this->belongsTo(Division::class, 'division_id');
     }
 
     public function areaTypes(): HasMany
@@ -78,5 +84,10 @@ class User extends Authenticatable
     public function setRoleAttribute(Role|int $role): void
     {
         $this->role_id = $role instanceof Role ? $role->id : $role;
+    }
+
+    public function setDivisionAttribute(Division|int $division): void
+    {
+        $this->division_id = $division instanceof Division ? $division->id : $division;
     }
 }

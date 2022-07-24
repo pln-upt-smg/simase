@@ -2,13 +2,12 @@
 
 namespace Database\Seeders\Data;
 
-use App\Models\Role;
-use App\Models\User;
-use Faker\Generator;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\{Role, Division, User};
+use Faker\Generator;
 
 class UserSeeder extends Seeder
 {
@@ -54,20 +53,60 @@ class UserSeeder extends Seeder
      */
     protected function staging(): void
     {
+        // renev
         User::create([
             'role' => Role::administrator(),
-            'name' => 'Administrator',
+            'division' => Division::renev(),
+            'name' => 'Administrator Renev',
             'phone' => $this->faker->phoneNumber(),
             'nip' => '000000',
             'password' => Hash::make('000000'),
         ]);
         User::create([
             'role' => Role::operator(),
+            'division' => Division::renev(),
             'name' => $this->faker->name(),
             'phone' => $this->faker->phoneNumber(),
             'nip' => '111111',
             'password' => Hash::make('111111'),
         ]);
+
+        // construction
+        User::create([
+            'role' => Role::administrator(),
+            'division' => Division::construction(),
+            'name' => 'Administrator Konstruksi',
+            'phone' => $this->faker->phoneNumber(),
+            'nip' => '000000',
+            'password' => Hash::make('000000'),
+        ]);
+        User::create([
+            'role' => Role::operator(),
+            'division' => Division::construction(),
+            'name' => $this->faker->name(),
+            'phone' => $this->faker->phoneNumber(),
+            'nip' => '111111',
+            'password' => Hash::make('111111'),
+        ]);
+
+        // kku
+        User::create([
+            'role' => Role::administrator(),
+            'division' => Division::kku(),
+            'name' => 'Administrator KKU',
+            'phone' => $this->faker->phoneNumber(),
+            'nip' => '000000',
+            'password' => Hash::make('000000'),
+        ]);
+        User::create([
+            'role' => Role::operator(),
+            'division' => Division::kku(),
+            'name' => $this->faker->name(),
+            'phone' => $this->faker->phoneNumber(),
+            'nip' => '111111',
+            'password' => Hash::make('111111'),
+        ]);
+
         User::factory(19)->create();
     }
 
@@ -80,10 +119,27 @@ class UserSeeder extends Seeder
     {
         User::create([
             'role' => Role::administrator(),
-            'name' => 'Administrator',
+            'division' => Division::renev(),
+            'name' => 'Administrator Renev',
             'phone' => $this->faker->phoneNumber(),
             'nip' => '000000',
             'password' => Hash::make('000000'),
+        ]);
+        User::create([
+            'role' => Role::administrator(),
+            'division' => Division::construction(),
+            'name' => 'Administrator Konstruksi',
+            'phone' => $this->faker->phoneNumber(),
+            'nip' => '000001',
+            'password' => Hash::make('000001'),
+        ]);
+        User::create([
+            'role' => Role::administrator(),
+            'division' => Division::kku(),
+            'name' => 'Administrator KKU',
+            'phone' => $this->faker->phoneNumber(),
+            'nip' => '000002',
+            'password' => Hash::make('000002'),
         ]);
     }
 }

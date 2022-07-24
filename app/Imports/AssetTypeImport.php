@@ -2,6 +2,8 @@
 
 namespace App\Imports;
 
+use Illuminate\Contracts\Queue\{ShouldBeUnique, ShouldQueue};
+use Illuminate\Support\Collection;
 use App\Imports\Contracts\WithDefaultEvents;
 use App\Imports\Helpers\{
     HasBatchSize,
@@ -11,8 +13,6 @@ use App\Imports\Helpers\{
     HasImporter
 };
 use App\Models\{AssetType, User};
-use Illuminate\Contracts\Queue\{ShouldBeUnique, ShouldQueue};
-use Illuminate\Support\{Collection, Str};
 use Maatwebsite\Excel\Concerns\{
     Importable,
     SkipsEmptyRows,
@@ -67,13 +67,13 @@ class AssetTypeImport implements
     public function rules(): array
     {
         return [
-            'tipeaset' => ['required', 'string', 'max:255'],
+            'namatipeaset' => ['required', 'string', 'max:255'],
         ];
     }
 
     public function uniqueBy()
     {
-        return ['tipeaset'];
+        return ['namatipeaset'];
     }
 
     public function collection(Collection $collection): void
@@ -95,7 +95,7 @@ class AssetTypeImport implements
         }
         AssetType::updateOrCreate([
             'created_by' => $this->userId,
-            'name' => Str::title(trim($row['tipeaset'])),
+            'name' => trim($row['namatipeaset']),
         ]);
     }
 

@@ -26,6 +26,7 @@ class UserFactory extends Factory
         $nip = $this->faker->unique()->numberBetween(100000, 999999);
         return [
             'role' => Role::operator(),
+            'division' => $this->faker->numberBetween(1, 3),
             'name' => $this->faker->name(),
             'phone' => $this->faker->phoneNumber(),
             'nip' => $nip,

@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AssetType extends Model
 {
     use Fluent, HasFactory, SoftDeletes;
 
-    public string $name, $uom;
+    public string $name;
 
-    protected $fillable = ['created_by', 'name', 'uom'];
+    protected $fillable = ['created_by', 'name'];
 
     public function creator(): BelongsTo
     {
@@ -25,5 +26,10 @@ class AssetType extends Model
     public function assets(): HasMany
     {
         return $this->hasMany(Asset::class, 'asset_type_id');
+    }
+
+    public function assetTypeAttribute(): HasOne
+    {
+        return $this->hasOne(AssetTypeAttribute::class, 'asset_type_id');
     }
 }

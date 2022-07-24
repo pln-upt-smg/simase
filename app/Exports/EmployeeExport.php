@@ -2,13 +2,10 @@
 
 namespace App\Exports;
 
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\{FromCollection, WithHeadings, WithMapping};
 use App\Notifications\DataExported;
 use App\Services\EmployeeService;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 
 class EmployeeExport implements FromCollection, WithHeadings, WithMapping
 {
@@ -21,16 +18,17 @@ class EmployeeExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ['Nama', 'Telepon', 'NIP', 'Peran'];
+        return ['Nama', 'Telepon', 'NIP', 'Peran', 'Divisi'];
     }
 
     public function map($row): array
     {
         return [
-            Str::title(trim($row->name)),
+            trim($row->name),
             trim($row->phone),
             trim($row->nip),
-            Str::title(trim($row->role->name)),
+            trim($row->role->name),
+            trim($row->division->name),
         ];
     }
 

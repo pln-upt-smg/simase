@@ -2,6 +2,8 @@
 
 namespace App\Imports;
 
+use Illuminate\Contracts\Queue\{ShouldBeUnique, ShouldQueue};
+use Illuminate\Support\Collection;
 use App\Imports\Contracts\WithDefaultEvents;
 use App\Imports\Helpers\{
     HasBatchSize,
@@ -12,8 +14,6 @@ use App\Imports\Helpers\{
     HasAreaTypeResolver
 };
 use App\Models\{Area, User};
-use Illuminate\Contracts\Queue\{ShouldBeUnique, ShouldQueue};
-use Illuminate\Support\{Collection, Str};
 use Maatwebsite\Excel\Concerns\{
     Importable,
     SkipsEmptyRows,
@@ -69,8 +69,8 @@ class AreaImport implements
     public function rules(): array
     {
         return [
-            'kode' => ['required', 'numeric'],
-            'area' => ['required', 'string', 'max:255'],
+            'kodearea' => ['required', 'numeric'],
+            'namaarea' => ['required', 'string', 'max:255'],
             'tipearea' => ['required', 'string', 'max:255'],
             'latitude' => ['required', 'float'],
             'longitude' => ['required', 'float'],
@@ -79,7 +79,7 @@ class AreaImport implements
 
     public function uniqueBy()
     {
-        return ['kode', 'area'];
+        return ['kodearea'];
     }
 
     public function collection(Collection $collection): void
@@ -103,8 +103,8 @@ class AreaImport implements
         Area::updateOrCreate([
             'area_type_id' => $areaTypeId,
             'created_by' => $this->userId,
-            'code' => trim($row['kode']),
-            'name' => Str::title(trim($row['area'])),
+            'code' => trim($row['kodearea']),
+            'name' => trim($row['namaarea']),
             'lat' => $row['latitude'],
             'lon' => $row['longitude'],
         ]);

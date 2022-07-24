@@ -85,11 +85,9 @@ class AreaTypeService
         if (!is_null($user)) {
             AreaType::create([
                 'created_by' => $user->id,
-                'name' => Str::title($request->name),
+                'name' => $request->name,
             ]);
-            $user->notify(
-                new DataStored('Tipe Area', Str::title($request->name))
-            );
+            $user->notify(new DataStored('Tipe Area', $request->name));
         }
     }
 
@@ -119,12 +117,10 @@ class AreaTypeService
         $user = auth()->user();
         if (!is_null($user)) {
             $areaType->updateOrFail([
-                'name' => Str::title($request->name),
+                'name' => $request->name,
             ]);
             $areaType->save();
-            $user->notify(
-                new DataUpdated('Tipe Area', Str::title($request->name))
-            );
+            $user->notify(new DataUpdated('Tipe Area', $request->name));
         }
     }
 
@@ -138,7 +134,7 @@ class AreaTypeService
         $user = auth()->user();
         if (!is_null($user)) {
             $areaType->deleteOrFail();
-            $user->notify(new DataDestroyed('Tipe Area', Str::title($data)));
+            $user->notify(new DataDestroyed('Tipe Area', $data));
         }
     }
 
