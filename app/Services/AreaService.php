@@ -43,6 +43,7 @@ class AreaService
             ])
             ->leftJoin('users', 'users.id', '=', 'areas.created_by')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->defaultSort('areas.code')
             ->allowedFilters(
                 InertiaHelper::filterBy([
@@ -269,7 +270,7 @@ class AreaService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = Area::orderBy('name')
+        $query = Area::orderBy('areas.name')
             ->select([
                 'areas.id as id',
                 'areas.code as code',
@@ -285,6 +286,7 @@ class AreaService
             ])
             ->leftJoin('users', 'users.id', '=', 'areas.created_by')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->limit(10);
         if (!is_null($request)) {
             $filter = Str::lower(trim($request->query('q') ?? ''));

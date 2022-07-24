@@ -35,6 +35,7 @@ class HolderService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'holders.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->allowedFilters(
                 InertiaHelper::filterBy(['holders.name', 'users.name'])
             )
@@ -200,10 +201,13 @@ class HolderService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = Holder::orderBy('name')->limit(10);
+        $query = Holder::orderBy('holders.name')
+            ->leftJoin('users', 'users.id', '=', 'holders.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->limit(10);
         if (!is_null($request)) {
             $query = $query->whereRaw(
-                'lower(name) like "%?%"',
+                'lower(holders.name) like "%?%"',
                 Str::lower(trim($request->query('q') ?? ''))
             );
         }

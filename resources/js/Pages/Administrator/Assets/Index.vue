@@ -66,12 +66,6 @@
                     Kuantitas
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('uom')"
-                    :cell="sortableHeader('uom')"
-                >
-                    UoM
-                </jet-table-header>
-                <jet-table-header
                     v-show="showColumn('user_name')"
                     :cell="sortableHeader('user_name')"
                 >
@@ -103,7 +97,6 @@
                     <td v-show="showColumn('quantity')">
                         {{ asset.quantity }}
                     </td>
-                    <td v-show="showColumn('uom')">{{ asset.uom }}</td>
                     <td v-show="showColumn('user_name')">
                         {{ asset.user_name }}
                     </td>
@@ -152,7 +145,7 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full capitalize"
+                        class="block w-full"
                         placeholder="Nama Aset"
                         ref="storeName"
                         v-model="storeForm.name"
@@ -226,7 +219,7 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full capitalize"
+                        class="block w-full"
                         placeholder="Nama Aset"
                         ref="updateName"
                         v-model="updateForm.name"

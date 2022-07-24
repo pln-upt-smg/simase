@@ -37,6 +37,7 @@ class AreaTypeService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'area_types.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->defaultSort('area_types.name')
             ->allowedFilters(
                 InertiaHelper::filterBy(['area_types.name', 'users.name'])
@@ -205,10 +206,13 @@ class AreaTypeService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = AreaType::orderBy('name')->limit(10);
+        $query = AreaType::orderBy('area_types.name')
+            ->leftJoin('users', 'users.id', '=', 'area_types.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->limit(10);
         if (!is_null($request)) {
             $query = $query->whereRaw(
-                'lower(name) like "%?%"',
+                'lower(area_types.name) like "%?%"',
                 Str::lower(trim($request->query('q') ?? ''))
             );
         }

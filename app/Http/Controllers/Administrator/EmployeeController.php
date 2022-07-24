@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\EmployeeService;
-use App\Services\RoleService;
+use App\Services\{EmployeeService, RoleService, DivisionService};
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -26,17 +25,25 @@ class EmployeeController extends Controller
     private RoleService $roleService;
 
     /**
+     * @var DivisionService
+     */
+    private DivisionService $divisionService;
+
+    /**
      * Create a new Controller instance.
      *
      * @param EmployeeService $employeeService
      * @param RoleService $roleService
+     * @param DivisionService $divisionService
      */
     public function __construct(
         EmployeeService $employeeService,
-        RoleService $roleService
+        RoleService $roleService,
+        DivisionService $divisionService
     ) {
         $this->employeeService = $employeeService;
         $this->roleService = $roleService;
+        $this->divisionService = $divisionService;
     }
 
     /**
@@ -48,6 +55,7 @@ class EmployeeController extends Controller
     {
         return inertia('Administrator/Employees/Index', [
             'roles' => $this->roleService->collection()->toArray(),
+            'divisions' => $this->divisionService->collection()->toArray(),
             'employees' => $this->employeeService->tableData(),
             'template' => $this->employeeService->template(),
         ])->table(function (InertiaTable $table) {

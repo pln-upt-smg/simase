@@ -35,6 +35,7 @@ class UrbanVillageService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'urban_villages.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->allowedFilters(
                 InertiaHelper::filterBy(['urban_villages.name', 'users.name'])
             )
@@ -204,10 +205,13 @@ class UrbanVillageService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = UrbanVillage::orderBy('name')->limit(10);
+        $query = UrbanVillage::orderBy('urban_villages.name')
+            ->leftJoin('users', 'users.id', '=', 'urban_villages.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->limit(10);
         if (!is_null($request)) {
             $query = $query->whereRaw(
-                'lower(name) like "%?%"',
+                'lower(urban_villages.name) like "%?%"',
                 Str::lower(trim($request->query('q') ?? ''))
             );
         }

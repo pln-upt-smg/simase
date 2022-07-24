@@ -369,7 +369,7 @@ const navigations = {
             },
             {
                 name: "Laporan Transfer Aset",
-                href: "assets.loss.index",
+                href: "assets.transfers.index",
                 icon: SwitchHorizontalIcon,
             },
         ],
@@ -401,7 +401,7 @@ const navigations = {
             },
             {
                 name: "Laporan Transfer Aset",
-                href: "assets.loss.index",
+                href: "assets.transfers.index",
                 icon: SwitchHorizontalIcon,
             },
         ],

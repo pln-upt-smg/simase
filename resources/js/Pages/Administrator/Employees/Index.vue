@@ -60,6 +60,12 @@
                     Peran
                 </jet-table-header>
                 <jet-table-header
+                    v-show="showColumn('division')"
+                    :cell="sortableHeader('division')"
+                >
+                    Divisi
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('action')"
                     :cell="staticHeader('action')"
                 />
@@ -70,6 +76,9 @@
                     <td v-show="showColumn('phone')">{{ employee.phone }}</td>
                     <td v-show="showColumn('nip')">{{ employee.nip }}</td>
                     <td v-show="showColumn('role')">{{ employee.role }}</td>
+                    <td v-show="showColumn('division')">
+                        {{ employee.division }}
+                    </td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
@@ -113,7 +122,7 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full capitalize"
+                        class="block w-full"
                         placeholder="Nama Pegawai"
                         ref="storeName"
                         v-model="storeForm.name"
@@ -152,6 +161,13 @@
                         v-model="storeForm.role"
                         :data="roles"
                         class="mt-4 block w-full"
+                    />
+                    <jet-select
+                        ref="storeDivision"
+                        placeholder="Pilih Divisi"
+                        v-model="storeForm.division"
+                        :data="divisions"
+                        class="mt-4 block w-full"
                         @keyup.enter="store"
                     />
                 </div>
@@ -186,7 +202,7 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full capitalize"
+                        class="block w-full"
                         placeholder="Nama Pegawai"
                         ref="updateName"
                         v-model="updateForm.name"
@@ -224,6 +240,13 @@
                         placeholder="Pilih Peran"
                         v-model="updateForm.role"
                         :data="roles"
+                        class="mt-4 block w-full"
+                    />
+                    <jet-select
+                        ref="updateDivision"
+                        placeholder="Pilih Divisi"
+                        v-model="updateForm.division"
+                        :data="divisions"
                         class="mt-4 block w-full"
                         @keyup.enter="update"
                     />
@@ -457,6 +480,7 @@ export default defineComponent({
                 password: null,
                 password_confirmation: null,
                 role: null,
+                division: null,
             }),
             updateForm: useForm({
                 id: null,
@@ -466,6 +490,7 @@ export default defineComponent({
                 password: null,
                 password_confirmation: null,
                 role: null,
+                division: null,
             }),
             destroyForm: useForm({
                 id: null,
@@ -478,6 +503,7 @@ export default defineComponent({
     mixins: [JetTableEngine],
     props: {
         roles: Object,
+        divisions: Object,
         employees: Object,
     },
     components: {
@@ -595,6 +621,7 @@ export default defineComponent({
             this.updateForm.phone = employee.phone;
             this.updateForm.nip = employee.nip;
             this.updateForm.role = employee.role_id;
+            this.updateForm.division = employee.division_id;
             setTimeout(() => (this.confirmingUpdate = true), 150);
             setTimeout(() => this.$refs.updateName.focus(), 300);
         },
@@ -620,6 +647,7 @@ export default defineComponent({
                 this.storeForm.password = null;
                 this.storeForm.password_confirmation = null;
                 this.storeForm.role = null;
+                this.storeForm.division = null;
             }, 500);
         },
         closeUpdateModal() {
@@ -635,6 +663,7 @@ export default defineComponent({
                 this.updateForm.password = null;
                 this.updateForm.password_confirmation = null;
                 this.updateForm.role = null;
+                this.updateForm.division = null;
             }, 500);
         },
         closeDestroyModal() {

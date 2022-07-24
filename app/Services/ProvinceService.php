@@ -35,6 +35,7 @@ class ProvinceService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'provinces.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->allowedFilters(
                 InertiaHelper::filterBy(['provinces.name', 'users.name'])
             )
@@ -200,10 +201,13 @@ class ProvinceService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = Province::orderBy('name')->limit(10);
+        $query = Province::orderBy('provinces.name')
+            ->leftJoin('users', 'users.id', '=', 'provinces.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->limit(10);
         if (!is_null($request)) {
             $query = $query->whereRaw(
-                'lower(name) like "%?%"',
+                'lower(provinces.name) like "%?%"',
                 Str::lower(trim($request->query('q') ?? ''))
             );
         }

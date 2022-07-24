@@ -35,6 +35,7 @@ class DistrictService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'districts.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->allowedFilters(
                 InertiaHelper::filterBy(['districts.name', 'users.name'])
             )
@@ -204,10 +205,13 @@ class DistrictService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = District::orderBy('name')->limit(10);
+        $query = District::orderBy('districts.name')
+            ->leftJoin('users', 'users.id', '=', 'districts.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->limit(10);
         if (!is_null($request)) {
             $query = $query->whereRaw(
-                'lower(name) like "%?%"',
+                'lower(districts.name) like "%?%"',
                 Str::lower(trim($request->query('q') ?? ''))
             );
         }

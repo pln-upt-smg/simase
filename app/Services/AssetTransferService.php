@@ -33,7 +33,6 @@ class AssetTransferService
                 'assets.quantity as quantity',
                 'asset_types.id as asset_type_id',
                 'asset_types.name as asset_type_name',
-                'asset_types.uom as asset_type_uom',
                 'areas.id as area_id',
                 'areas.code as area_code',
                 'areas.name as area_name',
@@ -43,16 +42,16 @@ class AssetTransferService
                 'target_areas.name as target_area_name',
                 'target_area_types.name as target_area_type_name',
                 'users.name as user_name',
-                'asset_transfer.id as id',
-                'asset_transfer.note as asset_submission_note',
-                'asset_transfer.quantity as asset_submission_quantity',
-                'asset_transfer.priority as asset_submission_priority',
+                'asset_transfers.id as id',
+                'asset_transfers.note as asset_submission_note',
+                'asset_transfers.quantity as asset_submission_quantity',
+                'asset_transfers.priority as asset_submission_priority',
                 DB::raw(
-                    'date_format(asset_transfer.updated_at, "%d %b %Y") as update_date'
+                    'date_format(asset_transfers.updated_at, "%d %b %Y") as update_date'
                 ),
             ])
-            ->leftJoin('users', 'users.id', '=', 'asset_transfer.created_by')
-            ->leftJoin('assets', 'assets.id', '=', 'asset_transfer.asset_id')
+            ->leftJoin('users', 'users.id', '=', 'asset_transfers.created_by')
+            ->leftJoin('assets', 'assets.id', '=', 'asset_transfers.asset_id')
             ->leftJoin(
                 'asset_types',
                 'asset_types.id',
@@ -64,7 +63,7 @@ class AssetTransferService
                 'areas as target_areas',
                 'areas.id',
                 '=',
-                'asset_transfer.area_id'
+                'asset_transfers.area_id'
             )
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
             ->leftJoin(
@@ -73,21 +72,21 @@ class AssetTransferService
                 '=',
                 'target_areas.area_type_id'
             )
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
                     'assets.name',
                     'assets.quantity',
                     'asset_types.name',
-                    'asset_types.uom',
                     'areas.name',
                     'area_types.name',
                     'target_areas.name',
                     'target_area_types.name',
                     'users.name',
-                    'asset_transfer.note',
-                    'asset_transfer.quantity',
-                    'asset_transfer.priority',
+                    'asset_transfers.note',
+                    'asset_transfers.quantity',
+                    'asset_transfers.priority',
                 ])
             )
             ->allowedSorts([
@@ -116,15 +115,14 @@ class AssetTransferService
                 'assets.name' => 'Nama Aset',
                 'assets.quantity' => 'Kuantitas',
                 'asset_types.name' => 'Tipe Aset',
-                'asset_types.uom' => 'UoM',
                 'areas.name' => 'Area Asal',
                 'area_types.name' => 'Tipe Area Asal',
                 'target_areas.name' => 'Area Tujuan',
                 'target_area_types.name' => 'Tipe Area Tujuan',
                 'users.name' => 'Pelapor',
-                'asset_transfer.note' => 'Keterangan',
-                'asset_transfer.quantity' => 'Pengajuan Kuantitas',
-                'asset_transfer.priority' => 'Prioritas',
+                'asset_transfers.note' => 'Keterangan',
+                'asset_transfers.quantity' => 'Pengajuan Kuantitas',
+                'asset_transfers.priority' => 'Prioritas',
             ])
             ->addColumns([
                 'name' => 'Nama Aset',
@@ -315,21 +313,24 @@ class AssetTransferService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = AssetTransfer::orderBy('name')->limit(10);
+        $query = AssetTransfer::orderBy('assets.name')
+            ->leftJoin('users', 'users.id', '=', 'asset_transfers.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->limit(10);
         if (!is_null($request)) {
             $query = $query
                 ->leftJoin(
                     'assets',
                     'assets.id',
                     '=',
-                    'asset_transfer.asset_id'
+                    'asset_transfers.asset_id'
                 )
                 ->whereRaw(
                     'lower(assets.name) like "%?%"',
                     Str::lower(trim($request->query('q') ?? ''))
                 )
                 ->orWhereRaw(
-                    'lower(asset_transfer.quantity) like "%?%"',
+                    'lower(asset_transfers.quantity) like "%?%"',
                     Str::lower(trim($request->query('q') ?? ''))
                 );
         }

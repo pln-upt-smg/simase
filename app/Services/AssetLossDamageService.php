@@ -63,6 +63,7 @@ class AssetLossDamageService
             )
             ->leftJoin('areas', 'areas.id', '=', 'assets.area_id')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
@@ -270,7 +271,15 @@ class AssetLossDamageService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = AssetLossDamage::orderBy('name')->limit(10);
+        $query = AssetLossDamage::orderBy('assets.name')
+            ->leftJoin(
+                'users',
+                'users.id',
+                '=',
+                'asset_loss_damages.created_by'
+            )
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->limit(10);
         if (!is_null($request)) {
             $query = $query
                 ->leftJoin(

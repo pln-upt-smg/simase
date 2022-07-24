@@ -35,6 +35,7 @@ class CertificateService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'certificates.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->allowedFilters(
                 InertiaHelper::filterBy(['certificates.name', 'users.name'])
             )
@@ -204,10 +205,13 @@ class CertificateService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = Certificate::orderBy('name')->limit(10);
+        $query = Certificate::orderBy('certificates.name')
+            ->leftJoin('users', 'users.id', '=', 'certificates.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->limit(10);
         if (!is_null($request)) {
             $query = $query->whereRaw(
-                'lower(name) like "%?%"',
+                'lower(certificates.name) like "%?%"',
                 Str::lower(trim($request->query('q') ?? ''))
             );
         }

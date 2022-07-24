@@ -148,7 +148,7 @@
                     />
                     <jet-input
                         type="text"
-                        class="block w-full capitalize mt-4"
+                        class="block w-full mt-4 normal-case"
                         placeholder="Nama Area"
                         ref="storeName"
                         v-model="storeForm.name"
@@ -213,7 +213,7 @@
                     />
                     <jet-input
                         type="text"
-                        class="block w-full capitalize mt-4"
+                        class="block w-full mt-4 normal-case"
                         placeholder="Nama Area"
                         ref="updateName"
                         v-model="updateForm.name"

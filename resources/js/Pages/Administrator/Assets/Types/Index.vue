@@ -42,12 +42,6 @@
                     Nama Tipe Aset
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('uom')"
-                    :cell="sortableHeader('uom')"
-                >
-                    UoM
-                </jet-table-header>
-                <jet-table-header
                     v-show="showColumn('user_name')"
                     :cell="sortableHeader('user_name')"
                 >
@@ -67,7 +61,6 @@
             <template #body>
                 <tr v-for="asset_type in asset_types.data" :key="asset_type.id">
                     <td v-show="showColumn('name')">{{ asset_type.name }}</td>
-                    <td v-show="showColumn('uom')">{{ asset_type.uom }}</td>
                     <td v-show="showColumn('user_name')">
                         {{ asset_type.user_name }}
                     </td>
@@ -116,17 +109,10 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full capitalize"
-                        placeholder="Nama Tipe Area"
+                        class="block w-full normal-case"
+                        placeholder="Nama Tipe Aset"
                         ref="storeName"
                         v-model="storeForm.name"
-                    />
-                    <jet-input
-                        type="text"
-                        class="block w-full capitalize mt-4"
-                        placeholder="UoM"
-                        ref="storeUom"
-                        v-model="storeForm.uom"
                         @keyup.enter="store"
                     />
                 </div>
@@ -160,17 +146,10 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full capitalize"
-                        placeholder="Nama Tipe Area"
+                        class="block w-full normal-case"
+                        placeholder="Nama Tipe Aset"
                         ref="updateName"
                         v-model="updateForm.name"
-                    />
-                    <jet-input
-                        type="text"
-                        class="block w-full capitalize mt-4"
-                        placeholder="Nama Tipe Area"
-                        ref="updateUom"
-                        v-model="updateForm.uom"
                         @keyup.enter="update"
                     />
                 </div>
@@ -427,12 +406,10 @@ export default defineComponent({
             showingDangerNotification: false,
             storeForm: useForm({
                 name: null,
-                uom: null,
             }),
             updateForm: useForm({
                 id: null,
                 name: null,
-                uom: null,
             }),
             destroyForm: useForm({
                 id: null,
@@ -553,7 +530,6 @@ export default defineComponent({
                 this.storeForm.clearErrors();
                 this.storeForm.reset();
                 this.storeForm.name = null;
-                this.storeForm.uom = null;
             }, 500);
         },
         closeUpdateModal() {
@@ -564,7 +540,6 @@ export default defineComponent({
                 this.updateForm.reset();
                 this.updateForm.id = null;
                 this.updateForm.name = null;
-                this.updateForm.uom = null;
             }, 500);
         },
         closeDestroyModal() {

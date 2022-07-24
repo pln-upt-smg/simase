@@ -35,6 +35,7 @@ class SubDistrictService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'sub_districts.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->allowedFilters(
                 InertiaHelper::filterBy(['sub_districts.name', 'users.name'])
             )
@@ -204,10 +205,13 @@ class SubDistrictService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = SubDistrict::orderBy('name')->limit(10);
+        $query = SubDistrict::orderBy('sub_districts.name')
+            ->leftJoin('users', 'users.id', '=', 'sub_districts.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->limit(10);
         if (!is_null($request)) {
             $query = $query->whereRaw(
-                'lower(name) like "%?%"',
+                'lower(sub_districts.name) like "%?%"',
                 Str::lower(trim($request->query('q') ?? ''))
             );
         }

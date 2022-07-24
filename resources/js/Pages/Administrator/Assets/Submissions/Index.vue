@@ -61,12 +61,6 @@
                     Pengajuan Kuantitas
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('uom')"
-                    :cell="sortableHeader('uom')"
-                >
-                    UoM
-                </jet-table-header>
-                <jet-table-header
                     v-show="showColumn('asset_submission_priority')"
                     :cell="sortableHeader('asset_submission_priority')"
                 >
@@ -111,9 +105,6 @@
                     </td>
                     <td v-show="showColumn('asset_submission_quantity')">
                         {{ asset_submission.asset_submission_quantity }}
-                    </td>
-                    <td v-show="showColumn('uom')">
-                        {{ asset_submission.uom }}
                     </td>
                     <td v-show="showColumn('asset_submission_priority')">
                         <span
@@ -221,7 +212,7 @@
                     />
                     <jet-input
                         type="text"
-                        class="block w-full normal-case mt-4"
+                        class="block w-full mt-4 normal-case"
                         placeholder="Keterangan (Opsional)"
                         ref="storeNote"
                         v-model="storeForm.note"
@@ -294,7 +285,7 @@
                     />
                     <jet-input
                         type="text"
-                        class="block w-full normal-case mt-4"
+                        class="block w-full mt-4 normal-case"
                         placeholder="Keterangan (Opsional)"
                         ref="updateNote"
                         v-model="updateForm.note"

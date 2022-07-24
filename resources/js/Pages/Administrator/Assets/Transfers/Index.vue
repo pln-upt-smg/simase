@@ -1,5 +1,5 @@
 <template>
-    <app-layout title="Laporan Kehilangan Aset">
+    <app-layout title="Laporan Transfer Aset">
         <div class="mb-6 lg:text-right">
             <jet-button
                 type="button"
@@ -20,7 +20,7 @@
         <jet-table
             :search="queryBuilderProps.search"
             :on-update="setQueryBuilder"
-            :meta="asset_loss_damages"
+            :meta="asset_transfers"
             ref="table"
         >
             <template #head>
@@ -49,8 +49,20 @@
                     Tipe Area
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('asset_loss_damage_priority')"
-                    :cell="sortableHeader('asset_loss_damage_priority')"
+                    v-show="showColumn('quantity')"
+                    :cell="sortableHeader('quantity')"
+                >
+                    Kuantitas
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('asset_submission_quantity')"
+                    :cell="sortableHeader('asset_submission_quantity')"
+                >
+                    Pengajuan Kuantitas
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('asset_submission_priority')"
+                    :cell="sortableHeader('asset_submission_priority')"
                 >
                     Prioritas
                 </jet-table-header>
@@ -73,32 +85,40 @@
             </template>
             <template #body>
                 <tr
-                    v-for="asset_loss in asset_loss_damages.data"
-                    :key="asset_loss.id"
+                    v-for="asset_transfer in asset_transfers.data"
+                    :key="asset_transfer.id"
                 >
                     <td v-show="showColumn('name')">
-                        {{ asset_loss.name }}
+                        {{ asset_transfer.name }}
                     </td>
                     <td v-show="showColumn('asset_type_name')">
-                        {{ asset_loss.asset_type_name }}
+                        {{ asset_transfer.asset_type_name }}
                     </td>
                     <td v-show="showColumn('area_name')">
-                        {{ asset_loss.area_name }}
+                        {{ asset_transfer.area_name }}
                     </td>
                     <td v-show="showColumn('area_type_name')">
-                        {{ asset_loss.area_type_name }}
+                        {{ asset_transfer.area_type_name }}
                     </td>
-                    <td v-show="showColumn('asset_loss_damage_priority')">
+                    <td v-show="showColumn('quantity')">
+                        {{ asset_transfer.quantity }}
+                    </td>
+                    <td v-show="showColumn('asset_submission_quantity')">
+                        {{ asset_transfer.asset_submission_quantity }}
+                    </td>
+                    <td v-show="showColumn('asset_submission_priority')">
                         <span
                             class="text-green-600 font-bold"
-                            v-if="asset_loss.asset_loss_damage_priority === 1"
+                            v-if="
+                                asset_transfer.asset_submission_priority === 1
+                            "
                         >
                             Rendah
                         </span>
                         <span
                             class="text-yellow-600 font-bold"
                             v-else-if="
-                                asset_loss.asset_loss_damage_priority === 2
+                                asset_transfer.asset_submission_priority === 2
                             "
                         >
                             Sedang
@@ -108,16 +128,16 @@
                         </span>
                     </td>
                     <td v-show="showColumn('user_name')">
-                        {{ asset_loss.user_name }}
+                        {{ asset_transfer.user_name }}
                     </td>
                     <td v-show="showColumn('update_date')">
-                        {{ asset_loss.update_date }}
+                        {{ asset_transfer.update_date }}
                     </td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
                             <menu-item>
                                 <button
-                                    @click="confirmUpdate(asset_loss)"
+                                    @click="confirmUpdate(asset_transfer)"
                                     class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group"
                                 >
                                     <pencil-alt-icon
@@ -129,7 +149,7 @@
                             </menu-item>
                             <menu-item>
                                 <button
-                                    @click="confirmDestroy(asset_loss)"
+                                    @click="confirmDestroy(asset_transfer)"
                                     class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group"
                                 >
                                     <trash-icon
@@ -147,10 +167,10 @@
         <jet-modal
             :show="confirmingStore"
             @close="closeStoreModal"
-            title="Tambah laporan kehilangan aset"
+            title="Tambah laporan transfer aset"
         >
             <template #content>
-                Silakan masukkan data laporan kehilangan aset yang ingin
+                Silakan masukkan data laporan transfer aset yang ingin
                 ditambahkan.
                 <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
@@ -176,6 +196,13 @@
                             >
                         </template>
                     </v-select>
+                    <jet-input
+                        type="number"
+                        class="block w-full mt-4"
+                        placeholder="Pengajuan Kuantitas"
+                        ref="storeQuantity"
+                        v-model="storeForm.quantity"
+                    />
                     <jet-select
                         ref="storePriority"
                         class="block w-full mt-4"
@@ -214,10 +241,10 @@
         <jet-modal
             :show="confirmingUpdate"
             @close="closeUpdateModal"
-            title="Edit laporan kehilangan aset"
+            title="Edit laporan transfer aset"
         >
             <template #content>
-                Silakan masukkan data laporan kehilangan aset yang ingin diubah.
+                Silakan masukkan data laporan transfer aset yang ingin diubah.
                 <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
                     <v-select
@@ -242,6 +269,13 @@
                             >
                         </template>
                     </v-select>
+                    <jet-input
+                        type="number"
+                        class="block w-full mt-4"
+                        placeholder="Pengajuan Kuantitas"
+                        ref="updateQuantity"
+                        v-model="updateForm.quantity"
+                    />
                     <jet-select
                         ref="updatePriority"
                         class="block w-full mt-4"
@@ -280,11 +314,11 @@
         <jet-alert-modal
             :show="confirmingDestroy"
             @close="closeDestroyModal"
-            title="Hapus laporan kehilangan aset"
+            title="Hapus laporan transfer aset"
         >
             <template #content>
-                Apakah Anda yakin ingin menghapus laporan kehilangan aset ini?
-                Setelah laporan kehilangan aset dihapus, semua sumber daya dan
+                Apakah Anda yakin ingin menghapus laporan transfer aset ini?
+                Setelah laporan transfer aset dihapus, semua sumber daya dan
                 datanya akan dihapus secara permanen. Aksi ini tidak dapat
                 dibatalkan.
             </template>
@@ -308,7 +342,7 @@
         <jet-export-modal
             :show="confirmingExport"
             @close="closeExportModal"
-            title="Ekspor data laporan kehilangan aset"
+            title="Ekspor data laporan transfer aset"
         >
             <template #content>
                 <p>
@@ -411,7 +445,7 @@ export default defineComponent({
         vSelect,
     },
     props: {
-        asset_loss_damages: Object,
+        asset_transfers: Object,
         priorities: Object,
     },
     data() {
@@ -432,12 +466,14 @@ export default defineComponent({
             showingDangerNotification: false,
             storeForm: useForm({
                 asset: null,
+                quantity: null,
                 priority: null,
                 note: null,
             }),
             updateForm: useForm({
                 id: null,
                 asset: null,
+                quantity: null,
                 priority: null,
                 note: null,
             }),
@@ -449,86 +485,87 @@ export default defineComponent({
     },
     methods: {
         store() {
-            this.storeForm.post(route("assets.loss.store"), {
+            this.storeForm.post(route("assets.transfers.store"), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
                     this.closeStoreModal();
                     this.showSuccessNotification(
-                        "laporan kehilangan aset berhasil ditambahkan",
-                        "Sistem telah berhasil menyimpan data laporan kehilangan aset baru"
+                        "Laporan pengajuan aset berhasil ditambahkan",
+                        "Sistem telah berhasil menyimpan data laporan transfer aset baru"
                     );
                 },
                 onError: () =>
                     this.showDangerNotification(
                         "Kesalahan telah terjadi",
-                        "Sistem tidak dapat menyimpan data laporan kehilangan aset, mohon periksa ulang form"
+                        "Sistem tidak dapat menyimpan data laporan transfer aset, mohon periksa ulang form"
                     ),
             });
         },
         update() {
             this.updateForm.put(
-                route("assets.loss.update", this.updateForm.id),
+                route("assets.transfers.update", this.updateForm.id),
                 {
                     preserveScroll: true,
                     onSuccess: () => {
                         this.reloadData();
                         this.closeUpdateModal();
                         this.showSuccessNotification(
-                            "laporan kehilangan aset berhasil diedit",
-                            "Sistem telah berhasil mengedit data laporan kehilangan aset"
+                            "Laporan pengajuan aset berhasil diedit",
+                            "Sistem telah berhasil mengedit data laporan transfer aset"
                         );
                     },
                     onError: () =>
                         this.showDangerNotification(
                             "Kesalahan telah terjadi",
-                            "Sistem tidak dapat mengubah data laporan kehilangan aset, mohon periksa ulang form"
+                            "Sistem tidak dapat mengubah data laporan transfer aset, mohon periksa ulang form"
                         ),
                 }
             );
         },
         destroy() {
             this.destroyForm.delete(
-                route("assets.loss.destroy", this.destroyForm.id),
+                route("assets.transfers.destroy", this.destroyForm.id),
                 {
                     preserveScroll: true,
                     onSuccess: () => {
                         this.reloadData();
                         this.closeDestroyModal();
                         this.showSuccessNotification(
-                            "laporan kehilangan aset berhasil dihapus",
-                            "Sistem telah berhasil menghapus data laporan kehilangan aset"
+                            "Laporan pengajuan aset berhasil dihapus",
+                            "Sistem telah berhasil menghapus data laporan transfer aset"
                         );
                     },
                     onError: () =>
                         this.showDangerNotification(
                             "Kesalahan telah terjadi",
-                            "Sistem tidak dapat menghapus data laporan kehilangan aset"
+                            "Sistem tidak dapat menghapus data laporan transfer aset"
                         ),
                 }
             );
         },
         exportFile() {
-            window.open(route("assets.loss.export"));
+            window.open(route("assets.transfers.export"));
             this.closeExportModal();
         },
         confirmStore() {
             setTimeout(() => (this.confirmingStore = true), 150);
             setTimeout(() => this.$refs.storeName.focus(), 300);
         },
-        confirmUpdate(asset_loss) {
-            this.updateForm.id = asset_loss.id;
-            this.updateForm.note = asset_loss.asset_loss_damage_note;
-            this.updateForm.priority = asset_loss.asset_loss_damage_priority;
+        confirmUpdate(asset_transfer) {
+            this.updateForm.id = asset_transfer.id;
+            this.updateForm.note = asset_transfer.asset_submission_note;
+            this.updateForm.quantity = asset_transfer.asset_submission_quantity;
+            this.updateForm.priority = asset_transfer.asset_submission_priority;
             this.updateForm.asset = {
-                id: asset_loss.asset_id,
-                label: `${asset_loss.name} (${asset_loss.asset_type_name}) - ${asset_loss.area_name}`,
+                id: asset_transfer.asset_id,
+                label: `${asset_transfer.name} (${asset_transfer.asset_type_name}) - ${asset_transfer.area_name}`,
             };
             setTimeout(() => (this.confirmingUpdate = true), 150);
             setTimeout(() => this.$refs.updateName.focus(), 300);
         },
-        confirmDestroy(asset_loss) {
-            this.destroyForm.id = asset_loss.id;
+        confirmDestroy(asset_transfer) {
+            this.destroyForm.id = asset_transfer.id;
             setTimeout(() => (this.confirmingDestroy = true), 150);
         },
         confirmExport() {
@@ -542,6 +579,7 @@ export default defineComponent({
                 this.storeForm.reset();
                 this.storeForm.asset = null;
                 this.storeForm.note = null;
+                this.storeForm.quantity = null;
                 this.storeForm.priority = null;
             }, 500);
         },
@@ -554,6 +592,7 @@ export default defineComponent({
                 this.updateForm.id = null;
                 this.updateForm.asset = null;
                 this.updateForm.note = null;
+                this.updateForm.quantity = null;
                 this.updateForm.priority = null;
             }, 500);
         },
@@ -603,7 +642,7 @@ export default defineComponent({
             this.$page.props.errors = [];
         },
         reloadData() {
-            this.$refs.table.reload("asset_loss_damages");
+            this.$refs.table.reload("asset_transfers");
         },
         onAssetSearch(search, loading) {
             if (search.length) {

@@ -34,7 +34,6 @@ class AssetService
                 'assets.quantity as quantity',
                 'asset_types.id as asset_type_id',
                 'asset_types.name as asset_type_name',
-                'asset_types.uom as asset_type_uom',
                 'areas.id as area_id',
                 'areas.code as area_code',
                 'areas.name as area_name',
@@ -53,13 +52,13 @@ class AssetService
             )
             ->leftJoin('areas', 'areas.id', '=', 'assets.area_id')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
                     'assets.name',
                     'assets.quantity',
                     'asset_types.name',
-                    'asset_types.uom',
                     'areas.name',
                     'area_types.name',
                     'users.name',
@@ -86,7 +85,6 @@ class AssetService
                 'assets.name' => 'Nama Aset',
                 'assets.quantity' => 'Kuantitas',
                 'asset_types.name' => 'Tipe Aset',
-                'asset_types.uom' => 'UoM',
                 'areas.name' => 'Asset',
                 'area_types.name' => 'Tipe Asset',
                 'users.name' => 'Pembuat',
@@ -282,14 +280,13 @@ class AssetService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = Asset::orderBy('name')
+        $query = Asset::orderBy('assets.name')
             ->select([
                 'assets.id as id',
                 'assets.name as name',
                 'assets.quantity as quantity',
                 'asset_types.id as asset_type_id',
                 'asset_types.name as asset_type_name',
-                'asset_types.uom as asset_type_uom',
                 'areas.id as area_id',
                 'areas.code as area_code',
                 'areas.name as area_name',
@@ -305,6 +302,7 @@ class AssetService
             )
             ->leftJoin('areas', 'areas.id', '=', 'assets.area_id')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->limit(10);
         if (!is_null($request)) {
             $filter = Str::lower(trim($request->query('q') ?? ''));

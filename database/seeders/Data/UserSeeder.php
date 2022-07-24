@@ -77,16 +77,16 @@ class UserSeeder extends Seeder
             'division' => Division::construction(),
             'name' => 'Administrator Konstruksi',
             'phone' => $this->faker->phoneNumber(),
-            'nip' => '000000',
-            'password' => Hash::make('000000'),
+            'nip' => '000001',
+            'password' => Hash::make('000001'),
         ]);
         User::create([
             'role' => Role::operator(),
             'division' => Division::construction(),
             'name' => $this->faker->name(),
             'phone' => $this->faker->phoneNumber(),
-            'nip' => '111111',
-            'password' => Hash::make('111111'),
+            'nip' => '111112',
+            'password' => Hash::make('111112'),
         ]);
 
         // kku
@@ -95,16 +95,16 @@ class UserSeeder extends Seeder
             'division' => Division::kku(),
             'name' => 'Administrator KKU',
             'phone' => $this->faker->phoneNumber(),
-            'nip' => '000000',
-            'password' => Hash::make('000000'),
+            'nip' => '000002',
+            'password' => Hash::make('000002'),
         ]);
         User::create([
             'role' => Role::operator(),
             'division' => Division::kku(),
             'name' => $this->faker->name(),
             'phone' => $this->faker->phoneNumber(),
-            'nip' => '111111',
-            'password' => Hash::make('111111'),
+            'nip' => '111113',
+            'password' => Hash::make('111113'),
         ]);
 
         User::factory(19)->create();

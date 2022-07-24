@@ -31,6 +31,11 @@ include 'endpoints/asset_submissions.php';
 include 'endpoints/asset_loss_damages.php';
 
 /**
+ * Asset Transfers endpoints
+ */
+include 'endpoints/asset_transfers.php';
+
+/**
  * Areas endpoints
  */
 include 'endpoints/areas.php';

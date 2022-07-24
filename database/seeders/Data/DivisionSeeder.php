@@ -15,7 +15,7 @@ class DivisionSeeder extends Seeder
     public function run(): void
     {
         Division::updateOrCreate(['name' => 'Renev']);
-        Division::updateOrCreate(['name' => 'Construction']);
+        Division::updateOrCreate(['name' => 'Konstruksi']);
         Division::updateOrCreate(['name' => 'KKU']);
     }
 }
