@@ -250,11 +250,13 @@ class AssetTransferService
      */
     public function destroy(AssetTransfer $assetTransfer): void
     {
-        $data = $assetTransfer->asset->name;
+        $data = $assetTransfer->asset;
         $user = auth()->user();
-        if (!is_null($user)) {
+        if (!is_null($data) && !is_null($user)) {
             $assetTransfer->deleteOrFail();
-            $user->notify(new DataDestroyed('Laporan Transfer Aset', $data));
+            $user->notify(
+                new DataDestroyed('Laporan Transfer Aset', $data->name)
+            );
         }
     }
 
