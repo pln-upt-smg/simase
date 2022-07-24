@@ -66,6 +66,12 @@ jobs:
       - name: 🗃️ Run Database Seeder
         run: php artisan db:seed --force
 
+      - name: 🔭 Setup Laravel Telescope
+        run: php artisan telescope:publish --force
+
+      - name: 🛰️ Setup Laravel Horizon
+        run: php artisan horizon:publish --force
+
       - name: 🗑️ Clear Laravel Cache
         run: sudo php artisan optimize:clear
 
