@@ -86,10 +86,10 @@ jobs:
         run: docker exec -t simase-laravel.test-1 php artisan db:seed --force
 
       - name: 🔭 Setup Laravel Telescope
-        run: docker exec -t simase-laravel.test-1 php artisan telescope:publish --force
+        run: docker exec -t simase-laravel.test-1 php artisan telescope:publish
 
       - name: 🛰️ Setup Laravel Horizon
-        run: docker exec -t simase-laravel.test-1 php artisan horizon:publish --force
+        run: docker exec -t simase-laravel.test-1 php artisan horizon:publish
 
       - name: 🗑️ Clear Laravel Cache
         run: docker exec -t simase-laravel.test-1 php artisan optimize:clear

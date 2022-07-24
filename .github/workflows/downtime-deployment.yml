@@ -42,6 +42,7 @@ jobs:
             sudo supervisorctl restart simase-cron:*
             sudo supervisorctl restart simase-worker:*
             sudo supervisorctl restart simase-octane:*
+            sudo supervisorctl restart simase-horizon:*
             sudo php artisan octane:reload
             php artisan env
             php artisan up

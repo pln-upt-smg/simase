@@ -220,6 +220,7 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
         sudo echo "0 1 * * * rm -rf $path/storage/logs/simase-cron.log && touch $path/storage/logs/simase-cron.log" >> ~/supercronic/simase.cron && \
         sudo echo "0 1 * * * rm -rf $path/storage/logs/simase-worker.log && touch $path/storage/logs/simase-worker.log" >> ~/supercronic/simase.cron && \
         sudo echo "0 1 * * * rm -rf $path/storage/logs/simase-octane.log && touch $path/storage/logs/simase-octane.log" >> ~/supercronic/simase.cron && \
+        sudo echo "0 1 * * * rm -rf $path/storage/logs/simase-horizon.log && touch $path/storage/logs/simase-horizon.log" >> ~/supercronic/simase.cron && \
         sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-access.log && touch $path/storage/logs/nginx-access.log" >> ~/supercronic/simase.cron && \
         sudo echo "0 1 * * * rm -rf $path/storage/logs/nginx-error.log && touch $path/storage/logs/nginx-error.log" >> ~/supercronic/simase.cron
         ```
@@ -273,6 +274,18 @@ Langkah tradisional untuk melakukan deploy aplikasi pada local atau self-hosted 
         numprocs=1
         redirect_stderr=true
         stdout_logfile=/var/www/simase/web/storage/logs/simase-octane.log
+        stdout_logfile_maxbytes=0
+        stopwaitsecs=3600
+
+        [program:simase-horizon]
+        process_name=%(program_name)s_%(process_num)02d
+        command=php /var/www/simase/artisan horizon
+        autostart=true
+        autorestart=true
+        user=root
+        numprocs=1
+        redirect_stderr=true
+        stdout_logfile=/var/www/simase/storage/logs/simase-horizon.log
         stdout_logfile_maxbytes=0
         stopwaitsecs=3600
         ```
