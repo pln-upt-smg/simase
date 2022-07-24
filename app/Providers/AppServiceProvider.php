@@ -19,8 +19,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // register & set the configuration only on production environment
-        if (app()->isProduction()) {
-
+        if (app()->isProduction() && config('app.force_https')) {
             // make sure to use secure scheme in production environment
             URL::forceScheme('https');
 
@@ -41,7 +40,6 @@ class AppServiceProvider extends ServiceProvider
     {
         // register & set the configuration only on local environment
         if (app()->isLocal() || config('app.env_ci_cd')) {
-
             // register the IDE Helper for local environment
             app()->register(IdeHelperServiceProvider::class);
         }
@@ -58,8 +56,15 @@ class AppServiceProvider extends ServiceProvider
     protected function registerMacros(): void
     {
         if (!Collection::hasMacro('paginate')) {
-            Collection::macro('paginate', function ($perPage = 15, $total = null, $page = null, $pageName = 'page') {
-                $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
+            Collection::macro('paginate', function (
+                $perPage = 15,
+                $total = null,
+                $page = null,
+                $pageName = 'page'
+            ) {
+                $page =
+                    $page ?:
+                    LengthAwarePaginator::resolveCurrentPage($pageName);
                 return new LengthAwarePaginator(
                     $this->forPage($page, $perPage),
                     $total ?: $this->count(),

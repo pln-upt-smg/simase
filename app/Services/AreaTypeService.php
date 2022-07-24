@@ -177,15 +177,15 @@ class AreaTypeService
     public function resolve(Request $request): ?AreaType
     {
         if (
-            $request->query('area_types') === '0' ||
-            $request->query('area_types') === 0
+            $request->query('area_type') === '0' ||
+            $request->query('area_type') === 0
         ) {
             return null;
         }
         return AreaType::where(
             'id',
-            $request->query('area_types')
-                ? (int) $request->query('area_types')
+            $request->query('area_type')
+                ? (int) $request->query('area_type')
                 : 0
         )->first();
     }

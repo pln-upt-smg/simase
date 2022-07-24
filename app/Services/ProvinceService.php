@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Http\Helper\{InertiaHelper, MediaHelper};
-use App\Imports\AssetTypeImport;
-use App\Exports\AssetTypeExport;
-use App\Models\AssetType;
+use App\Imports\ProvinceImport;
+use App\Exports\ProvinceExport;
+use App\Models\Province;
 use App\Notifications\{DataDestroyed, DataStored, DataUpdated};
 use App\Services\Helpers\HasValidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -18,7 +18,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class AssetTypeService
+class ProvinceService
 {
     use HasValidator;
 
@@ -27,26 +27,18 @@ class AssetTypeService
      */
     public function tableData(): LengthAwarePaginator
     {
-        return QueryBuilder::for(AssetType::class)
+        return QueryBuilder::for(Province::class)
             ->select([
-                'asset_types.id as id',
-                'asset_types.name as name',
-                'asset_types.uom as uom',
                 'users.name as user_name',
                 DB::raw(
-                    'date_format(asset_types.updated_at, "%d %b %Y") as update_date'
+                    'date_format(provinces.updated_at, "%d %b %Y") as update_date'
                 ),
             ])
-            ->leftJoin('users', 'users.id', '=', 'asset_types.created_by')
-            ->defaultSort('asset_types.name')
+            ->leftJoin('users', 'users.id', '=', 'provinces.created_by')
             ->allowedFilters(
-                InertiaHelper::filterBy([
-                    'asset_types.name',
-                    'asset_types.uom',
-                    'users.name',
-                ])
+                InertiaHelper::filterBy(['provinces.name', 'users.name'])
             )
-            ->allowedSorts(['name', 'uom', 'user_name', 'update_date'])
+            ->allowedSorts(['name', 'user_name', 'update_date'])
             ->paginate()
             ->withQueryString();
     }
@@ -55,13 +47,11 @@ class AssetTypeService
     {
         return $table
             ->addSearchRows([
-                'asset_types.name' => 'Nama Tipe Aset',
-                'asset_types.uom' => 'UoM',
+                'provinces.name' => 'Nama Provinsi',
                 'users.name' => 'Pembuat',
             ])
             ->addColumns([
-                'name' => 'Nama Tipe Aset',
-                'uom' => 'UoM',
+                'name' => 'Nama Provinsi',
                 'user_name' => 'Pembuat',
                 'update_date' => 'Tanggal Pembaruan',
                 'action' => 'Aksi',
@@ -81,36 +71,29 @@ class AssetTypeService
                     'required',
                     'string',
                     'max:255',
-                    Rule::unique('asset_types', 'name')->whereNull(
-                        'deleted_at'
-                    ),
+                    Rule::unique('provinces', 'name')->whereNull('deleted_at'),
                 ],
-                'uom' => ['required', 'string', 'max:255'],
             ],
             [
-                'name' => 'Nama Tipe Aset',
-                'uom' => 'UoM',
+                'name' => 'Nama Provinsi',
             ]
         );
         $user = auth()->user();
         if (!is_null($user)) {
-            AssetType::create([
+            Province::create([
                 'created_by' => $user->id,
-                'name' => Str::title($request->name),
-                'uom' => $request->uom,
+                'name' => $request->name,
             ]);
-            $user->notify(
-                new DataStored('Tipe Aset', Str::title($request->name))
-            );
+            $user->notify(new DataStored('Provinsi', $request->name));
         }
     }
 
     /**
      * @param Request $request
-     * @param AssetType $assetType
+     * @param Province $province
      * @throws Throwable
      */
-    public function update(Request $request, AssetType $assetType): void
+    public function update(Request $request, Province $province): void
     {
         $this->validate(
             $request,
@@ -119,40 +102,36 @@ class AssetTypeService
                     'required',
                     'string',
                     'max:255',
-                    Rule::unique('asset_types', 'name')
-                        ->ignore($assetType->id)
+                    Rule::unique('provinces', 'name')
+                        ->ignore($province->id)
                         ->whereNull('deleted_at'),
                 ],
-                'uom' => ['required', 'string', 'max:255'],
             ],
             [
-                'name' => 'Nama Tipe Aset',
+                'name' => 'Nama Provinsi',
             ]
         );
         $user = auth()->user();
         if (!is_null($user)) {
-            $assetType->updateOrFail([
-                'name' => Str::title($request->name),
-                'uom' => $request->uom,
+            $province->updateOrFail([
+                'name' => $request->name,
             ]);
-            $assetType->save();
-            $user->notify(
-                new DataUpdated('Tipe Aset', Str::title($request->name))
-            );
+            $province->save();
+            $user->notify(new DataUpdated('Provinsi', $request->name));
         }
     }
 
     /**
-     * @param AssetType $assetType
+     * @param Province $province
      * @throws Throwable
      */
-    public function destroy(AssetType $assetType): void
+    public function destroy(Province $province): void
     {
-        $data = $assetType->name;
+        $data = $province->name;
         $user = auth()->user();
         if (!is_null($user)) {
-            $assetType->deleteOrFail();
-            $user->notify(new DataDestroyed('Tipe Aset', Str::title($data)));
+            $province->deleteOrFail();
+            $user->notify(new DataDestroyed('Provinsi', $data));
         }
     }
 
@@ -164,7 +143,7 @@ class AssetTypeService
     {
         MediaHelper::importSpreadsheet(
             $request,
-            new AssetTypeImport(auth()->user())
+            new ProvinceImport(auth()->user())
         );
     }
 
@@ -175,8 +154,8 @@ class AssetTypeService
     public function export(): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(
-            new AssetTypeExport($this),
-            new AssetType()
+            new ProvinceExport($this),
+            new Province()
         );
     }
 
@@ -190,29 +169,27 @@ class AssetTypeService
 
     /**
      * @param Request $request
-     * @return AssetType|null
+     * @return Province|null
      */
-    public function resolve(Request $request): ?AssetType
+    public function resolve(Request $request): ?Province
     {
         if (
-            $request->query('asset_type') === '0' ||
-            $request->query('asset_type') === 0
+            $request->query('province') === '0' ||
+            $request->query('province') === 0
         ) {
             return null;
         }
-        return AssetType::where(
+        return Province::where(
             'id',
-            $request->query('asset_type')
-                ? (int) $request->query('asset_type')
-                : 0
+            $request->query('province') ? (int) $request->query('province') : 0
         )->first();
     }
 
     /**
      * @param Request $request
-     * @return AssetType|null
+     * @return Province|null
      */
-    public function single(Request $request): ?AssetType
+    public function single(Request $request): ?Province
     {
         return $this->collection($request)->first();
     }
@@ -223,11 +200,10 @@ class AssetTypeService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = AssetType::orderBy('name')->limit(10);
+        $query = Province::orderBy('name')->limit(10);
         if (!is_null($request)) {
             $query = $query->whereRaw(
                 'lower(name) like "%?%"',
-                'lower(uom) like "%?%"',
                 Str::lower(trim($request->query('q') ?? ''))
             );
         }

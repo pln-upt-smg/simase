@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -38,7 +37,7 @@ return [
     |
     */
 
-    'env_staging' => (bool)env('APP_ENV_STAGING', false),
+    'env_staging' => (bool) env('APP_ENV_STAGING', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -50,7 +49,7 @@ return [
     |
     */
 
-    'env_ci_cd' => (bool)env('APP_ENV_CI_CD', false),
+    'env_ci_cd' => (bool) env('APP_ENV_CI_CD', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -63,7 +62,7 @@ return [
     |
     */
 
-    'debug' => (bool)env('APP_DEBUG', false),
+    'debug' => (bool) env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -75,7 +74,7 @@ return [
     |
     */
 
-    'force_https' => (bool)env('FORCE_HTTPS', false),
+    'force_https' => (bool) env('FORCE_HTTPS', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -169,7 +168,7 @@ return [
     |
     */
 
-    'truncate_on_db_seed' => (bool)env('TRUNCATE_ON_DB_SEED', true),
+    'truncate_on_db_seed' => (bool) env('TRUNCATE_ON_DB_SEED', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -183,7 +182,6 @@ return [
     */
 
     'providers' => [
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -220,11 +218,13 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
-        App\Providers\JetstreamServiceProvider::class
+        App\Providers\HorizonServiceProvider::class,
+        App\Providers\JetstreamServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
     ],
 
     /*
@@ -277,6 +277,6 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class
-    ]
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+    ],
 ];

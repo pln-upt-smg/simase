@@ -17,11 +17,11 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         parent::boot();
 
+        // Horizon::night();
+
         // Horizon::routeSmsNotificationsTo('15556667777');
         // Horizon::routeMailNotificationsTo('example@example.com');
         // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
-
-        // Horizon::night();
     }
 
     /**
@@ -34,9 +34,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate()
     {
         Gate::define('viewHorizon', function ($user) {
-            return in_array($user->nip, [
-                '000000'
-            ]);
+            return in_array($user->nip, ['000000', '000001', '000002']);
         });
     }
 }

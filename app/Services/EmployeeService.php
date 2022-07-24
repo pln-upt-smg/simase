@@ -41,22 +41,27 @@ class EmployeeService
 				'users.phone as phone',
 				'users.nip as nip',
 				'roles.id as role_id',
-				'roles.name as role'
+				'roles.name as role',
+				'division.id as division_id',
+				'division.name as division'
 			])
 			->leftJoin('roles', 'roles.id', '=', 'users.role_id')
+			->leftJoin('division', 'division.id', '=', 'users.division_id')
 			->where('users.id', '<>', $userId)
 			->defaultSort('users.name')
 			->allowedFilters(InertiaHelper::filterBy([
 				'users.name',
 				'users.phone',
 				'users.nip',
-				'roles.name'
+				'roles.name',
+                'division.name'
 			]))
 			->allowedSorts([
 				'name',
 				'phone',
 				'nip',
-				'role'
+				'role',
+                'division'
 			])
 			->paginate()
 			->withQueryString();
@@ -72,12 +77,14 @@ class EmployeeService
 			'users.name' => 'Nama Pegawai',
 			'users.phone' => 'Nomor Telepon',
 			'users.nip' => 'Nomor Induk Pegawai',
-			'roles.name' => 'Peran'
+			'roles.name' => 'Peran',
+            'division.name' => 'Divisi'
 		])->addColumns([
 			'name' => 'Nama Pegawai',
 			'phone' => 'Nomor Telepon',
 			'nip' => 'Nomor Induk Pegawai',
 			'role' => 'Peran',
+            'division' => 'Divisi',
 			'action' => 'Aksi'
 		]);
 	}
@@ -93,16 +100,19 @@ class EmployeeService
 			'phone' => ['nullable', 'string', 'max:20', new IsValidPhone, Rule::unique('users', 'phone')->whereNull('deleted_at')],
 			'nip' => ['required', 'numeric', new IsValidDigit(6), Rule::unique('users', 'nip')->whereNull('deleted_at')],
 			'password' => ['required', 'string', (new Password)->length(6), 'confirmed'],
-			'role' => ['required', 'integer', Rule::exists('roles', 'id')->whereNull('deleted_at')]
+			'role' => ['required', 'integer', Rule::exists('roles', 'id')->whereNull('deleted_at')],
+			'division' => ['required', 'integer', Rule::exists('divisions', 'id')->whereNull('deleted_at')]
 		], attributes: [
 			'name' => 'Nama Pegawai',
 			'phone' => 'Nomor Telepon',
 			'nip' => 'Nomor Induk Pegawai',
 			'password' => 'Kata Sandi',
-			'role' => 'Peran'
+			'role' => 'Peran',
+			'division' => 'Divisi',
 		]);
 		User::create([
 			'role_id' => (int)$request->role,
+			'division_id' => (int)$request->division,
 			'name' => Str::title($request->name),
 			'phone' => $request->phone,
 			'nip' => $request->nip,
@@ -126,16 +136,19 @@ class EmployeeService
 			'phone' => ['nullable', 'string', 'max:20', new IsValidPhone, Rule::unique('users', 'phone')->ignore($employee->id)->whereNull('deleted_at')],
 			'nip' => ['required', 'numeric', new IsValidDigit(6), Rule::unique('users', 'nip')->ignore($employee->id)->whereNull('deleted_at')],
 			'password' => ['required', 'string', (new Password)->length(6), 'confirmed'],
-			'role' => ['required', 'integer', Rule::exists('roles', 'id')->whereNull('deleted_at')]
+			'role' => ['required', 'integer', Rule::exists('roles', 'id')->whereNull('deleted_at')],
+			'division' => ['required', 'integer', Rule::exists('divisions', 'id')->whereNull('deleted_at')]
 		], attributes: [
 			'name' => 'Nama Pegawai',
 			'phone' => 'Nomor Telepon',
 			'nip' => 'Nomor Induk Pegawai',
 			'password' => 'Kata Sandi',
-			'role' => 'Peran'
+			'role' => 'Peran',
+			'division' => 'Divisi',
 		]);
 		$employee->updateOrFail([
 			'role_id' => (int)$request->role,
+            'division_id' => (int)$request->division,
 			'name' => Str::title($request->name),
 			'phone' => $request->phone,
 			'nip' => $request->nip,

@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Http\Helper\{InertiaHelper, MediaHelper};
-use App\Exports\AssetLossDamageExport;
-use App\Models\AssetLossDamage;
+use App\Exports\AssetTransferExport;
+use App\Models\AssetTransfer;
 use App\Notifications\{DataDestroyed, DataStored, DataUpdated};
 use App\Services\Helpers\HasValidator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -17,7 +17,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
-class AssetLossDamageService
+class AssetTransferService
 {
     use HasValidator;
 
@@ -26,35 +26,33 @@ class AssetLossDamageService
      */
     public function tableData(): LengthAwarePaginator
     {
-        return QueryBuilder::for(AssetLossDamage::class)
+        return QueryBuilder::for(AssetTransfer::class)
             ->select([
                 'assets.id as asset_id',
                 'assets.name as name',
                 'assets.quantity as quantity',
+                'asset_types.id as asset_type_id',
                 'asset_types.name as asset_type_name',
                 'asset_types.uom as asset_type_uom',
+                'areas.id as area_id',
+                'areas.code as area_code',
                 'areas.name as area_name',
                 'area_types.name as area_type_name',
+                'target_areas.id as target_area_id',
+                'target_areas.code as target_area_code',
+                'target_areas.name as target_area_name',
+                'target_area_types.name as target_area_type_name',
                 'users.name as user_name',
-                'asset_loss_damages.id as id',
-                'asset_loss_damages.note as asset_loss_damage_note',
-                'asset_loss_damages.priority as asset_loss_damage_priority',
+                'asset_transfer.id as id',
+                'asset_transfer.note as asset_submission_note',
+                'asset_transfer.quantity as asset_submission_quantity',
+                'asset_transfer.priority as asset_submission_priority',
                 DB::raw(
-                    'date_format(asset_loss_damages.updated_at, "%d %b %Y") as update_date'
+                    'date_format(asset_transfer.updated_at, "%d %b %Y") as update_date'
                 ),
             ])
-            ->leftJoin(
-                'users',
-                'users.id',
-                '=',
-                'asset_loss_damages.created_by'
-            )
-            ->leftJoin(
-                'assets',
-                'assets.id',
-                '=',
-                'asset_loss_damages.asset_id'
-            )
+            ->leftJoin('users', 'users.id', '=', 'asset_transfer.created_by')
+            ->leftJoin('assets', 'assets.id', '=', 'asset_transfer.asset_id')
             ->leftJoin(
                 'asset_types',
                 'asset_types.id',
@@ -62,7 +60,19 @@ class AssetLossDamageService
                 'assets.asset_type_id'
             )
             ->leftJoin('areas', 'areas.id', '=', 'assets.area_id')
+            ->leftJoin(
+                'areas as target_areas',
+                'areas.id',
+                '=',
+                'asset_transfer.area_id'
+            )
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
+            ->leftJoin(
+                'area_types as target_area_types',
+                'area_types.id',
+                '=',
+                'target_areas.area_type_id'
+            )
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
@@ -72,9 +82,12 @@ class AssetLossDamageService
                     'asset_types.uom',
                     'areas.name',
                     'area_types.name',
+                    'target_areas.name',
+                    'target_area_types.name',
                     'users.name',
-                    'asset_loss_damages.note',
-                    'asset_loss_damages.priority',
+                    'asset_transfer.note',
+                    'asset_transfer.quantity',
+                    'asset_transfer.priority',
                 ])
             )
             ->allowedSorts([
@@ -84,9 +97,12 @@ class AssetLossDamageService
                 'asset_type_uom',
                 'area_name',
                 'area_type_name',
+                'target_area_name',
+                'target_area_type_name',
                 'user_name',
-                'asset_loss_damage_note',
-                'asset_loss_damage_priority',
+                'asset_submission_note',
+                'asset_submission_quantity',
+                'asset_submission_priority',
                 'update_date',
             ])
             ->paginate()
@@ -101,11 +117,14 @@ class AssetLossDamageService
                 'assets.quantity' => 'Kuantitas',
                 'asset_types.name' => 'Tipe Aset',
                 'asset_types.uom' => 'UoM',
-                'areas.name' => 'Area',
-                'area_types.name' => 'Tipe Area',
+                'areas.name' => 'Area Asal',
+                'area_types.name' => 'Tipe Area Asal',
+                'target_areas.name' => 'Area Tujuan',
+                'target_area_types.name' => 'Tipe Area Tujuan',
                 'users.name' => 'Pelapor',
-                'asset_loss_damages.note' => 'Keterangan',
-                'asset_loss_damages.priority' => 'Prioritas',
+                'asset_transfer.note' => 'Keterangan',
+                'asset_transfer.quantity' => 'Pengajuan Kuantitas',
+                'asset_transfer.priority' => 'Prioritas',
             ])
             ->addColumns([
                 'name' => 'Nama Aset',
@@ -114,9 +133,12 @@ class AssetLossDamageService
                 'asset_type_uom' => 'UoM',
                 'area_name' => 'Area',
                 'area_type_name' => 'Tipe Area',
+                'target_area_name' => 'Area Tujuan',
+                'target_area_type_name' => 'Tipe Area Tujuan',
                 'user_name' => 'Pelapor',
-                'asset_loss_damage_note' => 'Keterangan',
-                'asset_loss_damage_priority' => 'Prioritas',
+                'asset_submission_note' => 'Keterangan',
+                'asset_submission_quantity' => 'Pengajuan Kuantitas',
+                'asset_submission_priority' => 'Prioritas',
                 'update_date' => 'Tanggal Pembaruan',
                 'action' => 'Aksi',
             ]);
@@ -136,42 +158,47 @@ class AssetLossDamageService
                     'integer',
                     Rule::exists('assets', 'id')->whereNull('deleted_at'),
                 ],
+                'area.id' => [
+                    'required',
+                    'integer',
+                    Rule::exists('areas', 'id')->whereNull('deleted_at'),
+                ],
                 'note' => ['nullable', 'string'],
+                'quantity' => ['required', 'numeric', 'min:1'],
                 'priority' => ['required', 'numeric', 'min:1', 'max:3'],
             ],
             [],
             [
                 'asset.id' => 'Aset',
+                'area.id' => 'Area Tujuan',
                 'note' => 'Keterangan',
+                'quantity' => 'Pengajuan Kuantitas',
                 'priority' => 'Prioritas',
             ]
         );
         $user = auth()->user();
         if (!is_null($user)) {
-            AssetLossDamage::create([
-                'created_by' => $user->id,
+            AssetTransfer::create([
                 'asset_id' => (int) $request->asset['id'],
+                'area_id' => (int) $request->area['id'],
                 'note' => $request->note,
+                'quantity' => (int) $request->quantity,
                 'priority' => (int) $request->priority,
+                'created_by' => $user->id,
             ]);
             $user->notify(
-                new DataStored(
-                    'Laporan Kehilangan Aset',
-                    Str::title($request->name)
-                )
+                new DataStored('Laporan Transfer Aset', $request->asset['name'])
             );
         }
     }
 
     /**
      * @param Request $request
-     * @param AssetLossDamage $assetSubmission
+     * @param AssetTransfer $assetTransfer
      * @throws Throwable
      */
-    public function update(
-        Request $request,
-        AssetLossDamage $assetSubmission
-    ): void {
+    public function update(Request $request, AssetTransfer $assetTransfer): void
+    {
         $this->validate(
             $request,
             [
@@ -180,46 +207,54 @@ class AssetLossDamageService
                     'integer',
                     Rule::exists('assets', 'id')->whereNull('deleted_at'),
                 ],
+                'area.id' => [
+                    'required',
+                    'integer',
+                    Rule::exists('areas', 'id')->whereNull('deleted_at'),
+                ],
                 'note' => ['nullable', 'string'],
+                'quantity' => ['required', 'numeric', 'min:1'],
                 'priority' => ['required', 'numeric', 'min:1', 'max:3'],
             ],
             [],
             [
                 'asset.id' => 'Aset',
+                'area.id' => 'Area Tujuan',
                 'note' => 'Keterangan',
+                'quantity' => 'Pengajuan Kuantitas',
                 'priority' => 'Prioritas',
             ]
         );
         $user = auth()->user();
         if (!is_null($user)) {
-            $assetSubmission->updateOrFail([
+            $assetTransfer->updateOrFail([
                 'asset_id' => (int) $request->asset['id'],
+                'area_id' => (int) $request->area['id'],
                 'note' => $request->note,
+                'quantity' => (int) $request->quantity,
                 'priority' => (int) $request->priority,
             ]);
-            $assetSubmission->save();
+            $assetTransfer->save();
             $user->notify(
                 new DataUpdated(
-                    'Laporan Kehilangan Aset',
-                    Str::title($request->name)
+                    'Laporan Transfer Aset',
+                    $request->asset['name']
                 )
             );
         }
     }
 
     /**
-     * @param AssetLossDamage $assetSubmission
+     * @param AssetTransfer $assetTransfer
      * @throws Throwable
      */
-    public function destroy(AssetLossDamage $assetSubmission): void
+    public function destroy(AssetTransfer $assetTransfer): void
     {
-        $data = $assetSubmission->name;
+        $data = $assetTransfer->asset->name;
         $user = auth()->user();
         if (!is_null($user)) {
-            $assetSubmission->deleteOrFail();
-            $user->notify(
-                new DataDestroyed('Laporan Kehilangan Aset', Str::title($data))
-            );
+            $assetTransfer->deleteOrFail();
+            $user->notify(new DataDestroyed('Laporan Transfer Aset', $data));
         }
     }
 
@@ -230,8 +265,8 @@ class AssetLossDamageService
     public function export(): BinaryFileResponse
     {
         return MediaHelper::exportSpreadsheet(
-            new AssetLossDamageExport($this),
-            new AssetLossDamage()
+            new AssetTransferExport($this),
+            new AssetTransfer()
         );
     }
 
@@ -245,29 +280,29 @@ class AssetLossDamageService
 
     /**
      * @param Request $request
-     * @return AssetLossDamage|null
+     * @return AssetTransfer|null
      */
-    public function resolve(Request $request): ?AssetLossDamage
+    public function resolve(Request $request): ?AssetTransfer
     {
         if (
-            $request->query('asset_loss_damage') === '0' ||
-            $request->query('asset_loss_damage') === 0
+            $request->query('asset_transfer') === '0' ||
+            $request->query('asset_transfer') === 0
         ) {
             return null;
         }
-        return AssetLossDamage::where(
+        return AssetTransfer::where(
             'id',
-            $request->query('asset_loss_damage')
-                ? (int) $request->query('asset_loss_damage')
+            $request->query('asset_transfer')
+                ? (int) $request->query('asset_transfer')
                 : 0
         )->first();
     }
 
     /**
      * @param Request $request
-     * @return AssetLossDamage|null
+     * @return AssetTransfer|null
      */
-    public function single(Request $request): ?AssetLossDamage
+    public function single(Request $request): ?AssetTransfer
     {
         return $this->collection($request)->first();
     }
@@ -278,21 +313,21 @@ class AssetLossDamageService
      */
     public function collection(?Request $request = null): Collection
     {
-        $query = AssetLossDamage::orderBy('name')->limit(10);
+        $query = AssetTransfer::orderBy('name')->limit(10);
         if (!is_null($request)) {
             $query = $query
                 ->leftJoin(
                     'assets',
                     'assets.id',
                     '=',
-                    'asset_loss_damages.asset_id'
+                    'asset_transfer.asset_id'
                 )
                 ->whereRaw(
                     'lower(assets.name) like "%?%"',
                     Str::lower(trim($request->query('q') ?? ''))
                 )
                 ->orWhereRaw(
-                    'lower(assets.quantity) like "%?%"',
+                    'lower(asset_transfer.quantity) like "%?%"',
                     Str::lower(trim($request->query('q') ?? ''))
                 );
         }

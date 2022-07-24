@@ -84,6 +84,28 @@
                 />
                 <jet-input-error :message="form.errors.nip" class="mt-2" />
             </div>
+            <div class="col-span-6 sm:col-span-4">
+                <jet-label for="role" value="Peran" />
+                <jet-input
+                    id="role"
+                    type="text"
+                    class="mt-1 block w-full bg-gray-100 cursor-not-allowed capitalize"
+                    v-model="form.role"
+                    disabled
+                />
+                <jet-input-error :message="form.errors.role" class="mt-2" />
+            </div>
+            <div class="col-span-6 sm:col-span-4">
+                <jet-label for="division" value="Divisi" />
+                <jet-input
+                    id="division"
+                    type="text"
+                    class="mt-1 block w-full bg-gray-100 cursor-not-allowed capitalize"
+                    v-model="form.division"
+                    disabled
+                />
+                <jet-input-error :message="form.errors.division" class="mt-2" />
+            </div>
         </template>
         <template #actions>
             <jet-action-message :on="form.recentlySuccessful" class="mr-3">
@@ -126,6 +148,8 @@ export default defineComponent({
                 name: this.user.name,
                 phone: this.user.phone,
                 nip: this.user.nip,
+                role: this.user.role.name,
+                division: this.user.division.name,
                 photo: null,
             }),
             photoPreview: null,
@@ -133,6 +157,7 @@ export default defineComponent({
     },
     methods: {
         updateProfileInformation() {
+            console.log(this.user);
             if (this.$refs.photo) {
                 this.form.photo = this.$refs.photo.files[0];
             }

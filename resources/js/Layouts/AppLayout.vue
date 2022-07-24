@@ -341,11 +341,12 @@ import {
     FlagIcon,
     ExclamationIcon,
     AnnotationIcon,
+    SwitchHorizontalIcon,
 } from "@heroicons/vue/outline";
 import NotificationPanel from "@/Layouts/NotificationPanel";
 
 const navigations = {
-    administrator: {
+    administratorRenev: {
         menu: [
             { name: "Dashboard", href: "dashboard", icon: HomeIcon },
             { name: "Tipe Area", href: "areas.types.index", icon: FlagIcon },
@@ -366,13 +367,101 @@ const navigations = {
                 href: "assets.loss.index",
                 icon: ExclamationIcon,
             },
+            {
+                name: "Laporan Transfer Aset",
+                href: "assets.loss.index",
+                icon: SwitchHorizontalIcon,
+            },
         ],
         manage: [
             { name: "Pegawai", href: "employees.index", icon: UsersIcon },
             { name: "Pengaturan", href: "profile.show", icon: CogIcon },
         ],
     },
-    operator: {
+    administratorConstruction: {
+        menu: [
+            { name: "Dashboard", href: "dashboard", icon: HomeIcon },
+            { name: "Tipe Area", href: "areas.types.index", icon: FlagIcon },
+            { name: "Area", href: "areas.index", icon: LocationMarkerIcon },
+            {
+                name: "Tipe Aset",
+                href: "assets.types.index",
+                icon: CubeTransparentIcon,
+            },
+            { name: "Aset", href: "assets.index", icon: CubeIcon },
+            {
+                name: "Laporan Pengajuan Aset",
+                href: "assets.submissions.index",
+                icon: AnnotationIcon,
+            },
+            {
+                name: "Laporan Kehilangan Aset",
+                href: "assets.loss.index",
+                icon: ExclamationIcon,
+            },
+            {
+                name: "Laporan Transfer Aset",
+                href: "assets.loss.index",
+                icon: SwitchHorizontalIcon,
+            },
+        ],
+        manage: [
+            { name: "Pegawai", href: "employees.index", icon: UsersIcon },
+            { name: "Pengaturan", href: "profile.show", icon: CogIcon },
+        ],
+    },
+    administratorKKU: {
+        menu: [],
+        manage: [
+            { name: "Pegawai", href: "employees.index", icon: UsersIcon },
+            { name: "Pengaturan", href: "profile.show", icon: CogIcon },
+        ],
+    },
+    operatorRenev: {
+        menu: [
+            { name: "Dashboard", href: "dashboard", icon: HomeIcon },
+            { name: "Aset", href: "assets.index", icon: CubeIcon },
+            {
+                name: "Laporan Pengajuan Aset",
+                href: "assets.submissions.index",
+                icon: AnnotationIcon,
+            },
+            {
+                name: "Laporan Kehilangan Aset",
+                href: "assets.loss.index",
+                icon: ExclamationIcon,
+            },
+            {
+                name: "Laporan Transfer Aset",
+                href: "assets.loss.index",
+                icon: SwitchHorizontalIcon,
+            },
+        ],
+        manage: [{ name: "Pengaturan", href: "profile.show", icon: CogIcon }],
+    },
+    operatorConstruction: {
+        menu: [
+            { name: "Dashboard", href: "dashboard", icon: HomeIcon },
+            { name: "Aset", href: "assets.index", icon: CubeIcon },
+            {
+                name: "Laporan Pengajuan Aset",
+                href: "assets.submissions.index",
+                icon: AnnotationIcon,
+            },
+            {
+                name: "Laporan Kehilangan Aset",
+                href: "assets.loss.index",
+                icon: ExclamationIcon,
+            },
+            {
+                name: "Laporan Transfer Aset",
+                href: "assets.loss.index",
+                icon: SwitchHorizontalIcon,
+            },
+        ],
+        manage: [{ name: "Pengaturan", href: "profile.show", icon: CogIcon }],
+    },
+    operatorKKU: {
         menu: [],
         manage: [{ name: "Pengaturan", href: "profile.show", icon: CogIcon }],
     },
@@ -408,6 +497,7 @@ export default defineComponent({
         FlagIcon,
         ExclamationIcon,
         AnnotationIcon,
+        SwitchHorizontalIcon,
     },
     setup() {
         const sidebarOpen = ref(false);
@@ -416,15 +506,44 @@ export default defineComponent({
         };
     },
     data() {
+        let menuNavigations = navigations.operatorRenev.menu;
+        let manageNavigations = navigations.operatorRenev.manage;
+        if (this.$page.props.user.role_id === 1) {
+            switch (this.$page.props.user.division_id) {
+                case 1:
+                    menuNavigations = navigations.administratorRenev.menu;
+                    manageNavigations = navigations.administratorRenev.manage;
+                    break;
+                case 2:
+                    menuNavigations =
+                        navigations.administratorConstruction.menu;
+                    manageNavigations =
+                        navigations.administratorConstruction.manage;
+                    break;
+                default:
+                    menuNavigations = navigations.administratorKKU.menu;
+                    manageNavigations = navigations.administratorKKU.manage;
+                    break;
+            }
+        } else {
+            switch (this.$page.props.user.division_id) {
+                case 1:
+                    menuNavigations = navigations.operatorRenev.menu;
+                    manageNavigations = navigations.operatorRenev.manage;
+                    break;
+                case 2:
+                    menuNavigations = navigations.operatorConstruction.menu;
+                    manageNavigations = navigations.operatorConstruction.manage;
+                    break;
+                default:
+                    menuNavigations = navigations.operatorKKU.menu;
+                    manageNavigations = navigations.operatorKKU.manage;
+                    break;
+            }
+        }
         return {
-            menuNavigations:
-                this.$page.props.user.role_id === 1
-                    ? navigations.administrator.menu
-                    : navigations.operator.menu,
-            manageNavigations:
-                this.$page.props.user.role_id === 1
-                    ? navigations.administrator.manage
-                    : navigations.operator.manage,
+            menuNavigations,
+            manageNavigations,
             showingNotificationPanel: false,
         };
     },
