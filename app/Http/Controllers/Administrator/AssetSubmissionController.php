@@ -49,7 +49,6 @@ class AssetSubmissionController extends Controller
         return inertia('Administrator/Assets/Submissions/Index', [
             'priorities' => $this->priorityService->collection()->toArray(),
             'asset_submissions' => $this->assetSubmissionService->tableData(),
-            'template' => $this->assetSubmissionService->template(),
         ])->table(function (InertiaTable $table) {
             $this->assetSubmissionService->tableMeta($table);
         });

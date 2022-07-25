@@ -25,6 +25,12 @@
         >
             <template #head>
                 <jet-table-header
+                    v-show="showColumn('techidentno')"
+                    :cell="sortableHeader('techidentno')"
+                >
+                    Techidentno
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('name')"
                     :cell="sortableHeader('name')"
                 >
@@ -35,6 +41,12 @@
                     :cell="sortableHeader('asset_type_name')"
                 >
                     Tipe Aset
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('area_funcloc')"
+                    :cell="sortableHeader('area_funcloc')"
+                >
+                    Funcloc
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('area_name')"
@@ -88,11 +100,17 @@
                     v-for="asset_submission in asset_submissions.data"
                     :key="asset_submission.id"
                 >
+                    <td v-show="showColumn('techidentno')">
+                        {{ asset_submission.techidentno }}
+                    </td>
                     <td v-show="showColumn('name')">
                         {{ asset_submission.name }}
                     </td>
                     <td v-show="showColumn('asset_type_name')">
                         {{ asset_submission.asset_type_name }}
+                    </td>
+                    <td v-show="showColumn('area_funcloc')">
+                        {{ asset_submission.area_funcloc }}
                     </td>
                     <td v-show="showColumn('area_name')">
                         {{ asset_submission.area_name }}

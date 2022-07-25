@@ -49,7 +49,6 @@ class AssetTransferController extends Controller
         return inertia('Administrator/Assets/Transfers/Index', [
             'priorities' => $this->priorityService->collection()->toArray(),
             'asset_transfers' => $this->assetTransferService->tableData(),
-            'template' => $this->assetTransferService->template(),
         ])->table(function (InertiaTable $table) {
             $this->assetTransferService->tableMeta($table);
         });

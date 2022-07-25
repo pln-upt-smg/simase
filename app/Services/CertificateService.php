@@ -77,6 +77,7 @@ class CertificateService
                     ),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Sertifikat',
             ]
@@ -110,6 +111,7 @@ class CertificateService
                         ->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Sertifikat',
             ]

@@ -49,7 +49,6 @@ class AssetLossDamageController extends Controller
         return inertia('Administrator/Assets/Loss/Index', [
             'priorities' => $this->priorityService->collection()->toArray(),
             'asset_loss_damages' => $this->assetLossDamageService->tableData(),
-            'template' => $this->assetLossDamageService->template(),
         ])->table(function (InertiaTable $table) {
             $this->assetLossDamageService->tableMeta($table);
         });

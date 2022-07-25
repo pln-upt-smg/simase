@@ -8,7 +8,7 @@
 
 <template>
     <div class="font-semibold text-lg">
-        Final Summary
+        Total Aset
     </div>
     <div class="mt-6">
         <vue3-chart-js

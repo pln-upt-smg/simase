@@ -77,6 +77,7 @@ class UrbanVillageService
                     ),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Kelurahan',
             ]
@@ -110,6 +111,7 @@ class UrbanVillageService
                         ->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Kelurahan',
             ]

@@ -29,6 +29,7 @@ class AssetSubmissionService
         return QueryBuilder::for(AssetSubmission::class)
             ->select([
                 'assets.id as asset_id',
+                'assets.techidentno as techidentno',
                 'assets.name as name',
                 'assets.quantity as quantity',
                 'asset_types.id as asset_type_id',
@@ -60,9 +61,11 @@ class AssetSubmissionService
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
+                    'assets.techidentno',
                     'assets.name',
                     'assets.quantity',
                     'asset_types.name',
+                    'areas.funcloc',
                     'areas.name',
                     'area_types.name',
                     'users.name',
@@ -72,10 +75,12 @@ class AssetSubmissionService
                 ])
             )
             ->allowedSorts([
+                'techidentno',
                 'name',
                 'quantity',
                 'asset_type_name',
                 'asset_type_uom',
+                'area_funcloc',
                 'area_name',
                 'area_type_name',
                 'user_name',
@@ -92,9 +97,11 @@ class AssetSubmissionService
     {
         return $table
             ->addSearchRows([
+                'assets.techidentno' => 'Techidentno',
                 'assets.name' => 'Nama Aset',
                 'assets.quantity' => 'Kuantitas',
                 'asset_types.name' => 'Tipe Aset',
+                'areas.funcloc' => 'Funcloc',
                 'areas.name' => 'Area',
                 'area_types.name' => 'Tipe Area',
                 'users.name' => 'Pelapor',
@@ -103,10 +110,12 @@ class AssetSubmissionService
                 'asset_submissions.priority' => 'Prioritas',
             ])
             ->addColumns([
+                'techidentno' => 'Techidentno',
                 'name' => 'Nama Aset',
                 'quantity' => 'Kuantitas',
                 'asset_type_name' => 'Tipe Aset',
                 'asset_type_uom' => 'UoM',
+                'area_funcloc' => 'Funcloc',
                 'area_name' => 'Area',
                 'area_type_name' => 'Tipe Area',
                 'user_name' => 'Pelapor',
@@ -227,14 +236,6 @@ class AssetSubmissionService
             new AssetSubmissionExport($this),
             new AssetSubmission()
         );
-    }
-
-    /**
-     * @return string
-     */
-    public function template(): string
-    {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
     }
 
     /**

@@ -29,10 +29,11 @@ class AssetLossDamageService
         return QueryBuilder::for(AssetLossDamage::class)
             ->select([
                 'assets.id as asset_id',
+                'assets.techidentno as techidentno',
                 'assets.name as name',
                 'assets.quantity as quantity',
                 'asset_types.name as asset_type_name',
-                'asset_types.uom as asset_type_uom',
+                'areas.funcloc as area_funcloc',
                 'areas.name as area_name',
                 'area_types.name as area_type_name',
                 'users.name as user_name',
@@ -67,10 +68,11 @@ class AssetLossDamageService
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
+                    'assets.techidentno',
                     'assets.name',
                     'assets.quantity',
                     'asset_types.name',
-                    'asset_types.uom',
+                    'areas.funcloc',
                     'areas.name',
                     'area_types.name',
                     'users.name',
@@ -79,10 +81,12 @@ class AssetLossDamageService
                 ])
             )
             ->allowedSorts([
+                'techidentno',
                 'name',
                 'quantity',
                 'asset_type_name',
                 'asset_type_uom',
+                'area_funcloc',
                 'area_name',
                 'area_type_name',
                 'user_name',
@@ -98,10 +102,11 @@ class AssetLossDamageService
     {
         return $table
             ->addSearchRows([
+                'assets.techidentno' => 'Techidentno',
                 'assets.name' => 'Nama Aset',
                 'assets.quantity' => 'Kuantitas',
                 'asset_types.name' => 'Tipe Aset',
-                'asset_types.uom' => 'UoM',
+                'areas.funcloc' => 'Funcloc',
                 'areas.name' => 'Area',
                 'area_types.name' => 'Tipe Area',
                 'users.name' => 'Pelapor',
@@ -109,10 +114,12 @@ class AssetLossDamageService
                 'asset_loss_damages.priority' => 'Prioritas',
             ])
             ->addColumns([
+                'techidentno' => 'Techidentno',
                 'name' => 'Nama Aset',
                 'quantity' => 'Kuantitas',
                 'asset_type_name' => 'Tipe Aset',
                 'asset_type_uom' => 'UoM',
+                'area_funcloc' => 'Funcloc',
                 'area_name' => 'Area',
                 'area_type_name' => 'Tipe Area',
                 'user_name' => 'Pelapor',
@@ -226,14 +233,6 @@ class AssetLossDamageService
             new AssetLossDamageExport($this),
             new AssetLossDamage()
         );
-    }
-
-    /**
-     * @return string
-     */
-    public function template(): string
-    {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
     }
 
     /**

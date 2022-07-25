@@ -122,21 +122,21 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full"
+                        class="block w-full normal-case"
                         placeholder="Nama Pegawai"
                         ref="storeName"
                         v-model="storeForm.name"
                     />
                     <jet-input
                         type="text"
-                        class="mt-4 block w-full"
+                        class="mt-4 block w-full normal-case"
                         placeholder="Nomor Telepon Pegawai"
                         ref="storePhone"
                         v-model="storeForm.phone"
                     />
                     <jet-input
                         type="text"
-                        class="mt-4 block w-full"
+                        class="mt-4 block w-full normal-case"
                         placeholder="Nomor Induk Pegawai"
                         ref="storeNip"
                         v-model="storeForm.nip"
@@ -202,21 +202,21 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full"
+                        class="block w-full normal-case"
                         placeholder="Nama Pegawai"
                         ref="updateName"
                         v-model="updateForm.name"
                     />
                     <jet-input
                         type="text"
-                        class="mt-4 block w-full"
+                        class="mt-4 block w-full normal-case"
                         placeholder="Nomor Telepon Pegawai"
                         ref="updatePhone"
                         v-model="updateForm.phone"
                     />
                     <jet-input
                         type="text"
-                        class="mt-4 block w-full"
+                        class="mt-4 block w-full normal-case"
                         placeholder="Nomor Induk Pegawai"
                         ref="updateNip"
                         v-model="updateForm.nip"

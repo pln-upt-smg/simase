@@ -10,7 +10,9 @@ use App\Models\{
     AssetSubmission,
     AssetSubmissionImage,
     AssetLossDamage,
-    AssetLossDamageImage
+    AssetLossDamageImage,
+    AssetTransfer,
+    AssetTransferImage
 };
 
 class AssetSeeder extends Seeder
@@ -83,6 +85,26 @@ class AssetSeeder extends Seeder
                                         return [
                                             'asset_loss_damage_id' =>
                                                 $assetLossDamage->id,
+                                        ];
+                                    })
+                            )
+                    )
+                    ->has(
+                        AssetTransfer::factory()
+                            ->creator(1)
+                            ->state(function (array $attributes, Asset $asset) {
+                                return ['asset_id' => $asset->id];
+                            })
+                            ->has(
+                                AssetTransferImage::factory()
+                                    ->count(3)
+                                    ->state(function (
+                                        array $attributes,
+                                        AssetTransfer $assetTransfer
+                                    ) {
+                                        return [
+                                            'asset_transfer_id' =>
+                                                $assetTransfer->id,
                                         ];
                                     })
                             )

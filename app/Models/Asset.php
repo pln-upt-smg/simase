@@ -49,4 +49,9 @@ class Asset extends Model
     {
         return $this->hasMany(AssetLossDamage::class, 'asset_id');
     }
+
+    public function assetTransfers(): HasMany
+    {
+        return $this->hasMany(AssetTransfer::class, 'asset_id');
+    }
 }

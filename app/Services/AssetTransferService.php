@@ -29,6 +29,7 @@ class AssetTransferService
         return QueryBuilder::for(AssetTransfer::class)
             ->select([
                 'assets.id as asset_id',
+                'assets.techidentno as techidentno',
                 'assets.name as name',
                 'assets.quantity as quantity',
                 'asset_types.id as asset_type_id',
@@ -76,6 +77,7 @@ class AssetTransferService
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
+                    'assets.techidentno',
                     'assets.name',
                     'assets.quantity',
                     'asset_types.name',
@@ -90,6 +92,7 @@ class AssetTransferService
                 ])
             )
             ->allowedSorts([
+                'techidentno',
                 'name',
                 'quantity',
                 'asset_type_name',
@@ -112,6 +115,7 @@ class AssetTransferService
     {
         return $table
             ->addSearchRows([
+                'assets.techidentno' => 'Techidentno',
                 'assets.name' => 'Nama Aset',
                 'assets.quantity' => 'Kuantitas',
                 'asset_types.name' => 'Tipe Aset',
@@ -125,6 +129,7 @@ class AssetTransferService
                 'asset_transfers.priority' => 'Prioritas',
             ])
             ->addColumns([
+                'techidentno' => 'Techidentno',
                 'name' => 'Nama Aset',
                 'quantity' => 'Kuantitas',
                 'asset_type_name' => 'Tipe Aset',
@@ -268,14 +273,6 @@ class AssetTransferService
             new AssetTransferExport($this),
             new AssetTransfer()
         );
-    }
-
-    /**
-     * @return string
-     */
-    public function template(): string
-    {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
     }
 
     /**

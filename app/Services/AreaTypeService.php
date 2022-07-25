@@ -78,6 +78,7 @@ class AreaTypeService
                     Rule::unique('area_types', 'name')->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Tipe Area',
             ]
@@ -111,6 +112,7 @@ class AreaTypeService
                         ->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Tipe Area',
             ]

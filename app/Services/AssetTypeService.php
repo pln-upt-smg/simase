@@ -80,6 +80,7 @@ class AssetTypeService
                     ),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Tipe Aset',
             ]
@@ -113,6 +114,7 @@ class AssetTypeService
                         ->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Tipe Aset',
             ]

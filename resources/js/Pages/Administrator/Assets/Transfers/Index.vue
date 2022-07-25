@@ -25,6 +25,12 @@
         >
             <template #head>
                 <jet-table-header
+                    v-show="showColumn('techidentno')"
+                    :cell="sortableHeader('techidentno')"
+                >
+                    Techidentno
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('name')"
                     :cell="sortableHeader('name')"
                 >
@@ -37,16 +43,40 @@
                     Tipe Aset
                 </jet-table-header>
                 <jet-table-header
+                    v-show="showColumn('area_funcloc')"
+                    :cell="sortableHeader('area_funcloc')"
+                >
+                    Funcloc Asal
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('area_name')"
                     :cell="sortableHeader('area_name')"
                 >
-                    Area
+                    Area Asal
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('area_type_name')"
                     :cell="sortableHeader('area_type_name')"
                 >
-                    Tipe Area
+                    Tipe Area Asal
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('target_area_funcloc')"
+                    :cell="sortableHeader('target_area_funcloc')"
+                >
+                    Funcloc Tujuan
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('target_area_name')"
+                    :cell="sortableHeader('target_area_name')"
+                >
+                    Area Tujuan
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('target_area_type_name')"
+                    :cell="sortableHeader('target_area_type_name')"
+                >
+                    Tipe Area Tujuan
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('quantity')"
@@ -88,17 +118,32 @@
                     v-for="asset_transfer in asset_transfers.data"
                     :key="asset_transfer.id"
                 >
+                    <td v-show="showColumn('techidentno')">
+                        {{ asset_transfer.techidentno }}
+                    </td>
                     <td v-show="showColumn('name')">
                         {{ asset_transfer.name }}
                     </td>
                     <td v-show="showColumn('asset_type_name')">
                         {{ asset_transfer.asset_type_name }}
                     </td>
+                    <td v-show="showColumn('area_funcloc')">
+                        {{ asset_transfer.area_funcloc }}
+                    </td>
                     <td v-show="showColumn('area_name')">
                         {{ asset_transfer.area_name }}
                     </td>
                     <td v-show="showColumn('area_type_name')">
                         {{ asset_transfer.area_type_name }}
+                    </td>
+                    <td v-show="showColumn('target_area_funcloc')">
+                        {{ asset_transfer.target_area_funcloc }}
+                    </td>
+                    <td v-show="showColumn('target_area_name')">
+                        {{ asset_transfer.target_area_name }}
+                    </td>
+                    <td v-show="showColumn('target_area_type_name')">
+                        {{ asset_transfer.target_area_type_name }}
                     </td>
                     <td v-show="showColumn('quantity')">
                         {{ asset_transfer.quantity }}

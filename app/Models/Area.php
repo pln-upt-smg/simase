@@ -39,4 +39,9 @@ class Area extends Model
     {
         return $this->hasMany(Asset::class, 'area_id');
     }
+
+    public function assetTransfers(): HasMany
+    {
+        return $this->hasMany(AssetTransfer::class, 'area_id');
+    }
 }

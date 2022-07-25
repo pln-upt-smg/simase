@@ -75,6 +75,7 @@ class DistrictService
                     Rule::unique('districts', 'name')->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Kabupaten / Kotamadya',
             ]
@@ -110,6 +111,7 @@ class DistrictService
                         ->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Kabupaten / Kotamadya',
             ]

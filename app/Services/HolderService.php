@@ -75,6 +75,7 @@ class HolderService
                     Rule::unique('holders', 'name')->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Pemegang Hak',
             ]
@@ -108,6 +109,7 @@ class HolderService
                         ->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Pemegang Hak',
             ]

@@ -1,6 +1,6 @@
 <template>
     <div class="font-semibold text-lg">
-        Top 10 Gap Value - {{ area ? area.name : 'Semua Area' }}
+        Laporan Pengajuan Aset (Terbaru)
     </div>
     <div v-if="data" class="font-semibold text-lg">
         <jet-table :meta="data" :paginate="false" :clickable-header="false">
@@ -16,7 +16,11 @@
                 <th>Gap Value</th>
             </template>
             <template #body>
-                <tr v-if="data.data && data.data.length > 0" v-for="entry in data.data" :key="entry.id">
+                <tr
+                    v-if="data.data && data.data.length > 0"
+                    v-for="entry in data.data"
+                    :key="entry.id"
+                >
                     <td>{{ entry.material_code }}</td>
                     <td>{{ entry.material_description }}</td>
                     <td>{{ entry.uom }}</td>
@@ -41,16 +45,16 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue'
-import JetTable from '@/Jetstream/Table'
+import { defineComponent } from "vue";
+import JetTable from "@/Jetstream/Table";
 
 export default defineComponent({
     props: {
         area: Object,
-        data: Object
+        data: Object,
     },
     components: {
-        JetTable
-    }
-})
+        JetTable,
+    },
+});
 </script>

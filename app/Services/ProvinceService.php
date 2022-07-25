@@ -75,6 +75,7 @@ class ProvinceService
                     Rule::unique('provinces', 'name')->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Provinsi',
             ]
@@ -108,6 +109,7 @@ class ProvinceService
                         ->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Provinsi',
             ]

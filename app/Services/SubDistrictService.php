@@ -77,6 +77,7 @@ class SubDistrictService
                     ),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Kecamatan',
             ]
@@ -110,6 +111,7 @@ class SubDistrictService
                         ->whereNull('deleted_at'),
                 ],
             ],
+            [],
             [
                 'name' => 'Nama Kecamatan',
             ]
