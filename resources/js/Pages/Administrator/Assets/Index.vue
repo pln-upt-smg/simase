@@ -36,6 +36,12 @@
         >
             <template #head>
                 <jet-table-header
+                    v-show="showColumn('techidentno')"
+                    :cell="sortableHeader('techidentno')"
+                >
+                    Techidentno
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('name')"
                     :cell="sortableHeader('name')"
                 >
@@ -84,6 +90,9 @@
             </template>
             <template #body>
                 <tr v-for="asset in assets.data" :key="asset.id">
+                    <td v-show="showColumn('techidentno')">
+                        {{ asset.techidentno }}
+                    </td>
                     <td v-show="showColumn('name')">{{ asset.name }}</td>
                     <td v-show="showColumn('asset_type_name')">
                         {{ asset.asset_type_name }}
@@ -145,7 +154,14 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full"
+                        class="block w-full normal-case"
+                        placeholder="Techidentno"
+                        ref="storeTechidentno"
+                        v-model="storeForm.techidentno"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full normal-case mt-4"
                         placeholder="Nama Aset"
                         ref="storeName"
                         v-model="storeForm.name"
@@ -156,7 +172,6 @@
                         placeholder="Kuantitas"
                         ref="storeQuantity"
                         v-model="storeForm.quantity"
-                        @keyup.enter="store"
                     />
                     <jet-select
                         ref="storeType"
@@ -219,7 +234,14 @@
                 <div class="mt-4">
                     <jet-input
                         type="text"
-                        class="block w-full"
+                        class="block w-full normal-case"
+                        placeholder="Techidentno"
+                        ref="updateTechidentno"
+                        v-model="updateForm.techidentno"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full normal-case mt-4"
                         placeholder="Nama Aset"
                         ref="updateName"
                         v-model="updateForm.name"
@@ -517,6 +539,7 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
+                techidentno: null,
                 type: null,
                 area: null,
                 name: null,
@@ -524,6 +547,7 @@ export default defineComponent({
             }),
             updateForm: useForm({
                 id: null,
+                techidentno: null,
                 type: null,
                 area: null,
                 name: null,
@@ -620,10 +644,11 @@ export default defineComponent({
         },
         confirmStore() {
             setTimeout(() => (this.confirmingStore = true), 150);
-            setTimeout(() => this.$refs.storeName.focus(), 300);
+            setTimeout(() => this.$refs.storeTechidenno.focus(), 300);
         },
         confirmUpdate(asset) {
             this.updateForm.id = asset.id;
+            this.updateForm.techidentno = asset.techidentno;
             this.updateForm.name = asset.name;
             this.updateForm.quantity = asset.quantity;
             this.updateForm.type = asset.asset_type_id;
@@ -632,7 +657,7 @@ export default defineComponent({
                 label: `${asset.area_code} - ${asset.area_name} (${asset.area_type_name})`,
             };
             setTimeout(() => (this.confirmingUpdate = true), 150);
-            setTimeout(() => this.$refs.updateName.focus(), 300);
+            setTimeout(() => this.$refs.updateTechidentno.focus(), 300);
         },
         confirmDestroy(asset) {
             this.destroyForm.id = asset.id;
@@ -650,6 +675,7 @@ export default defineComponent({
                 this.clearErrors();
                 this.storeForm.clearErrors();
                 this.storeForm.reset();
+                this.storeForm.techidentno = null;
                 this.storeForm.name = null;
                 this.storeForm.quantity = null;
                 this.storeForm.type = null;
@@ -663,6 +689,7 @@ export default defineComponent({
                 this.updateForm.clearErrors();
                 this.updateForm.reset();
                 this.updateForm.id = null;
+                this.updateForm.techidentno = null;
                 this.updateForm.name = null;
                 this.updateForm.quantity = null;
                 this.updateForm.type = null;
@@ -752,7 +779,7 @@ export default defineComponent({
                     vm.areaOptions = res.data.items.map((item) => {
                         return {
                             id: item.id,
-                            label: `${item.code} - ${item.name} (${item.area_type})`,
+                            label: `${item.funcloc} - ${item.name} (${item.area_type})`,
                         };
                     });
                 })

@@ -30,12 +30,13 @@ class AssetService
         return QueryBuilder::for(Asset::class)
             ->select([
                 'assets.id as id',
+                'assets.techidentno as techidentno',
                 'assets.name as name',
                 'assets.quantity as quantity',
                 'asset_types.id as asset_type_id',
                 'asset_types.name as asset_type_name',
                 'areas.id as area_id',
-                'areas.code as area_code',
+                'areas.funcloc as area_funcloc',
                 'areas.name as area_name',
                 'area_types.name as area_type_name',
                 'users.name as user_name',
@@ -56,6 +57,7 @@ class AssetService
             ->defaultSort('assets.name')
             ->allowedFilters(
                 InertiaHelper::filterBy([
+                    'assets.techidentno',
                     'assets.name',
                     'assets.quantity',
                     'asset_types.name',
@@ -65,6 +67,7 @@ class AssetService
                 ])
             )
             ->allowedSorts([
+                'techidentno',
                 'name',
                 'quantity',
                 'asset_type_name',
@@ -82,6 +85,7 @@ class AssetService
     {
         return $table
             ->addSearchRows([
+                'assets.techidentno' => 'Techidentno',
                 'assets.name' => 'Nama Aset',
                 'assets.quantity' => 'Kuantitas',
                 'asset_types.name' => 'Tipe Aset',
@@ -90,6 +94,7 @@ class AssetService
                 'users.name' => 'Pembuat',
             ])
             ->addColumns([
+                'techidentno' => 'Techidentno',
                 'name' => 'Nama Aset',
                 'quantity' => 'Kuantitas',
                 'asset_type_name' => 'Tipe Aset',
@@ -121,18 +126,22 @@ class AssetService
                     'integer',
                     Rule::exists('asset_types', 'id')->whereNull('deleted_at'),
                 ],
-                'name' => [
+                'techidentno' => [
                     'required',
                     'string',
                     'max:255',
-                    Rule::unique('assets', 'name')->whereNull('deleted_at'),
+                    Rule::unique('assets', 'techidentno')->whereNull(
+                        'deleted_at'
+                    ),
                 ],
+                'name' => ['required', 'string', 'max:255'],
                 'quantity' => ['required', 'numeric'],
             ],
             [],
             [
                 'area.id' => 'Area',
                 'type' => 'Tipe Aset',
+                'techidentno' => 'Techidentno',
                 'name' => 'Nama Aset',
                 'quantity' => 'Kuantitas',
             ]
@@ -143,6 +152,7 @@ class AssetService
                 'created_by' => $user->id,
                 'area_id' => (int) $request->area['id'],
                 'asset_type_id' => (int) $request->type,
+                'techidentno' => $request->techidentno,
                 'name' => $request->name,
                 'quantity' => (int) $request->quantity,
             ]);
@@ -170,20 +180,22 @@ class AssetService
                     'integer',
                     Rule::exists('asset_types', 'id')->whereNull('deleted_at'),
                 ],
-                'name' => [
+                'techidentno' => [
                     'required',
                     'string',
                     'max:255',
-                    Rule::unique('assets', 'name')
+                    Rule::unique('assets', 'techidentno')
                         ->ignore($asset->id)
                         ->whereNull('deleted_at'),
                 ],
+                'name' => ['required', 'string', 'max:255'],
                 'quantity' => ['required', 'numeric'],
             ],
             [],
             [
                 'area.id' => 'Area',
                 'type' => 'Tipe Aset',
+                'techidentno' => 'Techidentno',
                 'name' => 'Nama Aset',
                 'quantity' => 'Kuantitas',
             ]
@@ -193,6 +205,7 @@ class AssetService
             $asset->updateOrFail([
                 'area_id' => (int) $request->area['id'],
                 'asset_type_id' => (int) $request->type,
+                'techidentno' => $request->techidentno,
                 'name' => $request->name,
                 'quantity' => (int) $request->quantity,
             ]);
@@ -244,7 +257,12 @@ class AssetService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+        switch (auth()->user()->division_id ?? 0) {
+            case 1:
+                return 'https://docs.google.com/spreadsheets/d/1OtjK_VrfFDIqHFIgVv1udG53MJ0j5B0iuuhTySj6ET4/edit?usp=sharing';
+            default:
+                return 'https://docs.google.com/spreadsheets/d/1epWZVWQpwmhuSN5w2xE3dUnPbdaiH-sKn5j2mtMw0pc/edit?usp=sharing';
+        }
     }
 
     /**
@@ -283,12 +301,13 @@ class AssetService
         $query = Asset::orderBy('assets.name')
             ->select([
                 'assets.id as id',
+                'assets.techidentno as techidentno',
                 'assets.name as name',
                 'assets.quantity as quantity',
                 'asset_types.id as asset_type_id',
                 'asset_types.name as asset_type_name',
                 'areas.id as area_id',
-                'areas.code as area_code',
+                'areas.funcloc as area_funcloc',
                 'areas.name as area_name',
                 'area_types.name as area_type_name',
                 'users.name as user_name',
@@ -308,6 +327,9 @@ class AssetService
             $filter = Str::lower(trim($request->query('q') ?? ''));
             $query = $query->where(function ($query) use ($filter) {
                 $query
+                    ->orWhereRaw("lower(assets.techidentno) like (?)", [
+                        "%{$filter}%",
+                    ])
                     ->orWhereRaw("lower(assets.name) like (?)", ["%{$filter}%"])
                     ->orWhereRaw("lower(asset_types.name) like (?)", [
                         "%{$filter}%",

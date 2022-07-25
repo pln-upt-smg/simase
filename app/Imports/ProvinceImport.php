@@ -101,6 +101,9 @@ class ProvinceImport implements
 
     public function overwrite(): void
     {
-        Province::whereNull('deleted_at')->delete();
+        Province::leftJoin('users', 'users.id', '=', 'provinces.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }

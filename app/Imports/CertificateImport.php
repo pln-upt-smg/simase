@@ -174,6 +174,14 @@ class CertificateImport implements
 
     public function overwrite(): void
     {
-        Certificate::whereNull('deleted_at')->delete();
+        Certificate::leftJoin(
+            'users',
+            'users.id',
+            '=',
+            'certificates.created_by'
+        )
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }

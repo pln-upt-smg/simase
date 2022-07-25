@@ -83,12 +83,6 @@ class EmployeeImport implements
                 'max:255',
                 Rule::exists('roles', 'name')->whereNull('deleted_at'),
             ],
-            'divisi' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::exists('division', 'name')->whereNull('deleted_at'),
-            ],
         ];
     }
 
@@ -112,8 +106,7 @@ class EmployeeImport implements
     public function replace(array $row): void
     {
         $roleId = $this->resolveRoleId($row['peran']);
-        $divisionId = $this->resolveDivisionId($row['divisi']);
-        if ($roleId === 0 || $divisionId === 0) {
+        if ($roleId === 0) {
             return;
         }
         User::updateOrCreate(
@@ -122,7 +115,7 @@ class EmployeeImport implements
             ],
             [
                 'role_id' => $roleId,
-                'division_id' => $divisionId,
+                'division_id' => auth()->user()->division_id ?? 1,
                 'name' => trim($row['name']),
                 'phone' => trim($row['phone']),
                 'password' => Hash::make(trim($row['nip'])),
@@ -133,6 +126,7 @@ class EmployeeImport implements
     public function overwrite(): void
     {
         User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->where('users.id', '<>', $this->userId)
             ->whereNull('users.deleted_at')
             ->delete();

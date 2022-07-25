@@ -101,6 +101,9 @@ class AssetTypeImport implements
 
     public function overwrite(): void
     {
-        AssetType::whereNull('deleted_at')->delete();
+        AssetType::leftJoin('users', 'users.id', '=', 'asset_types.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }

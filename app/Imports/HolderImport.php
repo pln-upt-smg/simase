@@ -101,6 +101,9 @@ class HolderImport implements
 
     public function overwrite(): void
     {
-        Holder::whereNull('deleted_at')->delete();
+        Holder::leftJoin('users', 'users.id', '=', 'holders.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }

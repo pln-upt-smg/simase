@@ -101,6 +101,9 @@ class DistrictImport implements
 
     public function overwrite(): void
     {
-        District::whereNull('deleted_at')->delete();
+        District::leftJoin('users', 'users.id', '=', 'districts.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }

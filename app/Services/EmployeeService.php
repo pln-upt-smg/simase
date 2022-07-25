@@ -265,7 +265,14 @@ class EmployeeService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1uOA5ear--StRXSFf_iIYVW-50daP4KmA1vOcDxIRZoo/edit?usp=sharing';
+        switch (auth()->user()->division_id ?? 0) {
+            case 1:
+                return 'https://docs.google.com/spreadsheets/d/1KfeWDPhcjaa6uDkf4QXw92ppCCZebH5KaN-TZKa2Ryk/edit?usp=sharing';
+            case 2:
+                return 'https://docs.google.com/spreadsheets/d/1u3YvGarf47lBIlK3EpWvg_j04HZ6dTonPnjY1tewWhw/edit?usp=sharing';
+            default:
+                return 'https://docs.google.com/spreadsheets/d/1DbdOgX_aggJE7jlefDCgXb13hGxehhdsyEY4hlV88Gs/edit?usp=sharing';
+        }
     }
 
     /**

@@ -101,6 +101,9 @@ class AreaTypeImport implements
 
     public function overwrite(): void
     {
-        AreaType::whereNull('deleted_at')->delete();
+        AreaType::leftJoin('users', 'users.id', '=', 'area_types.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }

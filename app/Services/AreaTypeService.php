@@ -168,7 +168,12 @@ class AreaTypeService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+        switch (auth()->user()->division_id ?? 0) {
+            case 1:
+                return 'https://docs.google.com/spreadsheets/d/1d6rdMAstOEt_PMw2TVL2Yw4n7OLJ9RziiXZypXQlFig/edit?usp=sharing';
+            default:
+                return 'https://docs.google.com/spreadsheets/d/1upvekPxwdnzcWBRgIed1BgU3IEm-VMopNzJhqZsugSc/edit?usp=sharing';
+        }
     }
 
     /**
@@ -207,6 +212,7 @@ class AreaTypeService
     public function collection(?Request $request = null): Collection
     {
         $query = AreaType::orderBy('area_types.name')
+            ->select('area_types.*')
             ->leftJoin('users', 'users.id', '=', 'area_types.created_by')
             ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->limit(10);

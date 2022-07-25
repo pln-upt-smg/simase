@@ -8,14 +8,14 @@ trait HasAreaResolver
 {
 	/**
 	 * @param string|null $area
-	 * @param bool $byCode
+	 * @param bool $byFuncloc
 	 * @return int
 	 */
-	public function resolveAreaId(?string $area, bool $byCode = false): int
+	public function resolveAreaId(?string $area, bool $byFuncloc = false): int
 	{
 		$area = $area ?? '';
-		if ($byCode) {
-			return Area::whereRaw('lower(code) = lower(?)', trim($area))->whereNull('deleted_at')->first()?->id ?? 0;
+		if ($byFuncloc) {
+			return Area::whereRaw('lower(funcloc) = lower(?)', trim($area))->whereNull('deleted_at')->first()?->id ?? 0;
 		}
 		return Area::whereRaw('lower(name) = lower(?)', trim($area))->whereNull('deleted_at')->first()?->id ?? 0;
 	}

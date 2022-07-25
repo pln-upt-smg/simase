@@ -13,13 +13,14 @@ class Asset extends Model
 {
     use Fluent, HasFactory, SoftDeletes;
 
-    public string $name;
+    public string $techidentno, $name;
     public int $quantity;
 
     protected $fillable = [
         'asset_type_id',
         'area_id',
         'created_by',
+        'techidentno',
         'name',
         'quantity',
     ];

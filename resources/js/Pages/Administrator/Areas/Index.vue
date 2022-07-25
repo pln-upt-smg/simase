@@ -36,10 +36,10 @@
         >
             <template #head>
                 <jet-table-header
-                    v-show="showColumn('code')"
-                    :cell="sortableHeader('code')"
+                    v-show="showColumn('funcloc')"
+                    :cell="sortableHeader('funcloc')"
                 >
-                    Kode Area
+                    Funcloc
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('name')"
@@ -84,7 +84,7 @@
             </template>
             <template #body>
                 <tr v-for="area in areas.data" :key="area.id">
-                    <td v-show="showColumn('code')">{{ area.code }}</td>
+                    <td v-show="showColumn('funcloc')">{{ area.funcloc }}</td>
                     <td v-show="showColumn('name')">{{ area.name }}</td>
                     <td v-show="showColumn('area_type')">
                         {{ area.area_type }}
@@ -140,15 +140,15 @@
                 <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
                     <jet-input
-                        type="number"
-                        class="block w-full"
-                        placeholder="Kode Area"
-                        ref="storeCode"
-                        v-model="storeForm.code"
+                        type="text"
+                        class="block w-full normal-case"
+                        placeholder="Funcloc"
+                        ref="storeFuncloc"
+                        v-model="storeForm.funcloc"
                     />
                     <jet-input
                         type="text"
-                        class="block w-full mt-4 normal-case"
+                        class="block w-full normal-case mt-4"
                         placeholder="Nama Area"
                         ref="storeName"
                         v-model="storeForm.name"
@@ -205,15 +205,15 @@
                 <jet-validation-errors class="mt-4" />
                 <div class="mt-4">
                     <jet-input
-                        type="number"
-                        class="block w-full"
-                        placeholder="Kode Area"
-                        ref="updateCode"
-                        v-model="updateForm.code"
+                        type="text"
+                        class="block w-full normal-case"
+                        placeholder="Funcloc"
+                        ref="updateFuncloc"
+                        v-model="updateForm.funcloc"
                     />
                     <jet-input
                         type="text"
-                        class="block w-full mt-4 normal-case"
+                        class="block w-full normal-case mt-4"
                         placeholder="Nama Area"
                         ref="updateName"
                         v-model="updateForm.name"
@@ -494,7 +494,7 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
-                code: null,
+                funcloc: null,
                 name: null,
                 latitude: null,
                 longitude: null,
@@ -502,7 +502,7 @@ export default defineComponent({
             }),
             updateForm: useForm({
                 id: null,
-                code: null,
+                funcloc: null,
                 name: null,
                 latitude: null,
                 longitude: null,
@@ -598,17 +598,17 @@ export default defineComponent({
         },
         confirmStore() {
             setTimeout(() => (this.confirmingStore = true), 150);
-            setTimeout(() => this.$refs.storeName.focus(), 300);
+            setTimeout(() => this.$refs.storeFuncloc.focus(), 300);
         },
         confirmUpdate(area) {
             this.updateForm.id = area.id;
-            this.updateForm.code = area.code;
+            this.updateForm.funcloc = area.funcloc;
             this.updateForm.name = area.name;
             this.updateForm.latitude = area.latitude;
             this.updateForm.longitude = area.longitude;
             this.updateForm.type = area.area_type_id;
             setTimeout(() => (this.confirmingUpdate = true), 150);
-            setTimeout(() => this.$refs.updateName.focus(), 300);
+            setTimeout(() => this.$refs.updateFuncloc.focus(), 300);
         },
         confirmDestroy(area) {
             this.destroyForm.id = area.id;
@@ -626,7 +626,7 @@ export default defineComponent({
                 this.clearErrors();
                 this.storeForm.clearErrors();
                 this.storeForm.reset();
-                this.storeForm.code = null;
+                this.storeForm.funcloc = null;
                 this.storeForm.name = null;
                 this.storeForm.latitude = null;
                 this.storeForm.longitude = null;
@@ -640,7 +640,7 @@ export default defineComponent({
                 this.updateForm.clearErrors();
                 this.updateForm.reset();
                 this.updateForm.id = null;
-                this.updateForm.code = null;
+                this.updateForm.funcloc = null;
                 this.updateForm.name = null;
                 this.updateForm.latitude = null;
                 this.updateForm.longitude = null;

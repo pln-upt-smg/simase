@@ -23,7 +23,7 @@ class AreaFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => $this->faker->numberBetween(1111, 9999),
+            'funcloc' => $this->faker->unique->numberBetween(1111, 9999),
             'name' => Str::title($this->faker->unique->words(1, 1)),
             'lat' => $this->faker->randomFloat(),
             'lon' => $this->faker->randomFloat(),

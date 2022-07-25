@@ -170,7 +170,12 @@ class AssetTypeService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+        switch (auth()->user()->division_id ?? 0) {
+            case 1:
+                return 'https://docs.google.com/spreadsheets/d/1glsE3pKiyEwEHKBpRkbMT0ZY26MoRlxtGIqKnSvxkQk/edit?usp=sharing';
+            default:
+                return 'https://docs.google.com/spreadsheets/d/1JT4lowEPvsRl1eqL6QUij9uP8wAhPr20ejgQDgou7gA/edit?usp=sharing';
+        }
     }
 
     /**
@@ -209,6 +214,7 @@ class AssetTypeService
     public function collection(?Request $request = null): Collection
     {
         $query = AssetType::orderBy('asset_types.name')
+            ->select('asset_types.*')
             ->leftJoin('users', 'users.id', '=', 'asset_types.created_by')
             ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->limit(10);

@@ -69,19 +69,17 @@ class AssetImport implements
     public function rules(): array
     {
         return [
+            'techidentno' => ['required', 'string', 'max:255'],
             'namaaset' => ['required', 'string', 'max:255'],
             'tipeaset' => ['required', 'string', 'max:255'],
-            'uom' => ['required', 'string', 'max:255'],
             'kuantitas' => ['required', 'numeric', 'min:0'],
-            'kodearea' => ['required', 'string', 'max:255'],
-            'area' => ['required', 'string', 'max:255'],
-            'tipearea' => ['required', 'string', 'max:255'],
+            'funcloc' => ['required', 'string', 'max:255'],
         ];
     }
 
     public function uniqueBy()
     {
-        return ['namaaset'];
+        return ['techidentno'];
     }
 
     public function collection(Collection $collection): void
@@ -99,7 +97,7 @@ class AssetImport implements
     public function replace(array $row): void
     {
         $assetTypeId = $this->resolveAssetType($row['tipeaset']);
-        $areaId = $this->resolveAreaId($row['kodearea'], true);
+        $areaId = $this->resolveAreaId($row['funcloc'], true);
         if ($areaId === 0 || $this->userId === 0) {
             return;
         }
@@ -107,6 +105,7 @@ class AssetImport implements
             'asset_type_id' => $assetTypeId,
             'area_id' => $areaId,
             'created_by' => $this->userId,
+            'techidentno' => trim($row['techidentno']),
             'name' => trim($row['namaaset']),
             'quantity' => $row['kuantitas'],
         ]);
@@ -114,6 +113,9 @@ class AssetImport implements
 
     public function overwrite(): void
     {
-        Asset::whereNull('deleted_at')->delete();
+        Asset::leftJoin('users', 'users.id', '=', 'assets.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }

@@ -13,13 +13,13 @@ class Area extends Model
 {
     use Fluent, HasFactory, SoftDeletes;
 
-    public string $code, $name;
+    public string $funcloc, $name;
     public float $lat, $lon;
 
     protected $fillable = [
         'area_type_id',
         'created_by',
-        'code',
+        'funcloc',
         'name',
         'lat',
         'lon',

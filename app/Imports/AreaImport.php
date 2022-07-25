@@ -69,7 +69,7 @@ class AreaImport implements
     public function rules(): array
     {
         return [
-            'kodearea' => ['required', 'numeric'],
+            'funcloc' => ['required', 'string', 'max:255'],
             'namaarea' => ['required', 'string', 'max:255'],
             'tipearea' => ['required', 'string', 'max:255'],
             'latitude' => ['required', 'float'],
@@ -79,7 +79,7 @@ class AreaImport implements
 
     public function uniqueBy()
     {
-        return ['kodearea'];
+        return ['funcloc'];
     }
 
     public function collection(Collection $collection): void
@@ -103,7 +103,7 @@ class AreaImport implements
         Area::updateOrCreate([
             'area_type_id' => $areaTypeId,
             'created_by' => $this->userId,
-            'code' => trim($row['kodearea']),
+            'funcloc' => trim($row['funcloc']),
             'name' => trim($row['namaarea']),
             'lat' => $row['latitude'],
             'lon' => $row['longitude'],
@@ -112,6 +112,9 @@ class AreaImport implements
 
     public function overwrite(): void
     {
-        Area::whereNull('deleted_at')->delete();
+        Area::leftJoin('users', 'users.id', '=', 'areas.created_by')
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }

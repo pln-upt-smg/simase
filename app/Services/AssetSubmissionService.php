@@ -34,7 +34,7 @@ class AssetSubmissionService
                 'asset_types.id as asset_type_id',
                 'asset_types.name as asset_type_name',
                 'areas.id as area_id',
-                'areas.code as area_code',
+                'areas.funcloc as area_funcloc',
                 'areas.name as area_name',
                 'area_types.name as area_type_name',
                 'users.name as user_name',

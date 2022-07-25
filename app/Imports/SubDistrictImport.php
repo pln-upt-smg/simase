@@ -101,6 +101,14 @@ class SubDistrictImport implements
 
     public function overwrite(): void
     {
-        SubDistrict::whereNull('deleted_at')->delete();
+        SubDistrict::leftJoin(
+            'users',
+            'users.id',
+            '=',
+            'sub_districts.created_by'
+        )
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }

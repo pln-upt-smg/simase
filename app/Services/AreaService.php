@@ -30,7 +30,7 @@ class AreaService
         return QueryBuilder::for(Area::class)
             ->select([
                 'areas.id as id',
-                'areas.code as code',
+                'areas.funcloc as funcloc',
                 'areas.name as name',
                 'areas.lat as latitude',
                 'areas.lon as longitude',
@@ -44,17 +44,17 @@ class AreaService
             ->leftJoin('users', 'users.id', '=', 'areas.created_by')
             ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
             ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
-            ->defaultSort('areas.code')
+            ->defaultSort('areas.funcloc')
             ->allowedFilters(
                 InertiaHelper::filterBy([
-                    'areas.code',
+                    'areas.funcloc',
                     'areas.name',
                     'area_types.name',
                     'users.name',
                 ])
             )
             ->allowedSorts([
-                'code',
+                'funcloc',
                 'name',
                 'area_type',
                 'user_name',
@@ -68,7 +68,7 @@ class AreaService
     {
         return $table
             ->addSearchRows([
-                'areas.code' => 'Kode Area',
+                'areas.funcloc' => 'Funcloc',
                 'areas.name' => 'Nama Area',
                 'areas.lat' => 'Latitude',
                 'areas.lon' => 'Longitude',
@@ -76,7 +76,7 @@ class AreaService
                 'users.name' => 'Pembuat',
             ])
             ->addColumns([
-                'code' => 'Kode Area',
+                'funcloc' => 'Funcloc',
                 'name' => 'Nama Area',
                 'latitude' => 'Latitude',
                 'longitude' => 'Longitude',
@@ -101,10 +101,10 @@ class AreaService
                     'integer',
                     Rule::exists('area_types', 'id')->whereNull('deleted_at'),
                 ],
-                'code' => [
+                'funcloc' => [
                     'required',
                     'numeric',
-                    Rule::unique('areas', 'code')->whereNull('deleted_at'),
+                    Rule::unique('areas', 'funcloc')->whereNull('deleted_at'),
                 ],
                 'name' => [
                     'required',
@@ -118,7 +118,7 @@ class AreaService
             [],
             [
                 'type' => 'Tipe Area',
-                'code' => 'Kode Area',
+                'funcloc' => 'Funcloc',
                 'name' => 'Nama Area',
                 'latitude' => 'Latitude',
                 'longitude' => 'Longitude',
@@ -129,7 +129,7 @@ class AreaService
             Area::create([
                 'created_by' => $user->id,
                 'area_type_id' => (int) $request->type,
-                'code' => $request->code,
+                'funcloc' => $request->funcloc,
                 'name' => $request->name,
                 'lat' => $request->latitude,
                 'lon' => $request->longitude,
@@ -153,10 +153,10 @@ class AreaService
                     'integer',
                     Rule::exists('area_types', 'id')->whereNull('deleted_at'),
                 ],
-                'code' => [
+                'funcloc' => [
                     'required',
                     'numeric',
-                    Rule::unique('areas', 'code')
+                    Rule::unique('areas', 'funcloc')
                         ->ignore($area->id)
                         ->whereNull('deleted_at'),
                 ],
@@ -174,7 +174,7 @@ class AreaService
             [],
             [
                 'type' => 'Tipe Area',
-                'code' => 'Kode Area',
+                'funcloc' => 'Funcloc',
                 'name' => 'Nama Area',
                 'latitude' => 'Latitude',
                 'longitude' => 'Longitude',
@@ -184,7 +184,7 @@ class AreaService
         if (!is_null($user)) {
             $area->updateOrFail([
                 'area_type_id' => (int) $request->type,
-                'code' => $request->code,
+                'funcloc' => $request->funcloc,
                 'name' => $request->name,
                 'lat' => $request->latitude,
                 'lon' => $request->longitude,
@@ -237,7 +237,12 @@ class AreaService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+        switch (auth()->user()->division_id ?? 0) {
+            case 1:
+                return 'https://docs.google.com/spreadsheets/d/1u9sZ11XfmFCJ7IUcl_EU4gXAJFcZlI410l9JYZQI43Q/edit?usp=sharing';
+            default:
+                return 'https://docs.google.com/spreadsheets/d/1pRwXXtOLdTxEVIaXu75WBUIy1NlX-6RkRskW0ZOmt_w/edit?usp=sharing';
+        }
     }
 
     /**
@@ -273,7 +278,7 @@ class AreaService
         $query = Area::orderBy('areas.name')
             ->select([
                 'areas.id as id',
-                'areas.code as code',
+                'areas.funcloc as funcloc',
                 'areas.name as name',
                 'areas.lat as latitude',
                 'areas.lon as longitude',
@@ -292,7 +297,7 @@ class AreaService
             $filter = Str::lower(trim($request->query('q') ?? ''));
             $query = $query->where(function ($query) use ($filter) {
                 $query
-                    ->orWhereRaw("lower(areas.code) like (?)", ["%{$filter}%"])
+                    ->orWhereRaw("lower(areas.funcloc) like (?)", ["%{$filter}%"])
                     ->orWhereRaw("lower(areas.name) like (?)", ["%{$filter}%"]);
             });
         }

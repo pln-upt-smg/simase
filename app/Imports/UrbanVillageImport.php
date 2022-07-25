@@ -101,6 +101,14 @@ class UrbanVillageImport implements
 
     public function overwrite(): void
     {
-        UrbanVillage::whereNull('deleted_at')->delete();
+        UrbanVillage::leftJoin(
+            'users',
+            'users.id',
+            '=',
+            'urban_villages.created_by'
+        )
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
+            ->whereNull('deleted_at')
+            ->delete();
     }
 }
