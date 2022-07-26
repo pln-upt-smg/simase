@@ -50,13 +50,6 @@ class Certificate extends Model
         'wide',
     ];
 
-    protected $casts = [
-        'certificate_bookkeeping_date' => 'datetime',
-        'certificate_publishing_date' => 'datetime',
-        'certificate_final_date' => 'datetime',
-        'base_registration_date' => 'datetime',
-    ];
-
     public function urbanVillage(): BelongsTo
     {
         return $this->belongsTo(UrbanVillage::class, 'urban_village_id');

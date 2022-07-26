@@ -67,13 +67,13 @@ class DistrictImport implements
     public function rules(): array
     {
         return [
-            'namakabupaten/kotamadya' => ['required', 'string', 'max:255'],
+            'namakabupatenkotamadya' => ['required', 'string', 'max:255'],
         ];
     }
 
     public function uniqueBy()
     {
-        return ['namakabupaten/kotamadya'];
+        return ['namakabupatenkotamadya'];
     }
 
     public function collection(Collection $collection): void
@@ -95,7 +95,7 @@ class DistrictImport implements
         }
         District::updateOrCreate([
             'created_by' => $this->userId,
-            'name' => trim($row['namakabupaten/kotamadya']),
+            'name' => trim($row['namakabupatenkotamadya']),
         ]);
     }
 

@@ -1,11 +1,15 @@
-@import '../fonts/nunito-sans/style.css';
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import 'vue-select/dist/vue-select.css';
+@import "../fonts/nunito-sans/style.css";
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "vue-select/dist/vue-select.css";
 
 /* https://stackoverflow.com/questions/25704650/disable-blue-highlight-when-touch-press-object-with-cursorpointer */
-button, textarea, input, select, a {
+button,
+textarea,
+input,
+select,
+a {
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -14,23 +18,28 @@ input {
     text-transform: uppercase;
 }
 
-::-webkit-input-placeholder { /* WebKit browsers */
+::-webkit-input-placeholder {
+    /* WebKit browsers */
     text-transform: none;
 }
 
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
     text-transform: none;
 }
 
-::-moz-placeholder { /* Mozilla Firefox 19+ */
+::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
     text-transform: none;
 }
 
-:-ms-input-placeholder { /* Internet Explorer 10+ */
+:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
     text-transform: none;
 }
 
-::placeholder { /* Recent browsers */
+::placeholder {
+    /* Recent browsers */
     text-transform: none;
 }
 
@@ -81,7 +90,7 @@ input {
 }
 
 select:disabled {
-    background-color: #EFF0F2 !important;
+    background-color: #eff0f2 !important;
 }
 
 select:disabled:hover {

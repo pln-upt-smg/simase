@@ -60,7 +60,7 @@
             </template>
             <template #body>
                 <tr
-                    v-for="urban_village in urban_villages.data" 
+                    v-for="urban_village in urban_villages.data"
                     :key="urban_village.id"
                 >
                     <td v-show="showColumn('name')">
@@ -424,7 +424,7 @@ export default defineComponent({
     },
     methods: {
         store() {
-            this.storeForm.post(route("urban_villages.store"), {
+            this.storeForm.post(route("urban-villages.store"), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
@@ -443,7 +443,7 @@ export default defineComponent({
         },
         update() {
             this.updateForm.put(
-                route("urban_villages.update", this.updateForm.id),
+                route("urban-villages.update", this.updateForm.id),
                 {
                     preserveScroll: true,
                     onSuccess: () => {
@@ -464,7 +464,7 @@ export default defineComponent({
         },
         destroy() {
             this.destroyForm.delete(
-                route("urban_villages.destroy", this.destroyForm.id),
+                route("urban-villages.destroy", this.destroyForm.id),
                 {
                     preserveScroll: true,
                     onSuccess: () => {
@@ -484,7 +484,7 @@ export default defineComponent({
             );
         },
         importFile() {
-            this.importForm.post(route("urban_villages.import"), {
+            this.importForm.post(route("urban-villages.import"), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
@@ -502,7 +502,7 @@ export default defineComponent({
             });
         },
         exportFile() {
-            window.open(route("urban_villages.export"));
+            window.open(route("urban-villages.export"));
             this.closeExportModal();
         },
         confirmStore() {

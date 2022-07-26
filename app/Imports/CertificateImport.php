@@ -15,7 +15,8 @@ use App\Imports\Helpers\{
     HasSubDistrictResolver,
     HasDistrictResolver,
     HasProvinceResolver,
-    HasHolderResolver
+    HasHolderResolver,
+    HasOptionalityResolver
 };
 use App\Models\{Certificate, User};
 use Maatwebsite\Excel\Concerns\{
@@ -34,6 +35,7 @@ use Maatwebsite\Excel\Concerns\{
     WithUpserts,
     WithValidation
 };
+use Carbon\Carbon;
 
 class CertificateImport implements
     ToCollection,
@@ -63,7 +65,8 @@ class CertificateImport implements
         HasSubDistrictResolver,
         HasDistrictResolver,
         HasProvinceResolver,
-        HasHolderResolver;
+        HasHolderResolver,
+        HasOptionalityResolver;
 
     public function __construct(?User $user)
     {
@@ -80,34 +83,31 @@ class CertificateImport implements
             'namaasettanah' => ['required', 'string', 'max:255'],
             'kelurahan' => ['required', 'string', 'max:255'],
             'kecamatan' => ['required', 'string', 'max:255'],
-            'kabupaten/kotamadya' => ['required', 'string', 'max:255'],
+            'kabupatenkotamadya' => ['required', 'string', 'max:255'],
             'provinsi' => ['required', 'string', 'max:255'],
             'kodewilayah' => ['required', 'string', 'max:255'],
-            'no.cetaksertifikat' => ['required', 'string', 'max:255'],
+            'nocetaksertifikat' => ['required', 'string', 'max:255'],
             'tipesertifikat' => ['required', 'string', 'max:255'],
-            'nomorsertifikat' => ['required', 'string', 'max:255'],
+            'nosertifikat' => ['required', 'string', 'max:255'],
             'nib' => ['required', 'string', 'max:255'],
             'kategoriasalhak' => ['required', 'string', 'max:255'],
             'suratkeputusan' => ['required', 'string', 'max:255'],
             'tanggaldasarpendaftaran' => ['required', 'date_format:d/m/Y'],
-            'nomorsuratukur' => ['required', 'string', 'max:255'],
+            'nosuratukur' => ['required', 'string', 'max:255'],
             'tanggalsuratukur' => ['required', 'date_format:d/m/Y'],
-            'statussuratukur' => ['required', 'boolean'],
-            'statuspetabidang' => ['required', 'boolean'],
-            'luas(m2)' => ['required', 'numeric'],
-            'tanggalpembukuansertifikat' => ['required', 'date_format:d/m/Y'],
-            'tanggalpenerbitansertifikat' => ['required', 'date_format:d/m/Y'],
-            'tanggalakhir/perpanjangansertifikat' => [
-                'required',
-                'date_format:d/m/Y',
-            ],
+            'statussuratukur' => ['required', 'string', 'max:255'],
+            'statuspetabidang' => ['required', 'string', 'max:255'],
+            'luas(m2)' => ['required', 'numeric', 'min:0'],
+            'tanggalpembukuan' => ['required', 'date_format:d/m/Y'],
+            'tanggalpenerbitan' => ['required', 'date_format:d/m/Y'],
+            'tanggalakhir' => ['required', 'date_format:d/m/Y'],
             'namapemeganghak' => ['required', 'string', 'max:255'],
         ];
     }
 
     public function uniqueBy()
     {
-        return ['nomorsertifikat'];
+        return ['nosertifikat'];
     }
 
     public function collection(Collection $collection): void
@@ -126,9 +126,9 @@ class CertificateImport implements
     {
         $urbanVillageId = $this->resolveUrbanVillageId($row['kelurahan']);
         $subDistrictId = $this->resolveSubDistrictId($row['kecamatan']);
-        $districtId = $this->resolveUrbanVillageId($row['kabupaten/kotamadya']);
+        $districtId = $this->resolveUrbanVillageId($row['kabupatenkotamadya']);
         $provinceId = $this->resolveProvinceId($row['provinsi']);
-        $holderId = $this->resolveUrbanVillageId($row['namapemeganghak']);
+        $holderId = $this->resolveHolderId($row['namapemeganghak']);
         if (
             $urbanVillageId === 0 ||
             $subDistrictId === 0 ||
@@ -147,27 +147,40 @@ class CertificateImport implements
             'holder_id' => $provinceId,
             'created_by' => $this->userId,
             'name' => trim($row['namaasettanah']),
-            'area_code' => trim($row['kode_wilayah']),
+            'area_code' => trim($row['kodewilayah']),
             'certificate_type' => trim($row['tipesertifikat']),
-            'certificate_number' => trim($row['nomorsertifikat']),
-            'certificate_print_number' => trim($row['no.cetaksertifikat']),
-            'certificate_bookkeeping_date' => trim(
-                $row['tanggalpembukuansertifikat']
+            'certificate_number' => trim($row['nosertifikat']),
+            'certificate_print_number' => trim($row['nocetaksertifikat']),
+            'certificate_bookkeeping_date' => Carbon::createFromFormat(
+                'd/m/Y',
+                trim($row['tanggalpembukuan'])
             ),
-            'certificate_publishing_date' => trim(
-                $row['tanggalpenerbitansertifikat']
+            'certificate_publishing_date' => Carbon::createFromFormat(
+                'd/m/Y',
+                trim($row['tanggalpenerbitan'])
             ),
-            'certificate_final_date' => trim(
-                $row['tanggalakhir/perpanjangansertifikat']
+            'certificate_final_date' => Carbon::createFromFormat(
+                'd/m/Y',
+                trim($row['tanggalakhir'])
             ),
             'nib' => trim($row['nib']),
             'origin_right_category' => trim($row['kategoriasalhak']),
             'base_registration_decree_number' => trim($row['suratkeputusan']),
-            'base_registration_date' => trim($row['tanggaldasarpendaftaran']),
-            'measuring_letter_number' => trim($row['nomorsuratukur']),
-            'measuring_letter_date' => trim($row['tanggalsuratukur']),
-            'measuring_letter_status' => trim($row['statussuratukur']),
-            'field_map_status' => trim($row['statuspetabidang']),
+            'base_registration_date' => Carbon::createFromFormat(
+                'd/m/Y',
+                trim($row['tanggaldasarpendaftaran'])
+            ),
+            'measuring_letter_number' => trim($row['nosuratukur']),
+            'measuring_letter_date' => Carbon::createFromFormat(
+                'd/m/Y',
+                trim($row['tanggalsuratukur'])
+            ),
+            'measuring_letter_status' => $this->resolveOptionality(
+                $row['statussuratukur']
+            ),
+            'field_map_status' => $this->resolveOptionality(
+                $row['statuspetabidang']
+            ),
             'wide' => $row['luas(m2)'],
         ]);
     }

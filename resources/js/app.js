@@ -4,6 +4,8 @@ import { createApp, h } from "vue";
 import { createInertiaApp, Link } from "@inertiajs/inertia-vue3";
 import { InertiaProgress } from "@inertiajs/progress";
 import { Workbox } from "workbox-window";
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "SIMASE";
@@ -16,6 +18,7 @@ createInertiaApp({
         return createApp({ render: () => h(app, props) })
             .use(plugin)
             .component("InertiaLink", Link)
+            .component("Datepicker", Datepicker)
             .mixin({ methods: { route } })
             .mount(el);
     },

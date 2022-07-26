@@ -87,6 +87,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DistrictSeeder::class);
         $this->call(ProvinceSeeder::class);
         $this->call(HolderSeeder::class);
-        // $this->call(CertificateSeeder::class);
+        $this->call(CertificateSeeder::class);
     }
 }

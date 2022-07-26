@@ -170,7 +170,7 @@ class SubDistrictService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+        return 'https://docs.google.com/spreadsheets/d/1DTFbnMIdXThpi_cl83gM8gJRlhojDe596cwZToVwRXE/edit?usp=sharing';
     }
 
     /**
@@ -209,6 +209,13 @@ class SubDistrictService
     public function collection(?Request $request = null): Collection
     {
         $query = SubDistrict::orderBy('sub_districts.name')
+            ->select([
+                'sub_districts.name as name',
+                'users.name as user_name',
+                DB::raw(
+                    'date_format(sub_districts.updated_at, "%d %b %Y") as update_date'
+                ),
+            ])
             ->leftJoin('users', 'users.id', '=', 'sub_districts.created_by')
             ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->limit(10);

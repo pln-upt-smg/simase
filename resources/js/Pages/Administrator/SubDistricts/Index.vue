@@ -425,7 +425,7 @@ export default defineComponent({
     },
     methods: {
         store() {
-            this.storeForm.post(route("sub_districts.store"), {
+            this.storeForm.post(route("sub-districts.store"), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
@@ -444,7 +444,7 @@ export default defineComponent({
         },
         update() {
             this.updateForm.put(
-                route("sub_districts.update", this.updateForm.id),
+                route("sub-districts.update", this.updateForm.id),
                 {
                     preserveScroll: true,
                     onSuccess: () => {
@@ -465,7 +465,7 @@ export default defineComponent({
         },
         destroy() {
             this.destroyForm.delete(
-                route("sub_districts.destroy", this.destroyForm.id),
+                route("sub-districts.destroy", this.destroyForm.id),
                 {
                     preserveScroll: true,
                     onSuccess: () => {
@@ -485,7 +485,7 @@ export default defineComponent({
             );
         },
         importFile() {
-            this.importForm.post(route("sub_districts.import"), {
+            this.importForm.post(route("sub-districts.import"), {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.reloadData();
@@ -503,7 +503,7 @@ export default defineComponent({
             });
         },
         exportFile() {
-            window.open(route("sub_districts.export"));
+            window.open(route("sub-districts.export"));
             this.closeExportModal();
         },
         confirmStore() {

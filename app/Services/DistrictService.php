@@ -172,7 +172,7 @@ class DistrictService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+        return 'https://docs.google.com/spreadsheets/d/1XzZnUFED80fWyY5HBDGWKp2Wi3MM8H3TMBilnNKn6qY/edit?usp=sharing';
     }
 
     /**
@@ -209,6 +209,13 @@ class DistrictService
     public function collection(?Request $request = null): Collection
     {
         $query = District::orderBy('districts.name')
+            ->select([
+                'districts.name as name',
+                'users.name as user_name',
+                DB::raw(
+                    'date_format(districts.updated_at, "%d %b %Y") as update_date'
+                ),
+            ])
             ->leftJoin('users', 'users.id', '=', 'districts.created_by')
             ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->limit(10);

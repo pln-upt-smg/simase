@@ -513,7 +513,6 @@ export default defineComponent({
             setTimeout(() => this.$refs.updateName.focus(), 300);
         },
         confirmDestroy(asset_type) {
-            console.log(asset_type);
             this.destroyForm.id = asset_type.id;
             setTimeout(() => (this.confirmingDestroy = true), 150);
         },

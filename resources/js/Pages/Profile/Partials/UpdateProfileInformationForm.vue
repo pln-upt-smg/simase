@@ -157,7 +157,6 @@ export default defineComponent({
     },
     methods: {
         updateProfileInformation() {
-            console.log(this.user);
             if (this.$refs.photo) {
                 this.form.photo = this.$refs.photo.files[0];
             }

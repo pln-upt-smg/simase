@@ -168,7 +168,7 @@ class HolderService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+        return 'https://docs.google.com/spreadsheets/d/1Pgs39WeS51rGUE_2YyMMzMOH9xBxhOmGESaZyYWZQrU/edit?usp=sharing';
     }
 
     /**
@@ -205,6 +205,13 @@ class HolderService
     public function collection(?Request $request = null): Collection
     {
         $query = Holder::orderBy('holders.name')
+            ->select([
+                'holders.name as name',
+                'users.name as user_name',
+                DB::raw(
+                    'date_format(holders.updated_at, "%d %b %Y") as update_date'
+                ),
+            ])
             ->leftJoin('users', 'users.id', '=', 'holders.created_by')
             ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->limit(10);

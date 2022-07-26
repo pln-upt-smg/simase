@@ -168,7 +168,7 @@ class ProvinceService
      */
     public function template(): string
     {
-        return 'https://docs.google.com/spreadsheets/d/1_iyLqpZbz09w22YRenD7kFuyidQJIUSf4-33jkZ8_kA/edit?usp=sharing';
+        return 'https://docs.google.com/spreadsheets/d/1j42k2cKCWWoh4PsgMhRdWHi8j5nCTUgX2ciC2p03Q7g/edit?usp=sharing';
     }
 
     /**
@@ -205,6 +205,13 @@ class ProvinceService
     public function collection(?Request $request = null): Collection
     {
         $query = Province::orderBy('provinces.name')
+            ->select([
+                'provinces.name as name',
+                'users.name as user_name',
+                DB::raw(
+                    'date_format(provinces.updated_at, "%d %b %Y") as update_date'
+                ),
+            ])
             ->leftJoin('users', 'users.id', '=', 'provinces.created_by')
             ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->limit(10);

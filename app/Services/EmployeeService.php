@@ -285,11 +285,10 @@ class EmployeeService
         if (!is_null($user)) {
             $userId = $user->id;
         }
-        return User::leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
-            ->where('users.id', '<>', $userId)
-            ->orderBy('users.name')
+        return User::orderBy('name')
+            ->where('division_id', '=', auth()->user()->division_id ?? 0)
+            ->where('id', '<>', $userId)
             ->get()
-            ->load('role');
+            ->load(['role', 'division']);
     }
 }

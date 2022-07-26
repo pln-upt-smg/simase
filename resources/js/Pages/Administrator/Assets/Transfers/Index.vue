@@ -153,7 +153,7 @@
                     </td>
                     <td v-show="showColumn('asset_submission_priority')">
                         <span
-                            class="text-green-600 font-bold"
+                            class="text-green-600"
                             v-if="
                                 asset_transfer.asset_submission_priority === 1
                             "
@@ -161,14 +161,14 @@
                             Rendah
                         </span>
                         <span
-                            class="text-yellow-600 font-bold"
+                            class="text-yellow-600"
                             v-else-if="
                                 asset_transfer.asset_submission_priority === 2
                             "
                         >
                             Sedang
                         </span>
-                        <span class="text-red-600 font-bold" v-else>
+                        <span class="text-red-600" v-else>
                             Tinggi
                         </span>
                     </td>

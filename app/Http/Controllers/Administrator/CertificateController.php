@@ -4,7 +4,15 @@ namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
-use App\Services\CertificateService;
+use App\Services\{
+    CertificateService,
+    UrbanVillageService,
+    SubDistrictService,
+    DistrictService,
+    ProvinceService,
+    HolderService,
+    OptionalityService
+};
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,13 +29,62 @@ class CertificateController extends Controller
     private CertificateService $certificateService;
 
     /**
+     * @var UrbanVillageService
+     */
+    private UrbanVillageService $urbanVillageService;
+
+    /**
+     * @var SubDistrictService
+     */
+    private SubDistrictService $subDistrictService;
+
+    /**
+     * @var DistrictService
+     */
+    private DistrictService $districtService;
+
+    /**
+     * @var ProvinceService
+     */
+    private ProvinceService $provinceService;
+
+    /**
+     * @var HolderService
+     */
+    private HolderService $holderService;
+
+    /**
+     * @var OptionalityService
+     */
+    private OptionalityService $optionalityService;
+
+    /**
      * Create a new Controller instance.
      *
      * @param CertificateService $certificateService
+     * @param UrbanVillageService $urbanVillageService
+     * @param SubDistrictService $subDistrictService
+     * @param DistrictService $districtService
+     * @param ProvinceService $provinceService
+     * @param HolderService $holderService
+     * @param OptionalityService $optionalityService
      */
-    public function __construct(CertificateService $certificateService)
-    {
+    public function __construct(
+        CertificateService $certificateService,
+        UrbanVillageService $urbanVillageService,
+        SubDistrictService $subDistrictService,
+        DistrictService $districtService,
+        ProvinceService $provinceService,
+        HolderService $holderService,
+        OptionalityService $optionalityService
+    ) {
         $this->certificateService = $certificateService;
+        $this->urbanVillageService = $urbanVillageService;
+        $this->subDistrictService = $subDistrictService;
+        $this->districtService = $districtService;
+        $this->provinceService = $provinceService;
+        $this->holderService = $holderService;
+        $this->optionalityService = $optionalityService;
     }
 
     /**
@@ -39,6 +96,18 @@ class CertificateController extends Controller
     {
         return inertia('Administrator/Certificates/Index', [
             'certificates' => $this->certificateService->tableData(),
+            'urban_villages' => $this->urbanVillageService
+                ->collection()
+                ->toArray(),
+            'sub_districts' => $this->subDistrictService
+                ->collection()
+                ->toArray(),
+            'districts' => $this->districtService->collection()->toArray(),
+            'provinces' => $this->provinceService->collection()->toArray(),
+            'holders' => $this->holderService->collection()->toArray(),
+            'optionalities' => $this->optionalityService
+                ->collection()
+                ->toArray(),
             'template' => $this->certificateService->template(),
         ])->table(function (InertiaTable $table) {
             $this->certificateService->tableMeta($table);

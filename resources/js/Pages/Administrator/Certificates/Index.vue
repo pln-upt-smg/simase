@@ -39,7 +39,7 @@
                     v-show="showColumn('name')"
                     :cell="sortableHeader('name')"
                 >
-                    Nama Sertifikat
+                    Nama Aset Tanah
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('urban_village_name')"
@@ -66,22 +66,106 @@
                     Provinsi
                 </jet-table-header>
                 <jet-table-header
+                    v-show="showColumn('area_code')"
+                    :cell="sortableHeader('area_code')"
+                >
+                    Kode Wilayah
+                </jet-table-header>
+                <jet-table-header
                     v-show="showColumn('certificate_print_number')"
                     :cell="sortableHeader('certificate_print_number')"
                 >
                     No. Cetak Sertifikat
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('Tipe Sertifikat')"
-                    :cell="sortableHeader('Tipe Sertifikat')"
+                    v-show="showColumn('certificate_type')"
+                    :cell="sortableHeader('certificate_type')"
                 >
                     Tipe Sertifikat
                 </jet-table-header>
                 <jet-table-header
-                    v-show="showColumn('name')"
-                    :cell="sortableHeader('name')"
+                    v-show="showColumn('certificate_number')"
+                    :cell="sortableHeader('certificate_number')"
                 >
-                    Nama Sertifikat
+                    No. Sertifikat
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('nib')"
+                    :cell="sortableHeader('nib')"
+                >
+                    NIB
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('origin_right_category')"
+                    :cell="sortableHeader('origin_right_category')"
+                >
+                    Kategori Asal Hak
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('base_registration_decree_number')"
+                    :cell="sortableHeader('base_registration_decree_number')"
+                >
+                    Surat Keputusan
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('base_registration_date')"
+                    :cell="sortableHeader('base_registration_date')"
+                >
+                    Tanggal Dasar Pendaftaran
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('measuring_letter_number')"
+                    :cell="sortableHeader('measuring_letter_number')"
+                >
+                    No. Surat Ukur
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('measuring_letter_date')"
+                    :cell="sortableHeader('measuring_letter_date')"
+                >
+                    Tanggal Surat Ukur
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('measuring_letter_status')"
+                    :cell="sortableHeader('measuring_letter_status')"
+                >
+                    Status Surat Ukur
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('field_map_status')"
+                    :cell="sortableHeader('field_map_status')"
+                >
+                    Status Peta Bidang
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('wide')"
+                    :cell="sortableHeader('wide')"
+                >
+                    Luas (M2)
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('certificate_bookkeeping_date')"
+                    :cell="sortableHeader('certificate_bookkeeping_date')"
+                >
+                    Tanggal Pembukuan
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('certificate_publishing_date')"
+                    :cell="sortableHeader('certificate_publishing_date')"
+                >
+                    Tanggal Penerbitan
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('certificate_type')"
+                    :cell="sortableHeader('certificate_type')"
+                >
+                    Tanggal Akhir
+                </jet-table-header>
+                <jet-table-header
+                    v-show="showColumn('holder_name')"
+                    :cell="sortableHeader('holder_name')"
+                >
+                    Pemegang Hak
                 </jet-table-header>
                 <jet-table-header
                     v-show="showColumn('user_name')"
@@ -108,6 +192,85 @@
                     <td v-show="showColumn('name')">
                         {{ certificate.name }}
                     </td>
+                    <td v-show="showColumn('urban_village_name')">
+                        {{ certificate.urban_village_name }}
+                    </td>
+                    <td v-show="showColumn('sub_district_name')">
+                        {{ certificate.sub_district_name }}
+                    </td>
+                    <td v-show="showColumn('district_name')">
+                        {{ certificate.district_name }}
+                    </td>
+                    <td v-show="showColumn('province_name')">
+                        {{ certificate.province_name }}
+                    </td>
+                    <td v-show="showColumn('area_code')">
+                        {{ certificate.area_code }}
+                    </td>
+                    <td v-show="showColumn('certificate_print_number')">
+                        {{ certificate.certificate_print_number }}
+                    </td>
+                    <td v-show="showColumn('certificate_type')">
+                        {{ certificate.certificate_type }}
+                    </td>
+                    <td v-show="showColumn('certificate_number')">
+                        {{ certificate.certificate_number }}
+                    </td>
+                    <td v-show="showColumn('nib')">
+                        {{ certificate.nib }}
+                    </td>
+                    <td v-show="showColumn('origin_right_category')">
+                        {{ certificate.origin_right_category }}
+                    </td>
+                    <td v-show="showColumn('base_registration_decree_number')">
+                        {{ certificate.base_registration_decree_number }}
+                    </td>
+                    <td v-show="showColumn('base_registration_date')">
+                        {{ certificate.base_registration_date }}
+                    </td>
+                    <td v-show="showColumn('measuring_letter_number')">
+                        {{ certificate.measuring_letter_number }}
+                    </td>
+                    <td v-show="showColumn('measuring_letter_date')">
+                        {{ certificate.measuring_letter_date }}
+                    </td>
+                    <td v-show="showColumn('measuring_letter_status')">
+                        <span
+                            class="text-green-600"
+                            v-if="certificate.measuring_letter_status"
+                        >
+                            Ada
+                        </span>
+                        <span class="text-red-600" v-else>
+                            Tidak Ada
+                        </span>
+                    </td>
+                    <td v-show="showColumn('field_map_status')">
+                        <span
+                            class="text-green-600"
+                            v-if="certificate.field_map_status"
+                        >
+                            Ada
+                        </span>
+                        <span class="text-red-600" v-else>
+                            Tidak Ada
+                        </span>
+                    </td>
+                    <td v-show="showColumn('wide')">
+                        {{ certificate.wide }}
+                    </td>
+                    <td v-show="showColumn('certificate_bookkeeping_date')">
+                        {{ certificate.certificate_bookkeeping_date }}
+                    </td>
+                    <td v-show="showColumn('certificate_publishing_date')">
+                        {{ certificate.certificate_publishing_date }}
+                    </td>
+                    <td v-show="showColumn('certificate_final_date')">
+                        {{ certificate.certificate_final_date }}
+                    </td>
+                    <td v-show="showColumn('holder_name')">
+                        {{ certificate.holder_name }}
+                    </td>
                     <td v-show="showColumn('user_name')">
                         {{ certificate.user_name }}
                     </td>
@@ -116,6 +279,20 @@
                     </td>
                     <td v-show="showColumn('action')" class="text-center">
                         <jet-dropdown name="Opsi">
+                            <menu-item>
+                                <a
+                                    :href="certificate.certificate_file"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 group"
+                                >
+                                    <download-icon
+                                        class="w-5 h-5 mr-3 text-gray-700"
+                                        aria-hidden="true"
+                                    />
+                                    Unduh File
+                                </a>
+                            </menu-item>
                             <menu-item>
                                 <button
                                     @click="confirmUpdate(certificate)"
@@ -145,11 +322,7 @@
                 </tr>
             </template>
         </jet-table>
-        <jet-modal
-            :show="confirmingStore"
-            @close="closeStoreModal"
-            title="Tambah sertifikat"
-        >
+        <jet-modal :show="confirmingStore" title="Tambah sertifikat">
             <template #content>
                 Silakan masukkan data sertifikat yang ingin ditambahkan.
                 <jet-validation-errors class="mt-4" />
@@ -157,9 +330,167 @@
                     <jet-input
                         type="text"
                         class="block w-full normal-case"
-                        placeholder="Nama Sertifikat"
+                        placeholder="Nama Aset Tanah"
                         ref="storeName"
                         v-model="storeForm.name"
+                    />
+                    <jet-select
+                        ref="storeUrbanVillage"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Kelurahan"
+                        v-model="storeForm.urban_village"
+                        :data="urban_villages"
+                    />
+                    <jet-select
+                        ref="storeSubDistrict"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Kecamatan"
+                        v-model="storeForm.sub_district"
+                        :data="sub_districts"
+                    />
+                    <jet-select
+                        ref="storeDistrict"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Kabupaten / Kotamadya"
+                        v-model="storeForm.district"
+                        :data="districts"
+                    />
+                    <jet-select
+                        ref="storeProvince"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Provinsi"
+                        v-model="storeForm.province"
+                        :data="provinces"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Kode Wilayah"
+                        ref="storeAreaCode"
+                        v-model="storeForm.area_code"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="No. Cetak Sertifikat"
+                        ref="storeCertificatePrintNumber"
+                        v-model="storeForm.certificate_print_number"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Tipe Sertifikat"
+                        ref="storeCertificateType"
+                        v-model="storeForm.certificate_type"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="No. Sertifikat"
+                        ref="storeCertificateNumber"
+                        v-model="storeForm.certificate_number"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="NIB"
+                        ref="storeNIB"
+                        v-model="storeForm.nib"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Kategori Asal Hak"
+                        ref="storeOriginRightCategory"
+                        v-model="storeForm.origin_right_category"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Surat Keputusan"
+                        ref="storeBaseRegistrationDecreeNumber"
+                        v-model="storeForm.base_registration_decree_number"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="storeBaseRegistrationDate"
+                        placeholder="Tanggal Dasar Pendaftaran"
+                        v-model="storeForm.base_registration_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="No. Surat Ukur"
+                        ref="storeMeasuringLetterNumber"
+                        v-model="storeForm.measuring_letter_number"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="storeMeasuringLetterDate"
+                        placeholder="Tanggal Surat Ukur"
+                        v-model="storeForm.measuring_letter_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <jet-select
+                        ref="storeMeasuringLetterStatus"
+                        class="block w-full mt-4"
+                        placeholder="Status Surat Ukur"
+                        v-model="storeForm.measuring_letter_status"
+                        :data="optionalities"
+                    />
+                    <jet-select
+                        ref="storeFieldMapStatus"
+                        class="block w-full mt-4"
+                        placeholder="Status Peta Bidang"
+                        v-model="storeForm.field_map_status"
+                        :data="optionalities"
+                    />
+                    <jet-input
+                        type="number"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Luas (M2)"
+                        ref="storeWide"
+                        v-model="storeForm.wide"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="storeCertificateBookkeepingDate"
+                        placeholder="Tanggal Pembukuan"
+                        v-model="storeForm.certificate_bookkeeping_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="storeCertificatePublishingDate"
+                        placeholder="Tanggal Penerbitan"
+                        v-model="storeForm.certificate_publishing_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="storeCertificateFinalDate"
+                        placeholder="Tanggal Akhir"
+                        v-model="storeForm.certificate_final_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <jet-select
+                        ref="storeHolder"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Pemegang Hak"
+                        v-model="storeForm.holder"
+                        :data="holders"
+                        @keyup.enter="store"
                     />
                 </div>
             </template>
@@ -181,11 +512,7 @@
                 </jet-secondary-button>
             </template>
         </jet-modal>
-        <jet-modal
-            :show="confirmingUpdate"
-            @close="closeUpdateModal"
-            title="Edit sertifikat"
-        >
+        <jet-modal :show="confirmingUpdate" title="Edit sertifikat">
             <template #content>
                 Silakan masukkan data sertifikat yang ingin diubah.
                 <jet-validation-errors class="mt-4" />
@@ -193,9 +520,167 @@
                     <jet-input
                         type="text"
                         class="block w-full normal-case"
-                        placeholder="Nama Sertifikat"
+                        placeholder="Nama Aset Tanah"
                         ref="updateName"
                         v-model="updateForm.name"
+                    />
+                    <jet-select
+                        ref="updateUrbanVillage"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Kelurahan"
+                        v-model="updateForm.urban_village"
+                        :data="urban_villages"
+                    />
+                    <jet-select
+                        ref="updateSubDistrict"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Kecamatan"
+                        v-model="updateForm.sub_district"
+                        :data="sub_districts"
+                    />
+                    <jet-select
+                        ref="updateDistrict"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Kabupaten / Kotamadya"
+                        v-model="updateForm.district"
+                        :data="districts"
+                    />
+                    <jet-select
+                        ref="updateProvince"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Provinsi"
+                        v-model="updateForm.province"
+                        :data="provinces"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Kode Wilayah"
+                        ref="updateAreaCode"
+                        v-model="updateForm.area_code"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="No. Cetak Sertifikat"
+                        ref="updateCertificatePrintNumber"
+                        v-model="updateForm.certificate_print_number"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Tipe Sertifikat"
+                        ref="updateCertificateType"
+                        v-model="updateForm.certificate_type"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="No. Sertifikat"
+                        ref="updateCertificateNumber"
+                        v-model="updateForm.certificate_number"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="NIB"
+                        ref="updateNIB"
+                        v-model="updateForm.nib"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Kategori Asal Hak"
+                        ref="updateOriginRightCategory"
+                        v-model="updateForm.origin_right_category"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Surat Keputusan"
+                        ref="updateBaseRegistrationDecreeNumber"
+                        v-model="updateForm.base_registration_decree_number"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="updateBaseRegistrationDate"
+                        placeholder="Tanggal Dasar Pendaftaran"
+                        v-model="updateForm.base_registration_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <jet-input
+                        type="text"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="No. Surat Ukur"
+                        ref="updateMeasuringLetterNumber"
+                        v-model="updateForm.measuring_letter_number"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="updateMeasuringLetterDate"
+                        placeholder="Tanggal Surat Ukur"
+                        v-model="updateForm.measuring_letter_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <jet-select
+                        ref="updateMeasuringLetterStatus"
+                        class="block w-full mt-4"
+                        placeholder="Status Surat Ukur"
+                        v-model="updateForm.measuring_letter_status"
+                        :data="optionalities"
+                    />
+                    <jet-select
+                        ref="updateFieldMapStatus"
+                        class="block w-full mt-4"
+                        placeholder="Status Peta Bidang"
+                        v-model="updateForm.field_map_status"
+                        :data="optionalities"
+                    />
+                    <jet-input
+                        type="number"
+                        class="block w-full mt-4 normal-case"
+                        placeholder="Luas (M2)"
+                        ref="updateWide"
+                        v-model="updateForm.wide"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="updateCertificateBookkeepingDate"
+                        placeholder="Tanggal Pembukuan"
+                        v-model="updateForm.certificate_bookkeeping_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="updateCertificatePublishingDate"
+                        placeholder="Tanggal Penerbitan"
+                        v-model="updateForm.certificate_publishing_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <datepicker
+                        class="block w-full mt-4"
+                        ref="updateCertificateFinalDate"
+                        placeholder="Tanggal Akhir"
+                        v-model="updateForm.certificate_final_date"
+                        :flow="dateFlow"
+                        :format="dateFormat"
+                        :enableTimePicker="false"
+                    />
+                    <jet-select
+                        ref="updateHolder"
+                        class="block w-full mt-4"
+                        placeholder="Pilih Pemegang Hak"
+                        v-model="updateForm.holder"
+                        :data="holders"
+                        @keyup.enter="update"
                     />
                 </div>
             </template>
@@ -431,6 +916,12 @@ export default defineComponent({
     },
     props: {
         area_types: Object,
+        urban_villages: Object,
+        sub_districts: Object,
+        districts: Object,
+        provinces: Object,
+        holders: Object,
+        optionalities: Object,
         certificates: Object,
     },
     data() {
@@ -451,11 +942,53 @@ export default defineComponent({
             showingSuccessNotification: false,
             showingDangerNotification: false,
             storeForm: useForm({
+                urban_village: null,
+                sub_district: null,
+                district: null,
+                province: null,
+                holder: null,
                 name: null,
+                area_code: null,
+                certificate_type: null,
+                certificate_number: null,
+                certificate_print_number: null,
+                certificate_bookkeeping_date: null,
+                certificate_publishing_date: null,
+                certificate_final_date: null,
+                nib: null,
+                origin_right_category: null,
+                base_registration_decree_number: null,
+                base_registration_date: null,
+                measuring_letter_number: null,
+                measuring_letter_date: null,
+                measuring_letter_status: null,
+                field_map_status: null,
+                wide: null,
             }),
             updateForm: useForm({
                 id: null,
+                urban_village: null,
+                sub_district: null,
+                district: null,
+                province: null,
+                holder: null,
                 name: null,
+                area_code: null,
+                certificate_type: null,
+                certificate_number: null,
+                certificate_print_number: null,
+                certificate_bookkeeping_date: null,
+                certificate_publishing_date: null,
+                certificate_final_date: null,
+                nib: null,
+                origin_right_category: null,
+                base_registration_decree_number: null,
+                base_registration_date: null,
+                measuring_letter_number: null,
+                measuring_letter_date: null,
+                measuring_letter_status: null,
+                field_map_status: null,
+                wide: null,
             }),
             destroyForm: useForm({
                 id: null,
@@ -463,6 +996,13 @@ export default defineComponent({
             importForm: useForm({
                 file: null,
             }),
+            dateFlow: ["month", "year", "calendar"],
+            dateFormat: (date) => {
+                const day = date.getDate();
+                const month = date.getMonth() + 1;
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            },
         };
     },
     methods: {
@@ -550,13 +1090,44 @@ export default defineComponent({
         },
         confirmStore() {
             setTimeout(() => (this.confirmingStore = true), 150);
-            setTimeout(() => this.$refs.storeFuncloc.focus(), 300);
+            setTimeout(() => this.$refs.storeName.focus(), 300);
         },
         confirmUpdate(certificate) {
             this.updateForm.id = certificate.id;
+            this.updateForm.urban_village = certificate.urban_village_id;
+            this.updateForm.sub_district = certificate.sub_district_id;
+            this.updateForm.district = certificate.district_id;
+            this.updateForm.province = certificate.province_id;
+            this.updateForm.holder = certificate.holder_id;
             this.updateForm.name = certificate.name;
+            this.updateForm.area_code = certificate.area_code;
+            this.updateForm.certificate_type = certificate.certificate_type;
+            this.updateForm.certificate_number = certificate.certificate_number;
+            this.updateForm.certificate_print_number =
+                certificate.certificate_print_number;
+            this.updateForm.certificate_bookkeeping_date =
+                certificate.certificate_bookkeeping_date;
+            this.updateForm.certificate_publishing_date =
+                certificate.certificate_publishing_date;
+            this.updateForm.certificate_final_date =
+                certificate.certificate_final_date;
+            this.updateForm.nib = certificate.nib;
+            this.updateForm.origin_right_category =
+                certificate.origin_right_category;
+            this.updateForm.base_registration_decree_number =
+                certificate.base_registration_decree_number;
+            this.updateForm.base_registration_date =
+                certificate.base_registration_date;
+            this.updateForm.measuring_letter_number =
+                certificate.measuring_letter_number;
+            this.updateForm.measuring_letter_date =
+                certificate.measuring_letter_date;
+            this.updateForm.measuring_letter_status =
+                certificate.measuring_letter_status;
+            this.updateForm.field_map_status = certificate.field_map_status;
+            this.updateForm.wide = certificate.wide;
             setTimeout(() => (this.confirmingUpdate = true), 150);
-            setTimeout(() => this.$refs.updateFuncloc.focus(), 300);
+            setTimeout(() => this.$refs.updateName.focus(), 300);
         },
         confirmDestroy(certificate) {
             this.destroyForm.id = certificate.id;
@@ -574,11 +1145,28 @@ export default defineComponent({
                 this.clearErrors();
                 this.storeForm.clearErrors();
                 this.storeForm.reset();
-                this.storeForm.funcloc = null;
+                this.storeForm.urban_village = null;
+                this.storeForm.sub_district = null;
+                this.storeForm.district = null;
+                this.storeForm.province = null;
+                this.storeForm.holder = null;
                 this.storeForm.name = null;
-                this.storeForm.latitude = null;
-                this.storeForm.longitude = null;
-                this.storeForm.type = null;
+                this.storeForm.area_code = null;
+                this.storeForm.certificate_type = null;
+                this.storeForm.certificate_number = null;
+                this.storeForm.certificate_print_number = null;
+                this.storeForm.certificate_bookkeeping_date = null;
+                this.storeForm.certificate_publishing_date = null;
+                this.storeForm.certificate_final_date = null;
+                this.storeForm.nib = null;
+                this.storeForm.origin_right_category = null;
+                this.storeForm.base_registration_decree_number = null;
+                this.storeForm.base_registration_date = null;
+                this.storeForm.measuring_letter_number = null;
+                this.storeForm.measuring_letter_date = null;
+                this.storeForm.measuring_letter_status = null;
+                this.storeForm.field_map_status = null;
+                this.storeForm.wide = null;
             }, 500);
         },
         closeUpdateModal() {
@@ -588,11 +1176,28 @@ export default defineComponent({
                 this.updateForm.clearErrors();
                 this.updateForm.reset();
                 this.updateForm.id = null;
-                this.updateForm.funcloc = null;
+                this.updateForm.urban_village = null;
+                this.updateForm.sub_district = null;
+                this.updateForm.district = null;
+                this.updateForm.province = null;
+                this.updateForm.holder = null;
                 this.updateForm.name = null;
-                this.updateForm.latitude = null;
-                this.updateForm.longitude = null;
-                this.updateForm.type = null;
+                this.updateForm.area_code = null;
+                this.updateForm.certificate_type = null;
+                this.updateForm.certificate_number = null;
+                this.updateForm.certificate_print_number = null;
+                this.updateForm.certificate_bookkeeping_date = null;
+                this.updateForm.certificate_publishing_date = null;
+                this.updateForm.certificate_final_date = null;
+                this.updateForm.nib = null;
+                this.updateForm.origin_right_category = null;
+                this.updateForm.base_registration_decree_number = null;
+                this.updateForm.base_registration_date = null;
+                this.updateForm.measuring_letter_number = null;
+                this.updateForm.measuring_letter_date = null;
+                this.updateForm.measuring_letter_status = null;
+                this.updateForm.field_map_status = null;
+                this.updateForm.wide = null;
             }, 500);
         },
         closeDestroyModal() {
