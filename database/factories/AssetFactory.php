@@ -24,7 +24,7 @@ class AssetFactory extends Factory
     {
         return [
             'techidentno' => $this->faker->unique->numberBetween(1111, 9999),
-            'name' => Str::title($this->faker->unique->words(1, 1)),
+            'name' => Str::title($this->faker->unique->word),
             'quantity' => $this->faker->numberBetween(1, 100),
         ];
     }

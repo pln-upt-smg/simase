@@ -44,3 +44,33 @@ include 'endpoints/areas.php';
  * Employees endpoints
  */
 include 'endpoints/employees.php';
+
+/**
+ * Urban Villages endpoints
+ */
+include 'endpoints/urban_villages.php';
+
+/**
+ * Sub Districts endpoints
+ */
+include 'endpoints/sub_districts.php';
+
+/**
+ * Districts endpoints
+ */
+include 'endpoints/districts.php';
+
+/**
+ * Provinces endpoints
+ */
+include 'endpoints/provinces.php';
+
+/**
+ * Holders endpoints
+ */
+include 'endpoints/holders.php';
+
+/**
+ * Certificates endpoints
+ */
+include 'endpoints/certificates.php';

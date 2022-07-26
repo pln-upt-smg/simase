@@ -5,11 +5,17 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 use Database\Seeders\Data\{
-    RoleSeeder,
-    DivisionSeeder,
-    UserSeeder,
     AreaSeeder,
-    AssetSeeder
+    AssetSeeder,
+    CertificateSeeder,
+    DistrictSeeder,
+    DivisionSeeder,
+    HolderSeeder,
+    ProvinceSeeder,
+    RoleSeeder,
+    SubDistrictSeeder,
+    UrbanVillageSeeder,
+    UserSeeder
 };
 use App\Models\{
     Role,
@@ -22,7 +28,13 @@ use App\Models\{
     AssetLossDamage,
     AssetLossDamageImage,
     AssetSubmission,
-    AssetSubmissionImage
+    AssetSubmissionImage,
+    UrbanVillage,
+    SubDistrict,
+    District,
+    Province,
+    Holder,
+    Certificate
 };
 
 class DatabaseSeeder extends Seeder
@@ -54,6 +66,12 @@ class DatabaseSeeder extends Seeder
         AssetLossDamageImage::truncate();
         AssetSubmission::truncate();
         AssetSubmissionImage::truncate();
+        UrbanVillage::truncate();
+        SubDistrict::truncate();
+        District::truncate();
+        Province::truncate();
+        Holder::truncate();
+        Certificate::truncate();
         Schema::enableForeignKeyConstraints();
     }
 
@@ -64,5 +82,11 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(AreaSeeder::class);
         $this->call(AssetSeeder::class);
+        $this->call(UrbanVillageSeeder::class);
+        $this->call(SubDistrictSeeder::class);
+        $this->call(DistrictSeeder::class);
+        $this->call(ProvinceSeeder::class);
+        $this->call(HolderSeeder::class);
+        // $this->call(CertificateSeeder::class);
     }
 }

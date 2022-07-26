@@ -342,6 +342,9 @@ import {
     ExclamationIcon,
     AnnotationIcon,
     SwitchHorizontalIcon,
+    MapIcon,
+    UserGroupIcon,
+    DocumentTextIcon,
 } from "@heroicons/vue/outline";
 import NotificationPanel from "@/Layouts/NotificationPanel";
 
@@ -411,7 +414,27 @@ const navigations = {
         ],
     },
     administratorKKU: {
-        menu: [],
+        menu: [
+            { name: "Dashboard", href: "dashboard", icon: HomeIcon },
+            { name: "Kelurahan", href: "urban-villages.index", icon: MapIcon },
+            { name: "Kecamatan", href: "sub-districts.index", icon: MapIcon },
+            {
+                name: "Kabupaten / Kotamadya",
+                href: "districts.index",
+                icon: MapIcon,
+            },
+            { name: "Provinsi", href: "provinces.index", icon: MapIcon },
+            {
+                name: "Pemegang Hak",
+                href: "holders.index",
+                icon: UserGroupIcon,
+            },
+            {
+                name: "Sertifikat",
+                href: "certificates.index",
+                icon: DocumentTextIcon,
+            },
+        ],
         manage: [
             { name: "Pegawai", href: "employees.index", icon: UsersIcon },
             { name: "Pengaturan", href: "profile.show", icon: CogIcon },
@@ -498,6 +521,9 @@ export default defineComponent({
         ExclamationIcon,
         AnnotationIcon,
         SwitchHorizontalIcon,
+        MapIcon,
+        UserGroupIcon,
+        DocumentTextIcon,
     },
     setup() {
         const sidebarOpen = ref(false);

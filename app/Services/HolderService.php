@@ -29,6 +29,7 @@ class HolderService
     {
         return QueryBuilder::for(Holder::class)
             ->select([
+                'holders.name as name',
                 'users.name as user_name',
                 DB::raw(
                     'date_format(holders.updated_at, "%d %b %Y") as update_date'

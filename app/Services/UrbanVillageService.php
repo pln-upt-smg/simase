@@ -29,6 +29,7 @@ class UrbanVillageService
     {
         return QueryBuilder::for(UrbanVillage::class)
             ->select([
+                'urban_villages.name as name',
                 'users.name as user_name',
                 DB::raw(
                     'date_format(urban_villages.updated_at, "%d %b %Y") as update_date'

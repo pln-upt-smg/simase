@@ -29,17 +29,125 @@ class CertificateService
     {
         return QueryBuilder::for(Certificate::class)
             ->select([
+                'certificates.name as name',
+                'certificates.area_code as area_code',
+                'certificates.certificate_type as certificate_type',
+                'certificates.certificate_number as certificate_number',
+                'certificates.certificate_print_number as certificate_print_number',
+                'certificates.certificate_bookkeeping_date as certificate_bookkeeping_date',
+                'certificates.certificate_publishing_date as certificate_publishing_date',
+                'certificates.certificate_final_date as certificate_final_date',
+                'certificates.nib as nib',
+                'certificates.origin_right_category as origin_right_category',
+                'certificates.base_registration_decree_number as base_registration_decree_number',
+                'certificates.base_registration_date as base_registration_date',
+                'certificates.measuring_letter_number as measuring_letter_number',
+                'certificates.measuring_letter_date as measuring_letter_date',
+                'certificates.measuring_letter_status as measuring_letter_status',
+                'certificates.field_map_status as field_map_status',
+                'certificates.wide as wide',
+                'certificate_files.file as certificate_file',
+                'urban_villages.id as urban_village_id',
+                'urban_villages.name as urban_village_name',
+                'sub_districts.id as sub_district_id',
+                'sub_districts.name as sub_district_name',
+                'districts.id as district_id',
+                'districts.name as district_name',
+                'provinces.id as province_id',
+                'provinces.name as province_name',
+                'holders.id as holder_id',
+                'holders.name as holder_name',
                 'users.name as user_name',
                 DB::raw(
                     'date_format(certificates.updated_at, "%d %b %Y") as update_date'
                 ),
             ])
+            ->leftJoin(
+                'certificate_files',
+                'certificate_files.certificate_id',
+                '=',
+                'certificates.id'
+            )
+            ->leftJoin(
+                'urban_villages',
+                'urban_villages.id',
+                '=',
+                'certificates.urban_village_id'
+            )
+            ->leftJoin(
+                'sub_districts',
+                'sub_districts.id',
+                '=',
+                'certificates.sub_district_id'
+            )
+            ->leftJoin(
+                'districts',
+                'districts.id',
+                '=',
+                'certificates.district_id'
+            )
+            ->leftJoin(
+                'provinces',
+                'provinces.id',
+                '=',
+                'certificates.province_id'
+            )
+            ->leftJoin('holders', 'holders.id', '=', 'certificates.holder_id')
             ->leftJoin('users', 'users.id', '=', 'certificates.created_by')
             ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
             ->allowedFilters(
-                InertiaHelper::filterBy(['certificates.name', 'users.name'])
+                InertiaHelper::filterBy([
+                    'certificates.name',
+                    'certificates.area_code',
+                    'certificates.certificate_type',
+                    'certificates.certificate_number',
+                    'certificates.certificate_print_number',
+                    'certificates.certificate_bookkeeping_date',
+                    'certificates.certificate_publishing_date',
+                    'certificates.certificate_final_date',
+                    'certificates.nib',
+                    'certificates.origin_right_category',
+                    'certificates.base_registration_decree_number',
+                    'certificates.base_registration_date',
+                    'certificates.measuring_letter_number',
+                    'certificates.measuring_letter_date',
+                    'certificates.measuring_letter_status',
+                    'certificates.field_map_status',
+                    'certificates.wide',
+                    'urban_villages.name',
+                    'sub_districts.name',
+                    'districts.name',
+                    'provinces.name',
+                    'holders.name',
+                    'users.name',
+                ])
             )
-            ->allowedSorts(['name', 'user_name', 'update_date'])
+            ->allowedSorts([
+                'name',
+                'area_code',
+                'certificate_type',
+                'certificate_number',
+                'certificate_print_number',
+                'certificate_bookkeeping_date',
+                'certificate_publishing_date',
+                'certificate_final_date',
+                'nib',
+                'origin_right_category',
+                'base_registration_decree_number',
+                'base_registration_date',
+                'measuring_letter_number',
+                'measuring_letter_date',
+                'measuring_letter_status',
+                'field_map_status',
+                'wide',
+                'urban_village_name',
+                'sub_district_name',
+                'district_name',
+                'province_name',
+                'holder_name',
+                'user_name',
+                'update_date',
+            ])
             ->paginate()
             ->withQueryString();
     }
@@ -49,10 +157,60 @@ class CertificateService
         return $table
             ->addSearchRows([
                 'certificates.name' => 'Nama Sertifikat',
+                'certificates.area_code' => 'Kode Wilayah',
+                'certificates.certificate_type' => 'Tipe Sertifikat',
+                'certificates.certificate_number' => 'Nomor Sertifikat',
+                'certificates.certificate_print_number' =>
+                    'Nomor Cetak Sertifikat',
+                'certificates.certificate_bookkeeping_date' =>
+                    'Tanggal Pembukuan',
+                'certificates.certificate_publishing_date' =>
+                    'Tanggal Penerbitan',
+                'certificates.certificate_final_date' =>
+                    'Tanggal Akhir / Perpanjangan',
+                'certificates.nib' => 'NIB',
+                'certificates.origin_right_category' => 'Kategori Asal Hak',
+                'certificates.base_registration_decree_number' =>
+                    'Surat Keputusan',
+                'certificates.base_registration_date' =>
+                    'Tanggal Dasar Pendaftaran',
+                'certificates.measuring_letter_number' => 'Nomor Surat Ukur',
+                'certificates.measuring_letter_date' => 'Tanggal Surat Ukur',
+                'certificates.measuring_letter_status' => 'Status Surat Ukur',
+                'certificates.field_map_status' => 'Status Peta Bidang',
+                'certificates.wide' => 'Luas (M2)',
+                'certificate_files.file' => 'File',
+                'urban_villages.name' => 'Kelurahan',
+                'sub_districts.name' => 'Kecamatan',
+                'districts.name' => 'Kabupaten / Kotamadya',
+                'provinces.name' => 'Provinsi',
+                'holders.name' => 'Pemegang Hak',
                 'users.name' => 'Pembuat',
             ])
             ->addColumns([
                 'name' => 'Nama Sertifikat',
+                'area_code' => 'Kode Wilayah',
+                'certificate_type' => 'Tipe Sertifikat',
+                'certificate_number' => 'Nomor Sertifikat',
+                'certificate_print_number' => 'Nomor Cetak Sertifikat',
+                'certificate_bookkeeping_date' => 'Tanggal Pembukuan',
+                'certificate_publishing_date' => 'Tanggal Penerbitan',
+                'certificate_final_date' => 'Tanggal Akhir / Perpanjangan',
+                'nib' => 'NIB',
+                'origin_right_category' => 'Kategori Asal Hak',
+                'base_registration_decree_number' => 'Surat Keputusan',
+                'base_registration_date' => 'Tanggal Dasar Pendaftaran',
+                'measuring_letter_number' => 'Nomor Surat Ukur',
+                'measuring_letter_date' => 'Tanggal Surat Ukur',
+                'measuring_letter_status' => 'Status Surat Ukur',
+                'field_map_status' => 'Status Peta Bidang',
+                'wide' => 'Luas (M2)',
+                'certificate_file' => 'File',
+                'urban_village_name' => 'Kelurahan',
+                'sub_district_name' => 'Kecamatan',
+                'district_name' => 'Kabupaten / Kotamadya',
+                'province_name' => 'Provinsi',
+                'holder_name' => 'Pemegang Hak',
                 'user_name' => 'Pembuat',
                 'update_date' => 'Tanggal Pembaruan',
                 'action' => 'Aksi',

@@ -29,6 +29,7 @@ class SubDistrictService
     {
         return QueryBuilder::for(SubDistrict::class)
             ->select([
+                'sub_districts.name as name',
                 'users.name as user_name',
                 DB::raw(
                     'date_format(sub_districts.updated_at, "%d %b %Y") as update_date'

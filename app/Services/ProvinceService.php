@@ -29,6 +29,7 @@ class ProvinceService
     {
         return QueryBuilder::for(Province::class)
             ->select([
+                'provinces.name as name',
                 'users.name as user_name',
                 DB::raw(
                     'date_format(provinces.updated_at, "%d %b %Y") as update_date'
