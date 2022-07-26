@@ -24,6 +24,21 @@ class CertificateService
     use HasValidator;
 
     /**
+     * @var ProvinceService
+     */
+    private ProvinceService $provinceService;
+
+    /**
+     * Create a new Controller instance.
+     *
+     * @param ProvinceService $provinceService
+     */
+    public function __construct(ProvinceService $provinceService)
+    {
+        $this->provinceService = $provinceService;
+    }
+
+    /**
      * @return LengthAwarePaginator
      */
     public function tableData(): LengthAwarePaginator
@@ -591,11 +606,12 @@ class CertificateService
 
     /**
      * @param Request|null $request
+     * @param bool $latest
      * @return Collection
      */
-    public function collection(?Request $request = null): Collection
+    public function collection(?Request $request = null, bool $latest = false): Collection
     {
-        $query = Certificate::orderBy('certificates.name')
+        $query = Certificate::orderBy($latest ? 'certificates.created_at' : 'certificates.name')
             ->select([
                 'certificates.id as id',
                 'certificates.name as name',
@@ -682,5 +698,24 @@ class CertificateService
             );
         }
         return $query->get();
+    }
+
+    /**
+     * @return array
+     */
+    public function provinceChart(): array
+    {
+        $result = [];
+        $provinces = $this->provinceService->collection();
+        foreach ($provinces as $province) {
+            $result[] = Certificate::select([
+                DB::raw('count(certificates.id) as certificates'),
+            ])
+                ->where('certificates.province_id', $province->id)
+                ->whereNull('certificates.deleted_at')
+                ->first()?->certificates ?: 0;
+        }
+
+        return $result;
     }
 }

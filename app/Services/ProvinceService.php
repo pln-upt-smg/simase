@@ -206,6 +206,7 @@ class ProvinceService
     {
         $query = Province::orderBy('provinces.name')
             ->select([
+                'provinces.id as id',
                 'provinces.name as name',
                 'users.name as user_name',
                 DB::raw(

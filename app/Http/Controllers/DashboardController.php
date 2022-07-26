@@ -2,27 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AreaService;
-use Illuminate\Http\RedirectResponse;
+use App\Services\{ProvinceService, CertificateService};
 use Illuminate\Http\Request;
-use Inertia\Response;
-use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 
 class DashboardController extends Controller
 {
     /**
-     * @var AreaService
+     * @var ProvinceService
      */
-    private AreaService $areaService;
+    private ProvinceService $provinceService;
+
+    /**
+     * @var CertificateService
+     */
+    private CertificateService $certificateService;
 
     /**
      * Create a new Controller instance.
      *
-     * @param AreaService $areaService
+     * @param ProvinceService $provinceService
      */
-    public function __construct(AreaService $areaService)
-    {
-        $this->areaService = $areaService;
+    public function __construct(
+        ProvinceService $provinceService,
+        CertificateService $certificateService
+    ) {
+        $this->provinceService = $provinceService;
+        $this->certificateService = $certificateService;
     }
 
     /**
@@ -36,20 +41,14 @@ class DashboardController extends Controller
         if (is_null(auth()->user())) {
             return redirect()->route('login');
         }
-        $role = auth()
-            ->user()
-            ->load('role')->role;
-        if (!is_null($role) && $role->isOperator()) {
-            return redirect()->route('stocks.create');
-        }
-        $area = $this->areaService->resolve($request);
-        $areas = $this->areaService->collection();
+        $provinces = $this->provinceService->collection();
         return inertia('Administrator/Dashboard/Index', [
-            'area' => $area,
-            'areaIds' => $areas->pluck('id')->toArray(),
-            'areas' => $areas->pluck('name')->toArray(),
-            'areaFinalSummaries' => [],
-            'gapValueRank' => [],
+            'provinceIds' => $provinces->pluck('id')->toArray(),
+            'provinces' => $provinces->pluck('name')->toArray(),
+            'KKUCertificateChartData' => $this->certificateService->provinceChart(),
+            'KKURecentCertificateTableData' => $this->certificateService
+                ->collection(null, true)
+                ->toArray(),
         ]);
     }
 }

@@ -1,35 +1,31 @@
 <template>
     <div class="font-semibold text-lg">
-        Laporan Pengajuan Aset (Terbaru)
+        Sertifikat Terkini
     </div>
     <div v-if="data" class="font-semibold text-lg">
         <jet-table :meta="data" :paginate="false" :clickable-header="false">
             <template #head>
-                <th>Kode Material</th>
-                <th>Deskripsi Material</th>
-                <th>UoM</th>
-                <th>MType</th>
-                <th>Unrestricted</th>
-                <th>QualInsp</th>
-                <th>Total Stock</th>
-                <th>Gap Stock</th>
-                <th>Gap Value</th>
+                <th>Nama Aset Tanah</th>
+                <th>No. Sertifikat</th>
+                <th>Kelurahan</th>
+                <th>Kecamatan</th>
+                <th>Kabupaten / Kota Madya</th>
+                <th>Provinsi</th>
+                <th>Kode Wilayah</th>
             </template>
             <template #body>
                 <tr
-                    v-if="data.data && data.data.length > 0"
-                    v-for="entry in data.data"
+                    v-if="data && data.length > 0"
+                    v-for="entry in data"
                     :key="entry.id"
                 >
-                    <td>{{ entry.material_code }}</td>
-                    <td>{{ entry.material_description }}</td>
-                    <td>{{ entry.uom }}</td>
-                    <td>{{ entry.mtyp }}</td>
-                    <td>{{ entry.unrestricted }}</td>
-                    <td>{{ entry.qualinsp }}</td>
-                    <td>{{ entry.total_stock }}</td>
-                    <td>{{ entry.gap_stock }}</td>
-                    <td>{{ entry.gap_value }}</td>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.certificate_number }}</td>
+                    <td>{{ entry.urban_village_name }}</td>
+                    <td>{{ entry.sub_district_name }}</td>
+                    <td>{{ entry.district_name }}</td>
+                    <td>{{ entry.province_name }}</td>
+                    <td>{{ entry.area_code }}</td>
                 </tr>
                 <tr v-else>
                     <td colspan="9" class="font-normal text-black">
@@ -50,7 +46,6 @@ import JetTable from "@/Jetstream/Table";
 
 export default defineComponent({
     props: {
-        area: Object,
         data: Object,
     },
     components: {
