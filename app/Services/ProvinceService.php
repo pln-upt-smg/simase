@@ -214,8 +214,7 @@ class ProvinceService
                 ),
             ])
             ->leftJoin('users', 'users.id', '=', 'provinces.created_by')
-            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
-            ->limit(10);
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0);
         if (!is_null($request)) {
             $query = $query->whereRaw(
                 'lower(provinces.name) like "%?%"',

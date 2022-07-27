@@ -216,10 +216,16 @@ class AssetTypeService
     public function collection(?Request $request = null): Collection
     {
         $query = AssetType::orderBy('asset_types.name')
-            ->select('asset_types.*')
+            ->select([
+                'asset_types.id as id',
+                'asset_types.name as name',
+                'users.name as user_name',
+                DB::raw(
+                    'date_format(asset_types.updated_at, "%d %b %Y") as update_date'
+                ),
+            ])
             ->leftJoin('users', 'users.id', '=', 'asset_types.created_by')
-            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
-            ->limit(10);
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0);
         if (!is_null($request)) {
             $query = $query->whereRaw(
                 'lower(asset_types.name) like "%?%"',

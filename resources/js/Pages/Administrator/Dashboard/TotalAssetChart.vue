@@ -8,7 +8,7 @@
 
 <template>
     <div class="font-semibold text-lg">
-        Grafik Sebaran Sertifikat
+        Grafik Jumlah Aset
     </div>
     <div class="mt-6">
         <vue3-chart-js
@@ -34,8 +34,10 @@ export default defineComponent({
         partials: {
             type: Array,
             default: [
-                "KKUCertificateChartData",
-                "KKURecentCertificateTableData",
+                "TotalAssetChartData",
+                "RecentAssetSubmissionTableData",
+                "RecentAssetLossDamageTableData",
+                "RecentAssetTransferTableData",
             ],
         },
     },
@@ -45,7 +47,7 @@ export default defineComponent({
     setup() {
         const chart = ref(null);
         const chartData = {
-            id: "kku-certificate-chart",
+            id: "total-asset-chart",
             type: "bar",
             data: {
                 labels: [],

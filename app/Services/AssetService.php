@@ -23,6 +23,21 @@ class AssetService
     use HasValidator;
 
     /**
+     * @var AssetTypeService
+     */
+    private AssetTypeService $assetTypeService;
+
+    /**
+     * Create a new Controller instance.
+     *
+     * @param AssetTypeService $assetTypeService
+     */
+    public function __construct(AssetTypeService $assetTypeService)
+    {
+        $this->assetTypeService = $assetTypeService;
+    }
+
+    /**
      * @return LengthAwarePaginator
      */
     public function tableData(): LengthAwarePaginator
@@ -338,5 +353,24 @@ class AssetService
             });
         }
         return $query->get();
+    }
+
+    /**
+     * @return array
+     */
+    public function assetTypeChart(): array
+    {
+        $result = [];
+        $assetTypes = $this->assetTypeService->collection();
+        foreach ($assetTypes as $assetType) {
+            $result[] = Asset::select([
+                DB::raw('count(assets.id) as assets'),
+            ])
+                ->where('assets.asset_type_id', $assetType->id)
+                ->whereNull('assets.deleted_at')
+                ->first()?->assets ?: 0;
+        }
+
+        return $result;
     }
 }

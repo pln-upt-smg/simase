@@ -266,19 +266,57 @@ class AssetLossDamageService
 
     /**
      * @param Request|null $request
+     * @param bool $latest
+     * @param int $limit
      * @return Collection
      */
-    public function collection(?Request $request = null): Collection
-    {
-        $query = AssetLossDamage::orderBy('assets.name')
+    public function collection(
+        ?Request $request = null,
+        bool $latest = false,
+        int $limit = 10
+    ): Collection {
+        $query = AssetLossDamage::orderBy(
+            $latest ? 'assets.created_at' : 'assets.name'
+        )
+            ->select([
+                'assets.id as asset_id',
+                'assets.techidentno as techidentno',
+                'assets.name as name',
+                'assets.quantity as quantity',
+                'asset_types.name as asset_type_name',
+                'areas.funcloc as area_funcloc',
+                'areas.name as area_name',
+                'area_types.name as area_type_name',
+                'users.name as user_name',
+                'asset_loss_damages.id as id',
+                'asset_loss_damages.note as asset_loss_damage_note',
+                'asset_loss_damages.priority as asset_loss_damage_priority',
+                DB::raw(
+                    'date_format(asset_loss_damages.updated_at, "%d %b %Y") as update_date'
+                ),
+            ])
             ->leftJoin(
                 'users',
                 'users.id',
                 '=',
                 'asset_loss_damages.created_by'
             )
+            ->leftJoin(
+                'assets',
+                'assets.id',
+                '=',
+                'asset_loss_damages.asset_id'
+            )
+            ->leftJoin(
+                'asset_types',
+                'asset_types.id',
+                '=',
+                'assets.asset_type_id'
+            )
+            ->leftJoin('areas', 'areas.id', '=', 'assets.area_id')
+            ->leftJoin('area_types', 'area_types.id', '=', 'areas.area_type_id')
             ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
-            ->limit(10);
+            ->limit($limit);
         if (!is_null($request)) {
             $query = $query
                 ->leftJoin(

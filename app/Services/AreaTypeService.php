@@ -214,10 +214,16 @@ class AreaTypeService
     public function collection(?Request $request = null): Collection
     {
         $query = AreaType::orderBy('area_types.name')
-            ->select('area_types.*')
+            ->select([
+                'area_types.id as id',
+                'area_types.name as name',
+                'users.name as user_name',
+                DB::raw(
+                    'date_format(area_types.updated_at, "%d %b %Y") as update_date'
+                ),
+            ])
             ->leftJoin('users', 'users.id', '=', 'area_types.created_by')
-            ->where('users.division_id', '=', auth()->user()->division_id ?? 0)
-            ->limit(10);
+            ->where('users.division_id', '=', auth()->user()->division_id ?? 0);
         if (!is_null($request)) {
             $query = $query->whereRaw(
                 'lower(area_types.name) like "%?%"',
